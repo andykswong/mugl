@@ -61,23 +61,87 @@
 				<a href="#mugl" id="mugl" style="color: inherit; text-decoration: none;">
 					<h1>mugl</h1>
 				</a>
-				<blockquote>
-					<p>A micro WebGL library.</p>
-				</blockquote>
 				<p><a href="https://www.npmjs.com/package/mugl"><img src="https://img.shields.io/npm/v/mugl" alt="NPM"></a> <a href="https://github.com/andykswong/mugl/actions/workflows/build.yaml"><img src="https://github.com/andykswong/mugl/actions/workflows/build.yaml/badge.svg" alt="build"></a></p>
+				<blockquote>
+					<p>A micro, modern WebGL wrapper library in TypeScript.</p>
+				</blockquote>
+				<p><code>mugl</code> provides a simple API in <a href="https://gpuweb.github.io/gpuweb/">WebGPU</a>-style that removes WebGL state management from you. With <code>mugl</code>, you use a simple <a href="https://andykswong.github.io/mugl/interfaces/renderingdevice.html">rendering device interface</a> to allocate resources, such as buffers and textures, and submit draw calls to GPU.</p>
 				<a href="#install" id="install" style="color: inherit; text-decoration: none;">
 					<h2>Install</h2>
 				</a>
-				<pre><code class="language-shell"><span style="color: #000000">npm install mugl</span>
+				<pre><code class="language-shell"><span style="color: #000000">npm install --save mugl</span>
 </code></pre>
-				<a href="#examples" id="examples" style="color: inherit; text-decoration: none;">
-					<h2>Examples</h2>
+				<a href="#usage" id="usage" style="color: inherit; text-decoration: none;">
+					<h2>Usage</h2>
 				</a>
-				<p>Live: <a href="http://andykswong.github.io/mugl/examples">http://andykswong.github.io/mugl/examples</a><br>Source: <a href="https://github.com/andykswong/mugl/tree/main/src/examples">https://github.com/andykswong/mugl/tree/main/src/examples</a></p>
+				<p>Below is a simple <code>mugl</code> program to draw a triangle:</p>
+				<pre><code class="language-javascript"><span style="color: #AF00DB">import</span><span style="color: #000000"> { </span><span style="color: #001080">UniformFormat</span><span style="color: #000000">, </span><span style="color: #001080">UniformType</span><span style="color: #000000">, </span><span style="color: #001080">VertexFormat</span><span style="color: #000000">, </span><span style="color: #001080">getGLDevice</span><span style="color: #000000"> } </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;mugl&#039;</span><span style="color: #000000">;</span>
+
+<span style="color: #008000">// 0. Prepare triangle vertex positions and colors data</span>
+<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">triangle</span><span style="color: #000000"> = </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #267F99">Float32Array</span><span style="color: #000000">([</span>
+<span style="color: #000000">  </span><span style="color: #008000">// position  color</span>
+<span style="color: #000000">  </span><span style="color: #098658">0.0</span><span style="color: #000000">, </span><span style="color: #098658">0.5</span><span style="color: #000000">,    </span><span style="color: #098658">1.0</span><span style="color: #000000">, </span><span style="color: #098658">0.0</span><span style="color: #000000">, </span><span style="color: #098658">0.0</span><span style="color: #000000">, </span><span style="color: #098658">1.0</span><span style="color: #000000">,</span>
+<span style="color: #000000">  </span><span style="color: #098658">0.5</span><span style="color: #000000">, -</span><span style="color: #098658">0.5</span><span style="color: #000000">,   </span><span style="color: #098658">0.0</span><span style="color: #000000">, </span><span style="color: #098658">1.0</span><span style="color: #000000">, </span><span style="color: #098658">0.0</span><span style="color: #000000">, </span><span style="color: #098658">1.0</span><span style="color: #000000">,</span>
+<span style="color: #000000">  -</span><span style="color: #098658">0.5</span><span style="color: #000000">, -</span><span style="color: #098658">0.5</span><span style="color: #000000">,  </span><span style="color: #098658">0.0</span><span style="color: #000000">, </span><span style="color: #098658">0.0</span><span style="color: #000000">, </span><span style="color: #098658">1.0</span><span style="color: #000000">, </span><span style="color: #098658">1.0</span><span style="color: #000000">,</span>
+<span style="color: #000000">]);</span>
+
+<span style="color: #008000">// 1. Create WebGL rendering device from an existing canvas</span>
+<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">device</span><span style="color: #000000"> = </span><span style="color: #795E26">getGLDevice</span><span style="color: #000000">(</span><span style="color: #001080">canvas</span><span style="color: #000000">);</span>
+<span style="color: #AF00DB">if</span><span style="color: #000000">(!</span><span style="color: #001080">device</span><span style="color: #000000">) </span><span style="color: #AF00DB">throw</span><span style="color: #000000"> </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #267F99">Error</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;WebGL is unsupported&#039;</span><span style="color: #000000">);</span>
+
+<span style="color: #008000">// 2. Create GPU buffer for the triangle data</span>
+<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">buffer</span><span style="color: #000000"> = </span><span style="color: #001080">device</span><span style="color: #000000">.</span><span style="color: #795E26">buffer</span><span style="color: #000000">({ </span><span style="color: #001080">size:</span><span style="color: #000000"> </span><span style="color: #001080">triangle</span><span style="color: #000000">.</span><span style="color: #001080">byteLength</span><span style="color: #000000"> }).</span><span style="color: #795E26">data</span><span style="color: #000000">(</span><span style="color: #001080">triangle</span><span style="color: #000000">);</span>
+
+<span style="color: #008000">// 3. Create pipeline object for drawing the triangle</span>
+<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">pipeline</span><span style="color: #000000"> = </span><span style="color: #001080">device</span><span style="color: #000000">.</span><span style="color: #795E26">pipeline</span><span style="color: #000000">({</span>
+<span style="color: #000000">  </span><span style="color: #001080">vert:</span><span style="color: #000000"> </span><span style="color: #A31515">`</span>
+<span style="color: #A31515">    uniform float angle;</span>
+<span style="color: #A31515">    attribute vec2 position;</span>
+<span style="color: #A31515">    attribute vec4 color;</span>
+<span style="color: #A31515">    varying lowp vec4 vColor;</span>
+<span style="color: #A31515">    void main () {</span>
+<span style="color: #A31515">      gl_Position = vec4(</span>
+<span style="color: #A31515">        cos(angle) * position.x - sin(angle) * position.y,</span>
+<span style="color: #A31515">        sin(angle) * position.x + cos(angle) * position.y,</span>
+<span style="color: #A31515">        0, 1);</span>
+<span style="color: #A31515">      vColor = color;</span>
+<span style="color: #A31515">    }`</span><span style="color: #000000">,</span>
+<span style="color: #000000">  </span><span style="color: #001080">frag:</span><span style="color: #000000"> </span><span style="color: #A31515">`</span>
+<span style="color: #A31515">    varying lowp vec4 vColor;</span>
+<span style="color: #A31515">    void main () {</span>
+<span style="color: #A31515">      gl_FragColor = vColor;</span>
+<span style="color: #A31515">    }`</span><span style="color: #000000">,</span>
+<span style="color: #000000">  </span><span style="color: #001080">buffers:</span><span style="color: #000000"> [{</span>
+<span style="color: #000000">    </span><span style="color: #001080">attrs:</span><span style="color: #000000"> [</span>
+<span style="color: #000000">      { </span><span style="color: #001080">name:</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;position&#039;</span><span style="color: #000000">, </span><span style="color: #001080">format:</span><span style="color: #000000"> </span><span style="color: #001080">VertexFormat</span><span style="color: #000000">.</span><span style="color: #001080">Float2</span><span style="color: #000000"> },</span>
+<span style="color: #000000">      { </span><span style="color: #001080">name:</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;color&#039;</span><span style="color: #000000">, </span><span style="color: #001080">format:</span><span style="color: #000000"> </span><span style="color: #001080">VertexFormat</span><span style="color: #000000">.</span><span style="color: #001080">Float4</span><span style="color: #000000"> }</span>
+<span style="color: #000000">    ]</span>
+<span style="color: #000000">  }],</span>
+<span style="color: #000000">  </span><span style="color: #001080">uniforms:</span><span style="color: #000000"> {</span>
+<span style="color: #000000">    </span><span style="color: #A31515">&#039;angle&#039;</span><span style="color: #001080">:</span><span style="color: #000000"> { </span><span style="color: #001080">type:</span><span style="color: #000000"> </span><span style="color: #001080">UniformType</span><span style="color: #000000">.</span><span style="color: #001080">Value</span><span style="color: #000000">, </span><span style="color: #001080">format:</span><span style="color: #000000"> </span><span style="color: #001080">UniformFormat</span><span style="color: #000000">.</span><span style="color: #001080">Float</span><span style="color: #000000"> }</span>
+<span style="color: #000000">  }</span>
+<span style="color: #000000">});</span>
+
+<span style="color: #008000">// 4. Create default render pass object</span>
+<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">pass</span><span style="color: #000000"> = </span><span style="color: #001080">device</span><span style="color: #000000">.</span><span style="color: #795E26">pass</span><span style="color: #000000">();</span>
+
+<span style="color: #008000">// 5. Submit draw call in a render pass</span>
+<span style="color: #001080">device</span><span style="color: #000000">.</span><span style="color: #795E26">render</span><span style="color: #000000">(</span><span style="color: #001080">pass</span><span style="color: #000000">)</span>
+<span style="color: #000000">  .</span><span style="color: #795E26">pipeline</span><span style="color: #000000">(</span><span style="color: #001080">pipeline</span><span style="color: #000000">)</span>
+<span style="color: #000000">  .</span><span style="color: #795E26">vertex</span><span style="color: #000000">(</span><span style="color: #098658">0</span><span style="color: #000000">, </span><span style="color: #001080">buffer</span><span style="color: #000000">)</span>
+<span style="color: #000000">  .</span><span style="color: #795E26">uniforms</span><span style="color: #000000">({ </span><span style="color: #A31515">&#039;angle&#039;</span><span style="color: #001080">:</span><span style="color: #000000"> </span><span style="color: #267F99">Math</span><span style="color: #000000">.PI / </span><span style="color: #098658">2</span><span style="color: #000000"> })</span>
+<span style="color: #000000">  .</span><span style="color: #795E26">draw</span><span style="color: #000000">(</span><span style="color: #098658">3</span><span style="color: #000000">)</span>
+<span style="color: #000000">  .</span><span style="color: #795E26">end</span><span style="color: #000000">();</span>
+</code></pre>
+				<p>See this example <a href="https://andykswong.github.io/mugl/examples/#basic">live</a></p>
+				<a href="#more-examples" id="more-examples" style="color: inherit; text-decoration: none;">
+					<h2>More Examples</h2>
+				</a>
+				<p>Check out the <a href="http://andykswong.github.io/mugl/examples">live examples</a>. The source code of all examples can be found <a href="https://github.com/andykswong/mugl/tree/main/src/examples">here</a>.</p>
 				<a href="#api" id="api" style="color: inherit; text-decoration: none;">
 					<h2>API</h2>
 				</a>
-				<p><a href="http://andykswong.github.io/mugl">http://andykswong.github.io/mugl</a></p>
+				<p>TSDoc: <a href="http://andykswong.github.io/mugl">http://andykswong.github.io/mugl</a></p>
 				<a href="#license" id="license" style="color: inherit; text-decoration: none;">
 					<h2>License</h2>
 				</a>
