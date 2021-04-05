@@ -353,9 +353,6 @@ export type MipmapHint = ValueOf<typeof MipmapHint>;
  * @see https://gpuweb.github.io/gpuweb/#enumdef-gputextureformat
  */
 export const PixelFormat = {
-  /** undefined/none/unused */
-  None: 0,
-
   /** 16-32 bits depth */
   Depth: 0x01_01_04,
 
