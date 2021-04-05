@@ -1,0 +1,868 @@
+<!doctype html>
+<html class="default no-js">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>mugl</title>
+	<meta name="description" content="Documentation for mugl">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="assets/css/main.css">
+	<script async src="assets/js/search.js" id="search-script"></script>
+</head>
+<body>
+<header>
+	<div class="tsd-page-toolbar">
+		<div class="container">
+			<div class="table-wrap">
+				<div class="table-cell" id="tsd-search" data-index="assets/js/search.json" data-base=".">
+					<div class="field">
+						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+						<input id="tsd-search-field" type="text" />
+					</div>
+					<ul class="results">
+						<li class="state loading">Preparing search index...</li>
+						<li class="state failure">The search index is not available</li>
+					</ul>
+					<a href="index.html" class="title">mugl</a>
+				</div>
+				<div class="table-cell" id="tsd-widgets">
+					<div id="tsd-filter">
+						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+						<div class="tsd-filter-group">
+							<div class="tsd-select" id="tsd-filter-visibility">
+								<span class="tsd-select-label">All</span>
+								<ul class="tsd-select-list">
+									<li data-value="public">Public</li>
+									<li data-value="protected">Public/Protected</li>
+									<li data-value="private" class="selected">All</li>
+								</ul>
+							</div>
+							<input type="checkbox" id="tsd-filter-inherited" checked />
+							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+							<input type="checkbox" id="tsd-filter-externals" checked />
+							<label class="tsd-widget" for="tsd-filter-externals">Externals</label>
+						</div>
+					</div>
+					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tsd-page-title">
+		<div class="container">
+			<h1>mugl</h1>
+		</div>
+	</div>
+</header>
+<div class="container container-main">
+	<div class="row">
+		<div class="col-8 col-content">
+			<div class="tsd-panel tsd-typography">
+				<a href="#mugl" id="mugl" style="color: inherit; text-decoration: none;">
+					<h1>mugl</h1>
+				</a>
+				<blockquote>
+					<p>A micro WebGL library.</p>
+				</blockquote>
+				<p><a href="https://www.npmjs.com/package/mugl"><img src="https://img.shields.io/npm/v/mugl" alt="NPM"></a> <a href="https://github.com/andykswong/mugl/actions/workflows/build.yaml"><img src="https://github.com/andykswong/mugl/actions/workflows/build.yaml/badge.svg" alt="build"></a></p>
+				<a href="#install" id="install" style="color: inherit; text-decoration: none;">
+					<h2>Install</h2>
+				</a>
+				<pre><code class="language-shell"><span style="color: #000000">npm install mugl</span>
+</code></pre>
+				<a href="#examples" id="examples" style="color: inherit; text-decoration: none;">
+					<h2>Examples</h2>
+				</a>
+				<p>Live: <a href="http://andykswong.github.io/mugl/examples">http://andykswong.github.io/mugl/examples</a><br>Source: <a href="https://github.com/andykswong/mugl/tree/main/src/examples">https://github.com/andykswong/mugl/tree/main/src/examples</a></p>
+				<a href="#api" id="api" style="color: inherit; text-decoration: none;">
+					<h2>API</h2>
+				</a>
+				<p><a href="http://andykswong.github.io/mugl">http://andykswong.github.io/mugl</a></p>
+				<a href="#license" id="license" style="color: inherit; text-decoration: none;">
+					<h2>License</h2>
+				</a>
+				<p>This repository and the code inside it is licensed under the MIT License. Read <a href="./LICENSE">LICENSE</a> for more information.</p>
+			</div>
+		</div>
+		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+			<nav class="tsd-navigation primary">
+				<ul>
+					<li class=" ">
+						<a href="modules.html">Exports</a>
+					</li>
+				</ul>
+			</nav>
+			<nav class="tsd-navigation secondary menu-sticky">
+				<ul class="before-current">
+					<li class=" tsd-kind-class">
+						<a href="classes/webglrenderingdevice.html" class="tsd-kind-icon">WebGLRendering<wbr>Device</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/blendstatedescriptor.html" class="tsd-kind-icon">Blend<wbr>State<wbr>Descriptor</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/buffer.html" class="tsd-kind-icon">Buffer</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/bufferdescriptor.html" class="tsd-kind-icon">Buffer<wbr>Descriptor</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/depthstatedescriptor.html" class="tsd-kind-icon">Depth<wbr>State<wbr>Descriptor</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/glbuffer.html" class="tsd-kind-icon">GLBuffer</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/glpipeline.html" class="tsd-kind-icon">GLPipeline</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/glrenderpass.html" class="tsd-kind-icon">GLRender<wbr>Pass</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/glrenderingdevice.html" class="tsd-kind-icon">GLRendering<wbr>Device</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/glrenderingdevicefactory.html" class="tsd-kind-icon">GLRendering<wbr>Device<wbr>Factory</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/glrenderingdeviceoptions.html" class="tsd-kind-icon">GLRendering<wbr>Device<wbr>Options</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/gltexture.html" class="tsd-kind-icon">GLTexture</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/pipeline.html" class="tsd-kind-icon">Pipeline</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/pipelinedescriptor.html" class="tsd-kind-icon">Pipeline<wbr>Descriptor</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/pipelinestatedescriptor.html" class="tsd-kind-icon">Pipeline<wbr>State<wbr>Descriptor</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/rasterizationstatedescriptor.html" class="tsd-kind-icon">Rasterization<wbr>State<wbr>Descriptor</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/renderpass.html" class="tsd-kind-icon">Render<wbr>Pass</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/renderpasscontext.html" class="tsd-kind-icon">Render<wbr>Pass<wbr>Context</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/renderpassdescriptor.html" class="tsd-kind-icon">Render<wbr>Pass<wbr>Descriptor</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-has-type-parameter">
+						<a href="interfaces/renderingdevice.html" class="tsd-kind-icon">Rendering<wbr>Device</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/resource.html" class="tsd-kind-icon">Resource</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/samplerdescriptor.html" class="tsd-kind-icon">Sampler<wbr>Descriptor</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/stencilstatedescriptor.html" class="tsd-kind-icon">Stencil<wbr>State<wbr>Descriptor</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/texture.html" class="tsd-kind-icon">Texture</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/texturedescriptor.html" class="tsd-kind-icon">Texture<wbr>Descriptor</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/textureview.html" class="tsd-kind-icon">Texture<wbr>View</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/vertexattributedescriptor.html" class="tsd-kind-icon">Vertex<wbr>Attribute<wbr>Descriptor</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/vertexbufferlayoutdescriptor.html" class="tsd-kind-icon">Vertex<wbr>Buffer<wbr>Layout<wbr>Descriptor</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="modules.html#addressmode" class="tsd-kind-icon">Address<wbr>Mode</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="modules.html#blendfactor" class="tsd-kind-icon">Blend<wbr>Factor</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="modules.html#blendop" class="tsd-kind-icon">Blend<wbr>Op</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="modules.html#buffertype" class="tsd-kind-icon">Buffer<wbr>Type</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="modules.html#canvas" class="tsd-kind-icon">Canvas</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="modules.html#color" class="tsd-kind-icon">Color</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="modules.html#colormask" class="tsd-kind-icon">Color<wbr>Mask</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="modules.html#comparefunc" class="tsd-kind-icon">Compare<wbr>Func</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="modules.html#cubeface" class="tsd-kind-icon">Cube<wbr>Face</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="modules.html#cullmode" class="tsd-kind-icon">Cull<wbr>Mode</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="modules.html#extent2d" class="tsd-kind-icon">Extent2D</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="modules.html#extent3d" class="tsd-kind-icon">Extent3D</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="modules.html#filtermode" class="tsd-kind-icon">Filter<wbr>Mode</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="modules.html#frontface" class="tsd-kind-icon">Front<wbr>Face</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="modules.html#gl1feature" class="tsd-kind-icon">GL1<wbr>Feature</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="modules.html#gl2feature" class="tsd-kind-icon">GL2<wbr>Feature</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="modules.html#indexformat" class="tsd-kind-icon">Index<wbr>Format</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="modules.html#minfiltermode" class="tsd-kind-icon">Min<wbr>Filter<wbr>Mode</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="modules.html#mipmaphint" class="tsd-kind-icon">Mipmap<wbr>Hint</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="modules.html#origin3d" class="tsd-kind-icon">Origin3D</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="modules.html#pixelformat" class="tsd-kind-icon">Pixel<wbr>Format</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="modules.html#primitivetype" class="tsd-kind-icon">Primitive<wbr>Type</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="modules.html#stencilop" class="tsd-kind-icon">Stencil<wbr>Op</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="modules.html#textype" class="tsd-kind-icon">Tex<wbr>Type</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="modules.html#texturedata" class="tsd-kind-icon">Texture<wbr>Data</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="modules.html#uniformformat" class="tsd-kind-icon">Uniform<wbr>Format</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="modules.html#uniformlayoutdescriptor" class="tsd-kind-icon">Uniform<wbr>Layout<wbr>Descriptor</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="modules.html#uniformtexdescriptor" class="tsd-kind-icon">Uniform<wbr>Tex<wbr>Descriptor</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="modules.html#uniformtype" class="tsd-kind-icon">Uniform<wbr>Type</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="modules.html#uniformvalue" class="tsd-kind-icon">Uniform<wbr>Value</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="modules.html#uniformvaluedescriptor" class="tsd-kind-icon">Uniform<wbr>Value<wbr>Descriptor</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="modules.html#uniformvaluesdescriptor" class="tsd-kind-icon">Uniform<wbr>Values<wbr>Descriptor</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="modules.html#usage" class="tsd-kind-icon">Usage</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="modules.html#vertexformat" class="tsd-kind-icon">Vertex<wbr>Format</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#addressmode" class="tsd-kind-icon">Address<wbr>Mode</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#byte_mask" class="tsd-kind-icon">BYTE_<wbr>MASK</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#blendfactor" class="tsd-kind-icon">Blend<wbr>Factor</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#blendop" class="tsd-kind-icon">Blend<wbr>Op</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#buffertype" class="tsd-kind-icon">Buffer<wbr>Type</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#colormask" class="tsd-kind-icon">Color<wbr>Mask</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#comparefunc" class="tsd-kind-icon">Compare<wbr>Func</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#cubeface" class="tsd-kind-icon">Cube<wbr>Face</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#cullmode" class="tsd-kind-icon">Cull<wbr>Mode</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#filtermode" class="tsd-kind-icon">Filter<wbr>Mode</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#frontface" class="tsd-kind-icon">Front<wbr>Face</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl1feature" class="tsd-kind-icon">GL1<wbr>Feature</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl2feature" class="tsd-kind-icon">GL2<wbr>Feature</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_always" class="tsd-kind-icon">GL_<wbr>ALWAYS</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_array_buffer" class="tsd-kind-icon">GL_<wbr>ARRAY_<wbr>BUFFER</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_back" class="tsd-kind-icon">GL_<wbr>BACK</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_blend" class="tsd-kind-icon">GL_<wbr>BLEND</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_bool" class="tsd-kind-icon">GL_<wbr>BOOL</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_bool_vec2" class="tsd-kind-icon">GL_<wbr>BOOL_<wbr>VEC2</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_bool_vec3" class="tsd-kind-icon">GL_<wbr>BOOL_<wbr>VEC3</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_bool_vec4" class="tsd-kind-icon">GL_<wbr>BOOL_<wbr>VEC4</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_byte" class="tsd-kind-icon">GL_<wbr>BYTE</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_ccw" class="tsd-kind-icon">GL_<wbr>CCW</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_clamp_to_edge" class="tsd-kind-icon">GL_<wbr>CLAMP_<wbr>TO_<wbr>EDGE</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_color_attachment0" class="tsd-kind-icon">GL_<wbr>COLOR_<wbr>ATTACHMENT0</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_color_buffer_bit" class="tsd-kind-icon">GL_<wbr>COLOR_<wbr>BUFFER_<wbr>BIT</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_compile_status" class="tsd-kind-icon">GL_<wbr>COMPILE_<wbr>STATUS</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_constant_color" class="tsd-kind-icon">GL_<wbr>CONSTANT_<wbr>COLOR</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_cull_face" class="tsd-kind-icon">GL_<wbr>CULL_<wbr>FACE</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_cw" class="tsd-kind-icon">GL_<wbr>CW</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_decr" class="tsd-kind-icon">GL_<wbr>DECR</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_decr_wrap" class="tsd-kind-icon">GL_<wbr>DECR_<wbr>WRAP</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_depth_attachment" class="tsd-kind-icon">GL_<wbr>DEPTH_<wbr>ATTACHMENT</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_depth_buffer_bit" class="tsd-kind-icon">GL_<wbr>DEPTH_<wbr>BUFFER_<wbr>BIT</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_depth_component" class="tsd-kind-icon">GL_<wbr>DEPTH_<wbr>COMPONENT</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_depth_component16" class="tsd-kind-icon">GL_<wbr>DEPTH_<wbr>COMPONENT16</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_depth_stencil" class="tsd-kind-icon">GL_<wbr>DEPTH_<wbr>STENCIL</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_depth_stencil_attachment" class="tsd-kind-icon">GL_<wbr>DEPTH_<wbr>STENCIL_<wbr>ATTACHMENT</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_depth_test" class="tsd-kind-icon">GL_<wbr>DEPTH_<wbr>TEST</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_dont_care" class="tsd-kind-icon">GL_<wbr>DONT_<wbr>CARE</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_draw_framebuffer" class="tsd-kind-icon">GL_<wbr>DRAW_<wbr>FRAMEBUFFER</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_dst_alpha" class="tsd-kind-icon">GL_<wbr>DST_<wbr>ALPHA</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_dst_color" class="tsd-kind-icon">GL_<wbr>DST_<wbr>COLOR</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_dynamic_draw" class="tsd-kind-icon">GL_<wbr>DYNAMIC_<wbr>DRAW</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_element_array_buffer" class="tsd-kind-icon">GL_<wbr>ELEMENT_<wbr>ARRAY_<wbr>BUFFER</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_equal" class="tsd-kind-icon">GL_<wbr>EQUAL</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_fastest" class="tsd-kind-icon">GL_<wbr>FASTEST</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_float" class="tsd-kind-icon">GL_<wbr>FLOAT</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_float_mat2" class="tsd-kind-icon">GL_<wbr>FLOAT_<wbr>MAT2</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_float_mat3" class="tsd-kind-icon">GL_<wbr>FLOAT_<wbr>MAT3</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_float_mat4" class="tsd-kind-icon">GL_<wbr>FLOAT_<wbr>MAT4</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_float_vec2" class="tsd-kind-icon">GL_<wbr>FLOAT_<wbr>VEC2</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_float_vec3" class="tsd-kind-icon">GL_<wbr>FLOAT_<wbr>VEC3</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_float_vec4" class="tsd-kind-icon">GL_<wbr>FLOAT_<wbr>VEC4</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_fragment_shader" class="tsd-kind-icon">GL_<wbr>FRAGMENT_<wbr>SHADER</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_framebuffer" class="tsd-kind-icon">GL_<wbr>FRAMEBUFFER</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_framebuffer_complete" class="tsd-kind-icon">GL_<wbr>FRAMEBUFFER_<wbr>COMPLETE</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_front" class="tsd-kind-icon">GL_<wbr>FRONT</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_func_add" class="tsd-kind-icon">GL_<wbr>FUNC_<wbr>ADD</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_func_reverse_subtract" class="tsd-kind-icon">GL_<wbr>FUNC_<wbr>REVERSE_<wbr>SUBTRACT</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_func_subtract" class="tsd-kind-icon">GL_<wbr>FUNC_<wbr>SUBTRACT</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_generate_mipmap_hint" class="tsd-kind-icon">GL_<wbr>GENERATE_<wbr>MIPMAP_<wbr>HINT</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_gequal" class="tsd-kind-icon">GL_<wbr>GEQUAL</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_greater" class="tsd-kind-icon">GL_<wbr>GREATER</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_half_float" class="tsd-kind-icon">GL_<wbr>HALF_<wbr>FLOAT</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_half_float_oes" class="tsd-kind-icon">GL_<wbr>HALF_<wbr>FLOAT_<wbr>OES</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_incr" class="tsd-kind-icon">GL_<wbr>INCR</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_incr_wrap" class="tsd-kind-icon">GL_<wbr>INCR_<wbr>WRAP</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_int" class="tsd-kind-icon">GL_<wbr>INT</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_int_vec2" class="tsd-kind-icon">GL_<wbr>INT_<wbr>VEC2</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_int_vec3" class="tsd-kind-icon">GL_<wbr>INT_<wbr>VEC3</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_int_vec4" class="tsd-kind-icon">GL_<wbr>INT_<wbr>VEC4</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_invert" class="tsd-kind-icon">GL_<wbr>INVERT</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_keep" class="tsd-kind-icon">GL_<wbr>KEEP</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_lequal" class="tsd-kind-icon">GL_<wbr>LEQUAL</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_less" class="tsd-kind-icon">GL_<wbr>LESS</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_linear" class="tsd-kind-icon">GL_<wbr>LINEAR</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_linear_mipmap_linear" class="tsd-kind-icon">GL_<wbr>LINEAR_<wbr>MIPMAP_<wbr>LINEAR</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_linear_mipmap_nearest" class="tsd-kind-icon">GL_<wbr>LINEAR_<wbr>MIPMAP_<wbr>NEAREST</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_lines" class="tsd-kind-icon">GL_<wbr>LINES</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_line_strip" class="tsd-kind-icon">GL_<wbr>LINE_<wbr>STRIP</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_link_status" class="tsd-kind-icon">GL_<wbr>LINK_<wbr>STATUS</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_luminance" class="tsd-kind-icon">GL_<wbr>LUMINANCE</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_max_ext" class="tsd-kind-icon">GL_<wbr>MAX_<wbr>EXT</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_max_texture_image_units" class="tsd-kind-icon">GL_<wbr>MAX_<wbr>TEXTURE_<wbr>IMAGE_<wbr>UNITS</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_max_texture_max_anisotropy_ext" class="tsd-kind-icon">GL_<wbr>MAX_<wbr>TEXTURE_<wbr>MAX_<wbr>ANISOTROPY_<wbr>EXT</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_max_vertex_attribs" class="tsd-kind-icon">GL_<wbr>MAX_<wbr>VERTEX_<wbr>ATTRIBS</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_min_ext" class="tsd-kind-icon">GL_<wbr>MIN_<wbr>EXT</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_mirrored_repeat" class="tsd-kind-icon">GL_<wbr>MIRRORED_<wbr>REPEAT</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_nearest" class="tsd-kind-icon">GL_<wbr>NEAREST</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_nearest_mipmap_linear" class="tsd-kind-icon">GL_<wbr>NEAREST_<wbr>MIPMAP_<wbr>LINEAR</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_nearest_mipmap_nearest" class="tsd-kind-icon">GL_<wbr>NEAREST_<wbr>MIPMAP_<wbr>NEAREST</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_never" class="tsd-kind-icon">GL_<wbr>NEVER</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_nicest" class="tsd-kind-icon">GL_<wbr>NICEST</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_none" class="tsd-kind-icon">GL_<wbr>NONE</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_notequal" class="tsd-kind-icon">GL_<wbr>NOTEQUAL</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_one" class="tsd-kind-icon">GL_<wbr>ONE</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_one_minus_constant_color" class="tsd-kind-icon">GL_<wbr>ONE_<wbr>MINUS_<wbr>CONSTANT_<wbr>COLOR</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_one_minus_dst_alpha" class="tsd-kind-icon">GL_<wbr>ONE_<wbr>MINUS_<wbr>DST_<wbr>ALPHA</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_one_minus_dst_color" class="tsd-kind-icon">GL_<wbr>ONE_<wbr>MINUS_<wbr>DST_<wbr>COLOR</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_one_minus_src_alpha" class="tsd-kind-icon">GL_<wbr>ONE_<wbr>MINUS_<wbr>SRC_<wbr>ALPHA</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_one_minus_src_color" class="tsd-kind-icon">GL_<wbr>ONE_<wbr>MINUS_<wbr>SRC_<wbr>COLOR</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_points" class="tsd-kind-icon">GL_<wbr>POINTS</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_polygon_offset_fill" class="tsd-kind-icon">GL_<wbr>POLYGON_<wbr>OFFSET_<wbr>FILL</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_r16f" class="tsd-kind-icon">GL_<wbr><wbr>R16F</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_r32f" class="tsd-kind-icon">GL_<wbr><wbr>R32F</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_read_framebuffer" class="tsd-kind-icon">GL_<wbr>READ_<wbr>FRAMEBUFFER</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_red" class="tsd-kind-icon">GL_<wbr>RED</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_renderbuffer" class="tsd-kind-icon">GL_<wbr>RENDERBUFFER</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_repeat" class="tsd-kind-icon">GL_<wbr>REPEAT</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_replace" class="tsd-kind-icon">GL_<wbr>REPLACE</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_rg" class="tsd-kind-icon">GL_<wbr>RG</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_rg16f" class="tsd-kind-icon">GL_<wbr>RG16F</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_rg32f" class="tsd-kind-icon">GL_<wbr>RG32F</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_rgba" class="tsd-kind-icon">GL_<wbr>RGBA</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_rgba16f" class="tsd-kind-icon">GL_<wbr>RGBA16F</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_rgba32f" class="tsd-kind-icon">GL_<wbr>RGBA32F</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_rgba8" class="tsd-kind-icon">GL_<wbr>RGBA8</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_sampler_2d" class="tsd-kind-icon">GL_<wbr>SAMPLER_<wbr>2D</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_sampler_2d_array" class="tsd-kind-icon">GL_<wbr>SAMPLER_<wbr>2<wbr>D_<wbr>ARRAY</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_sampler_3d" class="tsd-kind-icon">GL_<wbr>SAMPLER_<wbr>3D</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_sampler_cube" class="tsd-kind-icon">GL_<wbr>SAMPLER_<wbr>CUBE</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_sample_alpha_to_coverage" class="tsd-kind-icon">GL_<wbr>SAMPLE_<wbr>ALPHA_<wbr>TO_<wbr>COVERAGE</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_sample_coverage" class="tsd-kind-icon">GL_<wbr>SAMPLE_<wbr>COVERAGE</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_scissor_test" class="tsd-kind-icon">GL_<wbr>SCISSOR_<wbr>TEST</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_short" class="tsd-kind-icon">GL_<wbr>SHORT</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_src_alpha" class="tsd-kind-icon">GL_<wbr>SRC_<wbr>ALPHA</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_src_alpha_saturate" class="tsd-kind-icon">GL_<wbr>SRC_<wbr>ALPHA_<wbr>SATURATE</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_src_color" class="tsd-kind-icon">GL_<wbr>SRC_<wbr>COLOR</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_static_draw" class="tsd-kind-icon">GL_<wbr>STATIC_<wbr>DRAW</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_stencil_attachment" class="tsd-kind-icon">GL_<wbr>STENCIL_<wbr>ATTACHMENT</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_stencil_buffer_bit" class="tsd-kind-icon">GL_<wbr>STENCIL_<wbr>BUFFER_<wbr>BIT</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_stencil_index8" class="tsd-kind-icon">GL_<wbr>STENCIL_<wbr>INDEX8</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_stencil_test" class="tsd-kind-icon">GL_<wbr>STENCIL_<wbr>TEST</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_stream_draw" class="tsd-kind-icon">GL_<wbr>STREAM_<wbr>DRAW</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_texture0" class="tsd-kind-icon">GL_<wbr>TEXTURE0</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_texture_2d" class="tsd-kind-icon">GL_<wbr>TEXTURE_<wbr>2D</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_texture_2d_array" class="tsd-kind-icon">GL_<wbr>TEXTURE_<wbr>2<wbr>D_<wbr>ARRAY</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_texture_3d" class="tsd-kind-icon">GL_<wbr>TEXTURE_<wbr>3D</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_texture_cube_map" class="tsd-kind-icon">GL_<wbr>TEXTURE_<wbr>CUBE_<wbr>MAP</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_texture_cube_map_negative_x" class="tsd-kind-icon">GL_<wbr>TEXTURE_<wbr>CUBE_<wbr>MAP_<wbr>NEGATIVE_<wbr>X</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_texture_cube_map_negative_y" class="tsd-kind-icon">GL_<wbr>TEXTURE_<wbr>CUBE_<wbr>MAP_<wbr>NEGATIVE_<wbr>Y</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_texture_cube_map_negative_z" class="tsd-kind-icon">GL_<wbr>TEXTURE_<wbr>CUBE_<wbr>MAP_<wbr>NEGATIVE_<wbr>Z</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_texture_cube_map_positive_x" class="tsd-kind-icon">GL_<wbr>TEXTURE_<wbr>CUBE_<wbr>MAP_<wbr>POSITIVE_<wbr>X</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_texture_cube_map_positive_y" class="tsd-kind-icon">GL_<wbr>TEXTURE_<wbr>CUBE_<wbr>MAP_<wbr>POSITIVE_<wbr>Y</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_texture_cube_map_positive_z" class="tsd-kind-icon">GL_<wbr>TEXTURE_<wbr>CUBE_<wbr>MAP_<wbr>POSITIVE_<wbr>Z</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_texture_mag_filter" class="tsd-kind-icon">GL_<wbr>TEXTURE_<wbr>MAG_<wbr>FILTER</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_texture_max_anisotropy_ext" class="tsd-kind-icon">GL_<wbr>TEXTURE_<wbr>MAX_<wbr>ANISOTROPY_<wbr>EXT</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_texture_max_lod" class="tsd-kind-icon">GL_<wbr>TEXTURE_<wbr>MAX_<wbr>LOD</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_texture_min_filter" class="tsd-kind-icon">GL_<wbr>TEXTURE_<wbr>MIN_<wbr>FILTER</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_texture_min_lod" class="tsd-kind-icon">GL_<wbr>TEXTURE_<wbr>MIN_<wbr>LOD</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_texture_wrap_r" class="tsd-kind-icon">GL_<wbr>TEXTURE_<wbr>WRAP_<wbr>R</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_texture_wrap_s" class="tsd-kind-icon">GL_<wbr>TEXTURE_<wbr>WRAP_<wbr>S</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_texture_wrap_t" class="tsd-kind-icon">GL_<wbr>TEXTURE_<wbr>WRAP_<wbr>T</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_triangles" class="tsd-kind-icon">GL_<wbr>TRIANGLES</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_triangle_strip" class="tsd-kind-icon">GL_<wbr>TRIANGLE_<wbr>STRIP</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_unsigned_byte" class="tsd-kind-icon">GL_<wbr>UNSIGNED_<wbr>BYTE</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_unsigned_int" class="tsd-kind-icon">GL_<wbr>UNSIGNED_<wbr>INT</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_unsigned_int_24_8_webgl" class="tsd-kind-icon">GL_<wbr>UNSIGNED_<wbr>INT_<wbr>24_<wbr>8_WEBGL</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_unsigned_short" class="tsd-kind-icon">GL_<wbr>UNSIGNED_<wbr>SHORT</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_vertex_shader" class="tsd-kind-icon">GL_<wbr>VERTEX_<wbr>SHADER</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#gl_zero" class="tsd-kind-icon">GL_<wbr>ZERO</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#indexformat" class="tsd-kind-icon">Index<wbr>Format</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#minfiltermode" class="tsd-kind-icon">Min<wbr>Filter<wbr>Mode</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#mipmaphint" class="tsd-kind-icon">Mipmap<wbr>Hint</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#pixelformat" class="tsd-kind-icon">Pixel<wbr>Format</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#primitivetype" class="tsd-kind-icon">Primitive<wbr>Type</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#stencilop" class="tsd-kind-icon">Stencil<wbr>Op</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#textype" class="tsd-kind-icon">Tex<wbr>Type</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#uniformformat" class="tsd-kind-icon">Uniform<wbr>Format</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#uniformtype" class="tsd-kind-icon">Uniform<wbr>Type</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#usage" class="tsd-kind-icon">Usage</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#vertexformat" class="tsd-kind-icon">Vertex<wbr>Format</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="modules.html#getgldevice" class="tsd-kind-icon">getGLDevice</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="modules.html#gltexformat" class="tsd-kind-icon">gl<wbr>Tex<wbr>Format</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="modules.html#gltexinternalformat" class="tsd-kind-icon">gl<wbr>Tex<wbr>Internal<wbr>Format</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="modules.html#gltextype" class="tsd-kind-icon">gl<wbr>Tex<wbr>Type</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="modules.html#hasstencil" class="tsd-kind-icon">has<wbr>Stencil</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="modules.html#indexsize" class="tsd-kind-icon">index<wbr>Size</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="modules.html#is3dtexture" class="tsd-kind-icon">is3DTexture</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="modules.html#isdepthstencil" class="tsd-kind-icon">is<wbr>Depth<wbr>Stencil</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="modules.html#vertexbytesize" class="tsd-kind-icon">vertex<wbr>Byte<wbr>Size</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="modules.html#vertexnormalized" class="tsd-kind-icon">vertex<wbr>Normalized</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="modules.html#vertexsize" class="tsd-kind-icon">vertex<wbr>Size</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="modules.html#vertextype" class="tsd-kind-icon">vertex<wbr>Type</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	</div>
+</div>
+<footer class="with-border-bottom">
+	<div class="container">
+		<h2>Legend</h2>
+		<div class="tsd-legend-group">
+			<ul class="tsd-legend">
+				<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-interface"><span class="tsd-kind-icon">Method</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private property</span></li>
+			</ul>
+		</div>
+	</div>
+</footer>
+<div class="container tsd-generator">
+	<p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p>
+</div>
+<div class="overlay"></div>
+<script src="assets/js/main.js"></script>
+</body>
+</html>
