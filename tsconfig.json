@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "module": "es2020",
+    "target": "es2020",
+    "declaration": true,
+    "sourceMap": true,
+    "allowJs": true, 
+    "lib": [
+      "es6",
+      "dom",
+      "webworker"
+    ],
+    "rootDir": "src",
+    "outDir": "dist",
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true
+  },
+  "include": [
+    "src/**/*"
+  ]
+}
