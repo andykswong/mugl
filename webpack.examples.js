@@ -4,7 +4,7 @@ const CopyPlugin = require('copy-webpack-plugin');
 const { merge } = require('webpack-merge');
 const common = require('./webpack.common.js');
 
-const ASSET_DIR =  path.resolve(__dirname, 'src/examples/assets');
+const ASSET_DIR = path.resolve(__dirname, 'src/examples/assets');
 const OUTPUT_DIR = path.resolve(__dirname, 'examples');
 
 module.exports = module.exports = merge(common, {
@@ -27,6 +27,6 @@ module.exports = module.exports = merge(common, {
     })
   ],
   devServer: {
-    contentBase: path.resolve(__dirname, 'src/examples/assets')
+    contentBase: ASSET_DIR
   }
 });

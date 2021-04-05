@@ -1,4 +1,4 @@
-# mugl
+# mugl - μGL
 
 [![NPM](https://img.shields.io/npm/v/mugl)](https://www.npmjs.com/package/mugl) [![build](https://github.com/andykswong/mugl/actions/workflows/build.yaml/badge.svg)](https://github.com/andykswong/mugl/actions/workflows/build.yaml)
 
@@ -65,11 +65,12 @@ const pipeline = device.pipeline({
 const pass = device.pass();
 
 // 5. Submit draw call in a render pass
-device.render(pass)
-  .pipeline(pipeline)
-  .vertex(0, buffer)
-  .uniforms({ 'angle': Math.PI / 2 })
-  .draw(3)
+device
+  .render(pass)
+    .pipeline(pipeline)
+    .vertex(0, buffer)
+    .uniforms({ 'angle': Math.PI / 2 })
+    .draw(3)
   .end();
 ```
 
