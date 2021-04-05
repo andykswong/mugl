@@ -1,700 +1,831 @@
 /**
- * All {@link WebGLRenderingContext} and extension constants used.
+ * All WebGLRenderingContext and extension constants used.
  * @see https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API/Constants
  * @packageDocumentation
+ * @internal
  */
 
 /**
- * {@link WebGLRenderingContext.NONE}
+ * WebGLRenderingContext.NONE
+ * @internal
  */
 export const GL_NONE = 0;
 
 // Clearing buffers
 
 /**
- * {@link WebGLRenderingContext.DEPTH_BUFFER_BIT}
+ * WebGLRenderingContext.DEPTH_BUFFER_BIT
+ * @internal
  */
 export const GL_DEPTH_BUFFER_BIT = 0x00000100;
 
 /**
- * {@link WebGLRenderingContext.STENCIL_BUFFER_BIT}
+ * WebGLRenderingContext.STENCIL_BUFFER_BIT
+ * @internal
  */
 export const GL_STENCIL_BUFFER_BIT = 0x00000400;
 
 /**
- * {@link WebGLRenderingContext.COLOR_BUFFER_BIT}
+ * WebGLRenderingContext.COLOR_BUFFER_BIT
+ * @internal
  */
 export const GL_COLOR_BUFFER_BIT = 0x00004000;
 
 // Rendering primitives
 
 /**
- * {@link WebGLRenderingContext.POINTS}
+ * WebGLRenderingContext.POINTS
+ * @internal
  */
 export const GL_POINTS = 0x0000;
 
 /**
- * {@link WebGLRenderingContext.LINES}
+ * WebGLRenderingContext.LINES
+ * @internal
  */
 export const GL_LINES = 0x0001;
 
 /**
- * {@link WebGLRenderingContext.LINE_STRIP}
+ * WebGLRenderingContext.LINE_STRIP
+ * @internal
  */
 export const GL_LINE_STRIP = 0x0003;
 
 /**
- * {@link WebGLRenderingContext.TRIANGLES}
+ * WebGLRenderingContext.TRIANGLES
+ * @internal
  */
 export const GL_TRIANGLES = 0x0004;
 
 /**
- * {@link WebGLRenderingContext.TRIANGLE_STRIP}
+ * WebGLRenderingContext.TRIANGLE_STRIP
+ * @internal
  */
 export const GL_TRIANGLE_STRIP = 0x0005;
 
 // Blending modes
 
 /**
- * {@link WebGLRenderingContext.ZERO}
+ * WebGLRenderingContext.ZERO
+ * @internal
  */
 export const GL_ZERO = 0;
 
 /**
- * {@link WebGLRenderingContext.ONE}
+ * WebGLRenderingContext.ONE
+ * @internal
  */
 export const GL_ONE = 1;
 
 /**
- * {@link WebGLRenderingContext.SRC_COLOR}
+ * WebGLRenderingContext.SRC_COLOR
+ * @internal
  */
 export const GL_SRC_COLOR = 0x0300;
 
 /**
- * {@link WebGLRenderingContext.ONE_MINUS_SRC_COLOR}
+ * WebGLRenderingContext.ONE_MINUS_SRC_COLOR
+ * @internal
  */
 export const GL_ONE_MINUS_SRC_COLOR = 0x0301;
 
 /**
- * {@link WebGLRenderingContext.SRC_ALPHA}
+ * WebGLRenderingContext.SRC_ALPHA
+ * @internal
  */
 export const GL_SRC_ALPHA = 0x0302;
 
 /**
- * {@link WebGLRenderingContext.ONE_MINUS_SRC_ALPHA}
+ * WebGLRenderingContext.ONE_MINUS_SRC_ALPHA
+ * @internal
  */
 export const GL_ONE_MINUS_SRC_ALPHA = 0x0303;
 
 /**
- * {@link WebGLRenderingContext.DST_ALPHA}
+ * WebGLRenderingContext.DST_ALPHA
+ * @internal
  */
 export const GL_DST_ALPHA = 0x0304;
 
 /**
- * {@link WebGLRenderingContext.ONE_MINUS_DST_ALPHA}
+ * WebGLRenderingContext.ONE_MINUS_DST_ALPHA
+ * @internal
  */
 export const GL_ONE_MINUS_DST_ALPHA = 0x0305;
 
 /**
- * {@link WebGLRenderingContext.DST_COLOR}
+ * WebGLRenderingContext.DST_COLOR
+ * @internal
  */
 export const GL_DST_COLOR = 0x0306;
 
 /**
- * {@link WebGLRenderingContext.ONE_MINUS_DST_COLOR}
+ * WebGLRenderingContext.ONE_MINUS_DST_COLOR
+ * @internal
  */
 export const GL_ONE_MINUS_DST_COLOR = 0x0307;
 
 /**
- * {@link WebGLRenderingContext.SRC_ALPHA_SATURATE}
+ * WebGLRenderingContext.SRC_ALPHA_SATURATE
+ * @internal
  */
 export const GL_SRC_ALPHA_SATURATE = 0x0308;
 
 /**
- * {@link WebGLRenderingContext.CONSTANT_COLOR}
+ * WebGLRenderingContext.CONSTANT_COLOR
+ * @internal
  */
 export const GL_CONSTANT_COLOR = 0x8001;
 
 /**
- * {@link WebGLRenderingContext.ONE_MINUS_CONSTANT_COLOR}
+ * WebGLRenderingContext.ONE_MINUS_CONSTANT_COLOR
+ * @internal
  */
 export const GL_ONE_MINUS_CONSTANT_COLOR = 0x8002;
 
 // Blending equations
 
 /**
- * {@link WebGLRenderingContext.FUNC_ADD}
+ * WebGLRenderingContext.FUNC_ADD
+ * @internal
  */
 export const GL_FUNC_ADD = 0x8006;
 
 /**
- * {@link WebGLRenderingContext.FUNC_SUBTRACT}
+ * WebGLRenderingContext.FUNC_SUBTRACT
+ * @internal
  */
 export const GL_FUNC_SUBTRACT = 0x800A;
 
 /**
- * {@link WebGLRenderingContext.FUNC_REVERSE_SUBTRACT}
+ * WebGLRenderingContext.FUNC_REVERSE_SUBTRACT
+ * @internal
  */
 export const GL_FUNC_REVERSE_SUBTRACT = 0x800B;
 
 // Buffers
 
 /**
- * {@link WebGLRenderingContext.STATIC_DRAW}
+ * WebGLRenderingContext.STATIC_DRAW
+ * @internal
  */
 export const GL_STATIC_DRAW = 0x88E4;
 
 /**
- * {@link WebGLRenderingContext.STREAM_DRAW}
+ * WebGLRenderingContext.STREAM_DRAW
+ * @internal
  */
 export const GL_STREAM_DRAW = 0x88E0;
 
 /**
- * {@link WebGLRenderingContext.DYNAMIC_DRAW}
+ * WebGLRenderingContext.DYNAMIC_DRAW
+ * @internal
  */
 export const GL_DYNAMIC_DRAW = 0x88E8;
 
 /**
- * {@link WebGLRenderingContext.ARRAY_BUFFER}
+ * WebGLRenderingContext.ARRAY_BUFFER
+ * @internal
  */
 export const GL_ARRAY_BUFFER = 0x8892;
 
 /**
- * {@link WebGLRenderingContext.ELEMENT_ARRAY_BUFFER}
+ * WebGLRenderingContext.ELEMENT_ARRAY_BUFFER
+ * @internal
  */
 export const GL_ELEMENT_ARRAY_BUFFER = 0x8893;
 
 // Culling
 
 /**
- * {@link WebGLRenderingContext.CULL_FACE}
+ * WebGLRenderingContext.CULL_FACE
+ * @internal
  */
 export const GL_CULL_FACE = 0x0B44;
 
 /**
- * {@link WebGLRenderingContext.FRONT}
+ * WebGLRenderingContext.FRONT
+ * @internal
  */
 export const GL_FRONT = 0x0404;
 
 /**
- * {@link WebGLRenderingContext.BACK}
+ * WebGLRenderingContext.BACK
+ * @internal
  */
 export const GL_BACK = 0x0405;
 
 // Enabling and disabling
 
 /**
- * {@link WebGLRenderingContext.BLEND}
+ * WebGLRenderingContext.BLEND
+ * @internal
  */
 export const GL_BLEND = 0x0BE2;
 
 /**
- * {@link WebGLRenderingContext.DEPTH_TEST}
+ * WebGLRenderingContext.DEPTH_TEST
+ * @internal
  */
 export const GL_DEPTH_TEST = 0x0B71;
 
 /**
- * {@link WebGLRenderingContext.POLYGON_OFFSET_FILL}
+ * WebGLRenderingContext.POLYGON_OFFSET_FILL
+ * @internal
  */
 export const GL_POLYGON_OFFSET_FILL = 0x8037;
 
 /**
- * {@link WebGLRenderingContext.SAMPLE_ALPHA_TO_COVERAGE}
+ * WebGLRenderingContext.SAMPLE_ALPHA_TO_COVERAGE
+ * @internal
  */
 export const GL_SAMPLE_ALPHA_TO_COVERAGE = 0x809E;
 
 /**
- * {@link WebGLRenderingContext.SAMPLE_COVERAGE}
+ * WebGLRenderingContext.SAMPLE_COVERAGE
+ * @internal
  */
 export const GL_SAMPLE_COVERAGE	= 0x80A0;
 
 /**
- * {@link WebGLRenderingContext.SCISSOR_TEST}
+ * WebGLRenderingContext.SCISSOR_TEST
+ * @internal
  */
 export const GL_SCISSOR_TEST = 0x0C11;
 
 /**
- * {@link WebGLRenderingContext.STENCIL_TEST}
+ * WebGLRenderingContext.STENCIL_TEST
+ * @internal
  */
 export const GL_STENCIL_TEST = 0x0B90;
 
 // Front face directions
 
 /**
- * {@link WebGLRenderingContext.CW}
+ * WebGLRenderingContext.CW
+ * @internal
  */
 export const GL_CW = 0x0900;
 
 /**
- * {@link WebGLRenderingContext.CCW}
+ * WebGLRenderingContext.CCW
+ * @internal
  */
 export const GL_CCW = 0x0901;
 
 // Hints
 
 /**
- * {@link WebGLRenderingContext.DONT_CARE}
+ * WebGLRenderingContext.DONT_CARE
+ * @internal
  */
 export const GL_DONT_CARE = 0x1100;
 
 /**
- * {@link WebGLRenderingContext.FASTEST}
+ * WebGLRenderingContext.FASTEST
+ * @internal
  */
 export const GL_FASTEST = 0x1101;
 
 /**
- * {@link WebGLRenderingContext.NICEST}
+ * WebGLRenderingContext.NICEST
+ * @internal
  */
 export const GL_NICEST = 0x1102;
 
 /**
- * {@link WebGLRenderingContext.GENERATE_MIPMAP_HINT}
+ * WebGLRenderingContext.GENERATE_MIPMAP_HINT
+ * @internal
  */
 export const GL_GENERATE_MIPMAP_HINT = 0x8192;
 
 // Data types
 
 /**
- * {@link WebGLRenderingContext.BYTE}
+ * WebGLRenderingContext.BYTE
+ * @internal
  */
 export const GL_BYTE = 0x1400;
 
 /**
- * {@link WebGLRenderingContext.UNSIGNED_BYTE}
+ * WebGLRenderingContext.UNSIGNED_BYTE
+ * @internal
  */
 export const GL_UNSIGNED_BYTE = 0x1401;
 
 /**
- * {@link WebGLRenderingContext.SHORT}
+ * WebGLRenderingContext.SHORT
+ * @internal
  */
 export const GL_SHORT = 0x1402;
 
 /**
- * {@link WebGLRenderingContext.UNSIGNED_SHORT}
+ * WebGLRenderingContext.UNSIGNED_SHORT
+ * @internal
  */
 export const GL_UNSIGNED_SHORT = 0x1403;
 
 /**
- * {@link WebGLRenderingContext.INT}
+ * WebGLRenderingContext.INT
+ * @internal
  */
 export const GL_INT = 0x1404;
 
 /**
- * {@link WebGLRenderingContext.UNSIGNED_INT}
+ * WebGLRenderingContext.UNSIGNED_INT
+ * @internal
  */
 export const GL_UNSIGNED_INT = 0x1405;
 
 /**
- * {@link WebGLRenderingContext.FLOAT}
+ * WebGLRenderingContext.FLOAT
+ * @internal
  */
 export const GL_FLOAT = 0x1406;
 
 // Pixel formats
 
 /**
- * {@link WebGLRenderingContext.DEPTH_COMPONENT}
+ * WebGLRenderingContext.DEPTH_COMPONENT
+ * @internal
  */
 export const GL_DEPTH_COMPONENT = 0x1902;
 
 /**
- * {@link WebGLRenderingContext.RGBA}
+ * WebGLRenderingContext.RGBA
+ * @internal
  */
 export const GL_RGBA = 0x1908;
 
 /**
- * {@link WebGLRenderingContext.LUMINANCE}
+ * WebGLRenderingContext.LUMINANCE
+ * @internal
  */
 export const GL_LUMINANCE = 0x1909;
 
 // Shaders
 
 /**
- * {@link WebGLRenderingContext.FRAGMENT_SHADER}
+ * WebGLRenderingContext.FRAGMENT_SHADER
+ * @internal
  */
 export const GL_FRAGMENT_SHADER = 0x8B30;
 
 /**
- * {@link WebGLRenderingContext.VERTEX_SHADER}
+ * WebGLRenderingContext.VERTEX_SHADER
+ * @internal
  */
 export const GL_VERTEX_SHADER = 0x8B31;
 
 /**
- * {@link WebGLRenderingContext.COMPILE_STATUS}
+ * WebGLRenderingContext.COMPILE_STATUS
+ * @internal
  */
 export const GL_COMPILE_STATUS = 0x8B81;
 
 /**
- * {@link WebGLRenderingContext.LINK_STATUS}
+ * WebGLRenderingContext.LINK_STATUS
+ * @internal
  */
 export const GL_LINK_STATUS = 0x8B82;
 
 /**
- * {@link WebGLRenderingContext.MAX_VERTEX_ATTRIBS}
+ * WebGLRenderingContext.MAX_VERTEX_ATTRIBS
+ * @internal
  */
 export const GL_MAX_VERTEX_ATTRIBS = 0x8869;
 
 /**
- * {@link WebGLRenderingContext.MAX_TEXTURE_IMAGE_UNITS}
+ * WebGLRenderingContext.MAX_TEXTURE_IMAGE_UNITS
+ * @internal
  */
 export const GL_MAX_TEXTURE_IMAGE_UNITS = 0x8872;
 
 // Depth or stencil tests
 
 /**
- * {@link WebGLRenderingContext.NEVER}
+ * WebGLRenderingContext.NEVER
+ * @internal
  */
 export const GL_NEVER = 0x0200;
 
 /**
- * {@link WebGLRenderingContext.LESS}
+ * WebGLRenderingContext.LESS
+ * @internal
  */
 export const GL_LESS = 0x0201;
 
 /**
- * {@link WebGLRenderingContext.EQUAL}
+ * WebGLRenderingContext.EQUAL
+ * @internal
  */
 export const GL_EQUAL = 0x0202;
 
 /**
- * {@link WebGLRenderingContext.LEQUAL}
+ * WebGLRenderingContext.LEQUAL
+ * @internal
  */
 export const GL_LEQUAL = 0x0203;
 
 /**
- * {@link WebGLRenderingContext.GREATER}
+ * WebGLRenderingContext.GREATER
+ * @internal
  */
 export const GL_GREATER = 0x0204;
 
 /**
- * {@link WebGLRenderingContext.NOTEQUAL}
+ * WebGLRenderingContext.NOTEQUAL
+ * @internal
  */
 export const GL_NOTEQUAL = 0x0205;
 
 /**
- * {@link WebGLRenderingContext.GEQUAL}
+ * WebGLRenderingContext.GEQUAL
+ * @internal
  */
 export const GL_GEQUAL = 0x0206;
 
 /**
- * {@link WebGLRenderingContext.ALWAYS}
+ * WebGLRenderingContext.ALWAYS
+ * @internal
  */
 export const GL_ALWAYS = 0x0207;
 
 // Stencil actions
 
 /**
- * {@link WebGLRenderingContext.KEEP}
+ * WebGLRenderingContext.KEEP
+ * @internal
  */
 export const GL_KEEP = 0x1E00;
 
 /**
- * {@link WebGLRenderingContext.REPLACE}
+ * WebGLRenderingContext.REPLACE
+ * @internal
  */
 export const GL_REPLACE = 0x1E01;
 
 /**
- * {@link WebGLRenderingContext.INCR}
+ * WebGLRenderingContext.INCR
+ * @internal
  */
 export const GL_INCR = 0x1E02;
 
 /**
- * {@link WebGLRenderingContext.DECR}
+ * WebGLRenderingContext.DECR
+ * @internal
  */
 export const GL_DECR = 0x1E03;
 
 /**
- * {@link WebGLRenderingContext.INVERT}
+ * WebGLRenderingContext.INVERT
+ * @internal
  */
 export const GL_INVERT = 0x150A;
 
 /**
- * {@link WebGLRenderingContext.INCR_WRAP}
+ * WebGLRenderingContext.INCR_WRAP
+ * @internal
  */
 export const GL_INCR_WRAP = 0x8507;
 
 /**
- * {@link WebGLRenderingContext.DECR_WRAP}
+ * WebGLRenderingContext.DECR_WRAP
+ * @internal
  */
 export const GL_DECR_WRAP = 0x8508;
 
 // Textures
 
 /**
- * {@link WebGLRenderingContext.NEAREST}
+ * WebGLRenderingContext.NEAREST
+ * @internal
  */
 export const GL_NEAREST = 0x2600;
 
 /**
- * {@link WebGLRenderingContext.LINEAR}
+ * WebGLRenderingContext.LINEAR
+ * @internal
  */
 export const GL_LINEAR = 0x2601;
 
 /**
- * {@link WebGLRenderingContext.NEAREST_MIPMAP_NEAREST}
+ * WebGLRenderingContext.NEAREST_MIPMAP_NEAREST
+ * @internal
  */
 export const GL_NEAREST_MIPMAP_NEAREST = 0x2700;
 
 /**
- * {@link WebGLRenderingContext.LINEAR_MIPMAP_NEAREST}
+ * WebGLRenderingContext.LINEAR_MIPMAP_NEAREST
+ * @internal
  */
 export const GL_LINEAR_MIPMAP_NEAREST = 0x2701;
 
 /**
- * {@link WebGLRenderingContext.NEAREST_MIPMAP_LINEAR}
+ * WebGLRenderingContext.NEAREST_MIPMAP_LINEAR
+ * @internal
  */
 export const GL_NEAREST_MIPMAP_LINEAR = 0x2702;
 
 /**
- * {@link WebGLRenderingContext.LINEAR_MIPMAP_LINEAR}
+ * WebGLRenderingContext.LINEAR_MIPMAP_LINEAR
+ * @internal
  */
 export const GL_LINEAR_MIPMAP_LINEAR = 0x2703;
 
 /**
- * {@link WebGLRenderingContext.TEXTURE_MAG_FILTER}
+ * WebGLRenderingContext.TEXTURE_MAG_FILTER
+ * @internal
  */
 export const GL_TEXTURE_MAG_FILTER = 0x2800;
 
 /**
- * {@link WebGLRenderingContext.TEXTURE_MIN_FILTER}
+ * WebGLRenderingContext.TEXTURE_MIN_FILTER
+ * @internal
  */
 export const GL_TEXTURE_MIN_FILTER = 0x2801;
 
 /**
- * {@link WebGLRenderingContext.TEXTURE_WRAP_S}
+ * WebGLRenderingContext.TEXTURE_WRAP_S
+ * @internal
  */
 export const GL_TEXTURE_WRAP_S = 0x2802;
 
 /**
- * {@link WebGLRenderingContext.TEXTURE_WRAP_T}
+ * WebGLRenderingContext.TEXTURE_WRAP_T
+ * @internal
  */
 export const GL_TEXTURE_WRAP_T = 0x2803;
 
 /**
- * {@link WebGLRenderingContext.TEXTURE_2D}
+ * WebGLRenderingContext.TEXTURE_2D
+ * @internal
  */
 export const GL_TEXTURE_2D = 0x0DE1;
 
 /**
- * {@link WebGLRenderingContext.TEXTURE_CUBE_MAP}
+ * WebGLRenderingContext.TEXTURE_CUBE_MAP
+ * @internal
  */
 export const GL_TEXTURE_CUBE_MAP = 0x8513;
 
 /**
- * {@link WebGLRenderingContext.TEXTURE_CUBE_MAP_POSITIVE_X}
+ * WebGLRenderingContext.TEXTURE_CUBE_MAP_POSITIVE_X
+ * @internal
  */
 export const GL_TEXTURE_CUBE_MAP_POSITIVE_X = 0x8515;
 
 /**
- * {@link WebGLRenderingContext.TEXTURE_CUBE_MAP_NEGATIVE_X}
+ * WebGLRenderingContext.TEXTURE_CUBE_MAP_NEGATIVE_X
+ * @internal
  */
 export const GL_TEXTURE_CUBE_MAP_NEGATIVE_X = 0x8516;
 
 /**
- * {@link WebGLRenderingContext.TEXTURE_CUBE_MAP_POSITIVE_Y}
+ * WebGLRenderingContext.TEXTURE_CUBE_MAP_POSITIVE_Y
+ * @internal
  */
 export const GL_TEXTURE_CUBE_MAP_POSITIVE_Y = 0x8517;
 
 /**
- * {@link WebGLRenderingContext.TEXTURE_CUBE_MAP_NEGATIVE_Y}
+ * WebGLRenderingContext.TEXTURE_CUBE_MAP_NEGATIVE_Y
+ * @internal
  */
 export const GL_TEXTURE_CUBE_MAP_NEGATIVE_Y = 0x8518;
 
 /**
- * {@link WebGLRenderingContext.TEXTURE_CUBE_MAP_POSITIVE_Z}
+ * WebGLRenderingContext.TEXTURE_CUBE_MAP_POSITIVE_Z
+ * @internal
  */
 export const GL_TEXTURE_CUBE_MAP_POSITIVE_Z = 0x8519;
 
 /**
- * {@link WebGLRenderingContext.TEXTURE_CUBE_MAP_NEGATIVE_Z}
+ * WebGLRenderingContext.TEXTURE_CUBE_MAP_NEGATIVE_Z
+ * @internal
  */
 export const GL_TEXTURE_CUBE_MAP_NEGATIVE_Z = 0x851A;
 
 /**
- * {@link WebGLRenderingContext.TEXTURE0}
+ * WebGLRenderingContext.TEXTURE0
+ * @internal
  */
 export const GL_TEXTURE0 = 0x84C0;
 
 /**
- * {@link WebGLRenderingContext.REPEAT}
+ * WebGLRenderingContext.REPEAT
+ * @internal
  */
 export const GL_REPEAT = 0x2901;
 
 /**
- * {@link WebGLRenderingContext.CLAMP_TO_EDGE}
+ * WebGLRenderingContext.CLAMP_TO_EDGE
+ * @internal
  */
 export const GL_CLAMP_TO_EDGE = 0x812F;
 
 /**
- * {@link WebGLRenderingContext.MIRRORED_REPEAT}
+ * WebGLRenderingContext.MIRRORED_REPEAT
+ * @internal
  */
 export const GL_MIRRORED_REPEAT = 0x8370;
 
 // Uniform types
 
 /**
- * {@link WebGLRenderingContext.FLOAT_VEC2}
+ * WebGLRenderingContext.FLOAT_VEC2
+ * @internal
  */
 export const GL_FLOAT_VEC2 = 0x8B50;
 
 /**
- * {@link WebGLRenderingContext.FLOAT_VEC3}
+ * WebGLRenderingContext.FLOAT_VEC3
+ * @internal
  */
 export const GL_FLOAT_VEC3 = 0x8B51;
 
 /**
- * {@link WebGLRenderingContext.FLOAT_VEC4}
+ * WebGLRenderingContext.FLOAT_VEC4
+ * @internal
  */
 export const GL_FLOAT_VEC4 = 0x8B52;
 
 /**
- * {@link WebGLRenderingContext.INT_VEC2}
+ * WebGLRenderingContext.INT_VEC2
+ * @internal
  */
 export const GL_INT_VEC2 = 0x8B53;
 
 /**
- * {@link WebGLRenderingContext.INT_VEC3}
+ * WebGLRenderingContext.INT_VEC3
+ * @internal
  */
 export const GL_INT_VEC3 = 0x8B54;
 
 /**
- * {@link WebGLRenderingContext.INT_VEC4}
+ * WebGLRenderingContext.INT_VEC4
+ * @internal
  */
 export const GL_INT_VEC4 = 0x8B55;
 
 /**
- * {@link WebGLRenderingContext.BOOL}
+ * WebGLRenderingContext.BOOL
+ * @internal
  */
 export const GL_BOOL = 0x8B56;
 
 /**
- * {@link WebGLRenderingContext.BOOL_VEC2}
+ * WebGLRenderingContext.BOOL_VEC2
+ * @internal
  */
 export const GL_BOOL_VEC2 = 0x8B57;
 
 /**
- * {@link WebGLRenderingContext.BOOL_VEC3}
+ * WebGLRenderingContext.BOOL_VEC3
+ * @internal
  */
 export const GL_BOOL_VEC3 = 0x8B58;
 
 /**
- * {@link WebGLRenderingContext.BOOL_VEC4}
+ * WebGLRenderingContext.BOOL_VEC4
+ * @internal
  */
 export const GL_BOOL_VEC4 = 0x8B59;
 
 /**
- * {@link WebGLRenderingContext.FLOAT_MAT2}
+ * WebGLRenderingContext.FLOAT_MAT2
+ * @internal
  */
 export const GL_FLOAT_MAT2 = 0x8B5A;
 
 /**
- * {@link WebGLRenderingContext.FLOAT_MAT3}
+ * WebGLRenderingContext.FLOAT_MAT3
+ * @internal
  */
 export const GL_FLOAT_MAT3 = 0x8B5B;
 
 /**
- * {@link WebGLRenderingContext.FLOAT_MAT4}
+ * WebGLRenderingContext.FLOAT_MAT4
+ * @internal
  */
 export const GL_FLOAT_MAT4 = 0x8B5C;
 
 /**
- * {@link WebGLRenderingContext.SAMPLER_2D}
+ * WebGLRenderingContext.SAMPLER_2D
+ * @internal
  */
 export const GL_SAMPLER_2D = 0x8B5E;
  
 /**
- * {@link WebGLRenderingContext.SAMPLER_CUBE}
+ * WebGLRenderingContext.SAMPLER_CUBE
+ * @internal
  */
 export const GL_SAMPLER_CUBE = 0x8B60;
 
 // Framebuffers and renderbuffers
 
 /**
- * {@link WebGLRenderingContext.FRAMEBUFFER}
+ * WebGLRenderingContext.FRAMEBUFFER
+ * @internal
  */
 export const GL_FRAMEBUFFER = 0x8D40;
 
 /**
- * {@link WebGLRenderingContext.RENDERBUFFER}
+ * WebGLRenderingContext.RENDERBUFFER
+ * @internal
  */
 export const GL_RENDERBUFFER = 0x8D41;
 
 /**
- * {@link WebGLRenderingContext.DEPTH_COMPONENT16}
+ * WebGLRenderingContext.DEPTH_COMPONENT16
+ * @internal
  */
 export const GL_DEPTH_COMPONENT16 = 0x81A5;
 
 /**
- * {@link WebGLRenderingContext.STENCIL_INDEX8}
+ * WebGLRenderingContext.STENCIL_INDEX8
+ * @internal
  */
 export const GL_STENCIL_INDEX8 = 0x8D48;
 
 /**
- * {@link WebGLRenderingContext.DEPTH_STENCIL}
+ * WebGLRenderingContext.DEPTH_STENCIL
+ * @internal
  */
 export const GL_DEPTH_STENCIL = 0x84F9;
 
 /**
- * {@link WebGLRenderingContext.COLOR_ATTACHMENT0}
+ * WebGLRenderingContext.COLOR_ATTACHMENT0
+ * @internal
  */
 export const GL_COLOR_ATTACHMENT0 = 0x8CE0;
 
 /**
- * {@link WebGLRenderingContext.DEPTH_ATTACHMENT}
+ * WebGLRenderingContext.DEPTH_ATTACHMENT
+ * @internal
  */
 export const GL_DEPTH_ATTACHMENT = 0x8D00;
 
 /**
- * {@link WebGLRenderingContext.STENCIL_ATTACHMENT}
+ * WebGLRenderingContext.STENCIL_ATTACHMENT
+ * @internal
  */
 export const GL_STENCIL_ATTACHMENT = 0x8D20;
 
 /**
- * {@link WebGLRenderingContext.DEPTH_STENCIL_ATTACHMENT}
+ * WebGLRenderingContext.DEPTH_STENCIL_ATTACHMENT
+ * @internal
  */
 export const GL_DEPTH_STENCIL_ATTACHMENT = 0x821A;
 
 /**
- * {@link WebGLRenderingContext.FRAMEBUFFER_COMPLETE}
+ * WebGLRenderingContext.FRAMEBUFFER_COMPLETE
+ * @internal
  */
 export const GL_FRAMEBUFFER_COMPLETE = 0x8CD5;
 
 // EXT_blend_minmax
 
 /**
- * {@link EXT_blend_minmax.MIN_EXT}
- * {@link WebGL2RenderingContext.MIN}
+ * EXT_blend_minmax.MIN_EXT
+ * WebGL2RenderingContext.MIN
+ * @internal
  */
 export const GL_MIN_EXT = 0x8007;
 
 /**
- * {@link EXT_blend_minmax.MAX_EXT}
- * {@link WebGL2RenderingContext.MAX}
+ * EXT_blend_minmax.MAX_EXT
+ * WebGL2RenderingContext.MAX
+ * @internal
  */
 export const GL_MAX_EXT = 0x8008;
 
 // EXT_texture_filter_anisotropic
 
 /**
- * {@link EXT_texture_filter_anisotropic.MAX_TEXTURE_MAX_ANISOTROPY_EXT}
+ * EXT_texture_filter_anisotropic.MAX_TEXTURE_MAX_ANISOTROPY_EXT
+ * @internal
  */
 export const GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT = 0x84FF;
 
 /**
- * {@link EXT_texture_filter_anisotropic.TEXTURE_MAX_ANISOTROPY_EXT}
+ * EXT_texture_filter_anisotropic.TEXTURE_MAX_ANISOTROPY_EXT
+ * @internal
  */
 export const GL_TEXTURE_MAX_ANISOTROPY_EXT = 0x84FE;
 
 // WEBGL_depth_texture
 
 /**
- * {@link WEBGL_depth_texture.UNSIGNED_INT_24_8_WEBGL}
+ * WEBGL_depth_texture.UNSIGNED_INT_24_8_WEBGL
+ * @internal
  */
 export const GL_UNSIGNED_INT_24_8_WEBGL = 0x84FA;
 
 // OES_texture_half_float
 
 /**
- * {@link OES_texture_half_float.HALF_FLOAT_OES}
+ * OES_texture_half_float.HALF_FLOAT_OES
+ * @internal
  */
 export const GL_HALF_FLOAT_OES = 0x8D61;
 
@@ -703,102 +834,121 @@ export const GL_HALF_FLOAT_OES = 0x8D61;
 // Textures
 
 /**
- * {@link WebGL2RenderingContext.RED}
+ * WebGL2RenderingContext.RED
+ * @internal
  */
 export const GL_RED = 0x1903;
 
 /**
- * {@link WebGL2RenderingContext.RGBA8}
+ * WebGL2RenderingContext.RGBA8
+ * @internal
  */
 export const GL_RGBA8 = 0x8058;
 
 /**
- * {@link WebGL2RenderingContext.TEXTURE_3D}
+ * WebGL2RenderingContext.TEXTURE_3D
+ * @internal
  */
 export const GL_TEXTURE_3D = 0x806F;
 
 /**
- * {@link WebGL2RenderingContext.TEXTURE_WRAP_R}
+ * WebGL2RenderingContext.TEXTURE_WRAP_R
+ * @internal
  */
 export const GL_TEXTURE_WRAP_R = 0x8072;
 
 /**
- * {@link WebGL2RenderingContext.TEXTURE_MIN_LOD}
+ * WebGL2RenderingContext.TEXTURE_MIN_LOD
+ * @internal
  */
 export const GL_TEXTURE_MIN_LOD = 0x813A;
 
 /**
- * {@link WebGL2RenderingContext.TEXTURE_MAX_LOD}
+ * WebGL2RenderingContext.TEXTURE_MAX_LOD
+ * @internal
  */
 export const GL_TEXTURE_MAX_LOD = 0x813B;
 
 /**
- * {@link WebGL2RenderingContext.RGBA32F}
+ * WebGL2RenderingContext.RGBA32F
+ * @internal
  */
 export const GL_RGBA32F = 0x8814;
 
 /**
- * {@link WebGL2RenderingContext.RGBA16F}
+ * WebGL2RenderingContext.RGBA16F
+ * @internal
  */
 export const GL_RGBA16F = 0x881A;
 
 /**
- * {@link WebGL2RenderingContext.TEXTURE_2D_ARRAY}
+ * WebGL2RenderingContext.TEXTURE_2D_ARRAY
+ * @internal
  */
 export const GL_TEXTURE_2D_ARRAY = 0x8C1A;
 
 /**
- * {@link WebGL2RenderingContext.R16F}
+ * WebGL2RenderingContext.R16F
+ * @internal
  */
 export const GL_R16F = 0x822D;
 
 /**
- * {@link WebGL2RenderingContext.R32F}
+ * WebGL2RenderingContext.R32F
+ * @internal
  */
 export const GL_R32F = 0x822E;
 
 /**
- * {@link WebGL2RenderingContext.RG16F}
+ * WebGL2RenderingContext.RG16F
+ * @internal
  */
 export const GL_RG16F = 0x822F;
 
 /**
- * {@link WebGL2RenderingContext.RG32F}
+ * WebGL2RenderingContext.RG32F
+ * @internal
  */
 export const GL_RG32F = 0x8230;
 
 // Pixel types
 
 /**
- * {@link WebGL2RenderingContext.HALF_FLOAT}
+ * WebGL2RenderingContext.HALF_FLOAT
+ * @internal
  */
 export const GL_HALF_FLOAT = 0x140B;
 
 /**
- * {@link WebGL2RenderingContext.RG}
+ * WebGL2RenderingContext.RG
+ * @internal
  */
 export const GL_RG = 0x8227;
 
 // Samplers
 
 /**
- * {@link WebGL2RenderingContext.SAMPLER_3D}
+ * WebGL2RenderingContext.SAMPLER_3D
+ * @internal
  */
 export const GL_SAMPLER_3D = 0x8B5F;
 
 /**
- * {@link WebGL2RenderingContext.SAMPLER_2D_ARRAY}
+ * WebGL2RenderingContext.SAMPLER_2D_ARRAY
+ * @internal
  */
 export const GL_SAMPLER_2D_ARRAY = 0x8DC1;
 
 // Framebuffers and renderbuffers
 
 /**
- * {@link WebGL2RenderingContext.READ_FRAMEBUFFER}
+ * WebGL2RenderingContext.READ_FRAMEBUFFER
+ * @internal
  */
 export const GL_READ_FRAMEBUFFER = 0x8CA8;
 
 /**
- * {@link WebGL2RenderingContext.DRAW_FRAMEBUFFER}
+ * WebGL2RenderingContext.DRAW_FRAMEBUFFER
+ * @internal
  */
 export const GL_DRAW_FRAMEBUFFER = 0x8CA9;

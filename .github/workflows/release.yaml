@@ -24,7 +24,7 @@ jobs:
         node-version: '14.x'
         registry-url: 'https://registry.npmjs.org'
     - run: npm ci --ignore-scripts
-    - run: npm run doc
+    - run: npm run doc -- --excludeInternal
     - run: npm run build:examples
     - name: Deploy docs
       uses: peaceiris/actions-gh-pages@v3

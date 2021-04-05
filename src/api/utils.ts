@@ -56,6 +56,7 @@ const VERTEX_TYPE_SIZE_MAP = [
 
 /**
  * Byte mask = 0xFF.
+ * @internal
  */
 export const BYTE_MASK = 0xFF;
 
@@ -87,6 +88,7 @@ export const hasStencil = (format: PixelFormat): boolean => (format & BYTE_MASK)
 
 /**
  * Returns the byte size of a vertex format.
+ * @internal
  * @param format vertex format
  * @returns byte size
  */
@@ -95,6 +97,7 @@ export const vertexByteSize = (format: VertexFormat): number =>
 
 /**
  * Returns the number of components of a vertex format.
+ * @internal
  * @param format vertex format
  * @returns number of components
  */
@@ -102,6 +105,7 @@ export const vertexSize = (format: VertexFormat): number => (format >> 8) & BYTE
 
 /**
  * Returns the data type of a vertex format.
+ * @internal
  * @param format vertex format
  * @returns GL data type
  */
@@ -109,6 +113,7 @@ export const vertexType = (format: VertexFormat): GLenum => VERTEX_TYPE_MAP[form
 
 /**
  * Returns if a vertex format is normalized.
+ * @internal
  * @param format vertex format
  * @returns number of components
  */
@@ -116,6 +121,7 @@ export const vertexNormalized = (format: VertexFormat): boolean => !!(format >> 
 
 /**
  * Returns the byte size of a index format.
+ * @internal
  * @param format index format
  * @returns byte size of the format
  */
@@ -123,6 +129,7 @@ export const indexSize = (format: IndexFormat): number  => format ? (2 + (format
 
 /**
  * Convert PixelFormat to GL texture internal format.
+ * @internal
  * @param format pixel format
  * @param isRenderbuffer if this is a renderbuffer
  * @param isWebGL2 if WebGL2 is used
@@ -134,6 +141,7 @@ export const indexSize = (format: IndexFormat): number  => format ? (2 + (format
 
 /**
  * Convert PixelFormat to GL texture image format.
+ * @internal
  * @param format pixel format
  * @returns GL texture image format
  */
@@ -141,6 +149,7 @@ export const glTexFormat = (format: PixelFormat): GLenum => TEX_FORMAT_MAP[(form
 
 /**
  * Convert PixelFormat to GL texture size type.
+ * @internal
  * @param format pixel format
  * @param isWebGL2 if WebGL2 is used
  * @returns GL texture size type

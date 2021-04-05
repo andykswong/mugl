@@ -143,8 +143,8 @@ export class WebGLRenderingDevice implements GLRenderingDevice {
     return this.renderCtx;
   }
 
-  public feature<F>(extension: GL1Feature | GL2Feature): F {
-    return <F>this.exts[extension];
+  public feature<F>(feature: GL1Feature | GL2Feature): F {
+    return <F>this.exts[feature];
   }
 
   public reset(): WebGLState {
