@@ -1,9 +1,8 @@
 import { mat4 } from 'gl-matrix';
 import {
   BufferType, CompareFunc, RenderingDevice, CullMode, VertexFormat, PixelFormat, TexType, AddressMode, MinFilterMode,
-  UniformType, PipelineDescriptor
+  UniformFormat, UniformType, PipelineDescriptor
 } from '..';
-import { UniformFormat } from '../api';
 import { BaseExample, bufferWithData, flatMap, loadImage } from './common';
 import { Cube } from './data';
 

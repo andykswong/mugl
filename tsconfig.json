@@ -4,6 +4,7 @@
     "module": "es2020",
     "target": "es2020",
     "declaration": true,
+    "declarationMap": true,
     "sourceMap": true,
     "allowJs": true, 
     "lib": [

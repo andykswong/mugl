@@ -1,4 +1,4 @@
-import {  Buffer, BufferType, RenderingDevice, Resource, Usage } from '../';
+import { Buffer, BufferType, RenderingDevice, Resource, Usage } from '..';
 
 export interface Example {
   init(): void;

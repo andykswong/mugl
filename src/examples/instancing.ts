@@ -1,5 +1,4 @@
-import { BufferType, RenderingDevice, UniformType, Usage, VertexFormat } from '../';
-import { UniformFormat } from '../api';
+import { BufferType, RenderingDevice, UniformFormat, UniformType, Usage, VertexFormat } from '..';
 import { BaseExample, bufferWithData } from './common';
 
 const vert = `

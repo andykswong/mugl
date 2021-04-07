@@ -21,7 +21,8 @@
     "require": "./dist/mugl.min.js"
   },
   "files": [
-    "/dist"
+    "/dist",
+    "/src"
   ],
   "scripts": {
     "prepublishOnly": "npm run build && npm test",
