@@ -1,5 +1,5 @@
 import {
-  BYTE_MASK, BufferDescriptor, Canvas, Color, ColorMask, GL1Feature, GL2Feature, GLRenderingDevice,
+  BYTE_MASK, BufferBinding, BufferDescriptor, Canvas, Color, ColorMask, GL1Feature, GL2Feature, GLRenderingDevice,
   GLRenderingDeviceFactory, GLRenderingDeviceOptions, IndexFormat, indexSize, PipelineDescriptor, PrimitiveType,
   RenderPassContext, RenderPassDescriptor, SamplerDescriptor, TextureDescriptor, UniformValuesDescriptor,
   vertexNormalized, vertexSize, vertexType, UniformType
@@ -7,7 +7,8 @@ import {
 import {
   GL_ARRAY_BUFFER, GL_BACK, GL_COLOR_BUFFER_BIT, GL_DEPTH_BUFFER_BIT, GL_ELEMENT_ARRAY_BUFFER, GL_FLOAT,
   GL_FLOAT_MAT3, GL_FLOAT_MAT4, GL_FLOAT_VEC2, GL_FLOAT_VEC3, GL_FLOAT_VEC4, GL_FRAMEBUFFER, GL_FRONT,
-  GL_MAX_VERTEX_ATTRIBS, GL_SCISSOR_TEST, GL_STENCIL_BUFFER_BIT, GL_TEXTURE0, GL_TRIANGLES, GL_UNSIGNED_SHORT
+  GL_MAX_VERTEX_ATTRIBS, GL_SCISSOR_TEST, GL_STENCIL_BUFFER_BIT, GL_TEXTURE0, GL_TRIANGLES, GL_UNIFORM_BUFFER,
+  GL_UNSIGNED_SHORT
 } from '../api';
 
 import { MAX_VERTEX_ATTRIBS } from './const';
@@ -264,32 +265,45 @@ class WebGLRenderPassContext implements RenderPassContext {
       }
 
       const val = desc[key];
-      if (Array.isArray(val) || ArrayBuffer.isView(val)) { // Array types
-        switch (uniformInfo.format) {
-          case GL_FLOAT_MAT4: this.gl.uniformMatrix4fv(uniformInfo.loc, false, val); break;
-          case GL_FLOAT_MAT3: this.gl.uniformMatrix3fv(uniformInfo.loc, false, val); break;
-          case GL_FLOAT_VEC4: this.gl.uniform4fv(uniformInfo.loc, val); break;
-          case GL_FLOAT_VEC3: this.gl.uniform3fv(uniformInfo.loc, val); break;
-          case GL_FLOAT_VEC2: this.gl.uniform2fv(uniformInfo.loc, val); break;
-          case GL_FLOAT: this.gl.uniform1fv(uniformInfo.loc, val); break;
-          default:
-            if (process.env.DEBUG) {
-              console.warn(`Cannot bind a number array to uniform: ${key}`);
-            }
-        }
-      } else if (typeof val === 'number') { // Single number
-        if (uniformInfo.format === GL_FLOAT) {
-          this.gl.uniform1f(uniformInfo.loc, val);
+      if (uniformInfo.type === UniformType.Value) {
+        if (Array.isArray(val) || ArrayBuffer.isView(val)) { // Array types
+          switch (uniformInfo.format) {
+            case GL_FLOAT_MAT4: this.gl.uniformMatrix4fv(uniformInfo.loc, false, val); break;
+            case GL_FLOAT_MAT3: this.gl.uniformMatrix3fv(uniformInfo.loc, false, val); break;
+            case GL_FLOAT_VEC4: this.gl.uniform4fv(uniformInfo.loc, val); break;
+            case GL_FLOAT_VEC3: this.gl.uniform3fv(uniformInfo.loc, val); break;
+            case GL_FLOAT_VEC2: this.gl.uniform2fv(uniformInfo.loc, val); break;
+            case GL_FLOAT: this.gl.uniform1fv(uniformInfo.loc, val); break;
+            default:
+              if (process.env.DEBUG) {
+                console.warn(`Cannot bind a number array to uniform: ${key}`);
+              }
+          }
+        } else if (typeof val === 'number') { // Single number
+          if (uniformInfo.format === GL_FLOAT) {
+            this.gl.uniform1f(uniformInfo.loc, val);
+          } else if (process.env.DEBUG) {
+            console.warn(`Cannot bind a number to uniform: ${key}`);
+          }
         } else if (process.env.DEBUG) {
-          console.warn(`Cannot bind a number to uniform: ${key}`);
+          console.warn(`Invalid value bound to value uniform: ${key}`);
         }
-      } else { // Texture
-        if (uniformInfo.type === UniformType.Tex) {
-          this.gl.activeTexture(GL_TEXTURE0 + uniformInfo.texId);
-          this.gl.bindTexture(val.type, (<GLTexture>val).glt);
-          this.gl.uniform1i(uniformInfo.loc, uniformInfo.texId);
+      } else if (uniformInfo.type === UniformType.Tex) {
+        if ((<GLTexture>val)?.glt) {
+          this.gl.activeTexture(GL_TEXTURE0 + uniformInfo.binding);
+          this.gl.bindTexture((<GLTexture>val).type, (<GLTexture>val).glt);
+          this.gl.uniform1i(uniformInfo.loc, uniformInfo.binding);
         } else if (process.env.DEBUG) {
-          console.warn(`Cannot bind texture to uniform: ${key}`);
+          console.warn(`Invalid value bound to texture uniform: ${key}`);
+        }
+      } else { // Uniform buffer
+        if ((<BufferBinding>val)?.buffer?.type === GL_UNIFORM_BUFFER) {
+          const offset = (<BufferBinding>val).offset || 0;
+          (<WebGL2RenderingContext>this.gl)
+            .bindBufferRange(GL_UNIFORM_BUFFER, uniformInfo.loc, (<GLBuffer>(<BufferBinding>val).buffer).glb,
+              offset, (<BufferBinding>val).size || ((<GLBuffer>(<BufferBinding>val).buffer).size - offset));
+        } else if (process.env.DEBUG) {
+          console.warn(`Invalid value bound to uniform buffer: ${key}`);
         }
       }
     }

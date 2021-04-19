@@ -952,3 +952,15 @@ export const GL_READ_FRAMEBUFFER = 0x8CA8;
  * @internal
  */
 export const GL_DRAW_FRAMEBUFFER = 0x8CA9;
+
+/**
+ * WebGL2RenderingContext.UNIFORM_BUFFER
+ * @internal
+ */
+ export const GL_UNIFORM_BUFFER = 0x8A11;
+
+/**
+ * WebGL2RenderingContext.INVALID_INDEX
+ * @internal
+ */
+ export const GL_INVALID_INDEX = 0xFFFFFFFF;

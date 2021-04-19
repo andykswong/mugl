@@ -4,7 +4,7 @@
 
 > A micro, modern WebGL wrapper library in TypeScript.
 
-`mugl` provides a simple API in [WebGPU](https://gpuweb.github.io/gpuweb/)-style that removes WebGL state management from you. With `mugl`, you use a simple [rendering device interface](https://andykswong.github.io/mugl/interfaces/renderingdevice.html) to allocate resources, such as buffers and textures, and submit draw calls to GPU.
+`mugl` provides a minimalistic 3D rendering API in [WebGPU](https://gpuweb.github.io/gpuweb/)-style that removes WebGL state management from you. With `mugl`, you use a simple [rendering device interface](https://andykswong.github.io/mugl/interfaces/renderingdevice.html) to allocate resources, such as buffers and textures, and submit draw calls to GPU.
 
 ## Install
 ```shell

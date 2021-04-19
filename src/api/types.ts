@@ -1,4 +1,4 @@
-import { Texture } from './resources';
+import { Buffer, Texture } from './resources';
 
 /**
  * RGBA color type alias.
@@ -32,10 +32,12 @@ export type Origin3D = [x?: number /* = 0 */, y?: number /* = 0 */, z?: number /
 export type UniformValue =
   // texture
   Texture |
-  // single float value
+  // uniform float value
   number |
-  // uniform array / buffer
-  number[] | Float32Array
+  // uniform array value
+  number[] | Float32Array |
+  // uniform buffer
+  BufferBinding
   ;
 
 /**
@@ -48,7 +50,7 @@ export type TextureData = ArrayBufferView | TexImageSource;
  * @see https://gpuweb.github.io/gpuweb/#dictdef-gputextureviewdescriptor
  */
 export interface TextureView {
-  /** The texture to use */
+  /** The texture to bind */
   tex: Texture;
 
   /** Rendering mip level. Defaults to 0 */
@@ -56,4 +58,23 @@ export interface TextureView {
 
   /** Rendering texture slice. Defaults to 0 */
   slice?: number;
+}
+
+/**
+ * The uniform buffer resource binding.
+ * @see https://gpuweb.github.io/gpuweb/#dictdef-gpubufferbinding
+ * @see https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/bindBufferRange
+ */
+ export interface BufferBinding {
+  /** The uniform buffer to bind */
+  buffer: Buffer;
+
+  /** The starting offset. Defaults to 0 */
+  offset?: number;
+
+  /**
+   * The byte size of data to read from the buffer.
+   * Defaults to the range starting at offset and ending at the end of the buffer.
+   */
+  size?: number;
 }

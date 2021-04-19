@@ -1,24 +1,34 @@
 import { DeepReadonly, DeepRequired } from 'ts-essentials';
 import {
   BlendStateDescriptor, DepthStateDescriptor, GLPipeline as IGLPipeline, GLRenderingDevice, IndexFormat,
-  PipelineDescriptor, PrimitiveType, RasterizationStateDescriptor, StencilStateDescriptor, UniformLayoutDescriptor,
-  UniformTexDescriptor, UniformType, UniformValueDescriptor, VertexAttributeDescriptor, VertexBufferLayoutDescriptor,
-  vertexByteSize
+  PipelineDescriptor, PrimitiveType, RasterizationStateDescriptor, StencilStateDescriptor, UniformBufferLayout,
+  UniformLayoutDescriptor, UniformTexLayout, UniformType, UniformValueLayout, VertexAttributeDescriptor,
+  VertexBufferLayoutDescriptor, vertexByteSize
 } from '../api';
-import { GL_TRIANGLES, GL_UNSIGNED_SHORT } from '../api';
+import { GL_INVALID_INDEX, GL_TRIANGLES, GL_UNSIGNED_SHORT } from '../api';
 import { MAX_VERTEX_ATTRIBS } from './const';
 import { DEFAULT_RASTER_STATE, DEFAULT_DEPTH_STATE, DEFAULT_STENCIL_STATE, DEFAULT_BLEND_STATE } from './pipestate';
 import { createProgram } from './shader';
 
+/** An entry of uniform info cache */
+type UniformCacheEntry = (UniformTexLayout & {
+  /** Uniform location. */
+  loc: WebGLUniformLocation,
+  /** Texture bind slot ID. */
+  binding: number
+}) | (UniformValueLayout & {
+  /** Uniform location. */
+  loc: WebGLUniformLocation
+}) | (UniformBufferLayout & {
+  /** Uniform block index. */
+  loc: GLuint,
+  /** Uniform buffer bind slot ID. */
+  binding: number
+});
+
 /** Cache of uniform info. */
 type UniformCache = {
-  [name: string]: (UniformTexDescriptor | UniformValueDescriptor) & {
-    /** Uniform location. */
-    loc: WebGLUniformLocation,
-
-    /** Texture slot ID. */
-    texId: number
-  }
+  [name: string]: UniformCacheEntry
 };
 
 export class GLPipeline implements IGLPipeline {
@@ -77,7 +87,8 @@ export class GLPipeline implements IGLPipeline {
       return { attrs, stride: Math.max(stride, maxOffset), instanced };
     });
 
-    const glp = this.glp = createProgram(gl, vert, frag, buf);
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const glp = (this.glp = createProgram(gl, vert, frag, buf))!;
 
     // Populate uniform types and location cache
     this.uniforms = uniforms ?
@@ -88,13 +99,24 @@ export class GLPipeline implements IGLPipeline {
       {};
 
     const cache: UniformCache = this.cache = {};
+    let bufCount = 0;
     let texCount = 0;
     for (const key in uniforms) {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      const loc = gl.getUniformLocation(glp!, key);
-      if (loc) {
-        const desc = uniforms[key];
-        cache[key] = { ...desc, loc, texId: desc.type === UniformType.Tex ? texCount++ : -1 };
+      const desc = uniforms[key];
+      let loc;
+      if (desc.type === UniformType.Buffer) {
+        loc = (<WebGL2RenderingContext>gl).getUniformBlockIndex(glp, key);
+        (<WebGL2RenderingContext>this.gl).uniformBlockBinding(glp, loc, bufCount++);
+      } else {
+        loc = gl.getUniformLocation(glp, key);
+      }
+      if (loc !== null && loc !== GL_INVALID_INDEX) {
+        cache[key] = <UniformCacheEntry>{
+          ...desc,
+          loc,
+          binding: desc.type === UniformType.Tex ? texCount++ :
+            desc.type === UniformType.Buffer ? bufCount : -1
+        };
       }
     }
 

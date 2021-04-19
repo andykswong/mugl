@@ -1,7 +1,7 @@
 import {
   BYTE_MASK, BufferDescriptor, Canvas, Color, GL1Feature, GL2Feature, GLRenderingDevice, GLRenderingDeviceFactory,
   GLRenderingDeviceOptions, PipelineDescriptor, RenderPassContext, RenderPassDescriptor, SamplerDescriptor,
-  TextureDescriptor, UniformValuesDescriptor, vertexSize
+  TextureDescriptor, UniformValuesDescriptor, UniformValueLayout, vertexSize
 } from '../api';
 import {
   GL_FRAMEBUFFER, GL_SCISSOR_TEST, GL_COLOR_BUFFER_BIT, GL_DEPTH_BUFFER_BIT, GL_STENCIL_BUFFER_BIT,
@@ -197,7 +197,9 @@ class NanoGLRenderPassContext implements RenderPassContext {
     let texId = 0;
     for (const key in desc) {
       const val = desc[key];
-      const format = this.state.pipeObj?.uniforms[key].format;
+      // CAVEAT: uniform buffer is unsupported
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const format = (this.state.pipeObj!.uniforms[key] as UniformValueLayout).format;
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const loc = this.gl.getUniformLocation(this.state.pipeObj!.glp!, key);
 

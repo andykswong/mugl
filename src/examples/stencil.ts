@@ -1,7 +1,7 @@
 import { mat4 } from 'gl-matrix';
 import { BufferType, CompareFunc, CullMode, VertexFormat, PipelineDescriptor, RenderingDevice, StencilOp, UniformType, UniformFormat } from '..';
-import { BaseExample, bufferWithData, flatMap, loadImage } from './common';
-import { Cube } from './data';
+import { BaseExample, bufferWithData, flatMap } from './common';
+import { airplane, Cube } from './data';
 
 const texSize = 512;
 
@@ -57,7 +57,7 @@ export class StencilExample extends BaseExample {
     const ctx = this.device;
 
     this.tex = ctx.texture({ size: [texSize, texSize] });
-    loadImage('./airplane.png').then((img) => {
+    airplane().then((img) => {
       this.tex.data(img);
     });
 

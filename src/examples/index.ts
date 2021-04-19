@@ -6,6 +6,7 @@ import { InstancingExample } from './instancing';
 import { PostprocessExample } from './postprocess';
 import { MRTExample } from './mrt';
 import { StencilExample } from './stencil';
+import { PbrExample } from './pbr';
 
 declare const window: Window & {
   loadExample: (url?: string) => void;
@@ -18,6 +19,7 @@ const EXAMPLES: Readonly<Record<string, { title: string, factory: ExampleConstru
   'postprocess': { title: 'Post-processing', factory: PostprocessExample },
   'mrt': { title: 'Multi Render Targets', factory: MRTExample },
   'stencil': { title: 'Stencil', factory: StencilExample },
+  'pbr': { title: 'PBR Uniform Buffer', factory: PbrExample },
 };
 
 // Setup menu

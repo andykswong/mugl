@@ -281,9 +281,9 @@ export interface BlendStateDescriptor {
 }
 
 /**
- * Descriptor of a uniform texture.
+ * Descriptor for a texture uniform layout.
  */
- export type UniformTexDescriptor = {
+ export type UniformTexLayout = {
   /** Uniform type */
   type: typeof UniformType.Tex;
 
@@ -292,9 +292,9 @@ export interface BlendStateDescriptor {
 }
 
 /**
- * Descriptor of a uniform value.
+ * Descriptor of a uniform value layout.
  */
-export type UniformValueDescriptor = {
+export type UniformValueLayout = {
   /** Uniform type */
   type: typeof UniformType.Value;
 
@@ -303,10 +303,23 @@ export type UniformValueDescriptor = {
 }
 
 /**
+ * Descriptor for a uniform buffer layout.
+ */
+ export type UniformBufferLayout = {
+  /** Uniform type */
+  type: typeof UniformType.Buffer;
+}
+
+/**
+ * Descriptor of the layout of a uniform.
+ */
+export type UniformLayoutEntry = UniformTexLayout | UniformValueLayout | UniformBufferLayout;
+
+/**
  * Descriptor of uniform layout.
  */
 export type UniformLayoutDescriptor = {
-  [name: string]: UniformTexDescriptor | UniformValueDescriptor;
+  [name: string]: UniformLayoutEntry;
 }
 
 /**

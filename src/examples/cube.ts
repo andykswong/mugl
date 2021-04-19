@@ -3,8 +3,8 @@ import {
   BufferType, CompareFunc, RenderingDevice, CullMode, VertexFormat, PixelFormat, TexType, AddressMode, MinFilterMode,
   UniformFormat, UniformType, PipelineDescriptor
 } from '..';
-import { BaseExample, bufferWithData, flatMap, loadImage } from './common';
-import { Cube } from './data';
+import { BaseExample, bufferWithData, flatMap } from './common';
+import { airplane, Cube, skyBox } from './data';
 
 const texSize = 512;
 
@@ -44,41 +44,6 @@ void main () {
   gl_FragColor = textureCube(tex, normalize(vNormal));
 }
 `;
-
-function toImage(ctx: CanvasRenderingContext2D): Promise<HTMLImageElement> {
-  return new Promise((resolve) => ctx.canvas.toBlob((blob) => {
-    const img = new Image();
-    img.src = URL.createObjectURL(blob);
-    img.onload = () => resolve(img);
-  }));
-}
-
-function generateSkyBox(): Promise<HTMLImageElement[]> {
-  const canvas = document.createElement('canvas');
-  canvas.width = canvas.height = texSize;
-  const ctx = canvas.getContext('2d')!;
-
-  const skyColor = '#28ccdf', groundColor = '#39314b';
-  const topDownGrd = ctx.createLinearGradient(0, 0, 0, texSize);
-  topDownGrd.addColorStop(0, skyColor);
-  topDownGrd.addColorStop(0.4, '#8aebf1');
-  topDownGrd.addColorStop(0.99, '#dff6f5');
-  topDownGrd.addColorStop(1, groundColor);
-
-  ctx.fillStyle = skyColor;
-  ctx.fillRect(0, 0, texSize, texSize);
-  const topImg = toImage(ctx);
-
-  ctx.fillStyle = groundColor;
-  ctx.fillRect(0, 0, texSize, texSize);
-  const bottomImg = toImage(ctx);
-
-  ctx.fillStyle = topDownGrd;
-  ctx.fillRect(0, 0, texSize, texSize);
-  const sideImg = toImage(ctx);
-
-  return Promise.all([sideImg, topImg, bottomImg]);
-}
 
 export class CubeExample extends BaseExample {
   pass: any;
@@ -159,8 +124,8 @@ export class CubeExample extends BaseExample {
     // Load textures
     this.loaded = false;
     Promise.all([
-      loadImage('./airplane.png'),
-      generateSkyBox()
+      airplane(),
+      skyBox(texSize)
     ]).then(([cubeImg, skyImgs]) => {
       this.skyTex.data([skyImgs[0], ...skyImgs, skyImgs[0], skyImgs[0]]);
       this.cubeTex.data(cubeImg).mipmap();

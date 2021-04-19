@@ -36,6 +36,13 @@ export function bufferWithData(device: RenderingDevice, type: BufferType, data: 
   return device.buffer({ type, usage, size: data.byteLength }).data(data);
 }
 
+export function flatMap<T, U>(arr: T[], f: (x: T, i: number) => U[]): U[] {
+  return arr.reduce((out, x, i) => {
+    out.push(...f(x, i));
+    return out;
+  }, <U[]>[]);
+}
+
 export function loadImage(url: string): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
     const image = new Image();
@@ -45,9 +52,10 @@ export function loadImage(url: string): Promise<HTMLImageElement> {
   });
 }
 
-export function flatMap<T, U>(arr: T[], f: (x: T, i: number) => U[]): U[] {
-  return arr.reduce((out, x, i) => {
-    out.push(...f(x, i));
-    return out;
-  }, <U[]>[]);
+export function toImage(ctx: CanvasRenderingContext2D): Promise<HTMLImageElement> {
+  return new Promise((resolve) => ctx.canvas.toBlob((blob) => {
+    const img = new Image();
+    img.src = URL.createObjectURL(blob);
+    img.onload = () => resolve(img);
+  }));
 }

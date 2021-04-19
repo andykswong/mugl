@@ -1,3 +1,5 @@
+import { loadImage, toImage } from './common';
+
 export const Quad = {
   positions: [
     [-1.0, -1.0, 1.0], [+1.0, -1.0, 1.0], [+1.0, +1.0, 1.0], // first triangle
@@ -51,3 +53,32 @@ export const Cube = {
     [1.0, 0.0, 1.0, 1.0], [1.0, 0.0, 1.0, 1.0], [1.0, 0.0, 1.0, 1.0], [1.0, 0.0, 1.0, 1.0]
   ]
 };
+
+export function skyBox(texSize: number): Promise<HTMLImageElement[]> {
+  const canvas = document.createElement('canvas');
+  canvas.width = canvas.height = texSize;
+  const ctx = canvas.getContext('2d')!;
+
+  const skyColor = '#28ccdf', groundColor = '#39314b';
+  const topDownGrd = ctx.createLinearGradient(0, 0, 0, texSize);
+  topDownGrd.addColorStop(0, skyColor);
+  topDownGrd.addColorStop(0.4, '#8aebf1');
+  topDownGrd.addColorStop(0.99, '#dff6f5');
+  topDownGrd.addColorStop(1, groundColor);
+
+  ctx.fillStyle = skyColor;
+  ctx.fillRect(0, 0, texSize, texSize);
+  const topImg = toImage(ctx);
+
+  ctx.fillStyle = groundColor;
+  ctx.fillRect(0, 0, texSize, texSize);
+  const bottomImg = toImage(ctx);
+
+  ctx.fillStyle = topDownGrd;
+  ctx.fillRect(0, 0, texSize, texSize);
+  const sideImg = toImage(ctx);
+
+  return Promise.all([sideImg, topImg, bottomImg]);
+}
+
+export const airplane = () => loadImage('./airplane.png');
