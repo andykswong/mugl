@@ -65,7 +65,7 @@
 				<blockquote>
 					<p>A micro, modern WebGL wrapper library in TypeScript.</p>
 				</blockquote>
-				<p><code>mugl</code> provides a simple API in <a href="https://gpuweb.github.io/gpuweb/">WebGPU</a>-style that removes WebGL state management from you. With <code>mugl</code>, you use a simple <a href="https://andykswong.github.io/mugl/interfaces/renderingdevice.html">rendering device interface</a> to allocate resources, such as buffers and textures, and submit draw calls to GPU.</p>
+				<p><code>mugl</code> provides a minimalistic 3D rendering API in <a href="https://gpuweb.github.io/gpuweb/">WebGPU</a>-style that removes WebGL state management from you. With <code>mugl</code>, you use a simple <a href="https://andykswong.github.io/mugl/interfaces/renderingdevice.html">rendering device interface</a> to allocate resources, such as buffers and textures, and submit draw calls to GPU.</p>
 				<a href="#install" id="install" style="color: inherit; text-decoration: none;">
 					<h2>Install</h2>
 				</a>
@@ -167,6 +167,9 @@
 					</li>
 					<li class=" tsd-kind-interface">
 						<a href="interfaces/buffer.html" class="tsd-kind-icon">Buffer</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/bufferbinding.html" class="tsd-kind-icon">Buffer<wbr>Binding</a>
 					</li>
 					<li class=" tsd-kind-interface">
 						<a href="interfaces/bufferdescriptor.html" class="tsd-kind-icon">Buffer<wbr>Descriptor</a>
@@ -319,13 +322,19 @@
 						<a href="modules.html#texturedata" class="tsd-kind-icon">Texture<wbr>Data</a>
 					</li>
 					<li class=" tsd-kind-type-alias">
+						<a href="modules.html#uniformbufferlayout" class="tsd-kind-icon">Uniform<wbr>Buffer<wbr>Layout</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
 						<a href="modules.html#uniformformat" class="tsd-kind-icon">Uniform<wbr>Format</a>
 					</li>
 					<li class=" tsd-kind-type-alias">
 						<a href="modules.html#uniformlayoutdescriptor" class="tsd-kind-icon">Uniform<wbr>Layout<wbr>Descriptor</a>
 					</li>
 					<li class=" tsd-kind-type-alias">
-						<a href="modules.html#uniformtexdescriptor" class="tsd-kind-icon">Uniform<wbr>Tex<wbr>Descriptor</a>
+						<a href="modules.html#uniformlayoutentry" class="tsd-kind-icon">Uniform<wbr>Layout<wbr>Entry</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="modules.html#uniformtexlayout" class="tsd-kind-icon">Uniform<wbr>Tex<wbr>Layout</a>
 					</li>
 					<li class=" tsd-kind-type-alias">
 						<a href="modules.html#uniformtype" class="tsd-kind-icon">Uniform<wbr>Type</a>
@@ -334,7 +343,7 @@
 						<a href="modules.html#uniformvalue" class="tsd-kind-icon">Uniform<wbr>Value</a>
 					</li>
 					<li class=" tsd-kind-type-alias">
-						<a href="modules.html#uniformvaluedescriptor" class="tsd-kind-icon">Uniform<wbr>Value<wbr>Descriptor</a>
+						<a href="modules.html#uniformvaluelayout" class="tsd-kind-icon">Uniform<wbr>Value<wbr>Layout</a>
 					</li>
 					<li class=" tsd-kind-type-alias">
 						<a href="modules.html#uniformvaluesdescriptor" class="tsd-kind-icon">Uniform<wbr>Values<wbr>Descriptor</a>

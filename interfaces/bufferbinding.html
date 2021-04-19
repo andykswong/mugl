@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>BufferDescriptor | mugl</title>
+	<title>BufferBinding | mugl</title>
 	<meta name="description" content="Documentation for mugl">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -55,10 +55,10 @@
 					<a href="../modules.html">mugl</a>
 				</li>
 				<li>
-					<a href="bufferdescriptor.html">BufferDescriptor</a>
+					<a href="bufferbinding.html">BufferBinding</a>
 				</li>
 			</ul>
-			<h1>Interface BufferDescriptor</h1>
+			<h1>Interface BufferBinding</h1>
 		</div>
 	</div>
 </header>
@@ -68,17 +68,14 @@
 			<section class="tsd-panel tsd-comment">
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<p>Descriptor of a Buffer.</p>
+						<p>The uniform buffer resource binding.</p>
 					</div>
 					<dl class="tsd-comment-tags">
 						<dt>see</dt>
-						<dd><p><a href="https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/bindBuffer">https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/bindBuffer</a></p>
+						<dd><p><a href="https://gpuweb.github.io/gpuweb/#dictdef-gpubufferbinding">https://gpuweb.github.io/gpuweb/#dictdef-gpubufferbinding</a></p>
 						</dd>
 						<dt>see</dt>
-						<dd><p><a href="https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/bufferData">https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/bufferData</a></p>
-						</dd>
-						<dt>see</dt>
-						<dd><p><a href="https://gpuweb.github.io/gpuweb/#dictdef-gpubufferdescriptor">https://gpuweb.github.io/gpuweb/#dictdef-gpubufferdescriptor</a></p>
+						<dd><p><a href="https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/bindBufferRange">https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/bindBufferRange</a></p>
 						</dd>
 					</dl>
 				</div>
@@ -87,7 +84,7 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">BufferDescriptor</span>
+						<span class="target">BufferBinding</span>
 					</li>
 				</ul>
 			</section>
@@ -98,9 +95,9 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="bufferdescriptor.html#size" class="tsd-kind-icon">size</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="bufferdescriptor.html#type" class="tsd-kind-icon">type</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="bufferdescriptor.html#usage" class="tsd-kind-icon">usage</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="bufferbinding.html#buffer" class="tsd-kind-icon">buffer</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="bufferbinding.html#offset" class="tsd-kind-icon">offset</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="bufferbinding.html#size" class="tsd-kind-icon">size</a></li>
 							</ul>
 						</section>
 					</div>
@@ -109,47 +106,48 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="buffer" class="tsd-anchor"></a>
+					<h3>buffer</h3>
+					<div class="tsd-signature tsd-kind-icon">buffer<span class="tsd-signature-symbol">:</span> <a href="buffer.html" class="tsd-signature-type" data-tsd-kind="Interface">Buffer</a></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/andykswong/mugl/blob/721d470/src/api/types.ts#L70">src/api/types.ts:70</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>The uniform buffer to bind</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="offset" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> offset</h3>
+					<div class="tsd-signature tsd-kind-icon">offset<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/andykswong/mugl/blob/721d470/src/api/types.ts#L73">src/api/types.ts:73</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>The starting offset. Defaults to 0</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="size" class="tsd-anchor"></a>
-					<h3>size</h3>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> size</h3>
 					<div class="tsd-signature tsd-kind-icon">size<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/andykswong/mugl/blob/721d470/src/api/descriptors.ts#L21">src/api/descriptors.ts:21</a></li>
+							<li>Defined in <a href="https://github.com/andykswong/mugl/blob/721d470/src/api/types.ts#L79">src/api/types.ts:79</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>Buffer size in bytes</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="type" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> type</h3>
-					<div class="tsd-signature tsd-kind-icon">type<span class="tsd-signature-symbol">:</span> <a href="../modules.html#buffertype" class="tsd-signature-type" data-tsd-kind="Variable">BufferType</a></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/andykswong/mugl/blob/721d470/src/api/descriptors.ts#L15">src/api/descriptors.ts:15</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>The buffer type. Defaults to {@link BufferType.Vertex}</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="usage" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> usage</h3>
-					<div class="tsd-signature tsd-kind-icon">usage<span class="tsd-signature-symbol">:</span> <a href="../modules.html#usage" class="tsd-signature-type" data-tsd-kind="Variable">Usage</a></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/andykswong/mugl/blob/721d470/src/api/descriptors.ts#L18">src/api/descriptors.ts:18</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Buffer usage hint. Defaults to {@link Usage.Static}</p>
+							<p>The byte size of data to read from the buffer.
+							Defaults to the range starting at offset and ending at the end of the buffer.</p>
 						</div>
 					</div>
 				</section>
@@ -168,16 +166,16 @@
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-interface">
-						<a href="bufferdescriptor.html" class="tsd-kind-icon">Buffer<wbr>Descriptor</a>
+						<a href="bufferbinding.html" class="tsd-kind-icon">Buffer<wbr>Binding</a>
 						<ul>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="bufferdescriptor.html#size" class="tsd-kind-icon">size</a>
+								<a href="bufferbinding.html#buffer" class="tsd-kind-icon">buffer</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="bufferdescriptor.html#type" class="tsd-kind-icon">type</a>
+								<a href="bufferbinding.html#offset" class="tsd-kind-icon">offset</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="bufferdescriptor.html#usage" class="tsd-kind-icon">usage</a>
+								<a href="bufferbinding.html#size" class="tsd-kind-icon">size</a>
 							</li>
 						</ul>
 					</li>
