@@ -2,7 +2,7 @@ import { DeepReadonly, DeepRequired } from 'ts-essentials';
 import {
   AddressMode, BlendStateDescriptor, BufferDescriptor, BufferType, BYTE_MASK, Color, DepthStateDescriptor,
   Extent3D, FilterMode, GLBuffer as IGLBuffer, GLPipeline as IGLPipeline, GLRenderPass as IGLRenderPass,
-  GLTexture as IGLTexture, IndexFormat, is3DTexture, MinFilterMode, Origin3D, PipelineDescriptor,
+  GLTexture as IGLTexture, IndexFormat, MinFilterMode, Origin3D, PipelineDescriptor,
   PipelineStateDescriptor, PixelFormat, PrimitiveType, RasterizationStateDescriptor, RenderPassDescriptor,
   SamplerDescriptor, StencilStateDescriptor, TextureData, TextureDescriptor, TextureView, TexType,
   UniformLayoutDescriptor, Usage, VertexAttributeDescriptor, VertexBufferLayoutDescriptor, vertexSize
@@ -11,15 +11,14 @@ import {
   GL_ALWAYS, GL_ARRAY_BUFFER, GL_BACK, GL_BLEND, GL_CCW, GL_CLAMP_TO_EDGE, GL_COLOR_ATTACHMENT0, GL_COMPILE_STATUS,
   GL_CULL_FACE, GL_DEPTH_ATTACHMENT, GL_DEPTH_COMPONENT16, GL_DEPTH_STENCIL, GL_DEPTH_STENCIL_ATTACHMENT,
   GL_DEPTH_TEST, GL_FRAGMENT_SHADER, GL_FRAMEBUFFER, GL_FRAMEBUFFER_COMPLETE, GL_FRONT, GL_FUNC_ADD, GL_KEEP,
-  GL_LINEAR, GL_LINK_STATUS, GL_ONE, GL_POLYGON_OFFSET_FILL, GL_RENDERBUFFER, GL_RGBA, GL_RGBA8,
+  GL_LINEAR, GL_LINK_STATUS, GL_ONE, GL_POLYGON_OFFSET_FILL, GL_RENDERBUFFER, GL_RGBA,
   GL_SAMPLE_ALPHA_TO_COVERAGE, GL_STATIC_DRAW, GL_STENCIL_TEST, GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
   GL_TEXTURE_MIN_FILTER, GL_TEXTURE_WRAP_S, GL_TEXTURE_WRAP_T, GL_TRIANGLES, GL_UNSIGNED_BYTE, GL_UNSIGNED_SHORT,
   GL_VERTEX_SHADER, GL_ZERO
 } from '../api/glenums';
 import { COLOR_PIXEL_FORMAT, DEPTH_PIXEL_FORMAT, VERTEX_FLOAT_BYTES } from './const';
 import {
-  NANOGL_ENABLE_OFFSCREEN, NANOGL_ENABLE_STENCIL, NANOGL_ENABLE_RASTER,
-  NANOGL_ENABLE_BLEND, NANOGL_ENABLE_WEBGL2
+  NANOGL_ENABLE_OFFSCREEN, NANOGL_ENABLE_STENCIL, NANOGL_ENABLE_RASTER, NANOGL_ENABLE_BLEND
 } from './features';
 
 const EMPTY = {};
@@ -73,7 +72,6 @@ export class GLTexture implements IGLTexture {
 
   public constructor(
     private readonly gl: WebGLRenderingContext,
-    private readonly webgl2: boolean,
     desc: TextureDescriptor, 
     sampler: SamplerDescriptor = EMPTY
   ) {
@@ -94,13 +92,7 @@ export class GLTexture implements IGLTexture {
       gl.texParameteri(this.type, GL_TEXTURE_MAG_FILTER, this.magFilter);
       gl.texParameteri(this.type, GL_TEXTURE_WRAP_S, this.wrapU);
       gl.texParameteri(this.type, GL_TEXTURE_WRAP_T, this.wrapV);
-
-      if (NANOGL_ENABLE_WEBGL2 && this.webgl2 && is3DTexture(this.type)) {
-        (<WebGL2RenderingContext>gl).texStorage3D(this.type, this.mipLevels, GL_RGBA8, ...this.size);
-      } else {
-        gl.texImage2D(this.type, 0, NANOGL_ENABLE_WEBGL2 && this.webgl2 ? GL_RGBA8 : GL_RGBA, width, height, 0,
-          GL_RGBA, GL_UNSIGNED_BYTE, null);
-      }
+      gl.texImage2D(this.type, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, null);
     }
   }
 
@@ -114,11 +106,10 @@ export class GLTexture implements IGLTexture {
     [width = this.size[0] - x, height = this.size[1] - y]: Extent3D = EMPTY3
   ): GLTexture {
     this.gl.bindTexture(this.type, this.glt);
-    if ((NANOGL_ENABLE_WEBGL2 && this.webgl2) || ArrayBuffer.isView(data)) {
-      this.gl.texSubImage2D(this.type, 0, x, y, width, height, GL_RGBA, GL_UNSIGNED_BYTE,
-        <ArrayBufferView>data);
+    if (ArrayBuffer.isView(data)) {
+      this.gl.texSubImage2D(this.type, 0, x, y, width, height, GL_RGBA, GL_UNSIGNED_BYTE, data);
     } else {
-      this.gl.texSubImage2D(this.type, 0, x, y, GL_RGBA, GL_UNSIGNED_BYTE, <TexImageSource>data);
+      this.gl.texSubImage2D(this.type, 0, x, y, GL_RGBA, GL_UNSIGNED_BYTE, data);
     }
 
     return this;

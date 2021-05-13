@@ -1,6 +1,6 @@
 import {
   BYTE_MASK, BufferDescriptor, Canvas, Color, GL1Feature, GL2Feature, GLRenderingDevice, GLRenderingDeviceFactory,
-  GLRenderingDeviceOptions, PipelineDescriptor, RenderPassContext, RenderPassDescriptor, SamplerDescriptor,
+  PipelineDescriptor, RenderPassContext, RenderPassDescriptor, SamplerDescriptor,
   TextureDescriptor, UniformValuesDescriptor, UniformValueLayout, vertexSize
 } from '../api';
 import {
@@ -11,7 +11,7 @@ import {
 import { GL_EXT_INSTANCING, MAX_VERTEX_ATTRIBS } from './const';
 import {
   NANOGL_ENABLE_BLEND, NANOGL_ENABLE_OFFSCREEN, NANOGL_ENABLE_SCISSOR, NANOGL_ENABLE_STENCIL,
-  NANOGL_ENABLE_TEXTURE, NANOGL_ENABLE_WEBGL2
+  NANOGL_ENABLE_TEXTURE
 } from './features';
 import { GLBuffer, GLPipeline, GLRenderPass, GLTexture, applyPipelineState } from './resources';
 import { EMPTY_TEXTURE, renderPassLite } from './stubs';
@@ -23,36 +23,31 @@ import { EMPTY_TEXTURE, renderPassLite } from './stubs';
  * @returns rendering device instance, or null if WebGL is not supported
  */
 export const getNanoGLDevice: GLRenderingDeviceFactory =
-  (canvas: Canvas, options?: GLRenderingDeviceOptions): GLRenderingDevice | null => {
-    let gl: WebGLRenderingContext | null = null;
-    let isWebGL2 = false;
-    if (NANOGL_ENABLE_WEBGL2 && options?.webgl2) {
-      isWebGL2 = !!(gl = canvas.getContext('webgl2', options));
-    }
-    if (!(gl = gl || canvas.getContext('webgl', options))) {
+  (canvas: Canvas, options?: WebGLContextAttributes): GLRenderingDevice | null => {
+    const gl: WebGLRenderingContext | null = canvas.getContext('webgl', options);
+    if (!gl) {
       return null;
     }
-    return new NanoGLRenderingDevice(gl, isWebGL2);
+    return new NanoGLRenderingDevice(gl);
   }
 
 /**
  * The WebGL rendering context, in WebGPU API style.
  */
 class NanoGLRenderingDevice implements GLRenderingDevice {
+  public readonly webgl2 = false;
   public readonly canvas: Canvas;
 
   private readonly rctx: NanoGLRenderPassContext;
   private readonly exts: Readonly<Record<GL1Feature | GL2Feature, unknown>>;
 
-  constructor(public readonly gl: WebGLRenderingContext, public readonly webgl2: boolean) {
+  constructor(public readonly gl: WebGLRenderingContext) {
     this.canvas = gl.canvas;
 
     const extensions = this.exts = <Record<GL1Feature | GL2Feature, unknown>>{};
-    if (!NANOGL_ENABLE_WEBGL2 || !webgl2) {
-      extensions[GL_EXT_INSTANCING] = gl.getExtension(GL_EXT_INSTANCING);
-    }
+    extensions[GL_EXT_INSTANCING] = gl.getExtension(GL_EXT_INSTANCING);
 
-    this.rctx = new NanoGLRenderPassContext(gl, webgl2, this.feature(GL_EXT_INSTANCING));
+    this.rctx = new NanoGLRenderPassContext(gl, this.feature(GL_EXT_INSTANCING));
   }
 
   public buffer(desc: BufferDescriptor): GLBuffer {
@@ -61,7 +56,7 @@ class NanoGLRenderingDevice implements GLRenderingDevice {
 
   public texture(desc: TextureDescriptor, sampler?: SamplerDescriptor): GLTexture {
     if (NANOGL_ENABLE_TEXTURE) {
-      return new GLTexture(this.gl, this.webgl2, desc, sampler);
+      return new GLTexture(this.gl, desc, sampler);
     }
     return EMPTY_TEXTURE;
   }
@@ -136,7 +131,6 @@ class NanoGLRenderPassContext implements RenderPassContext {
 
   constructor(
     private readonly gl: WebGLRenderingContext,
-    private readonly webgl2: boolean,
     private readonly inst?: ANGLE_instanced_arrays
   ) {
     this.reset();
@@ -183,11 +177,7 @@ class NanoGLRenderPassContext implements RenderPassContext {
     for (const { format, offset, shaderLoc } of attrs) {
       // CAVEAT: No support for non-float vertex formats
       this.gl.vertexAttribPointer(shaderLoc, vertexSize(format), GL_FLOAT, false, stride, offset);
-      if (NANOGL_ENABLE_WEBGL2 && this.webgl2) {
-        (<WebGL2RenderingContext>this.gl).vertexAttribDivisor(shaderLoc, instanced ? 1 : 0);
-      } else {
-        this.inst?.vertexAttribDivisorANGLE(shaderLoc, instanced ? 1 : 0);
-      }
+      this.inst?.vertexAttribDivisorANGLE(shaderLoc, instanced ? 1 : 0);
     }
     return this;
   }
@@ -230,12 +220,7 @@ class NanoGLRenderPassContext implements RenderPassContext {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const { mode } = this.state.pipeObj!;
     if (instanceCount > 1) {
-      if (NANOGL_ENABLE_WEBGL2 && this.webgl2) {
-        (<WebGL2RenderingContext>this.gl)
-          .drawArraysInstanced(mode, firstVertex, vertexCount, instanceCount);
-      } else {
-        this.inst?.drawArraysInstancedANGLE(mode, firstVertex, vertexCount, instanceCount);
-      }
+      this.inst?.drawArraysInstancedANGLE(mode, firstVertex, vertexCount, instanceCount);
     } else {
       this.gl.drawArrays(mode, firstVertex, vertexCount);
     }
@@ -246,12 +231,7 @@ class NanoGLRenderPassContext implements RenderPassContext {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const { mode } = this.state.pipeObj!;
     if (instanceCount > 1) {
-      if (NANOGL_ENABLE_WEBGL2 && this.webgl2) {
-        (<WebGL2RenderingContext>this.gl)
-          .drawElementsInstanced(mode, indexCount, GL_UNSIGNED_SHORT, firstIndex * 2, instanceCount);
-      } else {
-        this.inst?.drawElementsInstancedANGLE(mode, indexCount, GL_UNSIGNED_SHORT, firstIndex * 2, instanceCount);
-      }
+      this.inst?.drawElementsInstancedANGLE(mode, indexCount, GL_UNSIGNED_SHORT, firstIndex * 2, instanceCount);
     } else {
       this.gl.drawElements(mode, indexCount, GL_UNSIGNED_SHORT, firstIndex * 2);
     }

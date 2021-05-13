@@ -5,11 +5,6 @@
  */
 
  /**
- * I can haz WebGL2?
- */
-export const NANOGL_ENABLE_WEBGL2 = false;
-
- /**
  * No transparency for you!
  */
 export const NANOGL_ENABLE_BLEND = true;

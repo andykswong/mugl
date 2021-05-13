@@ -10,7 +10,7 @@ module.exports = module.exports = merge(common, {
         type: 'commonjs2'
       }
     },
-    nanogl: {
+    ngl: {
       import: './src/nano',
       library: {
         type: 'commonjs2'
