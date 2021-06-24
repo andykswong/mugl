@@ -163,6 +163,7 @@ export class PbrExample extends BaseExample {
       1.0, 1.0, 1.0, 1.0, // albedo
       0.2, // metallic
       0.5, // roughness
+      0, 0 // padding
     ]));
 
     this.envBuffer = bufferWithData(ctx, BufferType.Uniform, new Float32Array([
