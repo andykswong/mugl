@@ -1,6 +1,6 @@
 {
   "name": "mugl",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Micro WebGL library",
   "homepage": "https://github.com/andykswong/mugl",
   "author": "Andy K.S. Wong <andykswong@outlook.com>",
@@ -45,7 +45,6 @@
     "examples": "cross-env NODE_ENV=development webpack serve --config webpack.examples.js",
     "start": "npm run examples"
   },
-  "dependencies": {},
   "devDependencies": {
     "@automattic/webpack-inline-constant-exports-plugin": "^1.0.0",
     "@types/jest": "^26.0.20",

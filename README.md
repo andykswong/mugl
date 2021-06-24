@@ -7,7 +7,7 @@
 `mugl` provides a minimalistic WebGL1 / WebGL2 3D rendering API in [WebGPU](https://gpuweb.github.io/gpuweb/)-style that removes WebGL state management from you. With `mugl`, you use a simple [rendering device interface](./src/api/device.ts) to allocate resources, such as buffers and textures, and submit draw calls to GPU.
 
 ## Micro- or Nano-Sized
-`mugl` is only **8KB** in size (CommonJS2 Webpack bundle, minified and gzipped).
+`mugl` is only **8KB** in size (UMD Webpack bundle, minified and gzipped).
 
 Using a module bundler with tree shaking, the size will be even smaller. In fact, the bundle size of our [examples](http://andykswong.github.io/mugl/examples) is only **11KB** (gzipped). This is including ALL of our examples!
 

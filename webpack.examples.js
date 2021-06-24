@@ -7,7 +7,7 @@ const common = require('./webpack.common.js');
 const ASSET_DIR = path.resolve(__dirname, 'src/examples/assets');
 const OUTPUT_DIR = path.resolve(__dirname, 'examples');
 
-module.exports = module.exports = merge(common, {
+module.exports = merge(common, {
   entry: {
     examples: {
       import: './src/examples'

@@ -1,20 +1,29 @@
-const webpack = require('webpack');
 const { merge } = require('webpack-merge');
 const common = require('./webpack.common.js');
 
-module.exports = module.exports = merge(common, {
-  entry: {
-    mugl: {
-      import: './src',
-      library: {
-        type: 'commonjs2'
-      }
+module.exports = [
+  merge(common, {
+    entry: {
+      mugl: './src'
     },
-    ngl: {
-      import: './src/nano',
+    output: {
       library: {
-        type: 'commonjs2'
+        name: 'mugl',
+        type: 'umd',
+        umdNamedDefine: true,
       }
     }
-  }
-});
+  }),
+  merge(common, {
+    entry: {
+      ngl: './src/nano'
+    },
+    output: {
+      library: {
+        name: 'ngl',
+        type: 'umd',
+        umdNamedDefine: true,
+      }
+    }
+  }),
+];
