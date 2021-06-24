@@ -65,7 +65,13 @@
 				<blockquote>
 					<p>A micro, modern WebGL wrapper library in TypeScript.</p>
 				</blockquote>
-				<p><code>mugl</code> provides a minimalistic 3D rendering API in <a href="https://gpuweb.github.io/gpuweb/">WebGPU</a>-style that removes WebGL state management from you. With <code>mugl</code>, you use a simple <a href="https://andykswong.github.io/mugl/interfaces/renderingdevice.html">rendering device interface</a> to allocate resources, such as buffers and textures, and submit draw calls to GPU.</p>
+				<p><code>mugl</code> provides a minimalistic WebGL1 / WebGL2 3D rendering API in <a href="https://gpuweb.github.io/gpuweb/">WebGPU</a>-style that removes WebGL state management from you. With <code>mugl</code>, you use a simple <a href="./src/api/device.ts">rendering device interface</a> to allocate resources, such as buffers and textures, and submit draw calls to GPU.</p>
+				<a href="#micro--or-nano-sized" id="micro--or-nano-sized" style="color: inherit; text-decoration: none;">
+					<h2>Micro- or Nano-Sized</h2>
+				</a>
+				<p><code>mugl</code> is only <strong>8KB</strong> in size (CommonJS2 Webpack bundle, minified and gzipped).</p>
+				<p>Using a module bundler with tree shaking, the size will be even smaller. In fact, the bundle size of our <a href="http://andykswong.github.io/mugl/examples">examples</a> is only <strong>11KB</strong> (gzipped). This is including ALL of our examples!</p>
+				<p><code>mugl/nano</code>, the nano implementation, is only <strong>3KB</strong> (gzipped). It uses the same API interface as the full implementation, except without WebGL2 support. You can even turn off some <a href="./src/nano/features.ts">features</a> that you do not need (e.g. scissor, stencil testing) to reduce the size to <strong>2KB</strong>!</p>
 				<a href="#install" id="install" style="color: inherit; text-decoration: none;">
 					<h2>Install</h2>
 				</a>
@@ -74,7 +80,10 @@
 				<a href="#usage" id="usage" style="color: inherit; text-decoration: none;">
 					<h2>Usage</h2>
 				</a>
-				<p>Below is a simple <code>mugl</code> program to draw a triangle:</p>
+				<a href="#1-basic-example" id="1-basic-example" style="color: inherit; text-decoration: none;">
+					<h3>1. Basic Example</h3>
+				</a>
+				<p>Below is a simple <code>mugl</code> program to draw a triangle (See this example live <a href="https://andykswong.github.io/mugl/examples/#basic">here</a>):</p>
 				<pre><code class="language-javascript"><span style="color: #AF00DB">import</span><span style="color: #000000"> { </span><span style="color: #001080">UniformFormat</span><span style="color: #000000">, </span><span style="color: #001080">UniformType</span><span style="color: #000000">, </span><span style="color: #001080">VertexFormat</span><span style="color: #000000">, </span><span style="color: #001080">getGLDevice</span><span style="color: #000000"> } </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;mugl&#039;</span><span style="color: #000000">;</span>
 
 <span style="color: #008000">// 0. Prepare triangle vertex positions and colors data</span>
@@ -87,7 +96,7 @@
 
 <span style="color: #008000">// 1. Create WebGL rendering device from an existing canvas</span>
 <span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">device</span><span style="color: #000000"> = </span><span style="color: #795E26">getGLDevice</span><span style="color: #000000">(</span><span style="color: #001080">canvas</span><span style="color: #000000">);</span>
-<span style="color: #AF00DB">if</span><span style="color: #000000">(!</span><span style="color: #001080">device</span><span style="color: #000000">) </span><span style="color: #AF00DB">throw</span><span style="color: #000000"> </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #267F99">Error</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;WebGL is unsupported&#039;</span><span style="color: #000000">);</span>
+<span style="color: #AF00DB">if</span><span style="color: #000000"> (!</span><span style="color: #001080">device</span><span style="color: #000000">) </span><span style="color: #AF00DB">throw</span><span style="color: #000000"> </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #267F99">Error</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;WebGL is unsupported&#039;</span><span style="color: #000000">);</span>
 
 <span style="color: #008000">// 2. Create GPU buffer for the triangle data</span>
 <span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">buffer</span><span style="color: #000000"> = </span><span style="color: #001080">device</span><span style="color: #000000">.</span><span style="color: #795E26">buffer</span><span style="color: #000000">({ </span><span style="color: #001080">size:</span><span style="color: #000000"> </span><span style="color: #001080">triangle</span><span style="color: #000000">.</span><span style="color: #001080">byteLength</span><span style="color: #000000"> }).</span><span style="color: #795E26">data</span><span style="color: #000000">(</span><span style="color: #001080">triangle</span><span style="color: #000000">);</span>
@@ -134,7 +143,14 @@
 <span style="color: #000000">    .</span><span style="color: #795E26">draw</span><span style="color: #000000">(</span><span style="color: #098658">3</span><span style="color: #000000">)</span>
 <span style="color: #000000">  .</span><span style="color: #795E26">end</span><span style="color: #000000">();</span>
 </code></pre>
-				<p>See this example <a href="https://andykswong.github.io/mugl/examples/#basic">live</a></p>
+				<a href="#2-using-the-nano-implementation" id="2-using-the-nano-implementation" style="color: inherit; text-decoration: none;">
+					<h3>2. Using the Nano Implementation</h3>
+				</a>
+				<p>To use the Nano Implementation, import <code>getNanoGLDevice</code> from <code>mugl/nano</code> to create a device:</p>
+				<pre><code class="language-javascript"><span style="color: #AF00DB">import</span><span style="color: #000000"> { </span><span style="color: #001080">getNanoGLDevice</span><span style="color: #000000"> } </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;mugl/nano&#039;</span><span style="color: #000000">;</span>
+
+<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">device</span><span style="color: #000000"> = </span><span style="color: #795E26">getNanoGLDevice</span><span style="color: #000000">(</span><span style="color: #001080">canvas</span><span style="color: #000000">);</span>
+</code></pre>
 				<a href="#more-examples" id="more-examples" style="color: inherit; text-decoration: none;">
 					<h2>More Examples</h2>
 				</a>
