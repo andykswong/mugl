@@ -1,4 +1,4 @@
-import { Buffer, BufferType, RenderingDevice, Resource, Usage } from '..';
+import { Buffer, BufferType, GLRenderingDevice, RenderingDevice, Resource, Usage } from '..';
 
 export interface Example {
   init(): void;
@@ -9,13 +9,11 @@ export interface Example {
 }
 
 export interface ExampleConstructor {
-  new (device: RenderingDevice): Example;
+  new (device: GLRenderingDevice): Example;
 }
 
 export abstract class BaseExample implements Example {
   protected resources: Resource[] = [];
-
-  constructor(protected readonly device: RenderingDevice) { }
 
   public abstract init(): void;
 

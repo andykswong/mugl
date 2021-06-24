@@ -5,7 +5,60 @@ import {
 import { Buffer, Pipeline, RenderPass, Texture } from './resources';
 import { Color } from './types';
 
-export type Canvas = HTMLCanvasElement | OffscreenCanvas;
+/**
+ * The rendering device, in WebGPU API style.
+ * The APIs are designed to be simplified version of WebGPU APIs, and without features unsupported by WebGL.
+ * @see https://gpuweb.github.io/gpuweb/#gpudevice
+ */
+ export interface RenderingDevice<FeatureType = never> {
+  /**
+   * Creates a new buffer object.
+   * @param desc the buffer descriptor
+   * @returns new buffer object
+   */
+  buffer(desc: BufferDescriptor): Buffer;
+
+  /**
+   * Creates a new texture object.
+   * @param desc the texture descriptor
+   * @param sampler the sampler descriptor
+   * @returns new texture object
+   */
+  texture(desc: TextureDescriptor, sampler?: SamplerDescriptor): Texture;
+
+  /**
+   * Creates a new Pipeline state object.
+   * @param desc the pipeline descriptor
+   * @returns new pipeline state object
+   */
+  pipeline(desc: PipelineDescriptor): Pipeline;
+
+  /**
+   * Creates a new render pass object.
+   * @param desc the render pass descriptor.
+   * @returns new render pass
+   */
+  pass(desc?: RenderPassDescriptor): RenderPass;
+
+  /**
+   * Start a render pass.
+   * @param pass the render pass
+   * @returns the pass rendering context.
+   */
+  render(pass: RenderPass): RenderPassContext;
+
+  /**
+   * Reset the state of the rendering context.
+   */
+  reset(): void;
+
+  /**
+   * Query the availability of optional features.
+   * @param feature feature type
+   * @returns the feature object, or null if not supported
+   */
+   feature<F>(feature: FeatureType): F | null;
+}
 
 /**
  * The render pass context object for submitting render commands.
@@ -101,62 +154,4 @@ export interface RenderPassContext {
    * End the render pass.
    */
   end(): void;
-}
-
-/**
- * The rendering device, in WebGPU API style.
- * The APIs are designed to be simplified version of WebGPU APIs, and without features unsupported by WebGL.
- * @see https://gpuweb.github.io/gpuweb/#gpudevice
- */
-export interface RenderingDevice<FeatureType = never> {
-  /** The canvas */
-  readonly canvas: Canvas;
-
-  /**
-   * Creates a new buffer object.
-   * @param desc the buffer descriptor
-   * @returns new buffer object
-   */
-  buffer(desc: BufferDescriptor): Buffer;
-
-  /**
-   * Creates a new texture object.
-   * @param desc the texture descriptor
-   * @param sampler the sampler descriptor
-   * @returns new texture object
-   */
-  texture(desc: TextureDescriptor, sampler?: SamplerDescriptor): Texture;
-
-  /**
-   * Creates a new Pipeline state object.
-   * @param desc the pipeline descriptor
-   * @returns new pipeline state object
-   */
-  pipeline(desc: PipelineDescriptor): Pipeline;
-
-  /**
-   * Creates a new render pass object.
-   * @param desc the render pass descriptor.
-   * @returns new render pass
-   */
-  pass(desc?: RenderPassDescriptor): RenderPass;
-
-  /**
-   * Start a render pass.
-   * @param pass the render pass
-   * @returns the pass rendering context.
-   */
-  render(pass: RenderPass): RenderPassContext;
-
-  /**
-   * Reset the state of the rendering context.
-   */
-  reset(): void;
-
-  /**
-   * Query the availability of optional features.
-   * @param feature feature type
-   * @returns the feature object, or null if not supported
-   */
-   feature<F>(feature: FeatureType): F | null;
 }

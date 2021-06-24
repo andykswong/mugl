@@ -1,4 +1,4 @@
-import { BufferType, RenderingDevice, UniformFormat, UniformType, VertexFormat } from '..';
+import { BufferType, GLRenderingDevice, UniformFormat, UniformType, VertexFormat } from '..';
 import { BaseExample, bufferWithData } from './common';
 
 const vert = `
@@ -41,8 +41,8 @@ export class BasicExample extends BaseExample {
     this.render();
   };
 
-  constructor(device: RenderingDevice) {
-    super(device);
+  constructor(private readonly device: GLRenderingDevice) {
+    super();
   }
 
   init(): void {

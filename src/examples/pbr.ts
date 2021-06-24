@@ -1,6 +1,6 @@
 import { mat4, vec3 } from 'gl-matrix';
 import {
-  BufferType, CompareFunc, RenderingDevice, CullMode, VertexFormat, TexType, UniformFormat, UniformType, PipelineDescriptor
+  BufferType, CompareFunc, CullMode, GLRenderingDevice, VertexFormat, TexType, UniformFormat, UniformType, PipelineDescriptor
 } from '..';
 import { BaseExample, bufferWithData, flatMap } from './common';
 import { airplane, Cube, skyBox } from './data';
@@ -143,8 +143,8 @@ export class PbrExample extends BaseExample {
   skyTex: any;
   loaded = false;
 
-  constructor(device: RenderingDevice) {
-    super(device);
+  constructor(private readonly device: GLRenderingDevice) {
+    super();
   }
 
   init(): void {

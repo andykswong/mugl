@@ -1,5 +1,5 @@
 import { mat3, mat4 } from 'gl-matrix';
-import { BufferType, CompareFunc, CullMode, PixelFormat, RenderingDevice, VertexFormat, UniformType, UniformFormat } from '..';
+import { BufferType, CompareFunc, CullMode, GLRenderingDevice, PixelFormat, VertexFormat, UniformType, UniformFormat } from '..';
 import { BaseExample, bufferWithData, flatMap } from './common';
 import { Cube, Quad } from './data';
 
@@ -97,8 +97,8 @@ export class PostprocessExample extends BaseExample {
     this.kernel = (this.kernel + 1) % kernels.length;
   };
 
-  constructor(device: RenderingDevice) {
-    super(device);
+  constructor(private readonly device: GLRenderingDevice) {
+    super();
   }
 
   init(): void {

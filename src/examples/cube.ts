@@ -1,6 +1,6 @@
 import { mat4 } from 'gl-matrix';
 import {
-  BufferType, CompareFunc, RenderingDevice, CullMode, VertexFormat, PixelFormat, TexType, AddressMode, MinFilterMode,
+  BufferType, CompareFunc, CullMode, GLRenderingDevice, VertexFormat, PixelFormat, TexType, AddressMode, MinFilterMode,
   UniformFormat, UniformType, PipelineDescriptor
 } from '..';
 import { BaseExample, bufferWithData, flatMap } from './common';
@@ -55,8 +55,8 @@ export class CubeExample extends BaseExample {
   skyTex: any;
   loaded = false;
 
-  constructor(device: RenderingDevice) {
-    super(device);
+  constructor(private readonly device: GLRenderingDevice) {
+    super();
   }
 
   init(): void {

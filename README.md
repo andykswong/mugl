@@ -4,7 +4,14 @@
 
 > A micro, modern WebGL wrapper library in TypeScript.
 
-`mugl` provides a minimalistic 3D rendering API in [WebGPU](https://gpuweb.github.io/gpuweb/)-style that removes WebGL state management from you. With `mugl`, you use a simple [rendering device interface](https://andykswong.github.io/mugl/interfaces/renderingdevice.html) to allocate resources, such as buffers and textures, and submit draw calls to GPU.
+`mugl` provides a minimalistic WebGL1 / WebGL2 3D rendering API in [WebGPU](https://gpuweb.github.io/gpuweb/)-style that removes WebGL state management from you. With `mugl`, you use a simple [rendering device interface](./src/api/device.ts) to allocate resources, such as buffers and textures, and submit draw calls to GPU.
+
+## Micro- or Nano-Sized
+`mugl` is only **8KB** in size (CommonJS2 Webpack bundle, minified and gzipped).
+
+Using a module bundler with tree shaking, the size will be even smaller. In fact, the bundle size of our [examples](http://andykswong.github.io/mugl/examples) is only **11KB** (gzipped). This is including ALL of our examples!
+
+`mugl/nano`, the nano implementation, is only **3KB** (gzipped). It uses the same API interface as the full implementation, except without WebGL2 support. You can even turn off some [features](./src/nano/features.ts) that you do not need (e.g. scissor, stencil testing) to reduce the size to **2KB**!
 
 ## Install
 ```shell
@@ -12,7 +19,10 @@ npm install --save mugl
 ```
 
 ## Usage
-Below is a simple `mugl` program to draw a triangle:
+
+### 1. Basic Example
+Below is a simple `mugl` program to draw a triangle (See this example live [here](https://andykswong.github.io/mugl/examples/#basic)):
+
 ```javascript
 import { UniformFormat, UniformType, VertexFormat, getGLDevice } from 'mugl';
 
@@ -26,7 +36,7 @@ const triangle = new Float32Array([
 
 // 1. Create WebGL rendering device from an existing canvas
 const device = getGLDevice(canvas);
-if(!device) throw new Error('WebGL is unsupported');
+if (!device) throw new Error('WebGL is unsupported');
 
 // 2. Create GPU buffer for the triangle data
 const buffer = device.buffer({ size: triangle.byteLength }).data(triangle);
@@ -74,7 +84,15 @@ device
   .end();
 ```
 
-See this example [live](https://andykswong.github.io/mugl/examples/#basic)
+
+### 2. Using the Nano Implementation
+To use the Nano Implementation, import `getNanoGLDevice` from `mugl/nano` to create a device:
+
+```javascript
+import { getNanoGLDevice } from 'mugl/nano';
+
+const device = getNanoGLDevice(canvas);
+```
 
 ## More Examples
 Check out the [live examples](http://andykswong.github.io/mugl/examples). The source code of all examples can be found [here](https://github.com/andykswong/mugl/tree/main/src/examples).

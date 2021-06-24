@@ -2,8 +2,13 @@ import { ValueOf } from 'ts-essentials';
 import {
   BufferDescriptor, TextureDescriptor, SamplerDescriptor, PipelineDescriptor, RenderPassDescriptor
 } from './descriptors';
-import { Canvas, RenderingDevice, RenderPassContext } from './device';
+import { RenderingDevice, RenderPassContext } from './device';
 import { Buffer, Pipeline, RenderPass, Texture } from './resources';
+
+/**
+ * A canvas element, which can be HTMLCanvasElement or OffscreenCanvas.
+ */
+ export type Canvas = HTMLCanvasElement | OffscreenCanvas;
 
 const GLCommonFeatures = {
   Aniso: 'EXT_texture_filter_anisotropic',
@@ -96,6 +101,9 @@ export interface GLPipeline extends Pipeline {
  * @see https://developer.mozilla.org/en-US/docs/Web/API/HTMLCanvasElement/getContext
  */
 export interface GLRenderingDevice extends RenderingDevice<GL1Feature | GL2Feature> {
+  /** The canvas */
+  readonly canvas: Canvas;
+
   /** WebGL context */
   readonly gl: WebGLRenderingContext;
 

@@ -60,8 +60,8 @@ export class InstancingExample extends BaseExample {
   pipeline: any;
   t = 0;
 
-  constructor(device: RenderingDevice) {
-    super(device);
+  constructor(private readonly device: RenderingDevice) {
+    super();
   }
 
   init(): void {

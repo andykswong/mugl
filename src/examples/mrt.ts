@@ -1,5 +1,5 @@
 import { mat4, vec3 } from 'gl-matrix';
-import { BufferType, CompareFunc, CullMode, PixelFormat, RenderingDevice, VertexFormat, Extent2D, UniformType, UniformFormat, GLRenderingDevice } from '..';
+import { BufferType, CompareFunc, CullMode, GLRenderingDevice, PixelFormat, VertexFormat, Extent2D, UniformType, UniformFormat } from '..';
 import { BaseExample, bufferWithData, flatMap } from './common';
 import { Cube, Quad } from './data';
 
@@ -102,8 +102,8 @@ export class MRTExample extends BaseExample {
   positionTex: any;
   depthTex: any;
 
-  constructor(device: RenderingDevice) {
-    super(device);
+  constructor(private readonly device: GLRenderingDevice) {
+    super();
   }
 
   init(): void {

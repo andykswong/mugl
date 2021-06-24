@@ -17,8 +17,14 @@
   "main": "./dist/index.js",
   "typings": "./dist/index.d.ts",
   "exports": {
-    "import": "./dist/index.js",
-    "require": "./dist/mugl.min.js"
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/mugl.min.js"
+    },
+    "./nano": {
+      "import": "./dist/nano/index.js",
+      "require": "./dist/ngl.min.js"
+    }
   },
   "files": [
     "/dist",
