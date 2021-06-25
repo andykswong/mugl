@@ -1,5 +1,5 @@
-import { BufferDescriptor, BufferType, GLBuffer as IGLBuffer, GLRenderingDevice, Usage } from '../api';
-import { GL_ARRAY_BUFFER, GL_STATIC_DRAW } from '../api';
+import { BufferDescriptor, BufferType, GLBuffer as IGLBuffer, GLRenderingDevice, Usage } from '../device';
+import { GL_ARRAY_BUFFER, GL_STATIC_DRAW } from '../device';
 
 export class GLBuffer implements IGLBuffer {
   public readonly type: BufferType;

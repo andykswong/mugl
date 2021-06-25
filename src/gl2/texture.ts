@@ -2,13 +2,13 @@ import {
   AddressMode, Extent3D, FilterMode, GLRenderingDevice, glTexInternalFormat, GLTexture as IGLTexture, glTexFormat,
   glTexType, isDepthStencil, is3DTexture, MinFilterMode, MipmapHint, Origin3D, PixelFormat, SamplerDescriptor,
   TextureData, TextureDescriptor, TexType
-} from '../api';
+} from '../device';
 import {
   GL_CLAMP_TO_EDGE, GL_DONT_CARE, GL_GENERATE_MIPMAP_HINT, GL_LINEAR, GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT,
   GL_RENDERBUFFER, GL_TEXTURE0, GL_TEXTURE_2D, GL_TEXTURE_2D_ARRAY, GL_TEXTURE_CUBE_MAP, GL_TEXTURE_CUBE_MAP_POSITIVE_X,
   GL_TEXTURE_MAG_FILTER, GL_TEXTURE_MAX_ANISOTROPY_EXT, GL_TEXTURE_MAX_LOD, GL_TEXTURE_MIN_FILTER, GL_TEXTURE_MIN_LOD,
   GL_TEXTURE_WRAP_R, GL_TEXTURE_WRAP_S, GL_TEXTURE_WRAP_T
-} from '../api';
+} from '../device';
 
 const EMPTY = {};
 const EMPTY3: [number?, number?, number?] = [];

@@ -2,12 +2,12 @@ import {
   BYTE_MASK, BufferDescriptor, Canvas, Color, GL1Feature, GL2Feature, GLRenderingDevice, GLRenderingDeviceFactory,
   PipelineDescriptor, RenderPassContext, RenderPassDescriptor, SamplerDescriptor,
   TextureDescriptor, UniformValuesDescriptor, UniformValueLayout, vertexSize
-} from '../api';
+} from '../device';
 import {
   GL_FRAMEBUFFER, GL_SCISSOR_TEST, GL_COLOR_BUFFER_BIT, GL_DEPTH_BUFFER_BIT, GL_STENCIL_BUFFER_BIT,
   GL_ELEMENT_ARRAY_BUFFER, GL_ARRAY_BUFFER, GL_TEXTURE0, GL_FRONT, GL_BACK, GL_UNSIGNED_SHORT, GL_ALWAYS,
   GL_FLOAT_VEC3, GL_FLOAT_VEC2, GL_FLOAT_VEC4, GL_FLOAT_MAT3, GL_FLOAT_MAT4, GL_FLOAT
-} from '../api/glenums';
+} from '../device/glenums';
 import { GL_EXT_INSTANCING, MAX_VERTEX_ATTRIBS } from './const';
 import {
   NANOGL_ENABLE_BLEND, NANOGL_ENABLE_OFFSCREEN, NANOGL_ENABLE_SCISSOR, NANOGL_ENABLE_STENCIL,

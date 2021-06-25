@@ -3,13 +3,13 @@ import {
   GLRenderingDeviceFactory, GLRenderingDeviceOptions, IndexFormat, indexSize, PipelineDescriptor, PrimitiveType,
   RenderPassContext, RenderPassDescriptor, SamplerDescriptor, TextureDescriptor, UniformValuesDescriptor,
   vertexNormalized, vertexSize, vertexType, UniformType
-} from '../api';
+} from '../device';
 import {
   GL_ARRAY_BUFFER, GL_BACK, GL_COLOR_BUFFER_BIT, GL_DEPTH_BUFFER_BIT, GL_ELEMENT_ARRAY_BUFFER, GL_FLOAT,
   GL_FLOAT_MAT3, GL_FLOAT_MAT4, GL_FLOAT_VEC2, GL_FLOAT_VEC3, GL_FLOAT_VEC4, GL_FRAMEBUFFER, GL_FRONT,
   GL_MAX_VERTEX_ATTRIBS, GL_SCISSOR_TEST, GL_STENCIL_BUFFER_BIT, GL_TEXTURE0, GL_TRIANGLES, GL_UNIFORM_BUFFER,
   GL_UNSIGNED_SHORT
-} from '../api';
+} from '../device';
 
 import { MAX_VERTEX_ATTRIBS } from './const';
 import { GLBuffer } from './buffer';

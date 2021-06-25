@@ -6,7 +6,7 @@ import {
   PipelineStateDescriptor, PixelFormat, PrimitiveType, RasterizationStateDescriptor, RenderPassDescriptor,
   SamplerDescriptor, StencilStateDescriptor, TextureData, TextureDescriptor, TextureView, TexType,
   UniformLayoutDescriptor, Usage, VertexAttributeDescriptor, VertexBufferLayoutDescriptor, vertexSize
-} from '../api';
+} from '../device';
 import {
   GL_ALWAYS, GL_ARRAY_BUFFER, GL_BACK, GL_BLEND, GL_CCW, GL_CLAMP_TO_EDGE, GL_COLOR_ATTACHMENT0, GL_COMPILE_STATUS,
   GL_CULL_FACE, GL_DEPTH_ATTACHMENT, GL_DEPTH_COMPONENT16, GL_DEPTH_STENCIL, GL_DEPTH_STENCIL_ATTACHMENT,
@@ -15,7 +15,7 @@ import {
   GL_SAMPLE_ALPHA_TO_COVERAGE, GL_STATIC_DRAW, GL_STENCIL_TEST, GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
   GL_TEXTURE_MIN_FILTER, GL_TEXTURE_WRAP_S, GL_TEXTURE_WRAP_T, GL_TRIANGLES, GL_UNSIGNED_BYTE, GL_UNSIGNED_SHORT,
   GL_VERTEX_SHADER, GL_ZERO
-} from '../api/glenums';
+} from '../device/glenums';
 import { COLOR_PIXEL_FORMAT, DEPTH_PIXEL_FORMAT, VERTEX_FLOAT_BYTES } from './const';
 import {
   NANOGL_ENABLE_OFFSCREEN, NANOGL_ENABLE_STENCIL, NANOGL_ENABLE_RASTER, NANOGL_ENABLE_BLEND

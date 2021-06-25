@@ -4,8 +4,8 @@ import {
   PipelineDescriptor, PrimitiveType, RasterizationStateDescriptor, StencilStateDescriptor, UniformBufferLayout,
   UniformLayoutDescriptor, UniformTexLayout, UniformType, UniformValueLayout, VertexAttributeDescriptor,
   VertexBufferLayoutDescriptor, vertexByteSize
-} from '../api';
-import { GL_INVALID_INDEX, GL_TRIANGLES, GL_UNSIGNED_SHORT } from '../api';
+} from '../device';
+import { GL_INVALID_INDEX, GL_TRIANGLES, GL_UNSIGNED_SHORT } from '../device';
 import { MAX_VERTEX_ATTRIBS } from './const';
 import { DEFAULT_RASTER_STATE, DEFAULT_DEPTH_STATE, DEFAULT_STENCIL_STATE, DEFAULT_BLEND_STATE } from './pipestate';
 import { createProgram } from './shader';

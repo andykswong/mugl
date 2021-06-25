@@ -1,4 +1,4 @@
-import { PixelFormat } from '../api';
+import { PixelFormat } from '../device';
 
 export const MAX_VERTEX_ATTRIBS = 8;
 

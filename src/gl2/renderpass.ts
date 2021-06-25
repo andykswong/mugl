@@ -1,12 +1,12 @@
 import {
   Color, GL1Feature, GLRenderingDevice, GLRenderPass as IGLRenderPass, GLTexture, hasStencil, isDepthStencil,
   is3DTexture, RenderPassDescriptor, TextureView
-} from '../api';
+} from '../device';
 import {
   GL_COLOR_ATTACHMENT0, GL_COLOR_BUFFER_BIT, GL_DEPTH_ATTACHMENT, GL_DEPTH_BUFFER_BIT, GL_DEPTH_STENCIL_ATTACHMENT,
   GL_DRAW_FRAMEBUFFER, GL_FRAMEBUFFER, GL_FRAMEBUFFER_COMPLETE, GL_NEAREST, GL_READ_FRAMEBUFFER, GL_RENDERBUFFER,
   GL_STENCIL_BUFFER_BIT, GL_TEXTURE_CUBE_MAP, GL_TEXTURE_CUBE_MAP_POSITIVE_X
-} from '../api';
+} from '../device';
 
 const EMPTY = {};
 const EMPTY_ARR: unknown[] = [];

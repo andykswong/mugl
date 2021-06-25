@@ -2,11 +2,11 @@ import { DeepRequired } from 'ts-essentials';
 import {
   BYTE_MASK, PipelineStateDescriptor, ColorMask, BlendStateDescriptor, DepthStateDescriptor, RasterizationStateDescriptor,
   StencilStateDescriptor
-} from '../api';
+} from '../device';
 import {
   GL_CCW, GL_NONE, GL_ALWAYS, GL_KEEP, GL_ONE, GL_ZERO, GL_FUNC_ADD, GL_CULL_FACE, GL_POLYGON_OFFSET_FILL,
   GL_SAMPLE_ALPHA_TO_COVERAGE, GL_DEPTH_TEST, GL_STENCIL_TEST, GL_FRONT, GL_BACK, GL_BLEND
-} from '../api';
+} from '../device';
 
 /**
  * WebGL pipeline state.

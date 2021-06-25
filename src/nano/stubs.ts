@@ -1,4 +1,4 @@
-import { RenderPassDescriptor } from '../api';
+import { RenderPassDescriptor } from '../device';
 import { GLRenderPass, GLTexture } from './resources';
 
 /**

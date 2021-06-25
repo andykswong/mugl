@@ -1,6 +1,6 @@
 import { DeepReadonly, DeepRequired } from 'ts-essentials';
-import { VertexBufferLayoutDescriptor } from '../api';
-import { GL_COMPILE_STATUS, GL_VERTEX_SHADER, GL_FRAGMENT_SHADER, GL_LINK_STATUS } from '../api';
+import { VertexBufferLayoutDescriptor } from '../device';
+import { GL_COMPILE_STATUS, GL_VERTEX_SHADER, GL_FRAGMENT_SHADER, GL_LINK_STATUS } from '../device';
 
 export function createProgram(
   gl: WebGLRenderingContext, vert: string, frag: string,
