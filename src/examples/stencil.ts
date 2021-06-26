@@ -1,5 +1,5 @@
 import { mat4 } from 'gl-matrix';
-import { BufferType, CompareFunc, CullMode, GLRenderingDevice, VertexFormat, PipelineDescriptor, StencilOp, UniformType, UniformFormat } from '..';
+import { BufferType, CompareFunc, CullMode, RenderingDevice, VertexFormat, PipelineDescriptor, StencilOp, UniformType, UniformFormat } from '..';
 import { BaseExample, bufferWithData, flatMap } from './common';
 import { airplane, Cube } from './data';
 
@@ -49,7 +49,7 @@ export class StencilExample extends BaseExample {
   cubePipeline: any;
   cubeOutlinePipeline: any;
 
-  constructor(private readonly device: GLRenderingDevice) {
+  constructor(private readonly device: RenderingDevice) {
     super();
   }
 

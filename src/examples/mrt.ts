@@ -111,8 +111,8 @@ export class MRTExample extends BaseExample {
     this.vertBuffer = bufferWithData(this.device, BufferType.Vertex, cubeVertices);
     this.indexBuffer = bufferWithData(this.device, BufferType.Index, cubeIndices);
     this.cubePipeline = this.device.pipeline({
-      vert: (<GLRenderingDevice>this.device).webgl2 ? vertCubeGL2 : vertCube,
-      frag: (<GLRenderingDevice>this.device).webgl2 ? fragCubeGL2 : fragCube,
+      vert: this.device.webgl2 ? vertCubeGL2 : vertCube,
+      frag: this.device.webgl2 ? fragCubeGL2 : fragCube,
       buffers: [
         {
           attrs: [

@@ -10,7 +10,22 @@ import { Color } from './types';
  * The APIs are designed to be simplified version of WebGPU APIs, and without features unsupported by WebGL.
  * @see https://gpuweb.github.io/gpuweb/#gpudevice
  */
- export interface RenderingDevice<FeatureType = never> {
+export interface RenderingDevice<FeatureType = never> {
+  /**
+   * The canvas that this device renders to.
+   */
+  readonly canvas: {
+    /**
+     * Width of the canvas.
+     */
+    readonly width: number;
+
+    /**
+     * Height of the canvas.
+     */
+    readonly height: number;
+  };
+
   /**
    * Creates a new buffer object.
    * @param desc the buffer descriptor

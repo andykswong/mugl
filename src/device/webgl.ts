@@ -8,7 +8,7 @@ import { Buffer, Pipeline, RenderPass, Texture } from './resources';
 /**
  * A canvas element, which can be HTMLCanvasElement or OffscreenCanvas.
  */
- export type Canvas = HTMLCanvasElement | OffscreenCanvas;
+export type Canvas = HTMLCanvasElement | OffscreenCanvas;
 
 const GLCommonFeatures = {
   Aniso: 'EXT_texture_filter_anisotropic',
