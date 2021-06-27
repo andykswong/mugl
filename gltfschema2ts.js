@@ -1,0 +1,95 @@
+const https = require('https');
+const fs = require('fs');
+const { URL } = require('url');
+const path = require('path');
+const refParser = require('json-schema-ref-parser');
+const json2ts = require('json-schema-to-typescript');
+
+const outputPath = process.argv[2];
+const glTFRepoPath = 'https://raw.githubusercontent.com/KhronosGroup/glTF/master';
+const glTFSchemaBasePath = `${glTFRepoPath}/specification/2.0/schema`;
+const glTFExtensionsBasePath = `${glTFRepoPath}/extensions/2.0`;
+
+function getExtensionSchemaPath(name) {
+  return `${glTFExtensionsBasePath}/Khronos/${name}/schema/glTF.${name}.schema.json`;
+}
+
+const schemas = {
+  glTF2: `${glTFSchemaBasePath}/glTF.schema.json`,
+  KHR_lights_punctual: getExtensionSchemaPath('KHR_lights_punctual'),
+  KHR_techniques_webgl: getExtensionSchemaPath('KHR_techniques_webgl')
+};
+
+const glTFSchemaResolver = {
+  order: 300,
+  canRead: /^https?:/i,
+  read(file) {
+    const fileName = path.posix.basename(new URL(file.url).pathname);
+    return httpsGet(`${glTFSchemaBasePath}/${fileName}`);
+  }
+};
+
+/**
+ * Convert the given schema to Typescript at outputPath.
+ */
+function schema2ts(outputPath, schemaPath) {
+  refParser.dereference(schemaPath, { resolve: { gltf: glTFSchemaResolver }})
+    .then(schema => json2ts.compile(transform(schema)))
+    .then((interface) => {
+      fs.writeFile(outputPath, interface, (err) => {
+        if (err) throw err;
+        console.log(`Schema written to ${outputPath}`);
+      });
+    });
+}
+
+/**
+ * json-schema-to-typescript ignores "properties" when "allOf" is used.
+ * This is a workaround to attempt to fix the issue.
+ * @see https://github.com/bcherny/json-schema-to-typescript/issues/96
+ */
+function transform(schema) {
+  const properties = {};
+  if (schema.properties) {
+    for (const property of Object.keys(schema.properties)) {
+      properties[property] = transform(schema.properties[property]);
+    }
+    schema.properties = properties;
+  }
+  if (schema.allOf) {
+    for (let i = 0; i < schema.allOf.length; ++i) {
+      schema.allOf[i] = transform(schema.allOf[i]);
+    }
+    if (schema.properties && Object.keys(schema.properties).length) {
+      schema.allOf.push({
+        title: schema.title,
+        type: schema.type,
+        required: schema.required,
+        properties
+      });
+      schema.properties = {};
+    }
+  }
+  if (schema.items) {
+    schema.items = transform(schema.items);
+  }
+
+  return schema;
+} 
+
+function httpsGet(url) {
+  return new Promise((resolve, reject) => {
+    https.get(url, res => {
+      res.setEncoding('utf8');
+      let body = ''; 
+      res.on('data', chunk => body += chunk);
+      res.on('end', () => resolve(body));
+    }).on('error', reject);
+  });
+};
+
+// Generate the Typescript definitions at outputPath
+fs.mkdir(outputPath, { recursive: true }, (err) => { if (err) { throw err; } });
+for (const schemaName of Object.keys(schemas)) {
+  schema2ts(`${outputPath}/${schemaName}.ts`, schemas[schemaName]);
+}

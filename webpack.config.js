@@ -26,4 +26,16 @@ module.exports = [
       }
     }
   }),
+  merge(common, {
+    entry: {
+      mugltf: './src/gltf'
+    },
+    output: {
+      library: {
+        name: 'mugltf',
+        type: 'umd',
+        umdNamedDefine: true,
+      }
+    }
+  }),
 ];

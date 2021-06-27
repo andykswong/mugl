@@ -21,7 +21,7 @@ out vec3 vNormal;
 
 void main(void) {
   vec4 worldPos = model * vec4(position, 1.0);
-  vPosition = worldPos.xyz;
+  vPosition = worldPos.xyz / worldPos.w;
   vNormal = mat3(model) * normalize(position);
   vUv = uv;
   gl_Position = viewProj * worldPos;
