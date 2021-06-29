@@ -61,27 +61,56 @@
 				<a href="#mugl---μgl" id="mugl---μgl" style="color: inherit; text-decoration: none;">
 					<h1>mugl - μGL</h1>
 				</a>
-				<p><a href="https://www.npmjs.com/package/mugl"><img src="https://img.shields.io/npm/v/mugl" alt="NPM"></a> <a href="https://github.com/andykswong/mugl/actions/workflows/build.yaml"><img src="https://github.com/andykswong/mugl/actions/workflows/build.yaml/badge.svg" alt="build"></a></p>
+				<p><a href="./LICENSE"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT"></a> <a href="https://www.npmjs.com/package/mugl"><img src="https://img.shields.io/npm/v/mugl" alt="NPM"></a> <a href="https://github.com/andykswong/mugl/actions/workflows/build.yaml"><img src="https://github.com/andykswong/mugl/actions/workflows/build.yaml/badge.svg" alt="build"></a></p>
 				<blockquote>
-					<p>A micro, modern WebGL wrapper library in TypeScript.</p>
+					<p>A micro-sized, modular WebGL library in TypeScript.</p>
 				</blockquote>
-				<p><code>mugl</code> provides a minimalistic WebGL1 / WebGL2 3D rendering API in <a href="https://gpuweb.github.io/gpuweb/">WebGPU</a>-style that removes WebGL state management from you. With <code>mugl</code>, you use a simple <a href="./src/api/device.ts">rendering device interface</a> to allocate resources, such as buffers and textures, and submit draw calls to GPU.</p>
-				<a href="#micro--or-nano-sized" id="micro--or-nano-sized" style="color: inherit; text-decoration: none;">
-					<h2>Micro- or Nano-Sized</h2>
+				<a href="#overview" id="overview" style="color: inherit; text-decoration: none;">
+					<h2>Overview</h2>
 				</a>
-				<p><code>mugl</code> is only <strong>8KB</strong> in size (UMD Webpack bundle, minified and gzipped).</p>
-				<p>Using a module bundler with tree shaking, the size will be even smaller. In fact, the bundle size of our <a href="http://andykswong.github.io/mugl/examples">examples</a> is only <strong>11KB</strong> (gzipped). This is including ALL of our examples!</p>
-				<p><code>mugl/nano</code>, the nano implementation, is only <strong>3KB</strong> (gzipped). It uses the same API interface as the full implementation, except without WebGL2 support. You can even turn off some <a href="./src/nano/features.ts">features</a> that you do not need (e.g. scissor, stencil testing) to reduce the size to <strong>2KB</strong>!</p>
+				<p><code>mugl</code> is a minimalistic, modular WebGL1 / WebGL2 3D rendering library for Typescript / JavaScript.</p>
+				<ul>
+					<li><strong>Core module (<code>mugl</code>)</strong> : the <a href="./src/api/device.ts">rendering device interface</a> in a simplified <a href="https://gpuweb.github.io/gpuweb/">WebGPU</a>-style API that removes WebGL state management from you. (<strong>9KB</strong> in size)</li>
+					<li><strong>Nano implementation (<code>mugl/nano</code>)</strong>: <strong>3KB</strong> implementation of the rendering device interface, but without WebGL2 support. You can even turn off some <a href="./src/nano/features.ts">features</a> that you do not need (e.g. scissor, stencil testing) to reduce the size to <strong>2KB</strong>!</li>
+					<li><strong>glTF module (<code>mugl/gltf</code>) (WIP)</strong>: a minimalistic glTF 2.0 model loader and renderer (<strong>9KB</strong> in size)</li>
+				</ul>
+				<p>It has multiple backend implementations - a full version with WebGL2 support, and a &quot;nano&quot; WebGL1 version that is <strong>3KB</strong> (gzipped) only!</p>
+				<p><em>* File sizes are measured from minified and gzipped UMD Webpack bundles</em></p>
+				<p>Using a module bundler with tree shaking, the size will be even smaller. In fact, the bundle size of our <a href="http://andykswong.github.io/mugl/examples">examples</a> is only <strong>11KB</strong>. This is including ALL of our examples! (excluding glTF model viewer, which is 13KB)</p>
 				<a href="#install" id="install" style="color: inherit; text-decoration: none;">
 					<h2>Install</h2>
 				</a>
 				<pre><code class="language-shell"><span style="color: #000000">npm install --save mugl</span>
 </code></pre>
+				<a href="#gltf-20-model-viewer-wip" id="gltf-20-model-viewer-wip" style="color: inherit; text-decoration: none;">
+					<h2>glTF 2.0 Model Viewer (WIP)</h2>
+				</a>
+				<p>A minimal <strong>13KB</strong> (gzipped) glTF model viewer built on <code>mugl</code> is available as an <a href="http://andykswong.github.io/mugl/examples/gltf.html">example</a> usage of this library. The source code can be found <a href="https://github.com/andykswong/mugl/tree/main/src/examples/gltf-viewer">here</a>.<br>Any model from <a href="https://github.com/KhronosGroup/glTF-Sample-Models">glTF-Sample-Models</a> can be loaded using the <code>model</code> and <code>variant</code> URL parameter, e.g.: <a href="http://andykswong.github.io/mugl/examples/gltf.html?model=Buggy&amp;variant=glTF-Binary&amp;camera=0&amp;scene=0">?model=Buggy&amp;variant=glTF-Binary</a> to load the <a href="https://github.com/KhronosGroup/glTF-Sample-Models/tree/master/2.0/Buggy">Buggy</a> model.<br>You can also use the <code>url</code> URL parameter to load a model from any source (<a href="http://andykswong.github.io/mugl/examples/gltf.html?url=https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Avocado/glTF/Avocado.gltf">example</a>).</p>
+				<p><img src="./screenshots/DamagedHelmet.png" alt="alt text"></p>
 				<a href="#usage" id="usage" style="color: inherit; text-decoration: none;">
 					<h2>Usage</h2>
 				</a>
-				<a href="#1-basic-example" id="1-basic-example" style="color: inherit; text-decoration: none;">
-					<h3>1. Basic Example</h3>
+				<a href="#0-gltf-20-rendering-wip" id="0-gltf-20-rendering-wip" style="color: inherit; text-decoration: none;">
+					<h3>0. GlTF 2.0 Rendering (WIP)</h3>
+				</a>
+				<p>Below is the minimum setup required to render a GlTF 2.0 model:</p>
+				<pre><code class="language-javascript"><span style="color: #AF00DB">import</span><span style="color: #000000"> { </span><span style="color: #001080">getGLDevice</span><span style="color: #000000"> } </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;mugl&#039;</span><span style="color: #000000">;</span>
+<span style="color: #AF00DB">import</span><span style="color: #000000"> { </span><span style="color: #001080">renderGlTF</span><span style="color: #000000">, </span><span style="color: #001080">resolveGlTF</span><span style="color: #000000"> } </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;mugl/gltf&#039;</span><span style="color: #000000">;</span>
+
+<span style="color: #008000">// 1. Create WebGL rendering device from an existing canvas</span>
+<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">device</span><span style="color: #000000"> = </span><span style="color: #795E26">getGLDevice</span><span style="color: #000000">(</span><span style="color: #001080">canvas</span><span style="color: #000000">);</span>
+<span style="color: #AF00DB">if</span><span style="color: #000000"> (!</span><span style="color: #001080">device</span><span style="color: #000000">) </span><span style="color: #AF00DB">throw</span><span style="color: #000000"> </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #267F99">Error</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;WebGL is unsupported&#039;</span><span style="color: #000000">);</span>
+
+<span style="color: #008000">// 2. Async load a GlTF/GLB file</span>
+<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">glTFPromise</span><span style="color: #000000"> = </span><span style="color: #795E26">resolveGlTF</span><span style="color: #000000">({ </span><span style="color: #001080">uri:</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;DamagedHelmet.gltf&#039;</span><span style="color: #000000"> });</span>
+
+<span style="color: #008000">// 3. Render the GlTF model</span>
+<span style="color: #001080">glTFPromise</span><span style="color: #000000">.</span><span style="color: #795E26">then</span><span style="color: #000000">(</span><span style="color: #001080">glTF</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> {</span>
+<span style="color: #000000">  </span><span style="color: #795E26">renderGlTF</span><span style="color: #000000">(</span><span style="color: #001080">device</span><span style="color: #000000">, </span><span style="color: #001080">glTF</span><span style="color: #000000">);</span>
+<span style="color: #000000">});</span>
+</code></pre>
+				<a href="#1-basic-rendering-example" id="1-basic-rendering-example" style="color: inherit; text-decoration: none;">
+					<h3>1. Basic Rendering Example</h3>
 				</a>
 				<p>Below is a simple <code>mugl</code> program to draw a triangle (See this example live <a href="https://andykswong.github.io/mugl/examples/#basic">here</a>):</p>
 				<pre><code class="language-javascript"><span style="color: #AF00DB">import</span><span style="color: #000000"> { </span><span style="color: #001080">UniformFormat</span><span style="color: #000000">, </span><span style="color: #001080">UniformType</span><span style="color: #000000">, </span><span style="color: #001080">VertexFormat</span><span style="color: #000000">, </span><span style="color: #001080">getGLDevice</span><span style="color: #000000"> } </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;mugl&#039;</span><span style="color: #000000">;</span>
@@ -169,288 +198,21 @@
 			<nav class="tsd-navigation primary">
 				<ul>
 					<li class=" ">
-						<a href="modules.html">Exports</a>
+						<a href="modules.html">Modules</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/gltf.html">gltf</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/index.html">index</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/nano.html">nano</a>
 					</li>
 				</ul>
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
-					<li class=" tsd-kind-class">
-						<a href="classes/webglrenderingdevice.html" class="tsd-kind-icon">WebGLRendering<wbr>Device</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="interfaces/blendstatedescriptor.html" class="tsd-kind-icon">Blend<wbr>State<wbr>Descriptor</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="interfaces/buffer.html" class="tsd-kind-icon">Buffer</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="interfaces/bufferbinding.html" class="tsd-kind-icon">Buffer<wbr>Binding</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="interfaces/bufferdescriptor.html" class="tsd-kind-icon">Buffer<wbr>Descriptor</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="interfaces/depthstatedescriptor.html" class="tsd-kind-icon">Depth<wbr>State<wbr>Descriptor</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="interfaces/glbuffer.html" class="tsd-kind-icon">GLBuffer</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="interfaces/glpipeline.html" class="tsd-kind-icon">GLPipeline</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="interfaces/glrenderpass.html" class="tsd-kind-icon">GLRender<wbr>Pass</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="interfaces/glrenderingdevice.html" class="tsd-kind-icon">GLRendering<wbr>Device</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="interfaces/glrenderingdevicefactory.html" class="tsd-kind-icon">GLRendering<wbr>Device<wbr>Factory</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="interfaces/glrenderingdeviceoptions.html" class="tsd-kind-icon">GLRendering<wbr>Device<wbr>Options</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="interfaces/gltexture.html" class="tsd-kind-icon">GLTexture</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="interfaces/pipeline.html" class="tsd-kind-icon">Pipeline</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="interfaces/pipelinedescriptor.html" class="tsd-kind-icon">Pipeline<wbr>Descriptor</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="interfaces/pipelinestatedescriptor.html" class="tsd-kind-icon">Pipeline<wbr>State<wbr>Descriptor</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="interfaces/rasterizationstatedescriptor.html" class="tsd-kind-icon">Rasterization<wbr>State<wbr>Descriptor</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="interfaces/renderpass.html" class="tsd-kind-icon">Render<wbr>Pass</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="interfaces/renderpasscontext.html" class="tsd-kind-icon">Render<wbr>Pass<wbr>Context</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="interfaces/renderpassdescriptor.html" class="tsd-kind-icon">Render<wbr>Pass<wbr>Descriptor</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-has-type-parameter">
-						<a href="interfaces/renderingdevice.html" class="tsd-kind-icon">Rendering<wbr>Device</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="interfaces/resource.html" class="tsd-kind-icon">Resource</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="interfaces/samplerdescriptor.html" class="tsd-kind-icon">Sampler<wbr>Descriptor</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="interfaces/stencilstatedescriptor.html" class="tsd-kind-icon">Stencil<wbr>State<wbr>Descriptor</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="interfaces/texture.html" class="tsd-kind-icon">Texture</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="interfaces/texturedescriptor.html" class="tsd-kind-icon">Texture<wbr>Descriptor</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="interfaces/textureview.html" class="tsd-kind-icon">Texture<wbr>View</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="interfaces/vertexattributedescriptor.html" class="tsd-kind-icon">Vertex<wbr>Attribute<wbr>Descriptor</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="interfaces/vertexbufferlayoutdescriptor.html" class="tsd-kind-icon">Vertex<wbr>Buffer<wbr>Layout<wbr>Descriptor</a>
-					</li>
-					<li class=" tsd-kind-type-alias">
-						<a href="modules.html#addressmode" class="tsd-kind-icon">Address<wbr>Mode</a>
-					</li>
-					<li class=" tsd-kind-type-alias">
-						<a href="modules.html#blendfactor" class="tsd-kind-icon">Blend<wbr>Factor</a>
-					</li>
-					<li class=" tsd-kind-type-alias">
-						<a href="modules.html#blendop" class="tsd-kind-icon">Blend<wbr>Op</a>
-					</li>
-					<li class=" tsd-kind-type-alias">
-						<a href="modules.html#buffertype" class="tsd-kind-icon">Buffer<wbr>Type</a>
-					</li>
-					<li class=" tsd-kind-type-alias">
-						<a href="modules.html#canvas" class="tsd-kind-icon">Canvas</a>
-					</li>
-					<li class=" tsd-kind-type-alias">
-						<a href="modules.html#color" class="tsd-kind-icon">Color</a>
-					</li>
-					<li class=" tsd-kind-type-alias">
-						<a href="modules.html#colormask" class="tsd-kind-icon">Color<wbr>Mask</a>
-					</li>
-					<li class=" tsd-kind-type-alias">
-						<a href="modules.html#comparefunc" class="tsd-kind-icon">Compare<wbr>Func</a>
-					</li>
-					<li class=" tsd-kind-type-alias">
-						<a href="modules.html#cubeface" class="tsd-kind-icon">Cube<wbr>Face</a>
-					</li>
-					<li class=" tsd-kind-type-alias">
-						<a href="modules.html#cullmode" class="tsd-kind-icon">Cull<wbr>Mode</a>
-					</li>
-					<li class=" tsd-kind-type-alias">
-						<a href="modules.html#extent2d" class="tsd-kind-icon">Extent2D</a>
-					</li>
-					<li class=" tsd-kind-type-alias">
-						<a href="modules.html#extent3d" class="tsd-kind-icon">Extent3D</a>
-					</li>
-					<li class=" tsd-kind-type-alias">
-						<a href="modules.html#filtermode" class="tsd-kind-icon">Filter<wbr>Mode</a>
-					</li>
-					<li class=" tsd-kind-type-alias">
-						<a href="modules.html#frontface" class="tsd-kind-icon">Front<wbr>Face</a>
-					</li>
-					<li class=" tsd-kind-type-alias">
-						<a href="modules.html#gl1feature" class="tsd-kind-icon">GL1<wbr>Feature</a>
-					</li>
-					<li class=" tsd-kind-type-alias">
-						<a href="modules.html#gl2feature" class="tsd-kind-icon">GL2<wbr>Feature</a>
-					</li>
-					<li class=" tsd-kind-type-alias">
-						<a href="modules.html#indexformat" class="tsd-kind-icon">Index<wbr>Format</a>
-					</li>
-					<li class=" tsd-kind-type-alias">
-						<a href="modules.html#minfiltermode" class="tsd-kind-icon">Min<wbr>Filter<wbr>Mode</a>
-					</li>
-					<li class=" tsd-kind-type-alias">
-						<a href="modules.html#mipmaphint" class="tsd-kind-icon">Mipmap<wbr>Hint</a>
-					</li>
-					<li class=" tsd-kind-type-alias">
-						<a href="modules.html#origin3d" class="tsd-kind-icon">Origin3D</a>
-					</li>
-					<li class=" tsd-kind-type-alias">
-						<a href="modules.html#pixelformat" class="tsd-kind-icon">Pixel<wbr>Format</a>
-					</li>
-					<li class=" tsd-kind-type-alias">
-						<a href="modules.html#primitivetype" class="tsd-kind-icon">Primitive<wbr>Type</a>
-					</li>
-					<li class=" tsd-kind-type-alias">
-						<a href="modules.html#stencilop" class="tsd-kind-icon">Stencil<wbr>Op</a>
-					</li>
-					<li class=" tsd-kind-type-alias">
-						<a href="modules.html#textype" class="tsd-kind-icon">Tex<wbr>Type</a>
-					</li>
-					<li class=" tsd-kind-type-alias">
-						<a href="modules.html#texturedata" class="tsd-kind-icon">Texture<wbr>Data</a>
-					</li>
-					<li class=" tsd-kind-type-alias">
-						<a href="modules.html#uniformbufferlayout" class="tsd-kind-icon">Uniform<wbr>Buffer<wbr>Layout</a>
-					</li>
-					<li class=" tsd-kind-type-alias">
-						<a href="modules.html#uniformformat" class="tsd-kind-icon">Uniform<wbr>Format</a>
-					</li>
-					<li class=" tsd-kind-type-alias">
-						<a href="modules.html#uniformlayoutdescriptor" class="tsd-kind-icon">Uniform<wbr>Layout<wbr>Descriptor</a>
-					</li>
-					<li class=" tsd-kind-type-alias">
-						<a href="modules.html#uniformlayoutentry" class="tsd-kind-icon">Uniform<wbr>Layout<wbr>Entry</a>
-					</li>
-					<li class=" tsd-kind-type-alias">
-						<a href="modules.html#uniformtexlayout" class="tsd-kind-icon">Uniform<wbr>Tex<wbr>Layout</a>
-					</li>
-					<li class=" tsd-kind-type-alias">
-						<a href="modules.html#uniformtype" class="tsd-kind-icon">Uniform<wbr>Type</a>
-					</li>
-					<li class=" tsd-kind-type-alias">
-						<a href="modules.html#uniformvalue" class="tsd-kind-icon">Uniform<wbr>Value</a>
-					</li>
-					<li class=" tsd-kind-type-alias">
-						<a href="modules.html#uniformvaluelayout" class="tsd-kind-icon">Uniform<wbr>Value<wbr>Layout</a>
-					</li>
-					<li class=" tsd-kind-type-alias">
-						<a href="modules.html#uniformvaluesdescriptor" class="tsd-kind-icon">Uniform<wbr>Values<wbr>Descriptor</a>
-					</li>
-					<li class=" tsd-kind-type-alias">
-						<a href="modules.html#usage" class="tsd-kind-icon">Usage</a>
-					</li>
-					<li class=" tsd-kind-type-alias">
-						<a href="modules.html#vertexformat" class="tsd-kind-icon">Vertex<wbr>Format</a>
-					</li>
-					<li class=" tsd-kind-variable">
-						<a href="modules.html#addressmode" class="tsd-kind-icon">Address<wbr>Mode</a>
-					</li>
-					<li class=" tsd-kind-variable">
-						<a href="modules.html#blendfactor" class="tsd-kind-icon">Blend<wbr>Factor</a>
-					</li>
-					<li class=" tsd-kind-variable">
-						<a href="modules.html#blendop" class="tsd-kind-icon">Blend<wbr>Op</a>
-					</li>
-					<li class=" tsd-kind-variable">
-						<a href="modules.html#buffertype" class="tsd-kind-icon">Buffer<wbr>Type</a>
-					</li>
-					<li class=" tsd-kind-variable">
-						<a href="modules.html#colormask" class="tsd-kind-icon">Color<wbr>Mask</a>
-					</li>
-					<li class=" tsd-kind-variable">
-						<a href="modules.html#comparefunc" class="tsd-kind-icon">Compare<wbr>Func</a>
-					</li>
-					<li class=" tsd-kind-variable">
-						<a href="modules.html#cubeface" class="tsd-kind-icon">Cube<wbr>Face</a>
-					</li>
-					<li class=" tsd-kind-variable">
-						<a href="modules.html#cullmode" class="tsd-kind-icon">Cull<wbr>Mode</a>
-					</li>
-					<li class=" tsd-kind-variable">
-						<a href="modules.html#filtermode" class="tsd-kind-icon">Filter<wbr>Mode</a>
-					</li>
-					<li class=" tsd-kind-variable">
-						<a href="modules.html#frontface" class="tsd-kind-icon">Front<wbr>Face</a>
-					</li>
-					<li class=" tsd-kind-variable">
-						<a href="modules.html#gl1feature" class="tsd-kind-icon">GL1<wbr>Feature</a>
-					</li>
-					<li class=" tsd-kind-variable">
-						<a href="modules.html#gl2feature" class="tsd-kind-icon">GL2<wbr>Feature</a>
-					</li>
-					<li class=" tsd-kind-variable">
-						<a href="modules.html#indexformat" class="tsd-kind-icon">Index<wbr>Format</a>
-					</li>
-					<li class=" tsd-kind-variable">
-						<a href="modules.html#minfiltermode" class="tsd-kind-icon">Min<wbr>Filter<wbr>Mode</a>
-					</li>
-					<li class=" tsd-kind-variable">
-						<a href="modules.html#mipmaphint" class="tsd-kind-icon">Mipmap<wbr>Hint</a>
-					</li>
-					<li class=" tsd-kind-variable">
-						<a href="modules.html#pixelformat" class="tsd-kind-icon">Pixel<wbr>Format</a>
-					</li>
-					<li class=" tsd-kind-variable">
-						<a href="modules.html#primitivetype" class="tsd-kind-icon">Primitive<wbr>Type</a>
-					</li>
-					<li class=" tsd-kind-variable">
-						<a href="modules.html#stencilop" class="tsd-kind-icon">Stencil<wbr>Op</a>
-					</li>
-					<li class=" tsd-kind-variable">
-						<a href="modules.html#textype" class="tsd-kind-icon">Tex<wbr>Type</a>
-					</li>
-					<li class=" tsd-kind-variable">
-						<a href="modules.html#uniformformat" class="tsd-kind-icon">Uniform<wbr>Format</a>
-					</li>
-					<li class=" tsd-kind-variable">
-						<a href="modules.html#uniformtype" class="tsd-kind-icon">Uniform<wbr>Type</a>
-					</li>
-					<li class=" tsd-kind-variable">
-						<a href="modules.html#usage" class="tsd-kind-icon">Usage</a>
-					</li>
-					<li class=" tsd-kind-variable">
-						<a href="modules.html#vertexformat" class="tsd-kind-icon">Vertex<wbr>Format</a>
-					</li>
-					<li class=" tsd-kind-function">
-						<a href="modules.html#getgldevice" class="tsd-kind-icon">getGLDevice</a>
-					</li>
-					<li class=" tsd-kind-function">
-						<a href="modules.html#hasstencil" class="tsd-kind-icon">has<wbr>Stencil</a>
-					</li>
-					<li class=" tsd-kind-function">
-						<a href="modules.html#is3dtexture" class="tsd-kind-icon">is3DTexture</a>
-					</li>
-					<li class=" tsd-kind-function">
-						<a href="modules.html#isdepthstencil" class="tsd-kind-icon">is<wbr>Depth<wbr>Stencil</a>
-					</li>
 				</ul>
 			</nav>
 		</div>
@@ -461,16 +223,16 @@
 		<h2>Legend</h2>
 		<div class="tsd-legend-group">
 			<ul class="tsd-legend">
-				<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
-				<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
-				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
+				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
+				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
+				<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
 			</ul>
 			<ul class="tsd-legend">
-				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
-				<li class="tsd-kind-method tsd-parent-kind-interface"><span class="tsd-kind-icon">Method</span></li>
+				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
+				<li class="tsd-kind-interface tsd-has-type-parameter"><span class="tsd-kind-icon">Interface with type parameter</span></li>
 			</ul>
 			<ul class="tsd-legend">
-				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private property</span></li>
+				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
 			</ul>
 		</div>
 	</div>
