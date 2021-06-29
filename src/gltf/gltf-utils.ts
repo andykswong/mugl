@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 
 import { mat4, quat, vec3 } from 'gl-matrix';
-import { Accessor, Camera, Extras, GlTF, GlTFProperty } from './spec/glTF2';
+import { Accessor, Camera, Extras, GlTF, GlTFProperty, Node, Skin } from './spec/glTF2';
 
 const I4 = mat4.create();
 const Iq = quat.create();
@@ -41,14 +41,40 @@ export function getCameraProjection(out: mat4, camera: Camera | undefined, aspec
  * Update model matrices for a GlTF scene and returns the active nodes.
  */
 export function updateGlTFNodes(glTF: GlTF, sceneId = glTF.scene || 0): number[] {
-  const activeNodes: number[] = [];
+  let activeNodes: number[] = [];
   const rootNodes = glTF.scenes?.[sceneId]?.nodes;
   if (rootNodes) {
     for (let i = 0; i < rootNodes.length; ++i) {
       updateGlTFNode(glTF, rootNodes[i], I4, activeNodes);
     }
   }
-  return activeNodes.sort().filter((n, i, a) => (i === a.indexOf(n)));
+  activeNodes = activeNodes.sort().filter((n, i, a) => (i === a.indexOf(n)));
+
+  // Update Skin
+  const activeSkinned: Node[] = [];
+  for (const nodeId of activeNodes) {
+    const node = glTF.nodes![nodeId];
+    if (glTF.skins?.[node.skin!]) {
+      activeSkinned.push(node);
+    }
+  }
+  for (const node of activeSkinned) {
+    const skin = glTF.skins![node.skin!];
+    const numJoints = skin.joints.length;
+    const jointMatrix = getExtras(node).jointMatrix = <Float32Array>getExtras(node).jointMatrix || new Float32Array(numJoints * 16);
+    const inverseBindMatrices = getInverseBindMatrices(glTF, skin);
+    for (let i = 0; i < numJoints; ++i) {
+      const jointNode = glTF.nodes![skin.joints[i]];
+      const jointModel = (jointNode && <mat4>getExtras(jointNode).model) || I4;
+      const jointMat = new Float32Array(jointMatrix.buffer, jointMatrix.byteOffset + 16 * 4 * i, 16);
+
+      mat4.invert(jointMat, <mat4>getExtras(node).model || I4);
+      mat4.mul(jointMat, jointMat, jointModel);
+      mat4.mul(jointMat, jointMat, new Float32Array(inverseBindMatrices.buffer, inverseBindMatrices.byteOffset + 16 * 4 * i, 16));
+    }
+  }
+
+  return activeNodes;
 }
 
 function updateGlTFNode(glTF: GlTF, nodeId: number, origin: mat4, activeNodes: number[] | null = null): void {
@@ -79,13 +105,31 @@ function updateGlTFNode(glTF: GlTF, nodeId: number, origin: mat4, activeNodes: n
     vec3.set(translation, model[12], model[13], model[14]);
   }
 
-  // TODO: update skin
-
   if (node.children) {
     for (const child of node.children) {
       updateGlTFNode(glTF, child, model, activeNodes);
     }
   }
+}
+
+function getInverseBindMatrices(glTF: GlTF, skin: Skin): Float32Array {
+  let matrices = <Float32Array>getExtras(skin).inverseBindMatrices;
+  if (!matrices) {
+    const accessor = glTF.accessors?.[skin.inverseBindMatrices!];
+    if (accessor) {
+      // TODO: handle accessor sparse storage
+      const bufferView = glTF.bufferViews?.[accessor.bufferView!];
+      if (bufferView) {
+        const data = <Uint8Array>getExtras(bufferView).bufferView;
+        matrices = new Float32Array(data.buffer, data.byteOffset + (accessor.byteOffset || 0), accessor.count * 16);
+      }
+    }
+    if (!matrices) {
+      matrices = new Float32Array(16 * skin.joints.length);
+    }
+    getExtras(skin).inverseBindMatrices = matrices;
+  }
+  return matrices;
 }
 
 /**

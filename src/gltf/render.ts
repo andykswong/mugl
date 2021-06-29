@@ -8,7 +8,7 @@ import {
 } from '../device';
 
 import { GL_FLOAT, GL_UNSIGNED_BYTE, GL_UNSIGNED_SHORT } from '../device';
-import { GlTF, MeshPrimitive, Node, Skin } from './spec/glTF2';
+import { GlTF, MeshPrimitive, Node } from './spec/glTF2';
 import { ResolvedGlTF } from './types';
 import { getCameraProjection, getExtras, updateGlTFNodes } from './gltf-utils';
 import primitiveVert from './shaders/primitive.vert';
@@ -100,7 +100,6 @@ function renderGlTFNode(
   // Set model matrices. This overrides matrices in the env obj to reduce object allocations
   env.model = mat4.copy(<mat4>env.model || mat4.create(), <mat4>getExtras(node).model || I4);
   env.normalMatrix = mat3.normalFromMat4(<mat3>env.normalMatrix || mat3.create(), <mat4>env.model);
-  const invModel = mat4.invert(mat4.create(), <mat4>env.model);
 
   // Submit draw call for each mesh primitive
   for (let i = 0; i < mesh.primitives.length; ++i) {
@@ -128,17 +127,9 @@ function renderGlTFNode(
 
     let numJoints = 0;
     const skin = glTF.skins?.[node.skin!];
-    if (skin) {
+    if (primitive.attributes['JOINTS_0'] && primitive.attributes['WEIGHTS_0'] && skin) {
       numJoints = skin.joints.length;
-      const jointMatrix = getExtras(skin).jointMatrix = <Float32Array>getExtras(skin).jointMatrix || new Float32Array(numJoints * 16);
-      const inverseBindMatrices = loadInverseBindMatrix(glTF, skin);
-      for (let i = 0; i < numJoints; ++i) {
-        const jointNode = glTF.nodes?.[skin.joints[i]];
-        const model = (jointNode && <mat4>getExtras(jointNode).model) || I4;
-        const jointMat = new Float32Array(jointMatrix.buffer, jointMatrix.byteOffset + 16 * 4 * i, 16);
-        mat4.mul(jointMat, model, new Float32Array(inverseBindMatrices.buffer, inverseBindMatrices.byteOffset + 16 * 4 * i, 16));
-        mat4.mul(jointMat, invModel, jointMat);
-      }
+      const jointMatrix = getExtras(node).jointMatrix = <Float32Array>getExtras(node).jointMatrix || new Float32Array(numJoints * 16);
       uniforms['jointMatrix'] = jointMatrix;
     }
 
@@ -242,7 +233,6 @@ function loadGPUPipeline(device: RenderingDevice, glTF: GlTF, meshId: number, pr
   }
   const defineStr = defines.map(define => `#define ${define}`).join('\n');
 
-  // TODO: set skin / morph uniforms
   const additionalUniforms: UniformLayoutDescriptor = {};
   if (normNumJoints > 0) {
     additionalUniforms['jointMatrix'] = { type: UniformType.Value, format: UniformFormat.Mat4 };
@@ -408,30 +398,6 @@ function loadMaterialUniforms(device: RenderingDevice, glTF: GlTF, materialId: n
   }
 
   return env;
-}
-
-function loadInverseBindMatrix(glTF: GlTF, skin: Skin): Float32Array {
-  let matrices = <Float32Array>getExtras(skin).inverseBindMatrices;
-  if (matrices) {
-    return matrices;
-  }
-
-  const accessor = glTF.accessors?.[skin.inverseBindMatrices!];
-
-  if (accessor) {
-    // TODO: handle accessor sparse storage
-    const bufferView = glTF.bufferViews?.[accessor.bufferView!];
-    if (bufferView) {
-      const data = <Uint8Array>getExtras(bufferView).bufferView;
-      matrices = new Float32Array(data.buffer, data.byteOffset + (accessor.byteOffset || 0), accessor.count * 16);
-    }
-  }
-  if (!matrices) {
-    matrices = new Float32Array(16 * skin.joints.length);
-  }
-
-  getExtras(skin).inverseBindMatrices = matrices;
-  return matrices;
 }
 
 function loadGPUBuffer(device: RenderingDevice, glTF: GlTF, accessorId: number | undefined, targetHint: BufferType): Buffer | null {
