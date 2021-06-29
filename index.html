@@ -70,13 +70,11 @@
 				</a>
 				<p><code>mugl</code> is a minimalistic, modular WebGL1 / WebGL2 3D rendering library for Typescript / JavaScript.</p>
 				<ul>
-					<li><strong>Core module (<code>mugl</code>)</strong> : the <a href="./src/api/device.ts">rendering device interface</a> in a simplified <a href="https://gpuweb.github.io/gpuweb/">WebGPU</a>-style API that removes WebGL state management from you. (<strong>9KB</strong> in size)</li>
+					<li><strong>Core module (<code>mugl</code>)</strong> : the <a href="./src/device/device.ts">rendering device interface</a> in a simplified <a href="https://gpuweb.github.io/gpuweb/">WebGPU</a>-style API that removes WebGL state management from you. (<strong>9KB</strong> in size)</li>
 					<li><strong>Nano implementation (<code>mugl/nano</code>)</strong>: <strong>3KB</strong> implementation of the rendering device interface, but without WebGL2 support. You can even turn off some <a href="./src/nano/features.ts">features</a> that you do not need (e.g. scissor, stencil testing) to reduce the size to <strong>2KB</strong>!</li>
 					<li><strong>glTF module (<code>mugl/gltf</code>) (WIP)</strong>: a minimalistic glTF 2.0 model loader and renderer (<strong>9KB</strong> in size)</li>
 				</ul>
-				<p>It has multiple backend implementations - a full version with WebGL2 support, and a &quot;nano&quot; WebGL1 version that is <strong>3KB</strong> (gzipped) only!</p>
-				<p><em>* File sizes are measured from minified and gzipped UMD Webpack bundles</em></p>
-				<p>Using a module bundler with tree shaking, the size will be even smaller. In fact, the bundle size of our <a href="http://andykswong.github.io/mugl/examples">examples</a> is only <strong>11KB</strong>. This is including ALL of our examples! (excluding glTF model viewer, which is 13KB)</p>
+				<p><em>* File sizes are measured from minified and gzipped UMD Webpack library bundles. Actual size can be even smaller, by using a module bundler with tree shaking.</em></p>
 				<a href="#install" id="install" style="color: inherit; text-decoration: none;">
 					<h2>Install</h2>
 				</a>
@@ -85,7 +83,8 @@
 				<a href="#gltf-20-model-viewer-wip" id="gltf-20-model-viewer-wip" style="color: inherit; text-decoration: none;">
 					<h2>glTF 2.0 Model Viewer (WIP)</h2>
 				</a>
-				<p>A minimal <strong>13KB</strong> (gzipped) glTF model viewer built on <code>mugl</code> is available as an <a href="http://andykswong.github.io/mugl/examples/gltf.html">example</a> usage of this library. The source code can be found <a href="https://github.com/andykswong/mugl/tree/main/src/examples/gltf-viewer">here</a>.<br>Any model from <a href="https://github.com/KhronosGroup/glTF-Sample-Models">glTF-Sample-Models</a> can be loaded using the <code>model</code> and <code>variant</code> URL parameter, e.g.: <a href="http://andykswong.github.io/mugl/examples/gltf.html?model=Buggy&amp;variant=glTF-Binary&amp;camera=0&amp;scene=0">?model=Buggy&amp;variant=glTF-Binary</a> to load the <a href="https://github.com/KhronosGroup/glTF-Sample-Models/tree/master/2.0/Buggy">Buggy</a> model.<br>You can also use the <code>url</code> URL parameter to load a model from any source (<a href="http://andykswong.github.io/mugl/examples/gltf.html?url=https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Avocado/glTF/Avocado.gltf">example</a>).</p>
+				<p>A minimal <strong>13KB</strong> (gzipped) glTF model viewer built on <code>mugl</code> is available as an <a href="http://andykswong.github.io/mugl/examples/gltf.html">example</a> usage of this library. The source code can be found <a href="https://github.com/andykswong/mugl/tree/main/src/examples/gltf-viewer">here</a>.</p>
+				<p>Any model from <a href="https://github.com/KhronosGroup/glTF-Sample-Models">glTF-Sample-Models</a> can be loaded using the <code>model</code> and <code>variant</code> URL parameter, e.g.: <a href="http://andykswong.github.io/mugl/examples/gltf.html?model=Buggy&amp;variant=glTF-Binary&amp;camera=0&amp;scene=0">?model=Buggy&amp;variant=glTF-Binary</a> to load the <a href="https://github.com/KhronosGroup/glTF-Sample-Models/tree/master/2.0/Buggy">Buggy</a> model. You can also use the <code>url</code> URL parameter to load a model from any source (<a href="http://andykswong.github.io/mugl/examples/gltf.html?url=https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Avocado/glTF/Avocado.gltf">example</a>).</p>
 				<p><img src="./screenshots/DamagedHelmet.png" alt="alt text"></p>
 				<a href="#usage" id="usage" style="color: inherit; text-decoration: none;">
 					<h2>Usage</h2>
