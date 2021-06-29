@@ -199,17 +199,20 @@ export class GLPipeline implements IGLPipeline {
   public constructor(private readonly gl: WebGLRenderingContext, desc: PipelineDescriptor) {
     Object.assign(this, desc);
 
-    // CAVEAT: Always auto calculate buffer offsets, stride and shaderLoc
+    // CAVEAT: Auto calculated buffer offsets, stride and shaderLoc may not be what you expected.
+    // TODO: Consider moving auto calculation to a shared util method
     let shaderLoc = 0;
     this.glp = createProgram(gl, desc.vert, desc.frag,
-      this.buffers = desc.buffers.map(({ attrs: descAttrs, instanced = false }) => {
+      this.buffers = desc.buffers.map(({ attrs: descAttrs, stride, instanced = false }) => {
         const attrs: Required<VertexAttributeDescriptor>[] = Array(descAttrs.length);
         let offset = 0;
         for (let j = 0; j < descAttrs.length; ++j, ++shaderLoc) {
+          const { name, format, offset: curOffset = offset, shaderLoc: curShaderLoc = shaderLoc } = descAttrs[j];
+          attrs[j] = { name, format, offset: curOffset, shaderLoc: curShaderLoc };
           // CAVEAT: No support for non-float vertex formats
-          offset += VERTEX_FLOAT_BYTES * vertexSize((attrs[j] = { ...descAttrs[j], offset, shaderLoc }).format);
+          offset = Math.max(offset, curOffset) + VERTEX_FLOAT_BYTES * vertexSize(format);
         }
-        return { attrs, stride: offset, instanced };
+        return { attrs, stride: stride || offset, instanced };
       })
     );
   }

@@ -76,15 +76,16 @@ export class GLPipeline implements IGLPipeline {
     let nextShaderLoc = 0;
     const buf = this.buffers = buffers.map(({ attrs: descAttrs, stride = 0, instanced = false }) => {
       const attrs: Required<VertexAttributeDescriptor>[] = Array(descAttrs.length);
-      let maxOffset = 0;
+      let maxOffset = 0, minOffset = descAttrs.length > 0 ? Infinity : 0;
       for (let j = 0; j < descAttrs.length; ++j) {
         const { offset = maxOffset, shaderLoc = nextShaderLoc } = descAttrs[j];
         attrs[j] = { ...descAttrs[j], offset, shaderLoc };
         hasAttr[nextShaderLoc = shaderLoc] = true;
         while (hasAttr[++nextShaderLoc]);
-        maxOffset = offset + vertexByteSize(attrs[j].format);
+        maxOffset = Math.max(maxOffset, offset + vertexByteSize(attrs[j].format));
+        minOffset = Math.min(minOffset, offset);
       }
-      return { attrs, stride: Math.max(stride, maxOffset), instanced };
+      return { attrs, stride: stride || (maxOffset - minOffset), instanced };
     });
 
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion

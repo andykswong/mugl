@@ -1,5 +1,3 @@
-import { Extras, GlTFProperty } from './spec/glTF2';
-
 /**
  * Decodes a buffer into string.
  * This uses TextDecoder, which can be polyfilled as per:
@@ -47,14 +45,4 @@ export function resolveRelativeUri(uri: string, baseUri: string): string {
 
   // Relative path
   return baseUri + uri;
-}
-
-/**
- * Get the extras object of a property, creating a new object if not exist.
- */
-export function getExtras(property: GlTFProperty): Extras {
-  if (!property.extras) {
-    property.extras = {};
-  }
-  return property.extras;
 }

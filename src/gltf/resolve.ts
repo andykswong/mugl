@@ -1,10 +1,11 @@
 import { GlTF } from './spec/glTF2';
 import { parseGLB } from './glb';
 import { GlTFFile, ResolvedBuffers, ResolvedGlTF, ResolvedImages, GlTFResourceLoader } from './types';
-import { getBaseUrl, getExtras, resolveRelativeUri } from './utils';
+import { getBaseUrl, resolveRelativeUri } from './utils';
+import { getExtras } from './gltf-utils';
 
 /**
- * Fetch and resolve external resources of a GlTF model.
+ * Fetch a GlTF model and resolve its external resources (binary buffers and images).
  */
 export async function resolveGlTF(
   file: GlTFFile,
@@ -45,6 +46,7 @@ export function glTFResourceFetch(uri: string, type: 'bin' | 'img' | 'str'): Pro
   if (type === 'img') {
     return new Promise((resolve, reject) => {
       const img = new Image();
+      img.crossOrigin = 'anonymous';
       img.onerror = () => reject(new Error('Failed to load: ' + uri));
       img.onload = () => resolve(img);
       img.src = uri;

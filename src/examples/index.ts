@@ -12,6 +12,17 @@ declare const window: Window & {
   loadExample: (url?: string) => void;
 };
 
+class GlTFRedirect implements Example {
+  init(): void {
+  }
+  render(): boolean {
+    window.location.replace('./gltf.html');
+    return false;
+  }
+  destroy(): void {
+  }
+}
+
 const EXAMPLES: Readonly<Record<string, { title: string, factory: ExampleConstructor}>> = {
   'basic': { title: 'Hello World', factory: BasicExample },
   'instancing': { title: 'Instancing', factory: InstancingExample },
@@ -20,6 +31,7 @@ const EXAMPLES: Readonly<Record<string, { title: string, factory: ExampleConstru
   'mrt': { title: 'Multi Render Targets', factory: MRTExample },
   'stencil': { title: 'Stencil', factory: StencilExample },
   'pbr': { title: 'PBR Uniform Buffer', factory: PbrExample },
+  'gltf': { title: 'glTF Model Viewer', factory: GlTFRedirect }
 };
 
 // Setup menu
