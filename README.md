@@ -8,15 +8,11 @@
 
 `mugl` is a minimalistic, modular WebGL1 / WebGL2 3D rendering library for Typescript / JavaScript.
 
-- **Core module (`mugl`)** : the [rendering device interface](./src/api/device.ts) in a simplified [WebGPU](https://gpuweb.github.io/gpuweb/)-style API that removes WebGL state management from you. (**9KB** in size)
+- **Core module (`mugl`)** : the [rendering device interface](./src/device/device.ts) in a simplified [WebGPU](https://gpuweb.github.io/gpuweb/)-style API that removes WebGL state management from you. (**9KB** in size)
 - **Nano implementation (`mugl/nano`)**: **3KB** implementation of the rendering device interface, but without WebGL2 support. You can even turn off some [features](./src/nano/features.ts) that you do not need (e.g. scissor, stencil testing) to reduce the size to **2KB**!
 - **glTF module (`mugl/gltf`) (WIP)**: a minimalistic glTF 2.0 model loader and renderer (**9KB** in size)
 
-It has multiple backend implementations - a full version with WebGL2 support, and a "nano" WebGL1 version that is **3KB** (gzipped) only!
-
-*\* File sizes are measured from minified and gzipped UMD Webpack bundles*
-
-Using a module bundler with tree shaking, the size will be even smaller. In fact, the bundle size of our [examples](http://andykswong.github.io/mugl/examples) is only **11KB**. This is including ALL of our examples! (excluding glTF model viewer, which is 13KB)
+*\* File sizes are measured from minified and gzipped UMD Webpack library bundles. Actual size can be even smaller, by using a module bundler with tree shaking.*
 
 ## Install
 ```shell
@@ -24,9 +20,9 @@ npm install --save mugl
 ```
 
 ## glTF 2.0 Model Viewer (WIP)
-A minimal **13KB** (gzipped) glTF model viewer built on `mugl` is available as an [example](http://andykswong.github.io/mugl/examples/gltf.html) usage of this library. The source code can be found [here](https://github.com/andykswong/mugl/tree/main/src/examples/gltf-viewer).  
-Any model from [glTF-Sample-Models](https://github.com/KhronosGroup/glTF-Sample-Models) can be loaded using the `model` and `variant` URL parameter, e.g.: [?model=Buggy&variant=glTF-Binary](http://andykswong.github.io/mugl/examples/gltf.html?model=Buggy&variant=glTF-Binary&camera=0&scene=0) to load the [Buggy](https://github.com/KhronosGroup/glTF-Sample-Models/tree/master/2.0/Buggy) model.  
-You can also use the `url` URL parameter to load a model from any source ([example](http://andykswong.github.io/mugl/examples/gltf.html?url=https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Avocado/glTF/Avocado.gltf)).
+A minimal **13KB** (gzipped) glTF model viewer built on `mugl` is available as an [example](http://andykswong.github.io/mugl/examples/gltf.html) usage of this library. The source code can be found [here](https://github.com/andykswong/mugl/tree/main/src/examples/gltf-viewer).
+
+Any model from [glTF-Sample-Models](https://github.com/KhronosGroup/glTF-Sample-Models) can be loaded using the `model` and `variant` URL parameter, e.g.: [?model=Buggy&variant=glTF-Binary](http://andykswong.github.io/mugl/examples/gltf.html?model=Buggy&variant=glTF-Binary&camera=0&scene=0) to load the [Buggy](https://github.com/KhronosGroup/glTF-Sample-Models/tree/master/2.0/Buggy) model. You can also use the `url` URL parameter to load a model from any source ([example](http://andykswong.github.io/mugl/examples/gltf.html?url=https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Avocado/glTF/Avocado.gltf)).
 
 ![alt text](./screenshots/DamagedHelmet.png)
 
