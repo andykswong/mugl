@@ -34,10 +34,10 @@ vec4 getPosition(void) {
   vec4 pos = vec4(POSITION, 1.0);
 
 #ifdef USE_MORPHING
-    pos += getTargetPosition();
+  pos += getTargetPosition();
 #endif
 #ifdef USE_SKINNING
-    pos = getSkinMatrix() * pos;
+  pos = getSkinMatrix() * pos;
 #endif
 
   return pos;
@@ -70,10 +70,10 @@ vec3 getNormal() {
   vec3 norm = NORMAL;
 
 #ifdef USE_MORPHING
-    norm += getTargetNormal();
+  norm += getTargetNormal();
 #endif
 #ifdef USE_SKINNING
-    norm = mat3(getSkinNormalMatrix()) * norm;
+  norm = mat3(getSkinMatrix()) * norm;
 #endif
 
   return normalize(norm);

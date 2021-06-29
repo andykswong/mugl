@@ -8,7 +8,7 @@ import {
 } from '../device';
 
 import { GL_FLOAT, GL_UNSIGNED_BYTE, GL_UNSIGNED_SHORT } from '../device';
-import { GlTF, MeshPrimitive, Node } from './spec/glTF2';
+import { GlTF, MeshPrimitive, Node, Skin } from './spec/glTF2';
 import { ResolvedGlTF } from './types';
 import { getCameraProjection, getExtras, updateGlTFNodes } from './gltf-utils';
 import primitiveVert from './shaders/primitive.vert';
@@ -100,6 +100,7 @@ function renderGlTFNode(
   // Set model matrices. This overrides matrices in the env obj to reduce object allocations
   env.model = mat4.copy(<mat4>env.model || mat4.create(), <mat4>getExtras(node).model || I4);
   env.normalMatrix = mat3.normalFromMat4(<mat3>env.normalMatrix || mat3.create(), <mat4>env.model);
+  const invModel = mat4.invert(mat4.create(), <mat4>env.model);
 
   // Submit draw call for each mesh primitive
   for (let i = 0; i < mesh.primitives.length; ++i) {
@@ -116,19 +117,46 @@ function renderGlTFNode(
       vertexCount = positionAccessor.count;
     }
 
+    const uniforms: UniformValuesDescriptor = {
+      ...env,
+      ...loadMaterialUniforms(device, glTF, primitive.material)
+    };
+
+    if (primitive.targets?.length) {
+      uniforms['targetWeights'] = node.weights || mesh.weights || [0, 0, 0, 0, 0, 0, 0, 0];
+    }
+
+    let numJoints = 0;
+    const skin = glTF.skins?.[node.skin!];
+    if (skin) {
+      numJoints = skin.joints.length;
+      const jointMatrix = getExtras(skin).jointMatrix = <Float32Array>getExtras(skin).jointMatrix || new Float32Array(numJoints * 16);
+      const inverseBindMatrices = loadInverseBindMatrix(glTF, skin);
+      for (let i = 0; i < numJoints; ++i) {
+        const jointNode = glTF.nodes?.[skin.joints[i]];
+        const model = (jointNode && <mat4>getExtras(jointNode).model) || I4;
+        const jointMat = new Float32Array(jointMatrix.buffer, jointMatrix.byteOffset + 16 * 4 * i, 16);
+        mat4.mul(jointMat, model, new Float32Array(inverseBindMatrices.buffer, inverseBindMatrices.byteOffset + 16 * 4 * i, 16));
+        mat4.mul(jointMat, invModel, jointMat);
+      }
+      uniforms['jointMatrix'] = jointMatrix;
+    }
+
     // Bind pipeline
-    const pipeline = loadGPUPipeline(device, glTF, node.mesh!, i);
+    const pipeline = loadGPUPipeline(device, glTF, node.mesh!, i, numJoints);
     context
       .pipeline(pipeline)
-      .uniforms({
-        ...env,
-        ...loadMaterialUniforms(device, glTF, primitive.material)
-      });
+      .uniforms(uniforms);
 
     // Bind vertex buffers
     for (let i = 0; i < pipeline.buffers.length; ++i) {
       const attr = pipeline.buffers[i].attrs[0].name;
-      const buffer = loadGPUBuffer(device, glTF, primitive.attributes[attr], BufferType.Vertex);
+      const targetAttrMatch = attr.match(/TARGET_(.+)_(\d+)/);
+      const buffer = loadGPUBuffer(
+        device, glTF,
+        targetAttrMatch ? primitive.targets![<number><unknown>targetAttrMatch[2]][targetAttrMatch[1]] : primitive.attributes[attr],
+        BufferType.Vertex
+      );
       if (buffer) {
         context.vertex(i, buffer);
       }
@@ -157,7 +185,7 @@ function renderGlTFNode(
   }
 }
 
-function loadGPUPipeline(device: RenderingDevice, glTF: GlTF, meshId: number, primitiveId: number): Pipeline {
+function loadGPUPipeline(device: RenderingDevice, glTF: GlTF, meshId: number, primitiveId: number, numJoints = 0): Pipeline {
   const primitive = glTF.meshes![meshId].primitives[primitiveId];
 
   let pipeline: Pipeline | undefined = <Pipeline>getExtras(primitive).pipeline;
@@ -182,14 +210,18 @@ function loadGPUPipeline(device: RenderingDevice, glTF: GlTF, meshId: number, pr
     indexFormat = IndexFormat.UInt32;
   }
 
+  const normNumJoints = primitive.attributes['JOINTS_0'] && primitive.attributes['WEIGHTS_0'] ?
+    Math.ceil(numJoints / 12) * 12 : 0;
+
   // TODO: better key encoding
-  const pipelineKey = JSON.stringify({
+  const pipelineKey = JSON.stringify([
     buffers,
     indexFormat,
+    normNumJoints,
     mode,
     doubleSided,
     alphaMode
-  });
+  ]);
 
   const pipelines: Record<string, Pipeline> = getExtras(glTF).pipelines = <Record<string, Pipeline>>getExtras(glTF).pipelines || {};
   pipeline = pipelines[pipelineKey];
@@ -205,12 +237,19 @@ function loadGPUPipeline(device: RenderingDevice, glTF: GlTF, meshId: number, pr
       defines.push(`USE_${attr.name}`);
     }
   }
+  if (normNumJoints > 0) {
+    defines.push(`NUM_JOINTS ${normNumJoints}`);
+  }
   const defineStr = defines.map(define => `#define ${define}`).join('\n');
 
   // TODO: set skin / morph uniforms
-  const additionalUniforms: UniformLayoutDescriptor = {
-
-  };
+  const additionalUniforms: UniformLayoutDescriptor = {};
+  if (normNumJoints > 0) {
+    additionalUniforms['jointMatrix'] = { type: UniformType.Value, format: UniformFormat.Mat4 };
+  }
+  if (primitive.targets?.length) {
+    additionalUniforms['targetWeights'] = { type: UniformType.Value, format: UniformFormat.Float };
+  }
 
   // TODO: Cache unique pipeline combinations
   pipeline = getExtras(primitive).pipeline = pipelines[pipelineKey] = device.pipeline({
@@ -309,7 +348,7 @@ function getVertexBufferLayouts(glTF: GlTF, primitive: MeshPrimitive): VertexBuf
 }
 
 function loadMaterialUniforms(device: RenderingDevice, glTF: GlTF, materialId: number | undefined): UniformValuesDescriptor {
-  const env = {
+  const env: UniformValuesDescriptor = {
     'alphaCutoff': 0,
     'baseColorFactor': [1, 1, 1, 1],
     'baseColorTexture.tex': loadBlankGPUTexture(device, glTF),
@@ -329,24 +368,25 @@ function loadMaterialUniforms(device: RenderingDevice, glTF: GlTF, materialId: n
     'occlusionTexture.scale': 0
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  function setTexture(obj: any, name: string, scaleField: string | null = null): void {
+    if (obj[name]) {
+      env[`${name}.tex`] = loadGPUTexture(device, glTF, obj[name].index);
+      env[`${name}.texCoord`] = obj[name].texCoord || 0;
+      if (scaleField) {
+        env[`${name}.scale`] = obj[name][scaleField] || 0;
+      }
+    }
+  }
+
   const material = glTF.materials?.[materialId!];
   if (material) {
-    if (material.alphaCutoff) {
-      env.alphaCutoff = material.alphaCutoff;
-    }
-
     if (material.pbrMetallicRoughness) {
       const pbr = material.pbrMetallicRoughness;
 
       if (pbr.baseColorFactor) {
         env.baseColorFactor = pbr.baseColorFactor;
       }
-
-      if (pbr.baseColorTexture) {
-        env['baseColorTexture.tex'] = loadGPUTexture(device, glTF, pbr.baseColorTexture.index);
-        env['baseColorTexture.texCoord'] = pbr.baseColorTexture.texCoord || 0;
-      }
-
       if (pbr.metallicFactor || pbr.metallicFactor === 0) {
         env.metallicFactor = pbr.metallicFactor;
       }
@@ -354,36 +394,44 @@ function loadMaterialUniforms(device: RenderingDevice, glTF: GlTF, materialId: n
       if (pbr.roughnessFactor || pbr.roughnessFactor === 0) {
         env.roughnessFactor = pbr.roughnessFactor;
       }
-
-      if (pbr.metallicRoughnessTexture) {
-        env['metallicRoughnessTexture.tex'] = loadGPUTexture(device, glTF, pbr.metallicRoughnessTexture.index);
-        env['metallicRoughnessTexture.texCoord'] = pbr.metallicRoughnessTexture.texCoord || 0;
-      }
+      setTexture(pbr, 'baseColorTexture');
+      setTexture(pbr, 'metallicRoughnessTexture');
     }
 
-    if (material.normalTexture) {
-      env['normalTexture.tex'] = loadGPUTexture(device, glTF, material.normalTexture.index);
-      env['normalTexture.texCoord'] = material.normalTexture.texCoord || 0;
-      env['normalTexture.scale'] = material.normalTexture.scale || 1;
-    }
-
+    env.alphaCutoff = material.alphaCutoff || 0;
     if (material.emissiveFactor) {
       env.emissiveFactor = material.emissiveFactor;
     }
-
-    if (material.emissiveTexture) {
-      env['emissiveTexture.tex'] = loadGPUTexture(device, glTF, material.emissiveTexture.index);
-      env['emissiveTexture.texCoord'] = material.emissiveTexture.texCoord || 0;
-    }
-    
-    if (material.occlusionTexture) {
-      env['occlusionTexture.tex'] = loadGPUTexture(device, glTF, material.occlusionTexture.index);
-      env['occlusionTexture.texCoord'] = material.occlusionTexture.texCoord || 0;
-      env['occlusionTexture.scale'] = material.occlusionTexture.strength || 1;
-    }
+    setTexture(material, 'emissiveTexture');
+    setTexture(material, 'occlusionTexture', 'strength');
+    setTexture(material, 'normalTexture', 'scale');
   }
 
   return env;
+}
+
+function loadInverseBindMatrix(glTF: GlTF, skin: Skin): Float32Array {
+  let matrices = <Float32Array>getExtras(skin).inverseBindMatrices;
+  if (matrices) {
+    return matrices;
+  }
+
+  const accessor = glTF.accessors?.[skin.inverseBindMatrices!];
+
+  if (accessor) {
+    // TODO: handle accessor sparse storage
+    const bufferView = glTF.bufferViews?.[accessor.bufferView!];
+    if (bufferView) {
+      const data = <Uint8Array>getExtras(bufferView).bufferView;
+      matrices = new Float32Array(data.buffer, data.byteOffset + (accessor.byteOffset || 0), accessor.count * 16);
+    }
+  }
+  if (!matrices) {
+    matrices = new Float32Array(16 * skin.joints.length);
+  }
+
+  getExtras(skin).inverseBindMatrices = matrices;
+  return matrices;
 }
 
 function loadGPUBuffer(device: RenderingDevice, glTF: GlTF, accessorId: number | undefined, targetHint: BufferType): Buffer | null {
@@ -491,6 +539,7 @@ function loadGPUTexture(device: RenderingDevice, glTF: GlTF, textureId: number):
   return gpuTexture;
 }
 
+/** Load a placeholder texture. */
 function loadBlankGPUTexture(device: RenderingDevice, glTF: GlTF): Texture {
   let gpuTexture: Texture | undefined = <Texture>getExtras(glTF).blankTexture;
   if (gpuTexture) {
@@ -498,7 +547,7 @@ function loadBlankGPUTexture(device: RenderingDevice, glTF: GlTF): Texture {
   }
 
   gpuTexture = getExtras(glTF).blankTexture =
-    device.texture({ size: [1, 1] }).data(new Uint8Array([1, 1, 1, 1]));
+    device.texture({ size: [1, 1] }).data(new Uint8Array([255, 255, 255, 255]));
 
   return gpuTexture;
 }
