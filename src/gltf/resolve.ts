@@ -151,7 +151,7 @@ function resolveAccessors<T extends GlTF>(glTF: T): void {
           const valueBuffer = <Uint8Array>getExtras(valueView).buffer;
           const IndexBufferType = componentType === GL_UNSIGNED_BYTE ? Uint8Array : componentType === GL_UNSIGNED_SHORT ? Uint16Array : Uint32Array;
           const indices = new IndexBufferType(indexBuffer.buffer, indexBuffer.byteOffset + indexViewOffset, count);
-          const values = new Uint8Array(valueBuffer.buffer, valueBuffer.byteOffset + valueViewOffset, count);
+          const values = new Uint8Array(valueBuffer.buffer, valueBuffer.byteOffset + valueViewOffset, count * elementSize);
           for (let j = 0; j < count; ++j) {
             const index = indices[j] * elementSize;
             for (let k = 0; k < elementSize; ++k) {
