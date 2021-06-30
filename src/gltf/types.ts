@@ -26,13 +26,6 @@ export interface GlTFResourceLoader {
    * @returns a promise containing the image data
    */
   (uri: string, type: 'img'): Promise<TexImageSource>;
-
-  /**
-   * Loads a file as string.
-   * @param uri URI to load. This can be a relative, absolute, data or blob URI
-   * @returns a promise containing the file content as string
-   */
-  (uri: string, type: 'str'): Promise<string>;
 }
 
 /**

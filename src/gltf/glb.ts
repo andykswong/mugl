@@ -13,6 +13,14 @@ const GLBChunkType = {
 } as const;
 
 /**
+ * Check if data is in GLB format, by checking the header magic
+ */
+export function isGLB(data: BufferSource): boolean {
+  return new DataView((<ArrayBufferView>data).buffer || data, (<ArrayBufferView>data).byteOffset || 0, 4)
+    .getUint32(0, true) === GLB_HEADER_MAGIC;
+}
+
+/**
  * Parse a GLB (binary glTF) binary blob into a GlTF JSON and binary data chunk.
  */
  export function parseGLB(data: BufferSource): MarkRequired<GlTFFile, 'glTF'> {
@@ -20,14 +28,8 @@ const GLBChunkType = {
   let binaryChunk: Uint8Array | undefined;
 
   // Get array buffer and offset from data
-  let buffer: ArrayBuffer;
-  let bufferOffset = 0;
-  if (ArrayBuffer.isView(data)) {
-    buffer = data.buffer;
-    bufferOffset = data.byteOffset;
-  } else {
-    buffer = data;
-  }
+  const buffer: ArrayBuffer = (<ArrayBufferView>data).buffer || data;
+  const bufferOffset = (<ArrayBufferView>data).byteOffset || 0;
 
   // Validate header magic and version
   const headerView = new DataView(buffer, bufferOffset, GLB_HEADER_LENGTH);

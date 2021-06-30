@@ -1,7 +1,7 @@
 import { GlTF } from './spec/glTF2';
-import { parseGLB } from './glb';
+import { isGLB, parseGLB } from './glb';
 import { GlTFFile, ResolvedBuffers, ResolvedGlTF, ResolvedImages, GlTFResourceLoader } from './types';
-import { getBaseUrl, resolveRelativeUri } from './utils';
+import { decodeText, getBaseUrl, resolveRelativeUri } from './utils';
 import { getAccessorElementSize, getExtras } from './gltf-utils';
 import { GL_UNSIGNED_BYTE, GL_UNSIGNED_SHORT } from '../device';
 
@@ -17,13 +17,13 @@ export async function resolveGlTF(
   let binaryChunk: Uint8Array | undefined = file.binaryChunk;
 
   if (!glTF && file.uri) {
-    const isGLB = file.uri.match(/\.glb$/);
-    if (isGLB) {
-      const glTFContent = parseGLB(await loader(file.uri, 'bin'));
+    const binContent = await loader(file.uri, 'bin');
+    if (isGLB(binContent)) {
+      const glTFContent = parseGLB(binContent);
       glTF = glTFContent.glTF;
       binaryChunk = glTFContent.binaryChunk;
     } else {
-      glTF = JSON.parse(await loader(file.uri, 'str'));
+      glTF = JSON.parse(decodeText(binContent));
     }
   }
 
@@ -37,13 +37,7 @@ export async function resolveGlTF(
 
 export function glTFResourceFetch(uri: string, type: 'bin'): Promise<Uint8Array>;
 export function glTFResourceFetch(uri: string, type: 'img'): Promise<TexImageSource>;
-export function glTFResourceFetch(uri: string, type: 'str'): Promise<string>;
-export function glTFResourceFetch(uri: string, type: 'bin' | 'img' | 'str'): Promise<Uint8Array | TexImageSource | string> {
-  if (type === 'bin') {
-    return fetch(uri)
-      .then(data => data.arrayBuffer())
-      .then(buffer => new Uint8Array(buffer));
-  }
+export function glTFResourceFetch(uri: string, type: 'bin' | 'img'): Promise<Uint8Array | TexImageSource | string> {
   if (type === 'img') {
     return new Promise((resolve, reject) => {
       const img = new Image();
@@ -54,8 +48,10 @@ export function glTFResourceFetch(uri: string, type: 'bin' | 'img' | 'str'): Pro
     });
   }
 
-  // return string by default
-  return fetch(uri).then(data => data.text());
+  // return binary
+  return fetch(uri)
+      .then(data => data.arrayBuffer())
+      .then(buffer => new Uint8Array(buffer));
 }
 
 async function resolveBuffers<T extends GlTF>(

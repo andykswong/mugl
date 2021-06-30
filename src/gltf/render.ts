@@ -2,7 +2,7 @@
 
 import { mat3, mat4, vec3 } from 'gl-matrix';
 import {
-  AddressMode, Buffer, BufferType, CompareFunc, CullMode, FilterMode, GL_UNSIGNED_BYTE, IndexFormat, indexSize, MinFilterMode, Pipeline, PrimitiveType,
+  AddressMode, Buffer, BufferType, CompareFunc, CullMode, FilterMode, GL_UNSIGNED_BYTE, IndexFormat, MinFilterMode, Pipeline, PrimitiveType,
   RenderingDevice, RenderPassContext, SamplerDescriptor, Texture, TexType, UniformFormat, UniformLayoutDescriptor, UniformType,
   UniformValuesDescriptor, VertexBufferLayoutDescriptor, VertexFormat, vertexSize
 } from '../device';

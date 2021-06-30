@@ -23,7 +23,7 @@ export function getBaseUrl(url: string): string {
     return '';
   }
 
-  const parts = url.split('/');
+  const parts = url.split(/[?#]/)[0].split('/');
   parts.pop();
   return parts.length ? parts.join('/') + '/' : '';
 }
