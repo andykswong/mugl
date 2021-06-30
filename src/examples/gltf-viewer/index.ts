@@ -1,8 +1,8 @@
 import { mat4, vec3 } from 'gl-matrix';
 import { getGLDevice } from '../../gl2';
 import { getNanoGLDevice } from '../../nano';
-import { ResolvedGlTF, renderGlTF, resolveGlTF } from '../../gltf';
-import { getSceneExtents, updateGlTFNodes } from '../../gltf/gltf-utils';
+import { ResolvedGlTF, renderGlTF, resolveGlTF, updateGlTF } from '../../gltf';
+import { getSceneExtents } from '../../gltf/gltf-utils';
 
 const urlParams = new URLSearchParams(window.location.search);
 const canvas: HTMLCanvasElement = document.querySelector('canvas')!;
@@ -69,7 +69,7 @@ function getDefaultCamera(glTF: ResolvedGlTF, sceneId: number, aspectRatio: numb
   const camPos = vec3.fromValues(1, 2, 2);
   vec3.normalize(camPos, camPos);
 
-  updateGlTFNodes(glTF, sceneId);
+  updateGlTF(glTF, { scene: sceneId });
   const [min, max] = getSceneExtents(vec3.create(), vec3.create(), glTF, sceneId);
 
   const maxAxisLength = Math.max(max[0] - min[0], max[1] - min[1]);

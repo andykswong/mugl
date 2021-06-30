@@ -18,8 +18,8 @@ struct NormalInfo {
 
 NormalInfo getNormalInfo(vec3 v) {
   vec2 UV = getTexCoord(normalTexture);
-  vec3 uvDx = dFdx(vec3(UV, 0.0));
-  vec3 uvDy = dFdy(vec3(UV, 0.0));
+  vec3 uvDx = dFdx(vec3(UV, 0.));
+  vec3 uvDy = dFdy(vec3(UV, 0.));
 
   vec3 t_ = (uvDy.t * dFdx(v) - uvDx.t * dFdy(v)) / (uvDx.s * uvDy.t - uvDy.s * uvDx.t);
 
@@ -40,15 +40,15 @@ NormalInfo getNormalInfo(vec3 v) {
 #endif
 
   if (gl_FrontFacing == false) {
-    t *= -1.0;
-    b *= -1.0;
-    ng *= -1.0;
+    t *= -1.;
+    b *= -1.;
+    ng *= -1.;
   }
 
   n = ng;
-  if (normalTexture.texCoord >= 0.0) {
-    n = texture(normalTexture).rgb * 2.0 - vec3(1.0);
-    n *= vec3(normalTexture.scale, normalTexture.scale, 1.0);
+  if (normalTexture.texCoord >= 0.) {
+    n = texture(normalTexture).rgb * 2. - vec3(1.);
+    n *= vec3(normalTexture.scale, normalTexture.scale, 1.);
     n = mat3(t, b, ng) * normalize(n);
   }
 

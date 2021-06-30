@@ -9,7 +9,7 @@ struct TextureInfo {
 };
 
 vec2 getTexCoord(TextureInfo tex) {
-  return mix(vTexCoord0, vTexCoord1, step(1.0, tex.texCoord));
+  return mix(vTexCoord0, vTexCoord1, step(1., tex.texCoord));
 }
 
 vec4 texture(TextureInfo tex) {
@@ -17,6 +17,6 @@ vec4 texture(TextureInfo tex) {
 }
 
 vec4 texture(TextureInfo tex, vec4 defaultValue) {
-  return mix(defaultValue, texture2D(tex.tex, getTexCoord(tex)), step(0.0, tex.texCoord));
+  return mix(defaultValue, texture2D(tex.tex, getTexCoord(tex)), step(0., tex.texCoord));
 }
 `;

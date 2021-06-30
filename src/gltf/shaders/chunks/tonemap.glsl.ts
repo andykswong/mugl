@@ -2,7 +2,7 @@ export default `
 const float GAMMA = 2.2;
 
 vec3 linearTosRGB(vec3 color) {
-  return pow(color, vec3(1.0/GAMMA));
+  return pow(color, vec3(1./GAMMA));
 }
 
 vec3 sRGBToLinear(vec3 srgbIn) {

@@ -2,17 +2,16 @@
 
 import { mat3, mat4, vec3 } from 'gl-matrix';
 import {
-  AddressMode, Buffer, BufferType, CompareFunc, CullMode, FilterMode, IndexFormat, indexSize, MinFilterMode, Pipeline, PrimitiveType,
+  AddressMode, Buffer, BufferType, CompareFunc, CullMode, FilterMode, GL_UNSIGNED_BYTE, IndexFormat, indexSize, MinFilterMode, Pipeline, PrimitiveType,
   RenderingDevice, RenderPassContext, SamplerDescriptor, Texture, TexType, UniformFormat, UniformLayoutDescriptor, UniformType,
-  UniformValuesDescriptor, VertexBufferLayoutDescriptor, VertexFormat
+  UniformValuesDescriptor, VertexBufferLayoutDescriptor, VertexFormat, vertexSize
 } from '../device';
-
-import { GL_FLOAT, GL_UNSIGNED_BYTE, GL_UNSIGNED_SHORT } from '../device';
-import { GlTF, MeshPrimitive, Node } from './spec/glTF2';
+import { Accessor, GlTF, MeshPrimitive, Node } from './spec/glTF2';
 import { ResolvedGlTF } from './types';
-import { getCameraProjection, getExtras, updateGlTFNodes } from './gltf-utils';
+import { getCameraProjection, getExtras, getAccessorVertexFormat } from './gltf-utils';
 import primitiveVert from './shaders/primitive.vert';
 import pbrFrag from './shaders/pbr.frag';
+import { updateGlTF } from './update';
 
 const I4 = mat4.create();
 const Z3 = vec3.create();
@@ -46,14 +45,16 @@ export interface RenderGlTFOptions {
  * @param options optional rendering options
  */
 export function renderGlTF(device: RenderingDevice, glTF: ResolvedGlTF, options: RenderGlTFOptions = {}): void {
+  const scene = (options.scene ?? glTF.scene) || 0;
   const nodes = glTF.nodes;
-  const rootNodes = glTF.scenes?.[(options.scene ?? glTF.scene) || 0]?.nodes;
+  const rootNodes = glTF.scenes?.[scene]?.nodes;
   if (!nodes || !rootNodes) {
     return; // Nothing to render
   }
 
-  const activeNodes = updateGlTFNodes(glTF);
+  const activeNodes = updateGlTF(glTF, { scene });
 
+  // Get camera matrices
   let view = I4;
   let proj = I4;
   let cameraPosition = Z3;
@@ -74,11 +75,9 @@ export function renderGlTF(device: RenderingDevice, glTF: ResolvedGlTF, options:
 
   const viewProj = mat4.mul(tmpViewProj, proj, view);
 
-  const env: UniformValuesDescriptor = {
-    cameraPosition,
-    viewProj,
-  };
+  const env: UniformValuesDescriptor = { cameraPosition, viewProj, };
 
+  // Render all active nodes
   const pass = device.pass();
   const context = device.render(pass);
   for (let i = 0; i < activeNodes.length; ++i) {
@@ -121,7 +120,7 @@ function renderGlTFNode(
       ...loadMaterialUniforms(device, glTF, primitive.material)
     };
 
-    if (primitive.targets?.length) {
+    if (primitive.targets) {
       uniforms['targetWeights'] = node.weights || mesh.weights || [0, 0, 0, 0, 0, 0, 0, 0];
     }
 
@@ -154,16 +153,14 @@ function renderGlTFNode(
     }
 
     // Bind index buffer
-    {
-      const accessor = glTF.accessors?.[primitive.indices!];
-      if (accessor) {
-        const indexBuffer = loadGPUBuffer(device, glTF, primitive.indices, BufferType.Index);
-        if (indexBuffer) {
-          context.index(indexBuffer);
-          vertexCount = accessor.count;
-          offset = (accessor.byteOffset || 0) / indexSize(pipeline.indexFormat);
-          indexed = true;
-        }
+    const indexAccessor = glTF.accessors?.[primitive.indices!];
+    if (indexAccessor) {
+      const indexBuffer = loadGPUBuffer(device, glTF, primitive.indices, BufferType.Index);
+      if (indexBuffer) {
+        context.index(indexBuffer);
+        vertexCount = indexAccessor.count;
+        offset = <number>getExtras(indexAccessor).byteOffset || 0;
+        indexed = true;
       }
     }
 
@@ -226,6 +223,9 @@ function loadGPUPipeline(device: RenderingDevice, glTF: GlTF, meshId: number, pr
   for (const buffer of buffers) {
     for (const attr of buffer.attrs) {
       defines.push(`USE_${attr.name}`);
+      if (attr.name === 'COLOR_0' && vertexSize(attr.format) === 3) {
+        defines.push('COLOR_0_VEC3');
+      }
     }
   }
   if (normNumJoints > 0) {
@@ -237,11 +237,10 @@ function loadGPUPipeline(device: RenderingDevice, glTF: GlTF, meshId: number, pr
   if (normNumJoints > 0) {
     additionalUniforms['jointMatrix'] = { type: UniformType.Value, format: UniformFormat.Mat4 };
   }
-  if (primitive.targets?.length) {
+  if (primitive.targets) {
     additionalUniforms['targetWeights'] = { type: UniformType.Value, format: UniformFormat.Float };
   }
 
-  // TODO: Cache unique pipeline combinations
   pipeline = getExtras(primitive).pipeline = pipelines[pipelineKey] = device.pipeline({
     vert: defineStr + primitiveVert,
     frag: defineStr + pbrFrag,
@@ -285,51 +284,66 @@ function loadGPUPipeline(device: RenderingDevice, glTF: GlTF, meshId: number, pr
 }
 
 function getVertexBufferLayouts(glTF: GlTF, primitive: MeshPrimitive): VertexBufferLayoutDescriptor[] {
+  const bufferIdMap: Record<string, number> = {};
   const buffers: VertexBufferLayoutDescriptor[] = [];
-
-  function pushAccessor(name: string, shaderLoc: number, bufferViewId: number, format: VertexFormat, stride: number | undefined, offset = 0) {
-    const alignment = stride || 4;
-    const alignedOffset = (offset || 0) % alignment;
-    // TODO: combine interleaved buffers
-    buffers.push({ attrs: [{ name, format, offset: alignedOffset, shaderLoc }], stride });
-  }
-
   let shaderLoc = 0;
-  const ATTRIBUTES = ['POSITION', 'NORMAL', 'TANGENT', 'TEXCOORD_0', 'TEXCOORD_1', 'COLOR_0', 'JOINTS_0', 'WEIGHTS_0'];
-  for (const name of ATTRIBUTES) {
-    const accessor = glTF.accessors?.[primitive.attributes[name]];
-    if (!accessor) {
-      continue;
-    }
-    // TODO: handle accessor sparse storage
-    const bufferView = glTF.bufferViews?.[accessor.bufferView!];
-    if (!bufferView) {
-      continue;
+
+  function getBufferLayoutDescriptor(accessor: Accessor): VertexBufferLayoutDescriptor {
+    if (!accessor.sparse) {
+      const buffer = <Uint8Array>getExtras(accessor).buffer;
+      const bufferKey = `${accessor.bufferView},${buffer.byteOffset},${buffer.byteLength}`;
+
+      if (bufferKey in bufferIdMap) {
+        return buffers[bufferIdMap[bufferKey]];
+      }
+
+      bufferIdMap[bufferKey] = buffers.length;
     }
 
-    const format = getVertexFormat(accessor.type, accessor.componentType, accessor.normalized);
-    if (!format) {
-      // TODO: Support all formats?
-      continue;
-    }
+    const bufferLayout = {
+      attrs: [],
+      stride: glTF.bufferViews?.[accessor.bufferView!]?.byteStride
+    };
+    buffers.push(bufferLayout);
 
-    pushAccessor(name, shaderLoc++, accessor.bufferView!, format, bufferView.byteStride, accessor.byteOffset);
+    return bufferLayout;
   }
 
+  // Standard attributes
+  for (const name of ['POSITION', 'NORMAL', 'TANGENT', 'TEXCOORD_0', 'TEXCOORD_1', 'COLOR_0', 'JOINTS_0', 'WEIGHTS_0']) {
+    const accessor = glTF.accessors?.[primitive.attributes[name]];
+    if (accessor) {
+      const format = getAccessorVertexFormat(accessor);
+      if (!format) {
+        // TODO: Support all formats?
+        continue;
+      }
+
+      getBufferLayoutDescriptor(accessor).attrs.push({ 
+        name,
+        format,
+        shaderLoc,
+        offset: <number>getExtras(accessor).byteOffset || 0
+      });
+      shaderLoc++;
+    }
+  }
+
+  // Morph target attributes
   if (primitive.targets) {
     const TARGET_ATTRIBUTES = ['POSITION', 'NORMAL', 'TANGENT'];
     for (let i = 0; i < primitive.targets.length; ++i) {
       for (const name of TARGET_ATTRIBUTES) {
         const accessor = glTF.accessors?.[primitive.targets[i][name]];
-        if (!accessor) {
-          continue;
+        if (accessor) {
+          getBufferLayoutDescriptor(accessor).attrs.push({ 
+            name: `TARGET_${name}_${i}`,
+            format: VertexFormat.Float3,
+            shaderLoc,
+            offset: <number>getExtras(accessor).byteOffset || 0
+          });
+          shaderLoc++;
         }
-        // TODO: handle accessor sparse storage
-        const bufferView = glTF.bufferViews?.[accessor.bufferView!];
-        if (!bufferView) {
-          continue;
-        }
-        pushAccessor(`TARGET_${name}_${i}`, shaderLoc++, accessor.bufferView!, VertexFormat.Float3, bufferView.byteStride, accessor.byteOffset);
       }
     }
   }
@@ -364,7 +378,7 @@ function loadMaterialUniforms(device: RenderingDevice, glTF: GlTF, materialId: n
       env[`${name}.tex`] = loadGPUTexture(device, glTF, obj[name].index);
       env[`${name}.texCoord`] = obj[name].texCoord || 0;
       if (scaleField) {
-        env[`${name}.scale`] = obj[name][scaleField] || 0;
+        env[`${name}.scale`] = obj[name][scaleField] || env[`${name}.scale`];
       }
     }
   }
@@ -374,9 +388,7 @@ function loadMaterialUniforms(device: RenderingDevice, glTF: GlTF, materialId: n
     if (material.pbrMetallicRoughness) {
       const pbr = material.pbrMetallicRoughness;
 
-      if (pbr.baseColorFactor) {
-        env.baseColorFactor = pbr.baseColorFactor;
-      }
+      env.baseColorFactor = pbr.baseColorFactor || env.baseColorFactor;
       if (pbr.metallicFactor || pbr.metallicFactor === 0) {
         env.metallicFactor = pbr.metallicFactor;
       }
@@ -389,9 +401,8 @@ function loadMaterialUniforms(device: RenderingDevice, glTF: GlTF, materialId: n
     }
 
     env.alphaCutoff = material.alphaCutoff || 0;
-    if (material.emissiveFactor) {
-      env.emissiveFactor = material.emissiveFactor;
-    }
+    env.emissiveFactor = material.emissiveFactor || env.emissiveFactor;
+
     setTexture(material, 'emissiveTexture');
     setTexture(material, 'occlusionTexture', 'strength');
     setTexture(material, 'normalTexture', 'scale');
@@ -406,42 +417,46 @@ function loadGPUBuffer(device: RenderingDevice, glTF: GlTF, accessorId: number |
     return null;
   }
 
-  // TODO: handle accessor sparse storage
+  // sparse accessor uses its own buffer
+  // ubyte index is not supported in mugl, thus also uses its own widened buffer
+  const isUByteIndex = targetHint === BufferType.Index && accessor.componentType === GL_UNSIGNED_BYTE;
+  if (accessor.sparse || isUByteIndex) {
+    let gpuBuffer: Buffer | null = <Buffer>getExtras(accessor).gpuBuffer;
+    if (!gpuBuffer) {
+      let data: ArrayBufferView = <Uint8Array>getExtras(accessor).buffer;
+      if (isUByteIndex) {
+        const widenedData = new Uint16Array(data.byteLength);
+        for (let i = 0; i < data.byteLength; ++i) {
+          widenedData[i] = (<Uint8Array>data)[i];
+        }
+        data = widenedData;
+      }
+
+      gpuBuffer = getExtras(accessor).gpuBuffer =
+        device.buffer({ type: targetHint, size: data.byteLength }).data(data);
+    }
+    return gpuBuffer;
+  }
+
+  // Other accessors must have buffer view
   const bufferView = glTF.bufferViews?.[accessor.bufferView!];
   if (!bufferView) {
     return null;
   }
 
-  const data = <Uint8Array>getExtras(bufferView).bufferView;
+  // Vertex buffers are splitted to optimize for pipeline sharing, but we want to share them if possible
+  const gpuBuffers: Record<string, Buffer> = getExtras(bufferView).gpuBuffers =
+    <Record<string, Buffer>>getExtras(bufferView).gpuBuffers || {};
 
-  // Index buffer can be easily shared
-  if (targetHint === BufferType.Index) {
-    let gpuBuffer: Buffer | null = <Buffer>getExtras(bufferView).gpuBuffer;
-    if (gpuBuffer) {
-      return gpuBuffer;
-    }
-
-    gpuBuffer = getExtras(bufferView).gpuBuffer =
-      device.buffer({ type: <BufferType>bufferView.target || targetHint, size: bufferView.byteLength }).data(data);
-    return gpuBuffer;
-  }
-
-  // Vertex buffers need to be splitted to optimize for pipeline sharing
-  const gpuBuffers: Record<string, Buffer> = getExtras(bufferView).gpuBuffers = <Record<string, Buffer>>getExtras(bufferView).gpuBuffers || {};
-  const alignment = bufferView.byteStride || 4;
-  const alignedAttrOffset = (accessor.byteOffset || 0) % alignment;
-  const bufferOffset = (accessor.byteOffset || 0) - alignedAttrOffset;
-  const bufferLength = accessor.count * getVertexByteSize(accessor.type, accessor.componentType);
-  const bufferKey = `${bufferOffset},${bufferLength}`;
+  const buffer = <Uint8Array>getExtras(accessor).buffer;
+  const bufferKey = `${buffer.byteOffset},${buffer.byteLength}`;
 
   if (gpuBuffers[bufferKey]) {
     return gpuBuffers[bufferKey];
   }
 
-  const alignedBufferView = new Uint8Array(data.buffer, (data.byteOffset || 0) + bufferOffset, bufferLength);
-  const gpuBuffer = gpuBuffers[bufferKey] =
-      device.buffer({ type: <BufferType>bufferView.target || targetHint, size: bufferLength }).data(alignedBufferView);
-  return gpuBuffer;
+  return gpuBuffers[bufferKey] =
+      device.buffer({ type: <BufferType>bufferView.target || targetHint, size: buffer.byteLength }).data(buffer);
 }
 
 function loadGPUTexture(device: RenderingDevice, glTF: GlTF, textureId: number): Texture {
@@ -500,7 +515,7 @@ function loadGPUTexture(device: RenderingDevice, glTF: GlTF, textureId: number):
   gpuTexture = getExtras(texture).texture = device.texture({
     size: img ? [img.naturalWidth, img.naturalHeight] : [1, 1]
   }, samplerDesc);
-  gpuTexture.data(img ? img : new Uint8Array([1, 1, 1, 1]));
+  gpuTexture.data(img ? img : new Uint8Array([255, 255, 255, 255]));
 
   return gpuTexture;
 }
@@ -516,39 +531,4 @@ function loadBlankGPUTexture(device: RenderingDevice, glTF: GlTF): Texture {
     device.texture({ size: [1, 1] }).data(new Uint8Array([255, 255, 255, 255]));
 
   return gpuTexture;
-}
-
-function getVertexFormat(accessorType: string, componentType: number, normalized = false): VertexFormat | null {
-  switch (accessorType) {
-    case 'VEC2':
-      if (componentType === GL_FLOAT) {
-        return VertexFormat.Float2;
-      } else if (componentType === GL_UNSIGNED_SHORT) {
-        return normalized ? VertexFormat.UShort2N : VertexFormat.UShort2;
-      }
-      // TODO: Unsupported UNSIGNED_BYTE 2/2
-      break;
-    case 'VEC3':
-      if (componentType === GL_FLOAT) {
-        return VertexFormat.Float3;
-      }
-      // TODO: Unsupported UChar/UShort 3
-      break;
-    case 'VEC4':
-      if (componentType === GL_FLOAT) {
-        return VertexFormat.Float4;
-      } else if (componentType === GL_UNSIGNED_BYTE) {
-        return normalized ? VertexFormat.UChar4N : VertexFormat.UChar4;
-      } else if (componentType === GL_UNSIGNED_SHORT) {
-        return normalized ? VertexFormat.UShort4N : VertexFormat.UShort4;
-      }
-      break;
-  }
-  return null;
-}
-
-function getVertexByteSize(accessorType: string, componentType: number): number {
-  const length = (accessorType === 'VEC2' ? 2 : accessorType === 'VEC3' ? 3 : accessorType === 'VEC4' ? 4 : 0);
-  const size = (componentType === GL_FLOAT ? 4 : componentType === GL_UNSIGNED_SHORT ? 2 : componentType === GL_UNSIGNED_BYTE ? 1 : 0);
-  return length * size;
 }

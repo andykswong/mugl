@@ -6,3 +6,4 @@
 export * from './render';
 export * from './resolve';
 export * from './types';
+export * from './update';

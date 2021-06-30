@@ -1,4 +1,4 @@
-import { Buffer, BufferView, Extras, GlTF, Image } from './spec/glTF2';
+import { Accessor, Buffer, BufferView, Extras, GlTF, Image } from './spec/glTF2';
 
 /**
  * Specifies a GlTF file, either by URI, or the GlTF JSON content (and optionally binary chunk for GLB).
@@ -36,6 +36,21 @@ export interface GlTFResourceLoader {
 }
 
 /**
+ * A GlTF accessor object with buffer data resolved and stored in extra.buffer.
+ */
+ export type ResolvedAccessor = Accessor & {
+  extras: Extras & {
+    /** The byte offset into the resolved buffer. This is for alignment with buffer stride size for buffer sharing. */
+    byteOffset: number;
+
+    /**
+     * The resolved buffer data, which can be a view of underlying buffer, or a new buffer for sparse data.
+     */
+    buffer: Uint8Array;
+  };
+}
+
+/**
  * A GlTF buffer object with the buffer data resolved and stored in extra.buffer.
  */
 export type ResolvedBuffer = Buffer & {
@@ -46,12 +61,12 @@ export type ResolvedBuffer = Buffer & {
 }
 
 /**
- * A GlTF bufferView object with the buffer data resolved and stored in extra.bufferView.
+ * A GlTF bufferView object with the buffer data resolved and stored in extra.buffer.
  */
  export type ResolvedBufferView = BufferView & {
   extras: Extras & {
     /** The resolved buffer data */
-    bufferView: Uint8Array;
+    buffer: Uint8Array;
   };
 }
 
@@ -59,6 +74,11 @@ export type ResolvedBuffer = Buffer & {
  * Resolved GlTF buffers.
  */
 export interface ResolvedBuffers {
+  /**
+   * An array of accessors
+   */
+  accessors: [ResolvedAccessor, ...ResolvedAccessor[]];
+
   /**
    * An array of buffers.
    */

@@ -7,11 +7,12 @@ uniform mat4 model;
 uniform mat4 viewProj;
 uniform mat3 normalMatrix;
 
-#if defined(USE_COLOR_VEC4)
-attribute vec4 COLOR_0;
-varying vec4 vColor0;
-#elif defined(USE_COLOR_VEC3)
+#ifdef USE_COLOR_0
+#if defined(COLOR_0_VEC3)
 attribute vec3 COLOR_0;
+#else
+attribute vec4 COLOR_0;
+#endif
 varying vec4 vColor0;
 #endif
 
@@ -97,10 +98,12 @@ void main(void) {
 #endif
 #endif
 
-#if defined(USE_COLOR_VEC4)
-  vColor0 = COLOR_0;
-#elif defined(USE_COLOR_VEC3)
+#ifdef USE_COLOR_0
+#if defined(COLOR_0_VEC3)
   vColor0 = vec4(COLOR_0, 1.0);
+#else
+  vColor0 = COLOR_0;
+#endif
 #endif
 
   vTexCoord0 = vec2(0.0, 0.0);

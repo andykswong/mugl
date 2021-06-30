@@ -1,12 +1,11 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 
-import { mat4, quat, vec3 } from 'gl-matrix';
-import { Accessor, Camera, Extras, GlTF, GlTFProperty, Node, Skin } from './spec/glTF2';
+import { mat4, vec3 } from 'gl-matrix';
+import { GL_BYTE, GL_FLOAT, GL_SHORT, GL_UNSIGNED_BYTE, GL_UNSIGNED_INT, GL_UNSIGNED_SHORT, VertexFormat } from '../device';
+import { Accessor, Camera, Extras, GlTF, GlTFProperty, Skin } from './spec/glTF2';
+import { ResolvedGlTF } from './types';
 
 const I4 = mat4.create();
-const Iq = quat.create();
-const S3 = vec3.fromValues(1, 1, 1);
-const Z3 = vec3.create();
 
 /**
  * Get the extras object of a property, creating a new object if not exist.
@@ -37,82 +36,66 @@ export function getCameraProjection(out: mat4, camera: Camera | undefined, aspec
   return out;
 }
 
+/** Get the vertex format of an accessor. */
+export function getAccessorVertexFormat(accessor: Accessor): VertexFormat | null {
+  switch (accessor.type) {
+    case 'VEC2':
+      if (accessor.componentType === GL_FLOAT) {
+        return VertexFormat.Float2;
+      } else if (accessor.componentType === GL_UNSIGNED_SHORT) {
+        return accessor.normalized ? VertexFormat.UShort2N : VertexFormat.UShort2;
+      }
+      // TODO: Unsupported UNSIGNED_BYTE 2/2
+      break;
+    case 'VEC3':
+      if (accessor.componentType === GL_FLOAT) {
+        return VertexFormat.Float3;
+      }
+      // TODO: Unsupported UChar/UShort 3
+      break;
+    case 'VEC4':
+      if (accessor.componentType === GL_FLOAT) {
+        return VertexFormat.Float4;
+      } else if (accessor.componentType === GL_UNSIGNED_BYTE) {
+        return accessor.normalized ? VertexFormat.UChar4N : VertexFormat.UChar4;
+      } else if (accessor.componentType === GL_UNSIGNED_SHORT) {
+        return accessor.normalized ? VertexFormat.UShort4N : VertexFormat.UShort4;
+      }
+      break;
+  }
+  return null;
+}
+
+/** Get the element byte size of an accessor. */
+export function getAccessorElementSize(accessor: Accessor): number {
+  let length = 0;
+  switch (accessor.type) {
+    case 'SCALAR': length = 1; break;
+    case 'VEC2': length = 2; break;
+    case 'VEC3': length = 3; break;
+    case 'VEC4':
+    case 'MAT2': length = 4; break;
+    case 'MAT3': length = 9; break;
+    case 'MAT4': length = 16; break;
+  }
+
+  let size = 0;
+  switch (accessor.componentType) {
+    case GL_BYTE:
+    case GL_UNSIGNED_BYTE: size = 1; break;
+    case GL_SHORT:
+    case GL_UNSIGNED_SHORT: size = 2; break;
+    case GL_UNSIGNED_INT:
+    case GL_FLOAT: size = 4; break;
+  }
+
+  return length * size;
+}
+
 /**
- * Update model matrices for a GlTF scene and returns the active nodes.
+ * Get the inverse bind matrices of a skin.
  */
-export function updateGlTFNodes(glTF: GlTF, sceneId = glTF.scene || 0): number[] {
-  let activeNodes: number[] = [];
-  const rootNodes = glTF.scenes?.[sceneId]?.nodes;
-  if (rootNodes) {
-    for (let i = 0; i < rootNodes.length; ++i) {
-      updateGlTFNode(glTF, rootNodes[i], I4, activeNodes);
-    }
-  }
-  activeNodes = activeNodes.sort().filter((n, i, a) => (i === a.indexOf(n)));
-
-  // Update Skin
-  const activeSkinned: Node[] = [];
-  for (const nodeId of activeNodes) {
-    const node = glTF.nodes![nodeId];
-    if (glTF.skins?.[node.skin!]) {
-      activeSkinned.push(node);
-    }
-  }
-  for (const node of activeSkinned) {
-    const skin = glTF.skins![node.skin!];
-    const numJoints = skin.joints.length;
-    const jointMatrix = getExtras(node).jointMatrix = <Float32Array>getExtras(node).jointMatrix || new Float32Array(numJoints * 16);
-    const inverseBindMatrices = getInverseBindMatrices(glTF, skin);
-    for (let i = 0; i < numJoints; ++i) {
-      const jointNode = glTF.nodes![skin.joints[i]];
-      const jointModel = (jointNode && <mat4>getExtras(jointNode).model) || I4;
-      const jointMat = new Float32Array(jointMatrix.buffer, jointMatrix.byteOffset + 16 * 4 * i, 16);
-
-      mat4.invert(jointMat, <mat4>getExtras(node).model || I4);
-      mat4.mul(jointMat, jointMat, jointModel);
-      mat4.mul(jointMat, jointMat, new Float32Array(inverseBindMatrices.buffer, inverseBindMatrices.byteOffset + 16 * 4 * i, 16));
-    }
-  }
-
-  return activeNodes;
-}
-
-function updateGlTFNode(glTF: GlTF, nodeId: number, origin: mat4, activeNodes: number[] | null = null): void {
-  const node = glTF.nodes?.[nodeId];
-  if (!node) {
-    return; // Skip invalid node
-  }
-  activeNodes?.push(nodeId);
-
-  // Update local matrix
-  const matrix = getExtras(node).matrix = <mat4>getExtras(node).matrix || mat4.create();
-  if (node.matrix) {
-    mat4.copy(matrix, node.matrix);
-  } else if (node.rotation || node.scale || node.translation) {
-    mat4.fromRotationTranslationScale(matrix, node.rotation || Iq, node.translation || Z3, node.scale || S3);
-  }
-
-  // Update model matrix
-  const model = getExtras(node).model = <mat4>getExtras(node).model || mat4.create();
-  mat4.mul(model, origin, matrix);
-
-  // Update camera view
-  const camera = glTF.cameras?.[node.camera!];
-  if (camera) {
-    const view = getExtras(camera).view = <mat4>getExtras(camera).view || mat4.create();
-    mat4.invert(view, model);
-    const translation = getExtras(camera).translation = <vec3>getExtras(camera).translation || vec3.create();
-    vec3.set(translation, model[12], model[13], model[14]);
-  }
-
-  if (node.children) {
-    for (const child of node.children) {
-      updateGlTFNode(glTF, child, model, activeNodes);
-    }
-  }
-}
-
-function getInverseBindMatrices(glTF: GlTF, skin: Skin): Float32Array {
+export function getInverseBindMatrices(glTF: ResolvedGlTF, skin: Skin): Float32Array {
   let matrices = <Float32Array>getExtras(skin).inverseBindMatrices;
   if (!matrices) {
     const accessor = glTF.accessors?.[skin.inverseBindMatrices!];
@@ -120,7 +103,7 @@ function getInverseBindMatrices(glTF: GlTF, skin: Skin): Float32Array {
       // TODO: handle accessor sparse storage
       const bufferView = glTF.bufferViews?.[accessor.bufferView!];
       if (bufferView) {
-        const data = <Uint8Array>getExtras(bufferView).bufferView;
+        const data = <Uint8Array>getExtras(bufferView).buffer;
         matrices = new Float32Array(data.buffer, data.byteOffset + (accessor.byteOffset || 0), accessor.count * 16);
       }
     }
@@ -179,18 +162,18 @@ export function getSceneExtents(outMin: vec3, outMax: vec3, glTF: GlTF, sceneId:
   return [outMin, outMax];
 }
 
-function getAccessorExtents(outMin: vec3, outMax: vec3, accessor: Accessor, model: mat4) {
-  const boxMin = vec3.create();
-  vec3.transformMat4(boxMin, <vec3>accessor.min, model);
+const boxMin = vec3.create();
+const boxMax = vec3.create();
+const center = vec3.create();
+const centerToSurface = vec3.create();
 
-  const boxMax = vec3.create();
+function getAccessorExtents(outMin: vec3, outMax: vec3, accessor: Accessor, model: mat4) {
+  vec3.transformMat4(boxMin, <vec3>accessor.min, model);
   vec3.transformMat4(boxMax, <vec3>accessor.max, model);
 
-  const center = vec3.create();
   vec3.add(center, boxMax, boxMin);
   vec3.scale(center, center, 0.5);
 
-  const centerToSurface = vec3.create();
   vec3.sub(centerToSurface, boxMax, center);
 
   const radius = vec3.length(centerToSurface);
