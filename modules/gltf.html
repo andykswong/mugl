@@ -83,12 +83,14 @@
 								<li class="tsd-kind-interface tsd-parent-kind-module"><a href="../interfaces/gltf.rendergltfoptions.html" class="tsd-kind-icon">Render<wbr>GlTFOptions</a></li>
 								<li class="tsd-kind-interface tsd-parent-kind-module"><a href="../interfaces/gltf.resolvedbuffers.html" class="tsd-kind-icon">Resolved<wbr>Buffers</a></li>
 								<li class="tsd-kind-interface tsd-parent-kind-module"><a href="../interfaces/gltf.resolvedimages.html" class="tsd-kind-icon">Resolved<wbr>Images</a></li>
+								<li class="tsd-kind-interface tsd-parent-kind-module"><a href="../interfaces/gltf.updategltfoptions.html" class="tsd-kind-icon">Update<wbr>GlTFOptions</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Type aliases</h3>
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-type-alias tsd-parent-kind-module"><a href="gltf.html#gltffile" class="tsd-kind-icon">GlTFFile</a></li>
+								<li class="tsd-kind-type-alias tsd-parent-kind-module"><a href="gltf.html#resolvedaccessor" class="tsd-kind-icon">Resolved<wbr>Accessor</a></li>
 								<li class="tsd-kind-type-alias tsd-parent-kind-module"><a href="gltf.html#resolvedbuffer" class="tsd-kind-icon">Resolved<wbr>Buffer</a></li>
 								<li class="tsd-kind-type-alias tsd-parent-kind-module"><a href="gltf.html#resolvedbufferview" class="tsd-kind-icon">Resolved<wbr>Buffer<wbr>View</a></li>
 								<li class="tsd-kind-type-alias tsd-parent-kind-module"><a href="gltf.html#resolvedgltf" class="tsd-kind-icon">Resolved<wbr>GlTF</a></li>
@@ -101,6 +103,7 @@
 								<li class="tsd-kind-function tsd-parent-kind-module"><a href="gltf.html#gltfresourcefetch" class="tsd-kind-icon">glTFResource<wbr>Fetch</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-module"><a href="gltf.html#rendergltf" class="tsd-kind-icon">render<wbr>GlTF</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-module"><a href="gltf.html#resolvegltf" class="tsd-kind-icon">resolve<wbr>GlTF</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="gltf.html#updategltf" class="tsd-kind-icon">update<wbr>GlTF</a></li>
 							</ul>
 						</section>
 					</div>
@@ -114,7 +117,7 @@
 					<div class="tsd-signature tsd-kind-icon">GlTFFile<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>binaryChunk<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">Uint8Array</span><span class="tsd-signature-symbol">; </span>glTF<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">GlTF</span><span class="tsd-signature-symbol">; </span>uri<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> }</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/andykswong/mugl/blob/754f771/src/gltf/types.ts#L6">src/gltf/types.ts:6</a></li>
+							<li>Defined in <a href="https://github.com/andykswong/mugl/blob/0b0c5e3/src/gltf/types.ts#L6">src/gltf/types.ts:6</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -138,12 +141,27 @@
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-parent-kind-module">
+					<a name="resolvedaccessor" class="tsd-anchor"></a>
+					<h3>Resolved<wbr>Accessor</h3>
+					<div class="tsd-signature tsd-kind-icon">Resolved<wbr>Accessor<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Accessor</span><span class="tsd-signature-symbol"> &amp; </span><span class="tsd-signature-symbol">{ </span>extras<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Extras</span><span class="tsd-signature-symbol"> &amp; </span><span class="tsd-signature-symbol">{ </span>buffer<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Uint8Array</span><span class="tsd-signature-symbol">; </span>byteOffset<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> }</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/andykswong/mugl/blob/0b0c5e3/src/gltf/types.ts#L41">src/gltf/types.ts:41</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>A GlTF accessor object with buffer data resolved and stored in extra.buffer.</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-parent-kind-module">
 					<a name="resolvedbuffer" class="tsd-anchor"></a>
 					<h3>Resolved<wbr>Buffer</h3>
 					<div class="tsd-signature tsd-kind-icon">Resolved<wbr>Buffer<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Buffer</span><span class="tsd-signature-symbol"> &amp; </span><span class="tsd-signature-symbol">{ </span>extras<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Extras</span><span class="tsd-signature-symbol"> &amp; </span><span class="tsd-signature-symbol">{ </span>buffer<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Uint8Array</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> }</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/andykswong/mugl/blob/754f771/src/gltf/types.ts#L41">src/gltf/types.ts:41</a></li>
+							<li>Defined in <a href="https://github.com/andykswong/mugl/blob/0b0c5e3/src/gltf/types.ts#L56">src/gltf/types.ts:56</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -155,15 +173,15 @@
 				<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-parent-kind-module">
 					<a name="resolvedbufferview" class="tsd-anchor"></a>
 					<h3>Resolved<wbr>Buffer<wbr>View</h3>
-					<div class="tsd-signature tsd-kind-icon">Resolved<wbr>Buffer<wbr>View<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">BufferView</span><span class="tsd-signature-symbol"> &amp; </span><span class="tsd-signature-symbol">{ </span>extras<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Extras</span><span class="tsd-signature-symbol"> &amp; </span><span class="tsd-signature-symbol">{ </span>bufferView<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Uint8Array</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> }</span></div>
+					<div class="tsd-signature tsd-kind-icon">Resolved<wbr>Buffer<wbr>View<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">BufferView</span><span class="tsd-signature-symbol"> &amp; </span><span class="tsd-signature-symbol">{ </span>extras<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Extras</span><span class="tsd-signature-symbol"> &amp; </span><span class="tsd-signature-symbol">{ </span>buffer<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Uint8Array</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> }</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/andykswong/mugl/blob/754f771/src/gltf/types.ts#L51">src/gltf/types.ts:51</a></li>
+							<li>Defined in <a href="https://github.com/andykswong/mugl/blob/0b0c5e3/src/gltf/types.ts#L66">src/gltf/types.ts:66</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>A GlTF bufferView object with the buffer data resolved and stored in extra.bufferView.</p>
+							<p>A GlTF bufferView object with the buffer data resolved and stored in extra.buffer.</p>
 						</div>
 					</div>
 				</section>
@@ -173,7 +191,7 @@
 					<div class="tsd-signature tsd-kind-icon">Resolved<wbr>GlTF<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">GlTF</span><span class="tsd-signature-symbol"> &amp; </span><a href="../interfaces/gltf.resolvedbuffers.html" class="tsd-signature-type" data-tsd-kind="Interface">ResolvedBuffers</a><span class="tsd-signature-symbol"> &amp; </span><a href="../interfaces/gltf.resolvedimages.html" class="tsd-signature-type" data-tsd-kind="Interface">ResolvedImages</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/andykswong/mugl/blob/754f771/src/gltf/types.ts#L96">src/gltf/types.ts:96</a></li>
+							<li>Defined in <a href="https://github.com/andykswong/mugl/blob/0b0c5e3/src/gltf/types.ts#L116">src/gltf/types.ts:116</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -188,7 +206,7 @@
 					<div class="tsd-signature tsd-kind-icon">Resolved<wbr>Image<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Image</span><span class="tsd-signature-symbol"> &amp; </span><span class="tsd-signature-symbol">{ </span>extras<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Extras</span><span class="tsd-signature-symbol"> &amp; </span><span class="tsd-signature-symbol">{ </span>image<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">HTMLImageElement</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> }</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/andykswong/mugl/blob/754f771/src/gltf/types.ts#L76">src/gltf/types.ts:76</a></li>
+							<li>Defined in <a href="https://github.com/andykswong/mugl/blob/0b0c5e3/src/gltf/types.ts#L96">src/gltf/types.ts:96</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -212,7 +230,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/andykswong/mugl/blob/754f771/src/gltf/resolve.ts#L37">src/gltf/resolve.ts:37</a></li>
+									<li>Defined in <a href="https://github.com/andykswong/mugl/blob/0b0c5e3/src/gltf/resolve.ts#L38">src/gltf/resolve.ts:38</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -229,7 +247,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/andykswong/mugl/blob/754f771/src/gltf/resolve.ts#L38">src/gltf/resolve.ts:38</a></li>
+									<li>Defined in <a href="https://github.com/andykswong/mugl/blob/0b0c5e3/src/gltf/resolve.ts#L39">src/gltf/resolve.ts:39</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -246,7 +264,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/andykswong/mugl/blob/754f771/src/gltf/resolve.ts#L39">src/gltf/resolve.ts:39</a></li>
+									<li>Defined in <a href="https://github.com/andykswong/mugl/blob/0b0c5e3/src/gltf/resolve.ts#L40">src/gltf/resolve.ts:40</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -272,7 +290,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/andykswong/mugl/blob/754f771/src/gltf/render.ts#L48">src/gltf/render.ts:48</a></li>
+									<li>Defined in <a href="https://github.com/andykswong/mugl/blob/0b0c5e3/src/gltf/render.ts#L47">src/gltf/render.ts:47</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -315,7 +333,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/andykswong/mugl/blob/754f771/src/gltf/resolve.ts#L10">src/gltf/resolve.ts:10</a></li>
+									<li>Defined in <a href="https://github.com/andykswong/mugl/blob/0b0c5e3/src/gltf/resolve.ts#L11">src/gltf/resolve.ts:11</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -333,6 +351,41 @@
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="gltf.html#resolvedgltf" class="tsd-signature-type" data-tsd-kind="Type alias">ResolvedGlTF</a><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+					<a name="updategltf" class="tsd-anchor"></a>
+					<h3>update<wbr>GlTF</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+						<li class="tsd-signature tsd-kind-icon">update<wbr>GlTF<span class="tsd-signature-symbol">(</span>glTF<span class="tsd-signature-symbol">: </span><a href="gltf.html#resolvedgltf" class="tsd-signature-type" data-tsd-kind="Type alias">ResolvedGlTF</a>, options<span class="tsd-signature-symbol">?: </span><a href="../interfaces/gltf.updategltfoptions.html" class="tsd-signature-type" data-tsd-kind="Interface">UpdateGlTFOptions</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/andykswong/mugl/blob/0b0c5e3/src/gltf/update.ts#L27">src/gltf/update.ts:27</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Update a GlTF scene and returns all active nodes of the scene.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>glTF: <a href="gltf.html#resolvedgltf" class="tsd-signature-type" data-tsd-kind="Type alias">ResolvedGlTF</a></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Resolve GlTF model</p>
+									</div>
+								</li>
+								<li>
+									<h5>options: <a href="../interfaces/gltf.updategltfoptions.html" class="tsd-signature-type" data-tsd-kind="Interface">UpdateGlTFOptions</a><span class="tsd-signature-symbol"> = {}</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span></h4>
+							<p>GlTF node indices for the scene</p>
 						</li>
 					</ul>
 				</section>
@@ -369,8 +422,14 @@
 					<li class=" tsd-kind-interface tsd-parent-kind-module">
 						<a href="../interfaces/gltf.resolvedimages.html" class="tsd-kind-icon">Resolved<wbr>Images</a>
 					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-module">
+						<a href="../interfaces/gltf.updategltfoptions.html" class="tsd-kind-icon">Update<wbr>GlTFOptions</a>
+					</li>
 					<li class=" tsd-kind-type-alias tsd-parent-kind-module">
 						<a href="gltf.html#gltffile" class="tsd-kind-icon">GlTFFile</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-parent-kind-module">
+						<a href="gltf.html#resolvedaccessor" class="tsd-kind-icon">Resolved<wbr>Accessor</a>
 					</li>
 					<li class=" tsd-kind-type-alias tsd-parent-kind-module">
 						<a href="gltf.html#resolvedbuffer" class="tsd-kind-icon">Resolved<wbr>Buffer</a>
@@ -392,6 +451,9 @@
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-module">
 						<a href="gltf.html#resolvegltf" class="tsd-kind-icon">resolve<wbr>GlTF</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="gltf.html#updategltf" class="tsd-kind-icon">update<wbr>GlTF</a>
 					</li>
 				</ul>
 			</nav>

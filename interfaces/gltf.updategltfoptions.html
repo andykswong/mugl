@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>DepthStateDescriptor | mugl</title>
+	<title>UpdateGlTFOptions | mugl</title>
 	<meta name="description" content="Documentation for mugl">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -55,13 +55,13 @@
 					<a href="../modules.html">mugl</a>
 				</li>
 				<li>
-					<a href="../modules/index.html">index</a>
+					<a href="../modules/gltf.html">gltf</a>
 				</li>
 				<li>
-					<a href="index.depthstatedescriptor.html">DepthStateDescriptor</a>
+					<a href="gltf.updategltfoptions.html">UpdateGlTFOptions</a>
 				</li>
 			</ul>
-			<h1>Interface DepthStateDescriptor</h1>
+			<h1>Interface UpdateGlTFOptions</h1>
 		</div>
 	</div>
 </header>
@@ -71,20 +71,15 @@
 			<section class="tsd-panel tsd-comment">
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<p>Descriptor of the depth state.</p>
+						<p>Options to update a GlTF model.</p>
 					</div>
-					<dl class="tsd-comment-tags">
-						<dt>see</dt>
-						<dd><p><a href="https://gpuweb.github.io/gpuweb/#dictdef-gpudepthstencilstatedescriptor">https://gpuweb.github.io/gpuweb/#dictdef-gpudepthstencilstatedescriptor</a></p>
-						</dd>
-					</dl>
 				</div>
 			</section>
 			<section class="tsd-panel tsd-hierarchy">
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">DepthStateDescriptor</span>
+						<span class="target">UpdateGlTFOptions</span>
 					</li>
 				</ul>
 			</section>
@@ -95,8 +90,7 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="index.depthstatedescriptor.html#compare" class="tsd-kind-icon">compare</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="index.depthstatedescriptor.html#writeenabled" class="tsd-kind-icon">write<wbr>Enabled</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="gltf.updategltfoptions.html#scene" class="tsd-kind-icon">scene</a></li>
 							</ul>
 						</section>
 					</div>
@@ -105,32 +99,17 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="compare" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> compare</h3>
-					<div class="tsd-signature tsd-kind-icon">compare<span class="tsd-signature-symbol">:</span> <a href="../modules/index.html#comparefunc-1" class="tsd-signature-type" data-tsd-kind="Variable">CompareFunc</a></div>
+					<a name="scene" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> scene</h3>
+					<div class="tsd-signature tsd-kind-icon">scene<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/andykswong/mugl/blob/0b0c5e3/src/device/descriptors.ts#L217">src/device/descriptors.ts:217</a></li>
+							<li>Defined in <a href="https://github.com/andykswong/mugl/blob/0b0c5e3/src/gltf/update.ts#L18">src/gltf/update.ts:18</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>Depth-compare function. Defaults to {@link CompareFunc.Always}</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="writeenabled" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> write<wbr>Enabled</h3>
-					<div class="tsd-signature tsd-kind-icon">write<wbr>Enabled<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/andykswong/mugl/blob/0b0c5e3/src/device/descriptors.ts#L214">src/device/descriptors.ts:214</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Depth-writes enabled? Defaults to false</p>
+							<p>The scene to scene. Defaults to the active scene specified by the model.</p>
 						</div>
 					</div>
 				</section>
@@ -142,10 +121,10 @@
 					<li class=" ">
 						<a href="../modules.html">Modules</a>
 					</li>
-					<li class=" tsd-kind-module">
+					<li class="current tsd-kind-module">
 						<a href="../modules/gltf.html">gltf</a>
 					</li>
-					<li class="current tsd-kind-module">
+					<li class=" tsd-kind-module">
 						<a href="../modules/index.html">index</a>
 					</li>
 					<li class=" tsd-kind-module">
@@ -155,21 +134,60 @@
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
+					<li class=" tsd-kind-interface tsd-parent-kind-module">
+						<a href="gltf.gltfresourceloader.html" class="tsd-kind-icon">GlTFResource<wbr>Loader</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-module">
+						<a href="gltf.rendergltfoptions.html" class="tsd-kind-icon">Render<wbr>GlTFOptions</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-module">
+						<a href="gltf.resolvedbuffers.html" class="tsd-kind-icon">Resolved<wbr>Buffers</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-module">
+						<a href="gltf.resolvedimages.html" class="tsd-kind-icon">Resolved<wbr>Images</a>
+					</li>
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-interface tsd-parent-kind-module">
-						<a href="index.depthstatedescriptor.html" class="tsd-kind-icon">Depth<wbr>State<wbr>Descriptor</a>
+						<a href="gltf.updategltfoptions.html" class="tsd-kind-icon">Update<wbr>GlTFOptions</a>
 						<ul>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="index.depthstatedescriptor.html#compare" class="tsd-kind-icon">compare</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="index.depthstatedescriptor.html#writeenabled" class="tsd-kind-icon">write<wbr>Enabled</a>
+								<a href="gltf.updategltfoptions.html#scene" class="tsd-kind-icon">scene</a>
 							</li>
 						</ul>
 					</li>
 				</ul>
 				<ul class="after-current">
+					<li class=" tsd-kind-type-alias tsd-parent-kind-module">
+						<a href="../modules/gltf.html#gltffile" class="tsd-kind-icon">GlTFFile</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-parent-kind-module">
+						<a href="../modules/gltf.html#resolvedaccessor" class="tsd-kind-icon">Resolved<wbr>Accessor</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-parent-kind-module">
+						<a href="../modules/gltf.html#resolvedbuffer" class="tsd-kind-icon">Resolved<wbr>Buffer</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-parent-kind-module">
+						<a href="../modules/gltf.html#resolvedbufferview" class="tsd-kind-icon">Resolved<wbr>Buffer<wbr>View</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-parent-kind-module">
+						<a href="../modules/gltf.html#resolvedgltf" class="tsd-kind-icon">Resolved<wbr>GlTF</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-parent-kind-module">
+						<a href="../modules/gltf.html#resolvedimage" class="tsd-kind-icon">Resolved<wbr>Image</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="../modules/gltf.html#gltfresourcefetch" class="tsd-kind-icon">glTFResource<wbr>Fetch</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="../modules/gltf.html#rendergltf" class="tsd-kind-icon">render<wbr>GlTF</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="../modules/gltf.html#resolvegltf" class="tsd-kind-icon">resolve<wbr>GlTF</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="../modules/gltf.html#updategltf" class="tsd-kind-icon">update<wbr>GlTF</a>
+					</li>
 				</ul>
 			</nav>
 		</div>
