@@ -17,12 +17,6 @@ struct NormalInfo {
 };
 
 NormalInfo getNormalInfo(vec3 v) {
-  vec2 UV = getTexCoord(normalTexture);
-  vec3 uvDx = dFdx(vec3(UV, 0.));
-  vec3 uvDy = dFdy(vec3(UV, 0.));
-
-  vec3 t_ = (uvDy.t * dFdx(v) - uvDx.t * dFdy(v)) / (uvDx.s * uvDy.t - uvDy.s * uvDx.t);
-
   vec3 n, t, b, ng;
 
 #ifdef USE_TANGENT
@@ -35,6 +29,11 @@ NormalInfo getNormalInfo(vec3 v) {
 #else
   ng = normalize(cross(dFdx(v), dFdy(v)));
 #endif
+  vec2 UV = getTexCoord(normalTexture);
+  vec3 uvDx = dFdx(vec3(UV, 0.));
+  vec3 uvDy = dFdy(vec3(UV, 0.));
+  vec3 t_ = (uvDy.t * dFdx(v) - uvDx.t * dFdy(v)) / (uvDx.s * uvDy.t - uvDy.s * uvDx.t);
+
   t = normalize(t_ - ng * dot(ng, t_));
   b = cross(ng, t);
 #endif
@@ -52,11 +51,11 @@ NormalInfo getNormalInfo(vec3 v) {
     n = mat3(t, b, ng) * normalize(n);
   }
 
-  NormalInfo info;
-  info.ng = ng;
-  info.t = t;
-  info.b = b;
-  info.n = n;
-  return info;
+  NormalInfo ni;
+  ni.ng = ng;
+  ni.t = t;
+  ni.b = b;
+  ni.n = n;
+  return ni;
 }
 `;

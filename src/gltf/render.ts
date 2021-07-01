@@ -8,7 +8,7 @@ import {
 } from '../device';
 import { Accessor, GlTF, MeshPrimitive, Node } from './spec/glTF2';
 import { ResolvedGlTF } from './types';
-import { getCameraProjection, getExtras, getAccessorVertexFormat } from './gltf-utils';
+import { getCameraProjection, getExtras, getAccessorVertexFormat, getAccessorData } from './gltf-utils';
 import primitiveVert from './shaders/primitive.vert';
 import pbrFrag from './shaders/pbr.frag';
 import { updateGlTF } from './update';
@@ -89,7 +89,7 @@ export function renderGlTF(device: RenderingDevice, glTF: ResolvedGlTF, options:
 
 function renderGlTFNode(
   device: RenderingDevice, context: RenderPassContext,
-  glTF: GlTF, node: Node, env: UniformValuesDescriptor
+  glTF: ResolvedGlTF, node: Node, env: UniformValuesDescriptor
 ): void {
   const mesh = glTF.meshes?.[node.mesh!];
   if (!mesh) {
@@ -173,7 +173,7 @@ function renderGlTFNode(
   }
 }
 
-function loadGPUPipeline(device: RenderingDevice, glTF: GlTF, meshId: number, primitiveId: number, numJoints = 0): Pipeline {
+function loadGPUPipeline(device: RenderingDevice, glTF: ResolvedGlTF, meshId: number, primitiveId: number, numJoints = 0): Pipeline {
   const primitive = glTF.meshes![meshId].primitives[primitiveId];
 
   let pipeline: Pipeline | undefined = <Pipeline>getExtras(primitive).pipeline;
@@ -283,14 +283,14 @@ function loadGPUPipeline(device: RenderingDevice, glTF: GlTF, meshId: number, pr
   return pipeline;
 }
 
-function getVertexBufferLayouts(glTF: GlTF, primitive: MeshPrimitive): VertexBufferLayoutDescriptor[] {
+function getVertexBufferLayouts(glTF: ResolvedGlTF, primitive: MeshPrimitive): VertexBufferLayoutDescriptor[] {
   const bufferIdMap: Record<string, number> = {};
   const buffers: VertexBufferLayoutDescriptor[] = [];
   let shaderLoc = 0;
 
   function getBufferLayoutDescriptor(accessor: Accessor): VertexBufferLayoutDescriptor {
     if (!accessor.sparse) {
-      const buffer = <Uint8Array>getExtras(accessor).buffer;
+      const buffer = getAccessorData(glTF, accessor).buffer;
       const bufferKey = `${accessor.bufferView},${buffer.byteOffset},${buffer.byteLength}`;
 
       if (bufferKey in bufferIdMap) {
@@ -351,7 +351,7 @@ function getVertexBufferLayouts(glTF: GlTF, primitive: MeshPrimitive): VertexBuf
   return buffers;
 }
 
-function loadMaterialUniforms(device: RenderingDevice, glTF: GlTF, materialId: number | undefined): UniformValuesDescriptor {
+function loadMaterialUniforms(device: RenderingDevice, glTF: ResolvedGlTF, materialId: number | undefined): UniformValuesDescriptor {
   const env: UniformValuesDescriptor = {
     'alphaCutoff': 0,
     'baseColorFactor': [1, 1, 1, 1],
@@ -411,7 +411,7 @@ function loadMaterialUniforms(device: RenderingDevice, glTF: GlTF, materialId: n
   return env;
 }
 
-function loadGPUBuffer(device: RenderingDevice, glTF: GlTF, accessorId: number | undefined, targetHint: BufferType): Buffer | null {
+function loadGPUBuffer(device: RenderingDevice, glTF: ResolvedGlTF, accessorId: number | undefined, targetHint: BufferType): Buffer | null {
   const accessor = glTF.accessors?.[accessorId!];
   if (!accessor) {
     return null;
@@ -423,13 +423,15 @@ function loadGPUBuffer(device: RenderingDevice, glTF: GlTF, accessorId: number |
   if (accessor.sparse || isUByteIndex) {
     let gpuBuffer: Buffer | null = <Buffer>getExtras(accessor).gpuBuffer;
     if (!gpuBuffer) {
-      let data: ArrayBufferView = <Uint8Array>getExtras(accessor).buffer;
+      const accessorData = getAccessorData(glTF, accessor);
+      let data: ArrayBufferView = accessorData.buffer;
       if (isUByteIndex) {
         const widenedData = new Uint16Array(data.byteLength);
         for (let i = 0; i < data.byteLength; ++i) {
-          widenedData[i] = (<Uint8Array>data)[i];
+          widenedData[i] = (<Uint8Array>data)[accessorData.byteOffset + i];
         }
-        data = widenedData;
+        data = getExtras(accessor).buffer = new Uint8Array(widenedData.buffer, 0, widenedData.byteLength);
+        getExtras(accessor).byteOffset = 0;
       }
 
       gpuBuffer = getExtras(accessor).gpuBuffer =
@@ -448,7 +450,7 @@ function loadGPUBuffer(device: RenderingDevice, glTF: GlTF, accessorId: number |
   const gpuBuffers: Record<string, Buffer> = getExtras(bufferView).gpuBuffers =
     <Record<string, Buffer>>getExtras(bufferView).gpuBuffers || {};
 
-  const buffer = <Uint8Array>getExtras(accessor).buffer;
+  const buffer = getAccessorData(glTF, accessor).buffer;
   const bufferKey = `${buffer.byteOffset},${buffer.byteLength}`;
 
   if (gpuBuffers[bufferKey]) {
@@ -459,7 +461,7 @@ function loadGPUBuffer(device: RenderingDevice, glTF: GlTF, accessorId: number |
       device.buffer({ type: <BufferType>bufferView.target || targetHint, size: buffer.byteLength }).data(buffer);
 }
 
-function loadGPUTexture(device: RenderingDevice, glTF: GlTF, textureId: number): Texture {
+function loadGPUTexture(device: RenderingDevice, glTF: ResolvedGlTF, textureId: number): Texture {
   const texture = glTF.textures?.[textureId];
   if (!texture) {
     return loadBlankGPUTexture(device, glTF);
@@ -480,7 +482,7 @@ function loadGPUTexture(device: RenderingDevice, glTF: GlTF, textureId: number):
 
   const image = glTF.images?.[texture.source!];
   if (image) {
-    img = <HTMLImageElement>getExtras(image).image;
+    img = image.extras.image;
   }
 
   const sampler = glTF.samplers?.[texture.sampler!];

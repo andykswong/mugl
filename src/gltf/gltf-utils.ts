@@ -2,8 +2,8 @@
 
 import { mat4, vec3 } from 'gl-matrix';
 import { GL_BYTE, GL_FLOAT, GL_SHORT, GL_UNSIGNED_BYTE, GL_UNSIGNED_INT, GL_UNSIGNED_SHORT, VertexFormat } from '../device';
-import { Accessor, Camera, Extras, GlTF, GlTFProperty, Skin } from './spec/glTF2';
-import { ResolvedGlTF } from './types';
+import { Accessor, BufferView, Camera, Extras, GlTF, GlTFProperty, Skin } from './spec/glTF2';
+import { ResolvedBuffers } from './types';
 
 const I4 = mat4.create();
 
@@ -93,21 +93,106 @@ export function getAccessorElementSize(accessor: Accessor): number {
 }
 
 /**
+ * Get the data of an accessor.
+ */
+export function getAccessorData(glTF: GlTF & ResolvedBuffers, accessor: Accessor): { buffer: Uint8Array, byteOffset: number } {
+  let buffer: Uint8Array | undefined = <Uint8Array | undefined>getExtras(accessor).buffer;
+  let byteOffset = <number>getExtras(accessor).byteOffset || 0;
+  if (buffer) {
+    return { buffer, byteOffset };
+  }
+
+  const elementSize = getAccessorElementSize(accessor);
+  let bufferLength = accessor.count * elementSize;
+
+  // Resolve buffer from bufferView
+  const bufferView = glTF.bufferViews?.[accessor.bufferView!];
+  if (bufferView) {
+    const bufferViewData = getBufferViewData(glTF, bufferView);
+    const alignment = bufferView.byteStride || 1;
+
+    byteOffset = (accessor.byteOffset || 0) % alignment;
+    bufferLength = accessor.count * (bufferView.byteStride || elementSize);
+
+    const bufferOffset = (accessor.byteOffset || 0) - byteOffset;
+
+    buffer = new Uint8Array(bufferViewData.buffer, bufferViewData.byteOffset + bufferOffset, bufferLength);
+  }
+
+  // Resolve sparse accessor
+  if (accessor.sparse) {
+    const {
+      count,
+      indices: { bufferView: indexViewId, byteOffset: indexViewOffset = 0, componentType },
+      values: { bufferView: valueViewId, byteOffset: valueViewOffset = 0 }
+    } = accessor.sparse;
+    const indexView = glTF.bufferViews?.[indexViewId!];
+    const valueView = glTF.bufferViews?.[valueViewId!];
+
+    if (indexView && valueView) {
+      const sparseBuffer = new Uint8Array(bufferLength);
+      if (buffer) {
+        sparseBuffer.set(buffer, byteOffset);
+      }
+
+      const indexBuffer = getBufferViewData(glTF, indexView);
+      const valueBuffer = getBufferViewData(glTF, valueView);
+      const IndexBufferType = componentType === GL_UNSIGNED_BYTE ? Uint8Array : componentType === GL_UNSIGNED_SHORT ? Uint16Array : Uint32Array;
+      const indices = new IndexBufferType(indexBuffer.buffer, indexBuffer.byteOffset + indexViewOffset, count);
+      const values = new Uint8Array(valueBuffer.buffer, valueBuffer.byteOffset + valueViewOffset, count * elementSize);
+      for (let j = 0; j < count; ++j) {
+        const index = indices[j] * elementSize;
+        for (let k = 0; k < elementSize; ++k) {
+          sparseBuffer[index + k] = values[j * elementSize + k];
+        }
+      }
+
+      // Use the sparse buffer instead of underlying buffer view
+      byteOffset = 0;
+      buffer = sparseBuffer;
+    }
+  }
+
+  if (buffer) {
+    getExtras(accessor).buffer = buffer;
+    getExtras(accessor).byteOffset = byteOffset;
+  } else {
+    buffer = new Uint8Array();
+  }
+
+  return { buffer, byteOffset };
+}
+
+/**
+ * Get the data of a bufferView.
+ */
+ export function getBufferViewData(glTF: GlTF & ResolvedBuffers, bufferView: BufferView): Uint8Array {
+  let bufferViewData = <Uint8Array | undefined>getExtras(bufferView).buffer;
+  if (!bufferViewData) {
+    const buffer = glTF.buffers?.[bufferView.buffer];
+    if (buffer) {
+      const bufferData = buffer.extras.buffer;
+      bufferViewData = new Uint8Array(
+        bufferData.buffer, (bufferData.byteOffset || 0) + (bufferView.byteOffset || 0), bufferView.byteLength);
+    } else {
+      bufferViewData = new Uint8Array();
+    }
+    getExtras(bufferView).buffer = bufferViewData;
+  }
+  return bufferViewData;
+}
+
+/**
  * Get the inverse bind matrices of a skin.
  */
-export function getInverseBindMatrices(glTF: ResolvedGlTF, skin: Skin): Float32Array {
+export function getInverseBindMatrices(glTF: GlTF & ResolvedBuffers, skin: Skin): Float32Array {
   let matrices = <Float32Array>getExtras(skin).inverseBindMatrices;
   if (!matrices) {
     const accessor = glTF.accessors?.[skin.inverseBindMatrices!];
     if (accessor) {
-      // TODO: handle accessor sparse storage
-      const bufferView = glTF.bufferViews?.[accessor.bufferView!];
-      if (bufferView) {
-        const data = <Uint8Array>getExtras(bufferView).buffer;
-        matrices = new Float32Array(data.buffer, data.byteOffset + (accessor.byteOffset || 0), accessor.count * 16);
-      }
-    }
-    if (!matrices) {
+      const { buffer, byteOffset } = getAccessorData(glTF, accessor);
+      matrices = new Float32Array(buffer.buffer, buffer.byteOffset + byteOffset + (accessor.byteOffset || 0), 16 * skin.joints.length);
+    } else {
       matrices = new Float32Array(16 * skin.joints.length);
     }
     getExtras(skin).inverseBindMatrices = matrices;
