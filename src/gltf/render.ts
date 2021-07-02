@@ -200,18 +200,17 @@ function loadGPUPipeline(device: RenderingDevice, glTF: ResolvedGlTF, primitive:
   const material = glTF.materials?.[primitive.material!];
   let alphaMode = 'OPAQUE';
   let doubleSided = false;
+  let unlit = false;
   if (material) {
     doubleSided = material.doubleSided || false;
     alphaMode = material.alphaMode || alphaMode;
+    unlit = !!material.extensions?.['KHR_materials_unlit'];
   }
 
   const buffers = getVertexBufferLayouts(glTF, primitive);
 
-  let indexFormat: IndexFormat = IndexFormat.UInt16;
-  const indexAccessor = glTF.accessors?.[primitive.indices!];
-  if (indexAccessor && indexAccessor.componentType === IndexFormat.UInt32) {
-    indexFormat = IndexFormat.UInt32;
-  }
+  const indexFormat = (glTF.accessors?.[primitive.indices!]?.componentType === IndexFormat.UInt32) ?
+    IndexFormat.UInt32 : IndexFormat.UInt16;
 
   const normNumJoints = primitive.attributes['JOINTS_0'] && primitive.attributes['WEIGHTS_0'] ?
     Math.ceil(numJoints / 12) * 12 : 0;
@@ -219,11 +218,12 @@ function loadGPUPipeline(device: RenderingDevice, glTF: ResolvedGlTF, primitive:
   // TODO: better key encoding
   const pipelineKey = JSON.stringify([
     buffers,
-    indexFormat,
-    normNumJoints,
-    mode,
     doubleSided,
-    alphaMode
+    alphaMode,
+    normNumJoints,
+    indexFormat,
+    mode,
+    unlit
   ]);
 
   const pipelines: Record<string, Pipeline> = getExtras(glTF).pipelines = <Record<string, Pipeline>>getExtras(glTF).pipelines || {};
@@ -245,6 +245,9 @@ function loadGPUPipeline(device: RenderingDevice, glTF: ResolvedGlTF, primitive:
   }
   if (normNumJoints > 0) {
     defines.push(`NUM_JOINTS ${normNumJoints}`);
+  }
+  if (unlit) {
+    defines.push('MATERIAL_UNLIT');
   }
   const defineStr = defines.map(define => `#define ${define}`).join('\n');
 
@@ -451,7 +454,7 @@ function loadGPUBuffer(device: RenderingDevice, glTF: ResolvedGlTF, accessorId: 
   }
 
   // sparse accessor uses its own buffer
-  // ubyte index is not supported in mugl, thus also uses its own widened buffer
+  // ubyte index is not supported in mugl, thus uses its own widened buffer
   const isUByteIndex = targetHint === BufferType.Index && accessor.componentType === GL_UNSIGNED_BYTE;
   if (accessor.sparse || isUByteIndex) {
     let gpuBuffer: Buffer | null = <Buffer>getExtras(accessor).gpuBuffer;

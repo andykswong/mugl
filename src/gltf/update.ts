@@ -100,9 +100,6 @@ export function updateGlTFAnimation(glTF: ResolvedGlTF, animation: Animation, ti
     }
     getExtras(channel).lastKeyframe = currentKeyframe;
 
-    const previousTime = input[currentKeyframe];
-    const nextTime = input[nextKeyframe];
-
     const path = channel.target.path;
     let componentSize = 3;  // for translation / scale
     switch (path) {
@@ -123,24 +120,35 @@ export function updateGlTFAnimation(glTF: ResolvedGlTF, animation: Animation, ti
       interpolation = 'STEP';
     }
 
+    const previousTime = input[currentKeyframe];
+    const nextTime = input[nextKeyframe];
+    const t = (currentTime - previousTime) / (nextTime - previousTime);
+
     const value = getExtras(targetNode)[path] = <number[]>getExtras(targetNode)[path] || new Array(componentSize);
     const tmp = new Array(componentSize);
     switch (interpolation) {
       case 'STEP':
         arrayCopy(value, output, 0, currentKeyframe * componentSize, componentSize);
         break;
-      case 'CUBICSPLINE':
-        arrayCopy(value, output, 0, currentKeyframe * 3 * componentSize + componentSize, componentSize);
+      case 'CUBICSPLINE': {
+        const deltaTime = nextTime - previousTime;
+        const t2 = t * t, t3 = t * t2;
+        for (let i = 0; i < componentSize; ++i) {
+          value[i] = (2 * t3 - 3 * t2 + 1) * output[(currentKeyframe * 3 + 1) * componentSize + i] // previousPoint
+            + (t3 - 2 * t2 + t) * deltaTime * output[(currentKeyframe * 3 + 2) * componentSize + i] // previousOutputTangent
+            + (-2 * t3 + 3 * t2) * output[(nextKeyframe * 3 + 1) * componentSize + i] //nextPoint
+            + (t3 - t2) * deltaTime * output[nextKeyframe * 3 * componentSize + i] // nextInputTangent
+        }
         break;
+      }
       default: { // LINEAR
-        const a = (currentTime - previousTime) / (nextTime - previousTime);
         if (path === 'rotation') {
           arrayCopy(value, output, 0, currentKeyframe * componentSize, componentSize);
-          arrayCopy(tmp, output, 0, currentKeyframe * componentSize + componentSize, componentSize);
-          quat.slerp(<quat>value, <quat>value, <quat>tmp, a);
+          arrayCopy(tmp, output, 0, nextKeyframe * componentSize, componentSize);
+          quat.slerp(<quat>value, <quat>value, <quat>tmp, t);
         } else {
           for (let i = 0; i < componentSize; ++i) {
-            value[i] = (1 - a) * output[currentKeyframe * componentSize + i] + a * output[nextKeyframe * componentSize + i];
+            value[i] = (1 - t) * output[currentKeyframe * componentSize + i] + t * output[nextKeyframe * componentSize + i];
           }
         }
         break;
@@ -197,19 +205,18 @@ function updateGlTFCamera(glTF: ResolvedGlTF, node: Node): void {
 
 function updateGlTFSkin(glTF: ResolvedGlTF, node: Node): void {
   const skin = glTF.skins?.[node.skin!];
-  if (!skin) {
-    return;
-  }
-  const numJoints = skin.joints.length;
-  const jointMatrix = getExtras(node).jointMatrix = <Float32Array>getExtras(node).jointMatrix || new Float32Array(numJoints * 16);
-  const inverseBindMatrices = getInverseBindMatrices(glTF, skin);
+  if (skin) {
+    const numJoints = skin.joints.length;
+    const jointMatrix = getExtras(node).jointMatrix = <Float32Array>getExtras(node).jointMatrix || new Float32Array(numJoints * 16);
+    const inverseBindMatrices = getInverseBindMatrices(glTF, skin);
 
-  for (let i = 0; i < numJoints; ++i) {
-    const jointNode = glTF.nodes![skin.joints[i]];
-    const jointMat = new Float32Array(jointMatrix.buffer, jointMatrix.byteOffset + 16 * 4 * i, 16);
+    for (let i = 0; i < numJoints; ++i) {
+      const jointNode = glTF.nodes![skin.joints[i]];
+      const jointMat = new Float32Array(jointMatrix.buffer, jointMatrix.byteOffset + 16 * 4 * i, 16);
 
-    mat4.invert(jointMat, <mat4>getExtras(node).model || I4);
-    mat4.mul(jointMat, jointMat, (jointNode && <mat4>getExtras(jointNode).model) || I4);
-    mat4.mul(jointMat, jointMat, new Float32Array(inverseBindMatrices.buffer, inverseBindMatrices.byteOffset + 16 * 4 * i, 16));
+      mat4.invert(jointMat, <mat4>getExtras(node).model || I4);
+      mat4.mul(jointMat, jointMat, (jointNode && <mat4>getExtras(jointNode).model) || I4);
+      mat4.mul(jointMat, jointMat, new Float32Array(inverseBindMatrices.buffer, inverseBindMatrices.byteOffset + 16 * 4 * i, 16));
+    }
   }
 }

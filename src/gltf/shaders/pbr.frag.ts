@@ -28,6 +28,11 @@ void main () {
   baseColor.a = 1.0;
 #endif
 
+#ifdef MATERIAL_UNLIT
+  gl_FragColor = (vec4(linearTosRGB(baseColor.rgb), baseColor.a));
+  return;
+#endif
+
   vec3 v = normalize(cameraPosition - vPosition);
   NormalInfo normalInfo = getNormalInfo(vPosition);
   vec3 n = normalInfo.n;
