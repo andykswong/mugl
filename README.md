@@ -9,15 +9,10 @@
 `mugl` is a minimalistic, modular WebGL1 / WebGL2 3D rendering library for Typescript / JavaScript.
 
 - **Core module (`mugl`)** : the [rendering device interface](./src/device/device.ts) in a simplified [WebGPU](https://gpuweb.github.io/gpuweb/)-style API that removes WebGL state management from you. (**9KB** in size)
-- **Nano implementation (`mugl/nano`)**: **3KB** implementation of the rendering device interface, but without WebGL2 support. You can even turn off some [features](./src/nano/features.ts) that you do not need (e.g. scissor, stencil testing) to reduce the size to **2KB**!
-- **glTF module (`mugl/gltf`) (WIP)**: a minimalistic glTF 2.0 model loader and renderer (**9KB** in size)
+  - **Nano implementation (`mugl/nano`)**: **3KB** implementation of the rendering device interface, but without WebGL2 support. You can even turn off some [features](./src/nano/features.ts) that you do not need (e.g. scissor, stencil testing) to reduce the size to **2KB**!
+- **glTF module (`mugl/gltf`) (WIP)**: a minimalistic glTF 2.0 model loader and renderer (**10KB** in size)
 
 *\* File sizes are measured from minified and gzipped UMD Webpack library bundles. Actual size can be even smaller, by using a module bundler with tree shaking.*
-
-## Install
-```shell
-npm install --save mugl
-```
 
 ## [glTF 2.0 Model Viewer](http://andykswong.github.io/mugl/examples/gltf.html) (WIP)
 A minimal **13KB** (gzipped) glTF model viewer built on `mugl` is available as an [example](http://andykswong.github.io/mugl/examples/gltf.html) usage of this library. The source code can be found [here](https://github.com/andykswong/mugl/tree/main/src/examples/gltf-viewer).
@@ -26,9 +21,14 @@ Any model from [glTF-Sample-Models](https://github.com/KhronosGroup/glTF-Sample-
 
 ![alt text](./screenshots/DamagedHelmet.png)
 
+## Install
+```shell
+npm install --save mugl
+```
+
 ## Usage
 
-### 0. GlTF 2.0 Rendering (WIP)
+### 0. GlTF 2.0 Rendering
 Below is the minimum setup required to render a GlTF 2.0 model:
 
 ```javascript

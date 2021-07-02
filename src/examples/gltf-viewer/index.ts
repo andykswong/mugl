@@ -69,7 +69,7 @@ function render(timestamp = 0): void {
   const scene = ((sceneParam !== null && parseInt(sceneParam)) ?? glTF.scene) || 0
 
   if (glTF.animations?.length) {
-    if (!updateGlTFAnimation(glTF, glTF.animations[curAnimation], elapsed / 1000, false)) {
+    if (!updateGlTFAnimation(glTF, glTF.animations[curAnimation], elapsed / 1000)) {
       startTime = timestamp;
       curAnimation = (curAnimation + 1) % glTF.animations.length;
     }

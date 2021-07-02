@@ -46,3 +46,23 @@ export function resolveRelativeUri(uri: string, baseUri: string): string {
   // Relative path
   return baseUri + uri;
 }
+
+/**
+ * An array-like object of number.
+ */
+ interface NumberArray {
+  [index: number]: number;
+  readonly length: number;
+}
+
+/**
+ * Shallow-copy elements from one array to another, and returns the destination array.
+ */
+export function arrayCopy<T extends NumberArray>(
+  out: T, src: Readonly<NumberArray>, outOffset = 0, srcOffset = 0, count = src.length - srcOffset
+): T {
+  for (let i = 0; i < count; ++i) {
+    out[outOffset + i] = src[srcOffset + i];
+  }
+  return out;
+}

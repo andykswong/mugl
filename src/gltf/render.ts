@@ -2,11 +2,11 @@
 
 import { mat3, mat4, vec3 } from 'gl-matrix';
 import {
-  AddressMode, Buffer, BufferType, CompareFunc, CullMode, FilterMode, GL_UNSIGNED_BYTE, IndexFormat, MinFilterMode, Pipeline, PrimitiveType,
+  AddressMode, BlendFactor, Buffer, BufferType, CompareFunc, CullMode, FilterMode, GL_UNSIGNED_BYTE, IndexFormat, MinFilterMode, Pipeline, PrimitiveType,
   RenderingDevice, RenderPassContext, SamplerDescriptor, Texture, TexType, UniformFormat, UniformLayoutDescriptor, UniformType,
   UniformValuesDescriptor, VertexBufferLayoutDescriptor, VertexFormat, vertexSize
 } from '../device';
-import { Accessor, GlTF, MeshPrimitive, Node } from './spec/glTF2';
+import { Accessor, GlTF, Mesh, MeshPrimitive, Node } from './spec/glTF2';
 import { ResolvedGlTF } from './types';
 import { getCameraProjection, getExtras, getAccessorVertexFormat, getAccessorData } from './gltf-utils';
 import primitiveVert from './shaders/primitive.vert';
@@ -84,102 +84,113 @@ export function renderGlTF(device: RenderingDevice, glTF: ResolvedGlTF, options:
   // Render all active nodes
   const pass = device.pass();
   const context = device.render(pass);
+
+  const transparentDrawables: { node: Node, mesh: Mesh, primitive: MeshPrimitive }[] = [];
+
+  // Draw opaque primitives
   for (let i = 0; i < activeNodes.length; ++i) {
-    renderGlTFNode(device, context, glTF, nodes[activeNodes[i]], env);
+    const node = nodes[activeNodes[i]];
+    const mesh = glTF.meshes?.[node.mesh!];
+    if (mesh) {
+      for (let i = 0; i < mesh.primitives.length; ++i) {
+        const primitive = mesh.primitives[i];
+        if (glTF.materials?.[primitive.material!]?.alphaMode === 'BLEND') {
+          transparentDrawables.push({ node, mesh, primitive });
+        } else {
+          renderGlTFPrimitive(device, context, glTF, node, mesh, primitive, env);
+        }
+      }
+    }
   }
+
+  // Draw transparent primitives last
+  // TODO: depth sorting, so that the furthest nodes are rendered first
+  for (const drawable of transparentDrawables) {
+    renderGlTFPrimitive(device, context, glTF, drawable.node, drawable.mesh, drawable.primitive, env);
+  }
+
   context.end();
   pass.destroy();
 }
 
-function renderGlTFNode(
-  device: RenderingDevice, context: RenderPassContext,
-  glTF: ResolvedGlTF, node: Node, env: UniformValuesDescriptor
+function renderGlTFPrimitive(
+  device: RenderingDevice, context: RenderPassContext, glTF: ResolvedGlTF,
+  node: Node, mesh: Mesh, primitive: MeshPrimitive,
+  env: UniformValuesDescriptor
 ): void {
-  const mesh = glTF.meshes?.[node.mesh!];
-  if (!mesh) {
+  // Set model matrices. This overrides matrices in the env obj to reduce object allocations
+  env.model = mat4.copy(<mat4>env.model || mat4.create(), <mat4>getExtras(node).model || I4);
+  if (!mat3.normalFromMat4((env.normalMatrix = <mat3>env.normalMatrix || mat3.create()), <mat4>env.model)) {
+    mat3.identity(<mat3>env.normalMatrix);
+  }
+
+  let indexed = false;
+  let offset = 0;
+  let vertexCount = glTF.accessors?.[primitive.attributes.POSITION!]?.count || 0;
+
+  // Require positions to render
+  if (!vertexCount) {
     return;
   }
 
-  // Set model matrices. This overrides matrices in the env obj to reduce object allocations
-  env.model = mat4.copy(<mat4>env.model || mat4.create(), <mat4>getExtras(node).model || I4);
-  env.normalMatrix = mat3.normalFromMat4(<mat3>env.normalMatrix || mat3.create(), <mat4>env.model);
+  const uniforms: UniformValuesDescriptor = {
+    ...env,
+    ...loadMaterialUniforms(device, glTF, primitive.material)
+  };
 
-  // Submit draw call for each mesh primitive
-  for (let i = 0; i < mesh.primitives.length; ++i) {
-    const primitive = mesh.primitives[i];
-    let indexed = false;
-    let vertexCount = 0;
-    let offset = 0;
-  
-    // Require positions to render
-    const positionAccessor = glTF.accessors?.[primitive.attributes.POSITION!];
-    if (!positionAccessor) {
-      continue;
-    } else {
-      vertexCount = positionAccessor.count;
+  if (primitive.targets) {
+    uniforms['targetWeights'] = <number[]>getExtras(node).weights || node.weights || mesh.weights || [0, 0, 0, 0, 0, 0, 0, 0];
+  }
+
+  let numJoints = 0;
+  const skin = glTF.skins?.[node.skin!];
+  if (primitive.attributes['JOINTS_0'] && primitive.attributes['WEIGHTS_0'] && skin) {
+    numJoints = skin.joints.length;
+    const jointMatrix = getExtras(node).jointMatrix = <Float32Array>getExtras(node).jointMatrix || new Float32Array(numJoints * 16);
+    uniforms['jointMatrix'] = jointMatrix;
+  }
+
+  // Bind pipeline
+  const pipeline = loadGPUPipeline(device, glTF, primitive, numJoints);
+  context
+    .pipeline(pipeline)
+    .uniforms(uniforms);
+
+  // Bind vertex buffers
+  for (let i = 0; i < pipeline.buffers.length; ++i) {
+    const attr = pipeline.buffers[i].attrs[0].name;
+    const targetAttrMatch = attr.match(/TARGET_(.+)_(\d+)/);
+    const buffer = loadGPUBuffer(
+      device, glTF,
+      targetAttrMatch ? primitive.targets![<number><unknown>targetAttrMatch[2]][targetAttrMatch[1]] : primitive.attributes[attr],
+      BufferType.Vertex
+    );
+    if (buffer) {
+      context.vertex(i, buffer);
     }
+  }
 
-    const uniforms: UniformValuesDescriptor = {
-      ...env,
-      ...loadMaterialUniforms(device, glTF, primitive.material)
-    };
-
-    if (primitive.targets) {
-      uniforms['targetWeights'] = <number[]>getExtras(node).weights || node.weights || mesh.weights || [0, 0, 0, 0, 0, 0, 0, 0];
+  // Bind index buffer
+  const indexAccessor = glTF.accessors?.[primitive.indices!];
+  if (indexAccessor) {
+    const indexBuffer = loadGPUBuffer(device, glTF, primitive.indices, BufferType.Index);
+    if (indexBuffer) {
+      context.index(indexBuffer);
+      vertexCount = indexAccessor.count;
+      offset = <number>getExtras(indexAccessor).byteOffset || 0;
+      indexed = true;
     }
+  }
 
-    let numJoints = 0;
-    const skin = glTF.skins?.[node.skin!];
-    if (primitive.attributes['JOINTS_0'] && primitive.attributes['WEIGHTS_0'] && skin) {
-      numJoints = skin.joints.length;
-      const jointMatrix = getExtras(node).jointMatrix = <Float32Array>getExtras(node).jointMatrix || new Float32Array(numJoints * 16);
-      uniforms['jointMatrix'] = jointMatrix;
-    }
-
-    // Bind pipeline
-    const pipeline = loadGPUPipeline(device, glTF, node.mesh!, i, numJoints);
-    context
-      .pipeline(pipeline)
-      .uniforms(uniforms);
-
-    // Bind vertex buffers
-    for (let i = 0; i < pipeline.buffers.length; ++i) {
-      const attr = pipeline.buffers[i].attrs[0].name;
-      const targetAttrMatch = attr.match(/TARGET_(.+)_(\d+)/);
-      const buffer = loadGPUBuffer(
-        device, glTF,
-        targetAttrMatch ? primitive.targets![<number><unknown>targetAttrMatch[2]][targetAttrMatch[1]] : primitive.attributes[attr],
-        BufferType.Vertex
-      );
-      if (buffer) {
-        context.vertex(i, buffer);
-      }
-    }
-
-    // Bind index buffer
-    const indexAccessor = glTF.accessors?.[primitive.indices!];
-    if (indexAccessor) {
-      const indexBuffer = loadGPUBuffer(device, glTF, primitive.indices, BufferType.Index);
-      if (indexBuffer) {
-        context.index(indexBuffer);
-        vertexCount = indexAccessor.count;
-        offset = <number>getExtras(indexAccessor).byteOffset || 0;
-        indexed = true;
-      }
-    }
-
-    // Draw
-    if (indexed) {
-      context.drawIndexed(vertexCount, 1, offset);
-    } else {
-      context.draw(vertexCount);
-    }
+  // Draw
+  if (indexed) {
+    context.drawIndexed(vertexCount, 1, offset);
+  } else {
+    context.draw(vertexCount);
   }
 }
 
-function loadGPUPipeline(device: RenderingDevice, glTF: ResolvedGlTF, meshId: number, primitiveId: number, numJoints = 0): Pipeline {
-  const primitive = glTF.meshes![meshId].primitives[primitiveId];
-
+function loadGPUPipeline(device: RenderingDevice, glTF: ResolvedGlTF, primitive: MeshPrimitive, numJoints = 0): Pipeline {
   let pipeline: Pipeline | undefined = <Pipeline>getExtras(primitive).pipeline;
   if (pipeline) {
     return pipeline;
@@ -253,8 +264,14 @@ function loadGPUPipeline(device: RenderingDevice, glTF: ResolvedGlTF, meshId: nu
     mode,
     depth: {
       compare: CompareFunc.LEqual,
-      writeEnabled: true
+      writeEnabled: !(alphaMode === 'BLEND')
     },
+    blend: (alphaMode === 'BLEND') ? {
+      srcFactorRGB: BlendFactor.SrcAlpha,
+      dstFactorRGB: BlendFactor.OneMinusSrcAlpha,
+      srcFactorAlpha: BlendFactor.One,
+      dstFactorAlpha: BlendFactor.OneMinusSrcAlpha,
+    }: undefined,
     raster: {
       cullMode: doubleSided ? CullMode.None : CullMode.Back
     },
@@ -369,7 +386,7 @@ function getVertexBufferLayouts(glTF: ResolvedGlTF, primitive: MeshPrimitive): V
 
 function loadMaterialUniforms(device: RenderingDevice, glTF: ResolvedGlTF, materialId: number | undefined): UniformValuesDescriptor {
   const env: UniformValuesDescriptor = {
-    'alphaCutoff': 0,
+    'alphaCutoff': 0.5,
     'baseColorFactor': [1, 1, 1, 1],
     'baseColorTexture.tex': loadBlankGPUTexture(device, glTF),
     'baseColorTexture.texCoord': -1,
@@ -416,7 +433,7 @@ function loadMaterialUniforms(device: RenderingDevice, glTF: ResolvedGlTF, mater
       setTexture(pbr, 'metallicRoughnessTexture');
     }
 
-    env.alphaCutoff = material.alphaCutoff || 0;
+    env.alphaCutoff = material.alphaCutoff || env.alphaCutoff;
     env.emissiveFactor = material.emissiveFactor || env.emissiveFactor;
 
     setTexture(material, 'emissiveTexture');

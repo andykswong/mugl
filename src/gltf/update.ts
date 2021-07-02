@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 
 import { mat4, quat, vec3 } from 'gl-matrix';
-import { getAnimationDuration, getAnimationSamplerInput, getAnimationSamplerOutput, getExtras, getInverseBindMatrices, SamplerOutputBuffer } from './gltf-utils';
+import { getAnimationDuration, getAnimationSamplerInput, getAnimationSamplerOutput, getExtras, getInverseBindMatrices } from './gltf-utils';
 import { Animation, Node } from './spec/glTF2';
 import { ResolvedGlTF } from './types';
+import { arrayCopy } from './utils';
 
 const I4 = mat4.create();
 const Iq = quat.create();
@@ -123,24 +124,20 @@ export function updateGlTFAnimation(glTF: ResolvedGlTF, animation: Animation, ti
     }
 
     const value = getExtras(targetNode)[path] = <number[]>getExtras(targetNode)[path] || new Array(componentSize);
+    const tmp = new Array(componentSize);
     switch (interpolation) {
       case 'STEP':
-        for (let i = 0; i < componentSize; ++i) {
-          value[i] = output[currentKeyframe * componentSize + i]
-        }
+        arrayCopy(value, output, 0, currentKeyframe * componentSize, componentSize);
         break;
       case 'CUBICSPLINE':
-        // TODO: implement cubic spline
+        arrayCopy(value, output, 0, currentKeyframe * 3 * componentSize + componentSize, componentSize);
         break;
       default: { // LINEAR
         const a = (currentTime - previousTime) / (nextTime - previousTime);
         if (path === 'rotation') {
-          quat.slerp(
-            <quat>value,
-            [output[currentKeyframe * 4], output[currentKeyframe * 4 + 1], output[currentKeyframe * 4 + 2], output[currentKeyframe * 4 + 3]],
-            [output[currentKeyframe * 4 + 4], output[currentKeyframe * 4 + 5], output[currentKeyframe * 4 + 6], output[currentKeyframe * 4 + 7]],
-            a
-          );
+          arrayCopy(value, output, 0, currentKeyframe * componentSize, componentSize);
+          arrayCopy(tmp, output, 0, currentKeyframe * componentSize + componentSize, componentSize);
+          quat.slerp(<quat>value, <quat>value, <quat>tmp, a);
         } else {
           for (let i = 0; i < componentSize; ++i) {
             value[i] = (1 - a) * output[currentKeyframe * componentSize + i] + a * output[nextKeyframe * componentSize + i];

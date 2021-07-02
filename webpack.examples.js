@@ -23,7 +23,6 @@ module.exports = merge(common, {
     new webpack.DefinePlugin({
       'NANOGL_ENABLE_SCISSOR': false,
       'NANOGL_ENABLE_OFFSCREEN': false,
-      'NANOGL_ENABLE_BLEND': false,
       'NANOGL_ENABLE_STENCIL': false,
     }),
     new webpack.EnvironmentPlugin({
