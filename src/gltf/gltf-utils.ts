@@ -1,16 +1,14 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 
-import { mat4, vec3 } from 'gl-matrix';
+import { mat4 } from 'gl-matrix';
 import { GL_BYTE, GL_FLOAT, GL_SHORT, GL_UNSIGNED_BYTE, GL_UNSIGNED_INT, GL_UNSIGNED_SHORT, VertexFormat } from '../device';
-import { Accessor, BufferView, Camera, Extras, GlTF, GlTFProperty, Skin } from './spec/glTF2';
+import { Accessor, Animation, AnimationSampler, BufferView, Camera, Extras, GlTF, GlTFProperty, Skin } from './spec/glTF2';
 import { ResolvedBuffers } from './types';
-
-const I4 = mat4.create();
 
 /**
  * Get the extras object of a property, creating a new object if not exist.
  */
- export function getExtras(property: GlTFProperty): Extras {
+export function getExtras(property: GlTFProperty): Extras {
   if (!property.extras) {
     property.extras = {};
   }
@@ -18,25 +16,88 @@ const I4 = mat4.create();
 }
 
 /**
- * Get camera projection matrix.
+ * Get the total duration of an animation.
  */
-export function getCameraProjection(out: mat4, camera: Camera | undefined, aspectRatio?: number): mat4 {
-  if (camera?.orthographic) {
-    mat4.ortho(out,
-      -camera.orthographic.xmag, camera.orthographic.xmag,
-      -camera.orthographic.xmag / (aspectRatio || 1), camera.orthographic.xmag / (aspectRatio || 1),
-      camera.orthographic.znear, camera.orthographic.zfar);
-  } else if (camera?.perspective) {
-    mat4.perspective(out,
-      camera.perspective.yfov, aspectRatio || camera.perspective.aspectRatio || 1,
-      camera.perspective.znear, camera.perspective.zfar || Infinity);
-  } else {
-    mat4.identity(out);
+export function getAnimationDuration(glTF: GlTF & ResolvedBuffers, animation: Animation): number {
+  let duration = <number>getExtras(animation).duration || 0;
+  for (const channel of animation.channels) {
+    const targetNode = glTF.nodes?.[channel.target.node!];
+    const accessor = glTF.accessors?.[animation.samplers[channel.sampler]?.input];
+    if (targetNode && accessor) {
+      duration = Math.max(duration, accessor.max?.[0] || 0);
+    }
   }
-  return out;
+  return (getExtras(animation).duration = duration);
 }
 
-/** Get the vertex format of an accessor. */
+/**
+ * Get the channel input data of an animation.
+ */
+export function getAnimationSamplerInput(glTF: GlTF & ResolvedBuffers, sampler: AnimationSampler): Float32Array | null {
+  let input = <Float32Array>getExtras(sampler).input || null;
+  if (!input) {
+    const accessor = glTF.accessors?.[sampler.input];
+    if (accessor) {
+      const { buffer, byteOffset = 0 } = getAccessorData(glTF, accessor);
+      getExtras(sampler).input = input =
+        new Float32Array(buffer.buffer, byteOffset + buffer.byteOffset, (buffer.byteLength - byteOffset) / 4);
+    }
+  }
+  return input;
+}
+
+type SamplerOutputBufferConstructor = Float32ArrayConstructor
+  | Int8ArrayConstructor | Uint8ArrayConstructor
+  | Int16ArrayConstructor | Uint16ArrayConstructor;
+
+export type SamplerOutputBuffer = InstanceType<SamplerOutputBufferConstructor>
+
+/**
+ * Get the channel output data of an animation.
+ */
+export function getAnimationSamplerOutput(glTF: GlTF & ResolvedBuffers, sampler: AnimationSampler): SamplerOutputBuffer | null {
+  let output = <SamplerOutputBuffer>getExtras(sampler).output || null;
+  if (!output) {
+    const accessor = glTF.accessors?.[sampler.output];
+    if (accessor) {
+      const { buffer, byteOffset = 0 } = getAccessorData(glTF, accessor);
+      let Type: SamplerOutputBufferConstructor = Float32Array;
+      switch (accessor.componentType) {
+        case GL_BYTE: Type = Int8Array; break;
+        case GL_UNSIGNED_BYTE: Type = Uint8Array; break;
+        case GL_SHORT: Type = Uint16Array; break;
+        case GL_UNSIGNED_SHORT: Type = Uint16Array; break;
+      }
+
+      getExtras(sampler).output = output =
+        new Type(buffer.buffer, byteOffset + buffer.byteOffset, (buffer.byteLength - byteOffset) / Type.BYTES_PER_ELEMENT);
+    }
+  }
+  return output;
+}
+
+/**
+ * Get the normalized animation output value from buffer.
+ */
+export function getAnimationOutputValue(buffer: SamplerOutputBuffer, index: number): number {
+  if (buffer instanceof Int8Array) {
+    return Math.max(buffer[index] / 127, -1);
+  }
+  if (buffer instanceof Uint8Array) {
+    return buffer[index] / 255;
+  }
+  if (buffer instanceof Int16Array) {
+    return Math.max(buffer[index] / 32767, -1);
+  }
+  if (buffer instanceof Uint16Array) {
+    return buffer[index] / 65535;
+  }
+  return buffer[index];
+}
+
+/**
+ * Get the vertex format of an accessor.
+ */
 export function getAccessorVertexFormat(accessor: Accessor): VertexFormat | null {
   switch (accessor.type) {
     case 'VEC2':
@@ -66,7 +127,9 @@ export function getAccessorVertexFormat(accessor: Accessor): VertexFormat | null
   return null;
 }
 
-/** Get the element byte size of an accessor. */
+/**
+ * Get the element byte size of an accessor.
+ */
 export function getAccessorElementSize(accessor: Accessor): number {
   let length = 0;
   switch (accessor.type) {
@@ -166,20 +229,39 @@ export function getAccessorData(glTF: GlTF & ResolvedBuffers, accessor: Accessor
 /**
  * Get the data of a bufferView.
  */
- export function getBufferViewData(glTF: GlTF & ResolvedBuffers, bufferView: BufferView): Uint8Array {
+export function getBufferViewData(glTF: GlTF & ResolvedBuffers, bufferView: BufferView): Uint8Array {
   let bufferViewData = <Uint8Array | undefined>getExtras(bufferView).buffer;
   if (!bufferViewData) {
     const buffer = glTF.buffers?.[bufferView.buffer];
     if (buffer) {
       const bufferData = buffer.extras.buffer;
       bufferViewData = new Uint8Array(
-        bufferData.buffer, (bufferData.byteOffset || 0) + (bufferView.byteOffset || 0), bufferView.byteLength);
+        bufferData.buffer, bufferData.byteOffset + (bufferView.byteOffset || 0), bufferView.byteLength);
     } else {
       bufferViewData = new Uint8Array();
     }
     getExtras(bufferView).buffer = bufferViewData;
   }
   return bufferViewData;
+}
+
+/**
+ * Get camera projection matrix.
+ */
+export function getCameraProjection(out: mat4, camera: Camera | undefined, aspectRatio?: number): mat4 {
+  if (camera?.orthographic) {
+    mat4.ortho(out,
+      -camera.orthographic.xmag, camera.orthographic.xmag,
+      -camera.orthographic.xmag / (aspectRatio || 1), camera.orthographic.xmag / (aspectRatio || 1),
+      camera.orthographic.znear, camera.orthographic.zfar);
+  } else if (camera?.perspective) {
+    mat4.perspective(out,
+      camera.perspective.yfov, aspectRatio || camera.perspective.aspectRatio || 1,
+      camera.perspective.znear, camera.perspective.zfar || Infinity);
+  } else {
+    mat4.identity(out);
+  }
+  return out;
 }
 
 /**
@@ -198,73 +280,4 @@ export function getInverseBindMatrices(glTF: GlTF & ResolvedBuffers, skin: Skin)
     getExtras(skin).inverseBindMatrices = matrices;
   }
   return matrices;
-}
-
-/**
- * Get the extents of a scene. Requires updateGlTFNodes to be called on the model first.
- */
-export function getSceneExtents(outMin: vec3, outMax: vec3, glTF: GlTF, sceneId: number): [outMin: vec3, outMax: vec3] {
-  for (let i = 0; i < 3; ++i) {
-    outMin[i] = Infinity;
-    outMax[i] = -Infinity;
-  }
-
-  const scene = glTF.scenes?.[sceneId];
-  if (!scene) {
-    return [outMin, outMax];
-  }
-
-  let nodeIndices = (scene.nodes || []).slice();
-  while (nodeIndices.length > 0) {
-    const node = glTF.nodes?.[nodeIndices.pop()!];
-    if (!node) {
-      continue;
-    }
-    nodeIndices = nodeIndices.concat(node.children || []);
-
-    const mesh = glTF.meshes?.[node.mesh!];
-    if (!mesh || !mesh.primitives) {
-      continue;
-    }
-
-    for (const primitive of mesh.primitives) {
-      const accessor = glTF.accessors?.[primitive.attributes.POSITION];
-      if (!accessor) {
-        continue;
-      }
-
-      const assetMin = vec3.create();
-      const assetMax = vec3.create();
-      getAccessorExtents(assetMin, assetMax, accessor, <mat4>getExtras(node).model || I4);
-
-      for (const i of [0, 1, 2]) {
-        outMin[i] = Math.min(outMin[i], assetMin[i]);
-        outMax[i] = Math.max(outMax[i], assetMax[i]);
-      }
-    }
-  }
-
-  return [outMin, outMax];
-}
-
-const boxMin = vec3.create();
-const boxMax = vec3.create();
-const center = vec3.create();
-const centerToSurface = vec3.create();
-
-function getAccessorExtents(outMin: vec3, outMax: vec3, accessor: Accessor, model: mat4) {
-  vec3.transformMat4(boxMin, <vec3>accessor.min, model);
-  vec3.transformMat4(boxMax, <vec3>accessor.max, model);
-
-  vec3.add(center, boxMax, boxMin);
-  vec3.scale(center, center, 0.5);
-
-  vec3.sub(centerToSurface, boxMax, center);
-
-  const radius = vec3.length(centerToSurface);
-
-  for (const i of [0, 1, 2]) {
-    outMin[i] = center[i] - radius;
-    outMax[i] = center[i] + radius;
-  }
 }

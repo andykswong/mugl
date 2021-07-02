@@ -1,6 +1,5 @@
-import { GlTF } from './spec/glTF2';
 import { isGLB, parseGLB } from './glb';
-import { GlTFFile, ResolvedBuffers, ResolvedGlTF, ResolvedImages, GlTFResourceLoader } from './types';
+import { GlTF, GlTFFile, ResolvedBuffers, ResolvedGlTF, ResolvedImages, GlTFResourceLoader } from './types';
 import { decodeText, getBaseUrl, resolveRelativeUri } from './utils';
 import { getBufferViewData, getExtras } from './gltf-utils';
 

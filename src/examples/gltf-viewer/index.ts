@@ -1,13 +1,17 @@
-import { mat4, vec3 } from 'gl-matrix';
+import { vec3 } from 'gl-matrix';
 import { getGLDevice } from '../../gl2';
 import { getNanoGLDevice } from '../../nano';
-import { ResolvedGlTF, renderGlTF, resolveGlTF, updateGlTF } from '../../gltf';
-import { getSceneExtents } from '../../gltf/gltf-utils';
+import { ResolvedGlTF, renderGlTF, resolveGlTF, updateGlTFAnimation } from '../../gltf';
+import { getDefaultCamera } from './utils';
+
+const camDir = vec3.fromValues(-1, -2, -2);
 
 const urlParams = new URLSearchParams(window.location.search);
 const canvas: HTMLCanvasElement = document.querySelector('canvas')!;
 const canvasContainer = canvas.parentElement!;
 let glTF: ResolvedGlTF | null = null;
+let startTime = 0;
+let curAnimation = 0;
 
 const device = process.env.NANOGL_VIEWER ? 
   getNanoGLDevice(canvas, { powerPreference: 'low-power' })! :
@@ -35,7 +39,7 @@ async function load(): Promise<void> {
   let uri = urlParams.get('url');
   if (!uri) {
     const models: GlTFModelDescriptor[] = await (await fetch(`${GLTF_SAMPLE_PATH}/model-index.json`)).json();
-    const modelName = urlParams.get('model') || 'DamagedHelmet';
+    const modelName = urlParams.get('model') || 'BrainStem';
     const modelVariant = urlParams.get('variant') || 'glTF';
     const model = models.find(desc => desc.name === modelName)!;
     uri = `${GLTF_SAMPLE_PATH}/${modelName}/${modelVariant}/${model.variants[modelVariant]}`;
@@ -48,53 +52,35 @@ async function load(): Promise<void> {
   render();
 }
 
-function render(): void {
+function render(timestamp = 0): void {
+  window.requestAnimationFrame(render);
+
   if (!glTF) {
     return;
   }
+
+  if (!startTime) {
+    startTime = timestamp;
+  }
+  const elapsed = timestamp - startTime;
 
   const cameraParam = urlParams.get('camera');
   const sceneParam = urlParams.get('scene');
   const scene = ((sceneParam !== null && parseInt(sceneParam)) ?? glTF.scene) || 0
 
+  if (glTF.animations?.length) {
+    if (!updateGlTFAnimation(glTF, glTF.animations[curAnimation], elapsed / 1000, false)) {
+      startTime = timestamp;
+      curAnimation = (curAnimation + 1) % glTF.animations.length;
+    }
+  }
+
   renderGlTF(device, glTF, {
     scene,
-    camera: cameraParam !== null && glTF.cameras ? {
-      index: parseInt(cameraParam)
-    } : getDefaultCamera(glTF, scene, device.canvas.width / device.canvas.height)
+    camera: glTF.cameras ? {
+      index: parseInt(cameraParam!) || 0
+    } : getDefaultCamera(glTF, scene, camDir, device.canvas.width / device.canvas.height)
   });
-}
-
-function getDefaultCamera(glTF: ResolvedGlTF, sceneId: number, aspectRatio: number): { model: mat4, proj: mat4 } {
-  const camPos = vec3.fromValues(1, 2, 2);
-  vec3.normalize(camPos, camPos);
-
-  updateGlTF(glTF, { scene: sceneId });
-  const [min, max] = getSceneExtents(vec3.create(), vec3.create(), glTF, sceneId);
-
-  const maxAxisLength = Math.max(max[0] - min[0], max[1] - min[1]);
-  const yfov = Math.PI / 4;
-  const xfov = yfov * aspectRatio;
-
-  const yZoom = maxAxisLength / 2 / Math.tan(yfov / 2);
-  const xZoom = maxAxisLength / 2 / Math.tan(xfov / 2);
-
-  const distance = Math.max(xZoom, yZoom);
-  vec3.scale(camPos, camPos, distance * 1.2);
-
-  const longestDistance = vec3.distance(min, max);
-  let zFar = distance + (longestDistance * 6);
-  let zNear = distance - (longestDistance * 6);
-  zNear = Math.max(zNear, zFar / 10000);
-
-  const target = vec3.create();
-  vec3.add(target, min, max);
-  vec3.scale(target, target, 0.5);
-
-  return {
-    model: mat4.targetTo(mat4.create(), camPos, target, vec3.fromValues(0, 1, 0)),
-    proj: mat4.perspective(mat4.create(), yfov, aspectRatio, zNear, zFar)
-  };
 }
 
 function resizeCanvas(): void {
@@ -105,8 +91,6 @@ function resizeCanvas(): void {
   canvas.height = height * dpr;
   canvas.style.width = `${width}px`;
   canvas.style.height = `${height}px`;
-
-  render(); 
 }
 window.addEventListener('resize', resizeCanvas, false);
 resizeCanvas();

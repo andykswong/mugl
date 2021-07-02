@@ -1,4 +1,5 @@
 import { Buffer, Extras, GlTF, Image } from './spec/glTF2';
+export { GlTF } from './spec/glTF2';
 
 /**
  * Specifies a GlTF file, either by URI, or the GlTF JSON content (and optionally binary chunk for GLB).

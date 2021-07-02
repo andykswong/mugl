@@ -31,7 +31,7 @@ ${animationGlsl}
 attribute vec3 POSITION;
 varying vec3 vPosition;
 
-vec4 getPosition(void) {
+vec4 getPosition() {
   vec4 pos = vec4(POSITION, 1.0);
 
 #ifdef USE_MORPHING

@@ -1,12 +1,12 @@
 import {
   BYTE_MASK, BufferDescriptor, Canvas, Color, GL1Feature, GL2Feature, GLRenderingDevice, GLRenderingDeviceFactory,
   PipelineDescriptor, RenderPassContext, RenderPassDescriptor, SamplerDescriptor,
-  TextureDescriptor, UniformValuesDescriptor, UniformValueLayout, vertexSize
+  TextureDescriptor, UniformValuesDescriptor, UniformValueLayout, vertexSize, vertexType, vertexNormalized
 } from '../device';
 import {
   GL_FRAMEBUFFER, GL_SCISSOR_TEST, GL_COLOR_BUFFER_BIT, GL_DEPTH_BUFFER_BIT, GL_STENCIL_BUFFER_BIT,
   GL_ELEMENT_ARRAY_BUFFER, GL_ARRAY_BUFFER, GL_TEXTURE0, GL_FRONT, GL_BACK, GL_UNSIGNED_SHORT, GL_ALWAYS,
-  GL_FLOAT_VEC3, GL_FLOAT_VEC2, GL_FLOAT_VEC4, GL_FLOAT_MAT3, GL_FLOAT_MAT4, GL_FLOAT
+  GL_FLOAT_VEC3, GL_FLOAT_VEC2, GL_FLOAT_VEC4, GL_FLOAT_MAT3, GL_FLOAT_MAT4
 } from '../device/glenums';
 import { GL_EXT_INSTANCING, MAX_VERTEX_ATTRIBS } from './const';
 import {
@@ -175,8 +175,7 @@ class NanoGLRenderPassContext implements RenderPassContext {
     const { attrs, stride, instanced } = this.state.pipeObj!.buffers[slot];
     this.gl.bindBuffer(GL_ARRAY_BUFFER, glb);
     for (const { format, offset, shaderLoc } of attrs) {
-      // CAVEAT: No support for non-float vertex formats
-      this.gl.vertexAttribPointer(shaderLoc, vertexSize(format), GL_FLOAT, false, stride, offset);
+      this.gl.vertexAttribPointer(shaderLoc, vertexSize(format), vertexType(format), vertexNormalized(format), stride, offset);
       this.inst?.vertexAttribDivisorANGLE(shaderLoc, instanced ? 1 : 0);
     }
     return this;

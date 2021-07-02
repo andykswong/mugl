@@ -5,7 +5,7 @@ import {
   GLTexture as IGLTexture, IndexFormat, MinFilterMode, Origin3D, PipelineDescriptor,
   PipelineStateDescriptor, PixelFormat, PrimitiveType, RasterizationStateDescriptor, RenderPassDescriptor,
   SamplerDescriptor, StencilStateDescriptor, TextureData, TextureDescriptor, TextureView, TexType,
-  UniformLayoutDescriptor, Usage, VertexAttributeDescriptor, VertexBufferLayoutDescriptor, vertexSize
+  UniformLayoutDescriptor, Usage, VertexAttributeDescriptor, VertexBufferLayoutDescriptor, vertexByteSize
 } from '../device';
 import {
   GL_ALWAYS, GL_ARRAY_BUFFER, GL_BACK, GL_BLEND, GL_CCW, GL_CLAMP_TO_EDGE, GL_COLOR_ATTACHMENT0, GL_COMPILE_STATUS,
@@ -16,7 +16,7 @@ import {
   GL_TEXTURE_MIN_FILTER, GL_TEXTURE_WRAP_S, GL_TEXTURE_WRAP_T, GL_TRIANGLES, GL_UNSIGNED_BYTE, GL_UNSIGNED_SHORT,
   GL_VERTEX_SHADER, GL_ZERO
 } from '../device/glenums';
-import { COLOR_PIXEL_FORMAT, DEPTH_PIXEL_FORMAT, VERTEX_FLOAT_BYTES } from './const';
+import { COLOR_PIXEL_FORMAT, DEPTH_PIXEL_FORMAT } from './const';
 import {
   NANOGL_ENABLE_OFFSCREEN, NANOGL_ENABLE_STENCIL, NANOGL_ENABLE_RASTER, NANOGL_ENABLE_BLEND
 } from './features';
@@ -209,8 +209,7 @@ export class GLPipeline implements IGLPipeline {
         for (let j = 0; j < descAttrs.length; ++j, ++shaderLoc) {
           const { name, format, offset: curOffset = offset, shaderLoc: curShaderLoc = shaderLoc } = descAttrs[j];
           attrs[j] = { name, format, offset: curOffset, shaderLoc: curShaderLoc };
-          // CAVEAT: No support for non-float vertex formats
-          offset = Math.max(offset, curOffset) + VERTEX_FLOAT_BYTES * vertexSize(format);
+          offset = Math.max(offset, curOffset) + vertexByteSize(format);
         }
         return { attrs, stride: stride || offset, instanced };
       })

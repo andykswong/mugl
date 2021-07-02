@@ -13,6 +13,10 @@ import primitiveVert from './shaders/primitive.vert';
 import pbrFrag from './shaders/pbr.frag';
 import { updateGlTF } from './update';
 
+// Only supports 16 attributes
+const MAX_VERTEX_ATTRIBS = 16;
+const TARGET_ATTRIBUTES = ['POSITION', 'NORMAL', 'TANGENT'];
+
 const I4 = mat4.create();
 const Z3 = vec3.create();
 
@@ -121,7 +125,7 @@ function renderGlTFNode(
     };
 
     if (primitive.targets) {
-      uniforms['targetWeights'] = node.weights || mesh.weights || [0, 0, 0, 0, 0, 0, 0, 0];
+      uniforms['targetWeights'] = <number[]>getExtras(node).weights || node.weights || mesh.weights || [0, 0, 0, 0, 0, 0, 0, 0];
     }
 
     let numJoints = 0;
@@ -331,13 +335,25 @@ function getVertexBufferLayouts(glTF: ResolvedGlTF, primitive: MeshPrimitive): V
 
   // Morph target attributes
   if (primitive.targets) {
-    const TARGET_ATTRIBUTES = ['POSITION', 'NORMAL', 'TANGENT'];
+    const accessors: (Accessor|undefined)[] = new Array(3);
     for (let i = 0; i < primitive.targets.length; ++i) {
-      for (const name of TARGET_ATTRIBUTES) {
-        const accessor = glTF.accessors?.[primitive.targets[i][name]];
+      let attrs = 0;
+
+      for (let j = 0; j < TARGET_ATTRIBUTES.length; ++j) {
+        if ((accessors[j] = glTF.accessors?.[primitive.targets[i][TARGET_ATTRIBUTES[j]]])) {
+          ++attrs;
+        }
+      }
+
+      if (shaderLoc + attrs > MAX_VERTEX_ATTRIBS) { // Too many attributes
+        break;
+      }
+
+      for (let j = 0; j < TARGET_ATTRIBUTES.length; ++j) {
+        const accessor = accessors[j];
         if (accessor) {
           getBufferLayoutDescriptor(accessor).attrs.push({ 
-            name: `TARGET_${name}_${i}`,
+            name: `TARGET_${TARGET_ATTRIBUTES[j]}_${i}`,
             format: VertexFormat.Float3,
             shaderLoc,
             offset: <number>getExtras(accessor).byteOffset || 0
