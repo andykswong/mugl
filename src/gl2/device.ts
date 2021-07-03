@@ -145,7 +145,7 @@ export class WebGLRenderingDevice implements GLRenderingDevice {
   }
 
   public feature<F>(feature: GL1Feature | GL2Feature | string): F {
-    return <F>(this.exts[feature] = this.exts[feature] || this.gl.getExtension(feature));
+    return (this.exts[feature] = this.exts[feature] || this.gl.getExtension(feature));
   }
 
   public reset(): WebGLState {
@@ -240,7 +240,7 @@ class WebGLRenderPassContext implements RenderPassContext {
         const { ptr, step } = buf.attrs[i];
         this.gl.vertexAttribPointer(...ptr);
         if (this.webgl2) {
-          (<WebGL2RenderingContext>this.gl).vertexAttribDivisor(ptr[0], step);
+          (this.gl as WebGL2RenderingContext).vertexAttribDivisor(ptr[0], step);
         } else {
           this.extInst?.vertexAttribDivisorANGLE(ptr[0], step);
         }
@@ -289,19 +289,24 @@ class WebGLRenderPassContext implements RenderPassContext {
           console.warn(`Invalid value bound to value uniform: ${key}`);
         }
       } else if (uniformInfo.type === UniformType.Tex) {
-        if ((<GLTexture>val)?.glt) {
+        if ((val as GLTexture)?.glt) {
           this.gl.activeTexture(GL_TEXTURE0 + uniformInfo.binding);
-          this.gl.bindTexture((<GLTexture>val).type, (<GLTexture>val).glt);
+          this.gl.bindTexture((val as GLTexture).type, (val as GLTexture).glt);
           this.gl.uniform1i(uniformInfo.loc, uniformInfo.binding);
         } else if (process.env.DEBUG) {
           console.warn(`Invalid value bound to texture uniform: ${key}`);
         }
       } else { // Uniform buffer
-        if ((<BufferBinding>val)?.buffer?.type === GL_UNIFORM_BUFFER) {
-          const offset = (<BufferBinding>val).offset || 0;
-          (<WebGL2RenderingContext>this.gl)
-            .bindBufferRange(GL_UNIFORM_BUFFER, uniformInfo.loc, (<GLBuffer>(<BufferBinding>val).buffer).glb,
-              offset, (<BufferBinding>val).size || ((<GLBuffer>(<BufferBinding>val).buffer).size - offset));
+        if ((val as BufferBinding)?.buffer?.type === GL_UNIFORM_BUFFER) {
+          const offset = (val as BufferBinding).offset || 0;
+          (this.gl as WebGL2RenderingContext)
+            .bindBufferRange(
+              GL_UNIFORM_BUFFER,
+              uniformInfo.loc,
+              ((val as BufferBinding).buffer as GLBuffer).glb,
+              offset,
+              (val as BufferBinding).size || (((val as BufferBinding).buffer as GLBuffer).size - offset)
+            );
         } else if (process.env.DEBUG) {
           console.warn(`Invalid value bound to uniform buffer: ${key}`);
         }
@@ -314,7 +319,7 @@ class WebGLRenderPassContext implements RenderPassContext {
   public draw(vertexCount: number, instanceCount = 1, firstVertex = 0): RenderPassContext {
     if (instanceCount > 1 && (this.webgl2 || this.extInst)) {
       if (this.webgl2) {
-        (<WebGL2RenderingContext>this.gl)
+        (this.gl as WebGL2RenderingContext)
           .drawArraysInstanced(this.state.mode, firstVertex, vertexCount, instanceCount);
       } else {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -331,7 +336,7 @@ class WebGLRenderPassContext implements RenderPassContext {
     const offset = firstIndex * indexSize(idxFmt);
     if (instanceCount > 1 && (this.webgl2 || this.extInst)) {
       if (this.webgl2) {
-        (<WebGL2RenderingContext>this.gl)
+        (this.gl as WebGL2RenderingContext)
           .drawElementsInstanced(mode, indexCount, idxFmt, offset, instanceCount);
       } else {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion

@@ -25,7 +25,7 @@ export class GLRenderPass implements IGLRenderPass {
 
   public constructor(
     context: GLRenderingDevice, {
-      color: rawColors = <TextureView[]>EMPTY_ARR,
+      color: rawColors = EMPTY_ARR as TextureView[],
       depth: depthTex,
       clearColor = false,
       clearDepth = false,
@@ -55,7 +55,7 @@ export class GLRenderPass implements IGLRenderPass {
         if (context.webgl2 && color[i].tex.samples > 1) {
           // Attach multisample renderbuffer for MSAA offscreen rendering
           gl.framebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_RENDERBUFFER,
-            (<GLTexture>color[i].tex).glrb);
+            (color[i].tex as GLTexture).glrb);
         } else {
           framebufferTexture(gl, GL_COLOR_ATTACHMENT0 + i, color[i]);
         }
@@ -64,7 +64,7 @@ export class GLRenderPass implements IGLRenderPass {
       // TODO: [Feature] implement multiview
       if (maxAtt > 1) {
         if (context.webgl2) {
-          (<WebGL2RenderingContext>gl).drawBuffers(color.map((_, i) => GL_COLOR_ATTACHMENT0 + i));
+          (gl as WebGL2RenderingContext).drawBuffers(color.map((_, i) => GL_COLOR_ATTACHMENT0 + i));
         } else if (drawBuffersExt) {
           drawBuffersExt.drawBuffersWEBGL(color.map((_, i) => GL_COLOR_ATTACHMENT0 + i));
         }
@@ -74,7 +74,7 @@ export class GLRenderPass implements IGLRenderPass {
       if (depth) {
         if (depth.tex.renderTarget || (context.webgl2 && depth.tex.samples > 1)) { // Use renderbuffer
           gl.framebufferRenderbuffer(GL_FRAMEBUFFER, withStencil ? GL_DEPTH_STENCIL_ATTACHMENT : GL_DEPTH_ATTACHMENT,
-            GL_RENDERBUFFER, (<GLTexture>depth.tex).glrb);
+            GL_RENDERBUFFER, (depth.tex as GLTexture).glrb);
         } else if (isDepthStencil(depth.tex.format)) { // Use depth texture
           framebufferTexture(gl, withStencil ? GL_DEPTH_STENCIL_ATTACHMENT : GL_DEPTH_ATTACHMENT, depth);
         } else {
@@ -131,9 +131,9 @@ export class GLRenderPass implements IGLRenderPass {
 const initTextureView = (view: TextureView): Required<TextureView> => ({ mipLevel: 0, slice: 0, ...view });
 
 function framebufferTexture(gl: WebGLRenderingContext, attachment: GLenum, texView: Required<TextureView>): void {
-  const tex = <GLTexture>texView.tex;
+  const tex = texView.tex as GLTexture;
   if (is3DTexture(tex.type)) {
-    (<WebGL2RenderingContext>gl)
+    (gl as WebGL2RenderingContext)
       .framebufferTextureLayer(GL_FRAMEBUFFER, attachment, tex.glt, texView.mipLevel, texView.slice);
   } else {
     const texTarget = tex.type === GL_TEXTURE_CUBE_MAP ? GL_TEXTURE_CUBE_MAP_POSITIVE_X + texView.slice : tex.type;

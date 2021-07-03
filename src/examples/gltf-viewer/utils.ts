@@ -55,7 +55,7 @@ export function getSceneExtents(outMin: vec3, outMax: vec3, glTF: ResolvedGlTF, 
       for (const primitive of mesh.primitives) {
         const accessor = glTF.accessors?.[primitive.attributes.POSITION];
         if (accessor) {
-          getAccessorExtents(assetMin, assetMax, accessor, <mat4>node.extras?.model || I4);
+          getAccessorExtents(assetMin, assetMax, accessor, (node.extras?.model as mat4) || I4);
   
           for (let i = 0; i < 3; ++i) {
             outMin[i] = Math.min(outMin[i], assetMin[i]);
@@ -75,8 +75,8 @@ const center = vec3.create();
 const centerToSurface = vec3.create();
 
 function getAccessorExtents(outMin: vec3, outMax: vec3, accessor: Accessor, model: mat4) {
-  vec3.transformMat4(boxMin, <vec3>accessor.min, model);
-  vec3.transformMat4(boxMax, <vec3>accessor.max, model);
+  vec3.transformMat4(boxMin, accessor.min as vec3, model);
+  vec3.transformMat4(boxMax, accessor.max as vec3, model);
 
   vec3.add(center, boxMax, boxMin);
   vec3.scale(center, center, 0.5);

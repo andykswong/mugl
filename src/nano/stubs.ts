@@ -4,19 +4,19 @@ import { GLRenderPass, GLTexture } from './resources';
 /**
  * An empty texture stub.
  */
-export const EMPTY_TEXTURE: GLTexture = <GLTexture>{
+export const EMPTY_TEXTURE: GLTexture = {
   glt: null,
   glrb: null,
   destroy() { /** empty */ }
-};
+} as GLTexture;
 
 /**
  * An empty render pass stub.
  */
 export const renderPassLite = (desc?: RenderPassDescriptor): GLRenderPass =>
-  <GLRenderPass><unknown>({
+  ({
     ...desc,
     color: [],
     glfb: null,
     destroy() { /** empty */ }
-  });
+  }) as unknown as GLRenderPass;

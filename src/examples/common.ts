@@ -38,7 +38,7 @@ export function flatMap<T, U>(arr: T[], f: (x: T, i: number) => U[]): U[] {
   return arr.reduce((out, x, i) => {
     out.push(...f(x, i));
     return out;
-  }, <U[]>[]);
+  }, [] as U[]);
 }
 
 export function loadImage(url: string): Promise<HTMLImageElement> {

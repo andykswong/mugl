@@ -84,7 +84,7 @@ export class GLTexture implements IGLTexture {
       glrb = gl.createRenderbuffer();
       gl.bindRenderbuffer(GL_RENDERBUFFER, glrb);
       if (samples > 1) {
-        (<WebGL2RenderingContext>gl).renderbufferStorageMultisample(GL_RENDERBUFFER, samples,
+        (gl as WebGL2RenderingContext).renderbufferStorageMultisample(GL_RENDERBUFFER, samples,
           glInternalFormat, width, height);
       } else {
         gl.renderbufferStorage(GL_RENDERBUFFER, glInternalFormat, width, height);
@@ -114,9 +114,9 @@ export class GLTexture implements IGLTexture {
 
       if (this.webgl2) {
         if (is3DTexture(type)) {
-          (<WebGL2RenderingContext>gl).texStorage3D(type, mipLevels, glInternalFormat, width, height, depth);
+          (gl as WebGL2RenderingContext).texStorage3D(type, mipLevels, glInternalFormat, width, height, depth);
         } else {
-          (<WebGL2RenderingContext>gl).texStorage2D(type, mipLevels, glInternalFormat, width, height);
+          (gl as WebGL2RenderingContext).texStorage2D(type, mipLevels, glInternalFormat, width, height);
         }
       } else {
         const glFormat = glTexFormat(format);  
@@ -160,12 +160,12 @@ export class GLTexture implements IGLTexture {
 
     for (let i = 0; i < targetCount; ++i) {
       if (is3DTexture(type)) {
-        (<WebGL2RenderingContext>gl).texSubImage3D(baseTarget, mipLevel, x, y, z + i * depth, width, height, depth,
-          glFormat, glType, <ArrayBufferView>dataArr[i]);
+        (gl as WebGL2RenderingContext).texSubImage3D(baseTarget, mipLevel, x, y, z + i * depth, width, height, depth,
+          glFormat, glType, dataArr[i] as ArrayBufferView);
       } else if (this.webgl2 || ArrayBuffer.isView(data)) {
-        gl.texSubImage2D(baseTarget + i, mipLevel, x, y, width, height, glFormat, glType, <ArrayBufferView>dataArr[i]);
+        gl.texSubImage2D(baseTarget + i, mipLevel, x, y, width, height, glFormat, glType, dataArr[i] as ArrayBufferView);
       } else {
-        gl.texSubImage2D(baseTarget + i, mipLevel, x, y, glFormat, glType, <TexImageSource>dataArr[i]);
+        gl.texSubImage2D(baseTarget + i, mipLevel, x, y, glFormat, glType, dataArr[i] as TexImageSource);
       }
     }
 

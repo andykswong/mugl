@@ -16,7 +16,7 @@ const GLBChunkType = {
  * Check if data is in GLB format, by checking the header magic
  */
 export function isGLB(data: BufferSource): boolean {
-  return new DataView((<ArrayBufferView>data).buffer || data, (<ArrayBufferView>data).byteOffset || 0, 4)
+  return new DataView((data as ArrayBufferView).buffer || data, (data as ArrayBufferView).byteOffset || 0, 4)
     .getUint32(0, true) === GLB_HEADER_MAGIC;
 }
 
@@ -28,8 +28,8 @@ export function isGLB(data: BufferSource): boolean {
   let binaryChunk: Uint8Array | undefined;
 
   // Get array buffer and offset from data
-  const buffer: ArrayBuffer = (<ArrayBufferView>data).buffer || data;
-  const bufferOffset = (<ArrayBufferView>data).byteOffset || 0;
+  const buffer: ArrayBuffer = (data as ArrayBufferView).buffer || data;
+  const bufferOffset = (data as ArrayBufferView).byteOffset || 0;
 
   // Validate header magic and version
   const headerView = new DataView(buffer, bufferOffset, GLB_HEADER_LENGTH);

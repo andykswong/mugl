@@ -2,7 +2,8 @@
 
 import { mat4 } from 'gl-matrix';
 import { GL_BYTE, GL_FLOAT, GL_SHORT, GL_UNSIGNED_BYTE, GL_UNSIGNED_INT, GL_UNSIGNED_SHORT, VertexFormat } from '../device';
-import { Accessor, Animation, AnimationSampler, BufferView, Camera, Extras, GlTF, GlTFProperty, Skin } from './spec/glTF2';
+import { Accessor, Animation, AnimationSampler, BufferView, Camera, Extras, GlTF, GlTFProperty, Node, Scene, Skin } from './spec/glTF2';
+import { KHRLightsPunctualGlTFExtension } from './spec/KHR_lights_punctual';
 import { ResolvedBuffers } from './types';
 
 /**
@@ -16,10 +17,22 @@ export function getExtras(property: GlTFProperty): Extras {
 }
 
 /**
+ * Traverse the given node hierachy.
+ */
+export function traverseNode(glTF: GlTF, nodeId: number, callback: (node: Node, parent: Node | null) => boolean | void, parent: Node | null = null): void {
+  const node = glTF.nodes?.[nodeId];
+  if (node && !callback(node, parent) && node.children) {
+    for (const childNodeId of node.children) {
+      traverseNode(glTF, childNodeId, callback, node);
+    }
+  }
+}
+
+/**
  * Get the total duration of an animation.
  */
 export function getAnimationDuration(glTF: GlTF & ResolvedBuffers, animation: Animation): number {
-  let duration = <number>getExtras(animation).duration || 0;
+  let duration = (getExtras(animation).duration as number) || 0;
   for (const channel of animation.channels) {
     const targetNode = glTF.nodes?.[channel.target.node!];
     const accessor = glTF.accessors?.[animation.samplers[channel.sampler]?.input];
@@ -34,7 +47,7 @@ export function getAnimationDuration(glTF: GlTF & ResolvedBuffers, animation: An
  * Get the channel input data of an animation.
  */
 export function getAnimationSamplerInput(glTF: GlTF & ResolvedBuffers, sampler: AnimationSampler): Float32Array | null {
-  let input = <Float32Array>getExtras(sampler).input || null;
+  let input = (getExtras(sampler).input as Float32Array) || null;
   if (!input) {
     const accessor = glTF.accessors?.[sampler.input];
     if (accessor) {
@@ -56,7 +69,7 @@ export type SamplerOutputBuffer = InstanceType<SamplerOutputBufferConstructor>
  * Get the channel output data of an animation.
  */
 export function getAnimationSamplerOutput(glTF: GlTF & ResolvedBuffers, sampler: AnimationSampler): SamplerOutputBuffer | null {
-  let output = <SamplerOutputBuffer>getExtras(sampler).output || null;
+  let output = (getExtras(sampler).output as SamplerOutputBuffer) || null;
   if (!output) {
     const accessor = glTF.accessors?.[sampler.output];
     if (accessor) {
@@ -159,8 +172,8 @@ export function getAccessorElementSize(accessor: Accessor): number {
  * Get the data of an accessor.
  */
 export function getAccessorData(glTF: GlTF & ResolvedBuffers, accessor: Accessor): { buffer: Uint8Array, byteOffset: number } {
-  let buffer: Uint8Array | undefined = <Uint8Array | undefined>getExtras(accessor).buffer;
-  let byteOffset = <number>getExtras(accessor).byteOffset || 0;
+  let buffer: Uint8Array | undefined = getExtras(accessor).buffer as Uint8Array | undefined;
+  let byteOffset = (getExtras(accessor).byteOffset as number) || 0;
   if (buffer) {
     return { buffer, byteOffset };
   }
@@ -230,7 +243,7 @@ export function getAccessorData(glTF: GlTF & ResolvedBuffers, accessor: Accessor
  * Get the data of a bufferView.
  */
 export function getBufferViewData(glTF: GlTF & ResolvedBuffers, bufferView: BufferView): Uint8Array {
-  let bufferViewData = <Uint8Array | undefined>getExtras(bufferView).buffer;
+  let bufferViewData = getExtras(bufferView).buffer as Uint8Array | undefined;
   if (!bufferViewData) {
     const buffer = glTF.buffers?.[bufferView.buffer];
     if (buffer) {
@@ -268,7 +281,7 @@ export function getCameraProjection(out: mat4, camera: Camera | undefined, aspec
  * Get the inverse bind matrices of a skin.
  */
 export function getInverseBindMatrices(glTF: GlTF & ResolvedBuffers, skin: Skin): Float32Array {
-  let matrices = <Float32Array>getExtras(skin).inverseBindMatrices;
+  let matrices = getExtras(skin).inverseBindMatrices as Float32Array;
   if (!matrices) {
     const accessor = glTF.accessors?.[skin.inverseBindMatrices!];
     if (accessor) {
@@ -280,4 +293,22 @@ export function getInverseBindMatrices(glTF: GlTF & ResolvedBuffers, skin: Skin)
     getExtras(skin).inverseBindMatrices = matrices;
   }
   return matrices;
+}
+
+/**
+ * Get all scene lights
+ */
+export function getSceneLights(glTF: GlTF, scene: Scene): KHRLightsPunctualGlTFExtension[] {
+  const lights: KHRLightsPunctualGlTFExtension[] = [];
+  if (scene.nodes) {
+    for (const nodeId of scene.nodes) {
+      traverseNode(glTF, nodeId, (node) => {
+        const light = node.extensions?.KHR_lights_punctual as KHRLightsPunctualGlTFExtension;
+        if (light) {
+          lights.push(light);
+        }
+      });
+    }
+  }
+  return lights;
 }

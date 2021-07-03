@@ -83,7 +83,7 @@ export function updateGlTFAnimation(glTF: ResolvedGlTF, animation: Animation, ti
     } else if (currentTime >= endTime) {
       currentKeyframe = nextKeyframe = sampleCount - 1;
     } else {
-      let lastKeyFrame = <number>getExtras(channel).lastKeyframe || 0;
+      let lastKeyFrame = (getExtras(channel).lastKeyframe as number) || 0;
       if (input[lastKeyFrame] > currentTime) {
         lastKeyFrame = 0;
       }
@@ -124,7 +124,7 @@ export function updateGlTFAnimation(glTF: ResolvedGlTF, animation: Animation, ti
     const nextTime = input[nextKeyframe];
     const t = (currentTime - previousTime) / (nextTime - previousTime);
 
-    const value = getExtras(targetNode)[path] = <number[]>getExtras(targetNode)[path] || new Array(componentSize);
+    const value = getExtras(targetNode)[path] = (getExtras(targetNode)[path] as number[]) || new Array(componentSize);
     const tmp = new Array(componentSize);
     switch (interpolation) {
       case 'STEP':
@@ -145,7 +145,7 @@ export function updateGlTFAnimation(glTF: ResolvedGlTF, animation: Animation, ti
         if (path === 'rotation') {
           arrayCopy(value, output, 0, currentKeyframe * componentSize, componentSize);
           arrayCopy(tmp, output, 0, nextKeyframe * componentSize, componentSize);
-          quat.slerp(<quat>value, <quat>value, <quat>tmp, t);
+          quat.slerp(value as quat, value as quat, tmp as quat, t);
         } else {
           for (let i = 0; i < componentSize; ++i) {
             value[i] = (1 - t) * output[currentKeyframe * componentSize + i] + t * output[nextKeyframe * componentSize + i];
@@ -169,7 +169,7 @@ function updateGlTFNode(glTF: ResolvedGlTF, nodeId: number, origin: mat4, active
   const nodeExtras = getExtras(node);
 
   // Update local matrix
-  const matrix = nodeExtras.matrix = <mat4>nodeExtras.matrix || mat4.create();
+  const matrix = nodeExtras.matrix = (nodeExtras.matrix as mat4) || mat4.create();
   if (node.matrix) {
     mat4.copy(matrix, node.matrix);
   } else if (
@@ -178,14 +178,14 @@ function updateGlTFNode(glTF: ResolvedGlTF, nodeId: number, origin: mat4, active
   ) {
     mat4.fromRotationTranslationScale(
       matrix,
-      <quat>nodeExtras.rotation || node.rotation || Iq,
-      <vec3>nodeExtras.translation || node.translation || Z3,
-      <vec3>nodeExtras.scale || node.scale || S3
+      (nodeExtras.rotation as quat) || node.rotation || Iq,
+      (nodeExtras.translation as vec3) || node.translation || Z3,
+      (nodeExtras.scale as vec3) || node.scale || S3
     );
   }
 
   // Update model matrix
-  const model = nodeExtras.model = mat4.mul(<mat4>nodeExtras.model || mat4.create(), origin, matrix);
+  const model = nodeExtras.model = mat4.mul((nodeExtras.model as mat4) || mat4.create(), origin, matrix);
 
   if (node.children) {
     for (const child of node.children) {
@@ -197,9 +197,9 @@ function updateGlTFNode(glTF: ResolvedGlTF, nodeId: number, origin: mat4, active
 function updateGlTFCamera(glTF: ResolvedGlTF, node: Node): void {
   const camera = glTF.cameras?.[node.camera!];
   if (camera) {
-    const model = getExtras(node).model = <mat4>getExtras(node).model || I4;
-    getExtras(camera).view = mat4.invert(<mat4>getExtras(camera).view || mat4.create(), model);
-    getExtras(camera).translation = vec3.set(<vec3>getExtras(camera).translation || vec3.create(), model[12], model[13], model[14]);
+    const model = getExtras(node).model = (getExtras(node).model as mat4) || I4;
+    getExtras(camera).view = mat4.invert((getExtras(camera).view as mat4)|| mat4.create(), model);
+    getExtras(camera).translation = vec3.set((getExtras(camera).translation as vec3) || vec3.create(), model[12], model[13], model[14]);
   }
 }
 
@@ -207,15 +207,15 @@ function updateGlTFSkin(glTF: ResolvedGlTF, node: Node): void {
   const skin = glTF.skins?.[node.skin!];
   if (skin) {
     const numJoints = skin.joints.length;
-    const jointMatrix = getExtras(node).jointMatrix = <Float32Array>getExtras(node).jointMatrix || new Float32Array(numJoints * 16);
+    const jointMatrix = getExtras(node).jointMatrix = (getExtras(node).jointMatrix as Float32Array) || new Float32Array(numJoints * 16);
     const inverseBindMatrices = getInverseBindMatrices(glTF, skin);
 
     for (let i = 0; i < numJoints; ++i) {
       const jointNode = glTF.nodes![skin.joints[i]];
       const jointMat = new Float32Array(jointMatrix.buffer, jointMatrix.byteOffset + 16 * 4 * i, 16);
 
-      mat4.invert(jointMat, <mat4>getExtras(node).model || I4);
-      mat4.mul(jointMat, jointMat, (jointNode && <mat4>getExtras(jointNode).model) || I4);
+      mat4.invert(jointMat, (getExtras(node).model as mat4) || I4);
+      mat4.mul(jointMat, jointMat, (jointNode && (getExtras(jointNode).model as mat4)) || I4);
       mat4.mul(jointMat, jointMat, new Float32Array(inverseBindMatrices.buffer, inverseBindMatrices.byteOffset + 16 * 4 * i, 16));
     }
   }

@@ -115,7 +115,7 @@ class NanoGLRenderingDevice implements GLRenderingDevice {
   }
 
   public feature<F>(extension: GL1Feature | GL2Feature | string): F {
-    return <F>(this.exts[extension] = this.exts[extension] || this.gl.getExtension(extension));
+    return (this.exts[extension] = this.exts[extension] || this.gl.getExtension(extension));
   }
 
   public reset(): void {
@@ -190,20 +190,20 @@ class NanoGLRenderPassContext implements RenderPassContext {
       const loc = this.gl.getUniformLocation(this.state.pipeObj!.glp!, key);
 
       if (format && loc) {
-        if ((<number[]>val).length) { // Array types
+        if ((val as number[]).length) { // Array types
           switch (format) {
-            case GL_FLOAT_MAT4: this.gl.uniformMatrix4fv(loc, false, <number[]>val); break;
-            case GL_FLOAT_MAT3: this.gl.uniformMatrix3fv(loc, false, <number[]>val); break;
-            case GL_FLOAT_VEC4: this.gl.uniform4fv(loc, <number[]>val); break;
-            case GL_FLOAT_VEC3: this.gl.uniform3fv(loc, <number[]>val); break;
-            case GL_FLOAT_VEC2: this.gl.uniform2fv(loc, <number[]>val); break;
-            default: this.gl.uniform1fv(loc, <number[]>val);
+            case GL_FLOAT_MAT4: this.gl.uniformMatrix4fv(loc, false, val as number[]); break;
+            case GL_FLOAT_MAT3: this.gl.uniformMatrix3fv(loc, false, val as number[]); break;
+            case GL_FLOAT_VEC4: this.gl.uniform4fv(loc, val as number[]); break;
+            case GL_FLOAT_VEC3: this.gl.uniform3fv(loc, val as number[]); break;
+            case GL_FLOAT_VEC2: this.gl.uniform2fv(loc, val as number[]); break;
+            default: this.gl.uniform1fv(loc, val as number[]);
           }
         } else if (typeof val === 'number') { // Single number
           this.gl.uniform1f(loc, val);
         } else if (NANOGL_ENABLE_TEXTURE) { // Texture
           this.gl.activeTexture(GL_TEXTURE0 + texId);
-          this.gl.bindTexture((<GLTexture>val).type, (<GLTexture>val).glt);
+          this.gl.bindTexture((val as GLTexture).type, (val as GLTexture).glt);
           this.gl.uniform1i(loc, texId++);
         }
       }

@@ -77,7 +77,7 @@ async function resolveBuffers<T extends GlTF>(
     }
   }
 
-  return <T & ResolvedBuffers>glTF;
+  return glTF as T & ResolvedBuffers;
 }
 
 async function resolveImages<T extends GlTF & ResolvedBuffers>(
@@ -122,5 +122,5 @@ async function resolveImages<T extends GlTF & ResolvedBuffers>(
     }
   }
 
-  return <T & ResolvedImages>glTF;
+  return glTF as T & ResolvedImages;
 }

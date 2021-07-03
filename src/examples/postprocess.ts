@@ -196,7 +196,7 @@ export class PostprocessExample extends BaseExample {
       .end();
 
     const kernel = kernels[this.kernel];
-    let kernelWeight = (<number[]>kernel).reduce((x, y) => x + y);
+    let kernelWeight = (kernel as number[]).reduce((x, y) => x + y);
     kernelWeight = kernelWeight <= 0 ? 1 : kernelWeight;
 
     // Draw to screen

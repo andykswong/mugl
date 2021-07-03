@@ -66,9 +66,9 @@ export function renderGlTF(device: RenderingDevice, glTF: ResolvedGlTF, options:
   if (options.camera) {
     const activeCamera = glTF.cameras?.[options.camera.index || 0];
     if (activeCamera) {
-      view = <mat4>activeCamera.extras?.view || I4;
+      view = (activeCamera.extras?.view as mat4) || I4;
       proj = getCameraProjection(tmpViewProj, activeCamera, device.canvas.width / device.canvas.height);
-      cameraPosition = <vec3>activeCamera.extras?.translation || Z3;
+      cameraPosition = (activeCamera.extras?.translation as vec3) || Z3;
     }
     if (options.camera.model) {
       cameraPosition = vec3.fromValues(options.camera.model[12], options.camera.model[13], options.camera.model[14]);
@@ -119,9 +119,9 @@ function renderGlTFPrimitive(
   env: UniformValuesDescriptor
 ): void {
   // Set model matrices. This overrides matrices in the env obj to reduce object allocations
-  env.model = mat4.copy(<mat4>env.model || mat4.create(), <mat4>getExtras(node).model || I4);
-  if (!mat3.normalFromMat4((env.normalMatrix = <mat3>env.normalMatrix || mat3.create()), <mat4>env.model)) {
-    mat3.identity(<mat3>env.normalMatrix);
+  env.model = mat4.copy((env.model as mat4) || mat4.create(), (getExtras(node).model as mat4) || I4);
+  if (!mat3.normalFromMat4((env.normalMatrix = (env.normalMatrix as mat3) || mat3.create()), env.model as mat4)) {
+    mat3.identity(env.normalMatrix as mat3);
   }
 
   let indexed = false;
@@ -139,14 +139,14 @@ function renderGlTFPrimitive(
   };
 
   if (primitive.targets) {
-    uniforms['targetWeights'] = <number[]>getExtras(node).weights || node.weights || mesh.weights || [0, 0, 0, 0, 0, 0, 0, 0];
+    uniforms['targetWeights'] = (getExtras(node).weights as number[]) || node.weights || mesh.weights || [0, 0, 0, 0, 0, 0, 0, 0];
   }
 
   let numJoints = 0;
   const skin = glTF.skins?.[node.skin!];
-  if (primitive.attributes['JOINTS_0'] && primitive.attributes['WEIGHTS_0'] && skin) {
+  if (primitive.attributes.JOINTS_0 && primitive.attributes.WEIGHTS_0 && skin) {
     numJoints = skin.joints.length;
-    const jointMatrix = getExtras(node).jointMatrix = <Float32Array>getExtras(node).jointMatrix || new Float32Array(numJoints * 16);
+    const jointMatrix = getExtras(node).jointMatrix = (getExtras(node).jointMatrix as Float32Array) || new Float32Array(numJoints * 16);
     uniforms['jointMatrix'] = jointMatrix;
   }
 
@@ -162,7 +162,7 @@ function renderGlTFPrimitive(
     const targetAttrMatch = attr.match(/TARGET_(.+)_(\d+)/);
     const buffer = loadGPUBuffer(
       device, glTF,
-      targetAttrMatch ? primitive.targets![<number><unknown>targetAttrMatch[2]][targetAttrMatch[1]] : primitive.attributes[attr],
+      targetAttrMatch ? primitive.targets![targetAttrMatch[2] as unknown as number][targetAttrMatch[1]] : primitive.attributes[attr],
       BufferType.Vertex
     );
     if (buffer) {
@@ -177,7 +177,7 @@ function renderGlTFPrimitive(
     if (indexBuffer) {
       context.index(indexBuffer);
       vertexCount = indexAccessor.count;
-      offset = <number>getExtras(indexAccessor).byteOffset || 0;
+      offset = (getExtras(indexAccessor).byteOffset as number) || 0;
       indexed = true;
     }
   }
@@ -191,12 +191,12 @@ function renderGlTFPrimitive(
 }
 
 function loadGPUPipeline(device: RenderingDevice, glTF: ResolvedGlTF, primitive: MeshPrimitive, numJoints = 0): Pipeline {
-  let pipeline: Pipeline | undefined = <Pipeline>getExtras(primitive).pipeline;
+  let pipeline: Pipeline | undefined = getExtras(primitive).pipeline as Pipeline | undefined;
   if (pipeline) {
     return pipeline;
   }
 
-  const mode: PrimitiveType = <PrimitiveType> primitive.mode || PrimitiveType.Tri;
+  const mode: PrimitiveType = (primitive.mode as PrimitiveType) || PrimitiveType.Tri;
   const material = glTF.materials?.[primitive.material!];
   let alphaMode = 'OPAQUE';
   let doubleSided = false;
@@ -226,7 +226,8 @@ function loadGPUPipeline(device: RenderingDevice, glTF: ResolvedGlTF, primitive:
     unlit
   ]);
 
-  const pipelines: Record<string, Pipeline> = getExtras(glTF).pipelines = <Record<string, Pipeline>>getExtras(glTF).pipelines || {};
+  const pipelines: Record<string, Pipeline> = getExtras(glTF).pipelines =
+    (getExtras(glTF).pipelines as Record<string, Pipeline>) || {};
   pipeline = pipelines[pipelineKey];
   if (pipeline) {
     return pipeline;
@@ -347,7 +348,7 @@ function getVertexBufferLayouts(glTF: ResolvedGlTF, primitive: MeshPrimitive): V
         name,
         format,
         shaderLoc,
-        offset: <number>getExtras(accessor).byteOffset || 0
+        offset: (getExtras(accessor).byteOffset as number) || 0
       });
       shaderLoc++;
     }
@@ -376,7 +377,7 @@ function getVertexBufferLayouts(glTF: ResolvedGlTF, primitive: MeshPrimitive): V
             name: `TARGET_${TARGET_ATTRIBUTES[j]}_${i}`,
             format: VertexFormat.Float3,
             shaderLoc,
-            offset: <number>getExtras(accessor).byteOffset || 0
+            offset: (getExtras(accessor).byteOffset as number) || 0
           });
           shaderLoc++;
         }
@@ -457,14 +458,14 @@ function loadGPUBuffer(device: RenderingDevice, glTF: ResolvedGlTF, accessorId: 
   // ubyte index is not supported in mugl, thus uses its own widened buffer
   const isUByteIndex = targetHint === BufferType.Index && accessor.componentType === GL_UNSIGNED_BYTE;
   if (accessor.sparse || isUByteIndex) {
-    let gpuBuffer: Buffer | null = <Buffer>getExtras(accessor).gpuBuffer;
+    let gpuBuffer: Buffer | undefined = getExtras(accessor).gpuBuffer as Buffer | undefined;
     if (!gpuBuffer) {
       const accessorData = getAccessorData(glTF, accessor);
       let data: ArrayBufferView = accessorData.buffer;
       if (isUByteIndex) {
         const widenedData = new Uint16Array(data.byteLength);
         for (let i = 0; i < data.byteLength; ++i) {
-          widenedData[i] = (<Uint8Array>data)[accessorData.byteOffset + i];
+          widenedData[i] = (data as Uint8Array)[accessorData.byteOffset + i];
         }
         data = getExtras(accessor).buffer = new Uint8Array(widenedData.buffer, 0, widenedData.byteLength);
         getExtras(accessor).byteOffset = 0;
@@ -484,7 +485,7 @@ function loadGPUBuffer(device: RenderingDevice, glTF: ResolvedGlTF, accessorId: 
 
   // Vertex buffers are splitted to optimize for pipeline sharing, but we want to share them if possible
   const gpuBuffers: Record<string, Buffer> = getExtras(bufferView).gpuBuffers =
-    <Record<string, Buffer>>getExtras(bufferView).gpuBuffers || {};
+    (getExtras(bufferView).gpuBuffers as Record<string, Buffer>) || {};
 
   const buffer = getAccessorData(glTF, accessor).buffer;
   const bufferKey = `${buffer.byteOffset},${buffer.byteLength}`;
@@ -494,7 +495,7 @@ function loadGPUBuffer(device: RenderingDevice, glTF: ResolvedGlTF, accessorId: 
   }
 
   return gpuBuffers[bufferKey] =
-      device.buffer({ type: <BufferType>bufferView.target || targetHint, size: buffer.byteLength }).data(buffer);
+      device.buffer({ type: (bufferView.target as BufferType) || targetHint, size: buffer.byteLength }).data(buffer);
 }
 
 function loadGPUTexture(device: RenderingDevice, glTF: ResolvedGlTF, textureId: number): Texture {
@@ -503,7 +504,7 @@ function loadGPUTexture(device: RenderingDevice, glTF: ResolvedGlTF, textureId: 
     return loadBlankGPUTexture(device, glTF);
   }
 
-  let gpuTexture: Texture | undefined = <Texture>getExtras(texture).texture;
+  let gpuTexture: Texture | undefined = getExtras(texture).texture as Texture | undefined;
   if (gpuTexture) {
     return gpuTexture;
   }
@@ -523,28 +524,17 @@ function loadGPUTexture(device: RenderingDevice, glTF: ResolvedGlTF, textureId: 
 
   const sampler = glTF.samplers?.[texture.sampler!];
   if (sampler) {
-    if (sampler.magFilter) {
-      samplerDesc.magFilter = <FilterMode>sampler.magFilter;
-    }
+    samplerDesc.wrapU = sampler.wrapS as AddressMode || samplerDesc.wrapU;
+    samplerDesc.wrapV = sampler.wrapT as AddressMode || samplerDesc.wrapV;
+    samplerDesc.magFilter = sampler.magFilter as FilterMode || samplerDesc.magFilter;
 
     // TODO: Support mipmapping
-    if (sampler.minFilter) {
-      switch (sampler.minFilter) {
-        case MinFilterMode.Nearest:
-        case MinFilterMode.NearestMipmapNearest:
-        case MinFilterMode.NearestMipmapLinear:
-          samplerDesc.minFilter = MinFilterMode.Nearest;
-          break;
-        default:
-          samplerDesc.minFilter = MinFilterMode.Linear;
-          break;
-      }
-    }
-    if (sampler.wrapS) {
-      samplerDesc.wrapU = <AddressMode>sampler.wrapS;
-    }
-    if (sampler.wrapT) {
-      samplerDesc.wrapV = <AddressMode>sampler.wrapT;
+    switch (sampler.minFilter) {
+      case MinFilterMode.Nearest:
+      case MinFilterMode.NearestMipmapNearest:
+      case MinFilterMode.NearestMipmapLinear:
+        samplerDesc.minFilter = MinFilterMode.Nearest;
+        break;
     }
   }
 
@@ -560,7 +550,7 @@ function loadGPUTexture(device: RenderingDevice, glTF: ResolvedGlTF, textureId: 
 
 /** Load a placeholder texture. */
 function loadBlankGPUTexture(device: RenderingDevice, glTF: GlTF): Texture {
-  let gpuTexture: Texture | undefined = <Texture>getExtras(glTF).blankTexture;
+  let gpuTexture: Texture | undefined = getExtras(glTF).blankTexture as Texture | undefined;
   if (gpuTexture) {
     return gpuTexture;
   }

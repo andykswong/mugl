@@ -96,7 +96,7 @@ export class GLPipeline implements IGLPipeline {
       Object.keys(uniforms).reduce((result, key) => {
         result[key] = { ...uniforms[key] };
         return result;
-      }, <DeepRequired<UniformLayoutDescriptor>>{}) :
+      }, {} as DeepRequired<UniformLayoutDescriptor>) :
       {};
 
     const cache: UniformCache = this.cache = {};
@@ -106,18 +106,18 @@ export class GLPipeline implements IGLPipeline {
       const desc = uniforms[key];
       let loc;
       if (desc.type === UniformType.Buffer) {
-        loc = (<WebGL2RenderingContext>gl).getUniformBlockIndex(glp, key);
-        (<WebGL2RenderingContext>this.gl).uniformBlockBinding(glp, loc, bufCount++);
+        loc = (gl as WebGL2RenderingContext).getUniformBlockIndex(glp, key);
+        (gl as WebGL2RenderingContext).uniformBlockBinding(glp, loc, bufCount++);
       } else {
         loc = gl.getUniformLocation(glp, key);
       }
       if (loc !== null && loc !== GL_INVALID_INDEX) {
-        cache[key] = <UniformCacheEntry>{
+        cache[key] = {
           ...desc,
           loc,
           binding: desc.type === UniformType.Tex ? texCount++ :
             desc.type === UniformType.Buffer ? bufCount : -1
-        };
+        } as UniformCacheEntry;
       }
     }
 

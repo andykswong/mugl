@@ -154,14 +154,14 @@ export class GLRenderPass implements IGLRenderPass {
       // CAVEAT: MRT is not supported
       gl.bindFramebuffer(GL_FRAMEBUFFER, this.glfb = gl.createFramebuffer());
       gl.framebufferTexture2D(
-        GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, this.color[0].tex.type, (<GLTexture>this.color[0].tex).glt, 0
+        GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, this.color[0].tex.type, (this.color[0].tex as GLTexture).glt, 0
       );
 
       // Attach optional depth-stencil buffer to framebuffer
       // CAVEAT: Depth texture is not supported
       if (this.depth) {
         gl.framebufferRenderbuffer(GL_FRAMEBUFFER, NANOGL_ENABLE_STENCIL ? GL_DEPTH_STENCIL_ATTACHMENT : GL_DEPTH_ATTACHMENT,
-          GL_RENDERBUFFER, (<GLTexture>this.depth.tex).glrb);
+          GL_RENDERBUFFER, (this.depth.tex as GLTexture).glrb);
       }
   
       if (process.env.DEBUG) {
