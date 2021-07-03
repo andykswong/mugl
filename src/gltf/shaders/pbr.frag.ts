@@ -1,4 +1,5 @@
 import brdfGlsl from './chunks/brdf.glsl';
+import lightGlsl from './chunks/light.glsl';
 import materialGlsl from './chunks/material.glsl';
 import normalGlsl from './chunks/normal.glsl';
 import textureGlsl from './chunks/texture.glsl';
@@ -21,6 +22,7 @@ ${brdfGlsl}
 ${textureGlsl}
 ${normalGlsl}
 ${materialGlsl}
+${lightGlsl}
 
 void main () {
   vec4 baseColor = getBaseColor();
@@ -58,16 +60,39 @@ void main () {
   vec3 diffuseFinal = vec3(0.0);
   vec3 specularFinal = vec3(0.0);
 
-  vec3 lightDirs[2];
-  lightDirs[0] = vec3(0.5, -0.707107, -0.5);
-  lightDirs[1] = vec3(-0.5, 0.707107, 0.5);
-  vec4 lightColors[2];
-  lightColors[0] = vec4(1.0, 1.0, 1.0, 1.0);
-  lightColors[1] = vec4(1.0, 1.0, 1.0, 0.5);
+  #define NUM_LIGHTS 4
 
-  for (int i = 0; i < 2; ++i) {
-    vec3 intensity = lightColors[i].rgb * lightColors[i].a;
-    vec3 l = normalize(-lightDirs[i]);
+  mat4 lights[4];
+  lights[0] = mat4(
+    0., 0., 0., 0.,
+    1., 1., 1., 1.,
+    .5, -.707, -.5, 0.,
+    0., 0., 0., 0.
+  );
+  lights[1] = mat4(
+    0., 0., 0., 0.,
+    1., 1., 1., .5,
+    -.5, .707, .5, 0.,
+    0., 0., 0., 0.
+  );
+  lights[2] = mat4(
+    0., 0., 0., 0.,
+    1., 1., 1., .25,
+    .5, .707, -.5, 0.,
+    0., 0., 0., 0.
+  );
+  lights[3] = mat4(
+    0., 0., 0., 0.,
+    1., 1., 1., .25,
+    -.5, -.707, .5, 0.,
+    0., 0., 0., 0.
+  );
+
+#ifdef NUM_LIGHTS
+  for (int i = 0; i < NUM_LIGHTS; ++i) {
+    vec3 pointToLight = getPointToLight(lights[i], vPosition);
+    vec3 intensity = getLighIntensity(lights[i], pointToLight);
+    vec3 l = normalize(pointToLight);
     vec3 h = normalize(l + v);
     float nDotL = clamp(dot(n, l), 0.001, 1.0);
     float nDotH = clamp(dot(n, h), 0.0, 1.0);
@@ -76,10 +101,11 @@ void main () {
     vec3 F = specularF(specularEnvR0, specularEnvR90, vDotH);
     vec3 diffuse = (1.0 - F) * diffuseBRDF(diffuseColor);
     vec3 specular = max(vec3(0.0), F * specularBRDF(aSqr, nDotL, nDotV, nDotH));
-  
+
     diffuseFinal += intensity * nDotL * diffuse;
     specularFinal += intensity * nDotL * specular;
   }
+#endif
 
   vec4 ambient = vec4(0.1);
 

@@ -1,4 +1,5 @@
 import { vec3 } from 'gl-matrix';
+import { VIEWER_NANO } from '../config';
 import { getGLDevice } from '../../gl2';
 import { getNanoGLDevice } from '../../nano';
 import { ResolvedGlTF, renderGlTF, resolveGlTF, updateGlTFAnimation } from '../../gltf';
@@ -13,14 +14,14 @@ let glTF: ResolvedGlTF | null = null;
 let startTime = 0;
 let curAnimation = 0;
 
-const device = process.env.NANOGL_VIEWER ? 
+const device = VIEWER_NANO ? 
   getNanoGLDevice(canvas, { powerPreference: 'low-power' })! :
   getGLDevice(canvas, {
     powerPreference: 'low-power',
     webgl2: false
   })!;
 
-if (process.env.NANOGL_VIEWER) {
+if (VIEWER_NANO) {
   // Features required by PBR shader, but not enabled by default for Nano device
   device.feature('OES_standard_derivatives');
   device.feature('OES_element_index_uint');

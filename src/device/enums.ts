@@ -585,6 +585,18 @@ export const VertexFormat = {
   /** 32-bit floats, 4 components in XYZW */
   Float4: 0x0_04_00,
 
+  /** 2 packed bytes, signed (-128 .. 127) */
+  Char2: 0x0_02_01,
+
+  /** 2 packed bytes, signed, normalized (-1.0 .. +1.0) */
+  Char2N: 0x1_02_01,
+
+  /** 2 packed bytes, unsigned (0 .. 255) */
+  UChar2: 0x0_02_02,
+
+  /** 2 packed bytes, unsigned, normalized (0.0 .. +1.0) */
+  UChar2N: 0x1_02_02,
+
   /** 4 packed bytes, signed (-128 .. 127) */
   Char4: 0x0_04_01,
 

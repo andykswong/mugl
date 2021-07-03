@@ -1,4 +1,5 @@
-import { getGLDevice } from '..';
+import { USE_WEBGL2 } from './config';
+import { getGLDevice } from '../gl2';
 import { Example, ExampleConstructor } from './common';
 import { BasicExample } from './basic';
 import { CubeExample } from './cube';
@@ -61,7 +62,7 @@ if (dpr > 1) {
 const device = getGLDevice(canvas, {
   stencil: true,
   powerPreference: 'low-power',
-  webgl2: !!process.env.WEBGL2
+  webgl2: USE_WEBGL2
 })!;
 
 let example: Example;

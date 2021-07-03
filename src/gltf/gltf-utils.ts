@@ -118,14 +118,15 @@ export function getAccessorVertexFormat(accessor: Accessor): VertexFormat | null
         return VertexFormat.Float2;
       } else if (accessor.componentType === GL_UNSIGNED_SHORT) {
         return accessor.normalized ? VertexFormat.UShort2N : VertexFormat.UShort2;
+      } else if (accessor.componentType === GL_UNSIGNED_BYTE) {
+        return accessor.normalized ? VertexFormat.UChar2N : VertexFormat.UChar2;
       }
-      // TODO: Unsupported UNSIGNED_BYTE 2/2
       break;
     case 'VEC3':
       if (accessor.componentType === GL_FLOAT) {
         return VertexFormat.Float3;
       }
-      // TODO: Unsupported UChar/UShort 3
+      // TODO: UChar3N/UShort3N can be used for vertex color, but unsupported by WebGPU. Widen to UChar4N/UShort4N instead
       break;
     case 'VEC4':
       if (accessor.componentType === GL_FLOAT) {

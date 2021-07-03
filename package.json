@@ -54,7 +54,6 @@
     "gl-matrix": "^3.3.0"
   },
   "devDependencies": {
-    "@automattic/webpack-inline-constant-exports-plugin": "^1.0.0",
     "@types/jest": "^26.0.20",
     "@types/node": "^15.12.5",
     "@types/webgl-ext": "0.0.32",

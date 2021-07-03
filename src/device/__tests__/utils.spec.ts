@@ -22,14 +22,22 @@ describe('utils', () => {
       [VertexFormat.Float2]: { bytes: 8, size: 2, type: GL_FLOAT, norm: false },
       [VertexFormat.Float3]: { bytes: 12, size: 3, type: GL_FLOAT, norm: false },
       [VertexFormat.Float4]: { bytes: 16, size: 4, type: GL_FLOAT, norm: false },
+
+      [VertexFormat.Char2]: { bytes: 2, size: 2, type: GL_BYTE, norm: false },
+      [VertexFormat.Char2N]: { bytes: 2, size: 2, type: GL_BYTE, norm: true },
       [VertexFormat.Char4]: { bytes: 4, size: 4, type: GL_BYTE, norm: false },
       [VertexFormat.Char4N]: { bytes: 4, size: 4, type: GL_BYTE, norm: true },
+
+      [VertexFormat.UChar2]: { bytes: 2, size: 2, type: GL_UNSIGNED_BYTE, norm: false },
+      [VertexFormat.UChar2N]: { bytes: 2, size: 2, type: GL_UNSIGNED_BYTE, norm: true },
       [VertexFormat.UChar4]: { bytes: 4, size: 4, type: GL_UNSIGNED_BYTE, norm: false },
       [VertexFormat.UChar4N]: { bytes: 4, size: 4, type: GL_UNSIGNED_BYTE, norm: true },
+
       [VertexFormat.Short2]: { bytes: 4, size: 2, type: GL_SHORT, norm: false },
       [VertexFormat.Short2N]: { bytes: 4, size: 2, type: GL_SHORT, norm: true },
       [VertexFormat.Short4]: { bytes: 8, size: 4, type: GL_SHORT, norm: false },
       [VertexFormat.Short4N]: { bytes: 8, size: 4, type: GL_SHORT, norm: true },
+
       [VertexFormat.UShort2]: { bytes: 4, size: 2, type: GL_UNSIGNED_SHORT, norm: false },
       [VertexFormat.UShort2N]: { bytes: 4, size: 2, type: GL_UNSIGNED_SHORT, norm: true },
       [VertexFormat.UShort4]: { bytes: 8, size: 4, type: GL_UNSIGNED_SHORT, norm: false },

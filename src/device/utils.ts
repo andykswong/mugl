@@ -125,7 +125,7 @@ export const vertexNormalized = (format: VertexFormat): boolean => !!(format >> 
  * @param format index format
  * @returns byte size of the format
  */
-export const indexSize = (format: IndexFormat): number  => format ? (2 + (format - IndexFormat.UInt16)) : 0;
+export const indexSize = (format: IndexFormat): number => (format - IndexFormat.UInt16) + 2;
 
 /**
  * Convert PixelFormat to GL texture internal format.
@@ -135,7 +135,7 @@ export const indexSize = (format: IndexFormat): number  => format ? (2 + (format
  * @param isWebGL2 if WebGL2 is used
  * @returns GL texture internal format
  */
- export function glTexInternalFormat(format: PixelFormat, isWebGL2 = false): GLenum {
+export function glTexInternalFormat(format: PixelFormat, isWebGL2 = false): GLenum {
   return (isWebGL2 || isDepthStencil(format)) ? TEX_INTERNAL_FORMAT_MAP[format >> 16] : glTexFormat(format);
 }
 

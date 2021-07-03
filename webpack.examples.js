@@ -21,13 +21,11 @@ module.exports = merge(common, {
   },
   plugins: [
     new webpack.DefinePlugin({
+      'USE_WEBGL2': true,
+      'VIEWER_NANO': true,
       'NANOGL_ENABLE_SCISSOR': false,
       'NANOGL_ENABLE_OFFSCREEN': false,
       'NANOGL_ENABLE_STENCIL': false,
-    }),
-    new webpack.EnvironmentPlugin({
-      'WEBGL2': true,
-      'NANOGL_VIEWER': true,
     }),
     new CopyPlugin({
       patterns: [

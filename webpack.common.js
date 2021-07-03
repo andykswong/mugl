@@ -1,7 +1,6 @@
 const path = require('path');
 const webpack = require('webpack');
 const TerserPlugin = require('terser-webpack-plugin');
-const InlineConstantExportsPlugin = require('@automattic/webpack-inline-constant-exports-plugin');
 
 const PRODUCTION = 'production';
 
@@ -54,10 +53,7 @@ module.exports = {
   plugins: [
     new webpack.EnvironmentPlugin({
       'DEBUG': debug
-    }),
-    new InlineConstantExportsPlugin([
-      /src\/api\/glenums\.ts/
-    ])
+    })
   ],
   devtool: isProd ? false : 'source-map'
 };
