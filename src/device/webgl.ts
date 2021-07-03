@@ -17,7 +17,7 @@ const GLCommonFeatures = {
 };
 
 /**
- * Supported WebGL1 feature values.
+ * WebGL1 feature used by mugl.
  */
 export const GL1Feature = {
   DFfx: 'OES_standard_derivatives',
@@ -32,12 +32,12 @@ export const GL1Feature = {
 } as const;
 
 /**
- * Supported WebGL1 feature type.
+ * WebGL1 features used by mugl.
  */
 export type GL1Feature = ValueOf<typeof GL1Feature>;
 
 /**
- * Supported WebGL2 feature values.
+ * WebGL2 features used by mugl.
  */
 export const GL2Feature = {
   BufFP: 'EXT_color_buffer_float',
@@ -52,14 +52,14 @@ export const GL2Feature = {
 } as const;
 
 /**
- * Supported WebGL2 feature type.
+ * WebGL2 features used by mugl.
  */
 export type GL2Feature = ValueOf<typeof GL2Feature>;
 
 /**
  * A WebGL buffer resource.
  */
- export interface GLBuffer extends Buffer {
+export interface GLBuffer extends Buffer {
   /** The underlying WebGL buffer object. null if destroyed. */
   readonly glb: WebGLBuffer | null;
 }
@@ -67,8 +67,7 @@ export type GL2Feature = ValueOf<typeof GL2Feature>;
 /**
  * A WebGL texture resource.
  */
-export interface GLTexture extends Texture
-{
+export interface GLTexture extends Texture {
   /** The underlying WebGL texture object. null if destroyed. */
   readonly glt: WebGLTexture | null;
 
@@ -100,7 +99,7 @@ export interface GLPipeline extends Pipeline {
  * WebGL2 can optionally be used if available.
  * @see https://developer.mozilla.org/en-US/docs/Web/API/HTMLCanvasElement/getContext
  */
-export interface GLRenderingDevice extends RenderingDevice<GL1Feature | GL2Feature> {
+export interface GLRenderingDevice extends RenderingDevice<GL1Feature | GL2Feature | string> {
   /** The canvas */
   readonly canvas: Canvas;
 
@@ -115,36 +114,43 @@ export interface GLRenderingDevice extends RenderingDevice<GL1Feature | GL2Featu
    * @param desc the buffer descriptor
    * @returns new buffer object
    */
-   buffer(desc: BufferDescriptor): GLBuffer;
+  buffer(desc: BufferDescriptor): GLBuffer;
 
-   /**
-    * Creates a new texture object.
-    * @param desc the texture descriptor
-    * @param sampler the sampler descriptor
-    * @returns new texture object
-    */
-   texture(desc: TextureDescriptor, sampler?: SamplerDescriptor): GLTexture;
- 
-   /**
-    * Creates a new Pipeline state object.
-    * @param desc the pipeline descriptor
-    * @returns new pipeline state object
-    */
-   pipeline(desc: PipelineDescriptor): GLPipeline;
- 
-   /**
-    * Creates a new render pass object.
-    * @param desc the render pass descriptor.
-    * @returns new render pass
-    */
-   pass(desc?: RenderPassDescriptor): GLRenderPass;
- 
-   /**
-    * Start a render pass.
-    * @param pass the render pass
-    * @returns the pass rendering context.
-    */
-   render(pass: GLRenderPass): RenderPassContext;
+  /**
+   * Creates a new texture object.
+   * @param desc the texture descriptor
+   * @param sampler the sampler descriptor
+   * @returns new texture object
+   */
+  texture(desc: TextureDescriptor, sampler?: SamplerDescriptor): GLTexture;
+
+  /**
+   * Creates a new Pipeline state object.
+   * @param desc the pipeline descriptor
+   * @returns new pipeline state object
+   */
+  pipeline(desc: PipelineDescriptor): GLPipeline;
+
+  /**
+   * Creates a new render pass object.
+   * @param desc the render pass descriptor.
+   * @returns new render pass
+   */
+  pass(desc?: RenderPassDescriptor): GLRenderPass;
+
+  /**
+   * Start a render pass.
+   * @param pass the render pass
+   * @returns the pass rendering context.
+   */
+  render(pass: GLRenderPass): RenderPassContext;
+
+  /**
+   * Query and enable a WebGL extension. 
+   * @param feature WebGL extension name to enable.
+   * @returns the extension object, or null if not supported
+   */
+  feature<F>(feature: GL1Feature | GL2Feature | string): F | null;
 }
 
 /**

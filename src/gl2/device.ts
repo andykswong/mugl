@@ -52,7 +52,7 @@ export class WebGLRenderingDevice implements GLRenderingDevice {
   public readonly canvas: Canvas;
 
   private readonly renderCtx: WebGLRenderPassContext;
-  private readonly exts: Readonly<Record<GL1Feature | GL2Feature, unknown>>;
+  private readonly exts: Record<GL1Feature | GL2Feature | string, unknown> = {};
   private readonly state: WebGLState;
   private readonly maxAttr: number;
 
@@ -60,9 +60,9 @@ export class WebGLRenderingDevice implements GLRenderingDevice {
     this.canvas = gl.canvas;
     this.maxAttr = Math.min(gl.getParameter(GL_MAX_VERTEX_ATTRIBS), MAX_VERTEX_ATTRIBS);
 
-    const extensions = this.exts = <Record<GL1Feature | GL2Feature, unknown>>{};
+    // Try to enable all used extensions by default
     for (const ext of Object.values(webgl2 ? GL2Feature : GL1Feature)) {
-      extensions[ext] = gl.getExtension(ext);
+      this.feature(ext);
     }
 
     this.state = this.reset();
@@ -144,8 +144,8 @@ export class WebGLRenderingDevice implements GLRenderingDevice {
     return this.renderCtx;
   }
 
-  public feature<F>(feature: GL1Feature | GL2Feature): F {
-    return <F>this.exts[feature];
+  public feature<F>(feature: GL1Feature | GL2Feature | string): F {
+    return <F>(this.exts[feature] = this.exts[feature] || this.gl.getExtension(feature));
   }
 
   public reset(): WebGLState {

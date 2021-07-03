@@ -1,11 +1,11 @@
 import {
   BYTE_MASK, BufferDescriptor, Canvas, Color, GL1Feature, GL2Feature, GLRenderingDevice, GLRenderingDeviceFactory,
   PipelineDescriptor, RenderPassContext, RenderPassDescriptor, SamplerDescriptor,
-  TextureDescriptor, UniformValuesDescriptor, UniformValueLayout, vertexSize, vertexType, vertexNormalized
+  TextureDescriptor, UniformValuesDescriptor, UniformValueLayout, vertexSize, vertexType, vertexNormalized, indexSize
 } from '../device';
 import {
   GL_FRAMEBUFFER, GL_SCISSOR_TEST, GL_COLOR_BUFFER_BIT, GL_DEPTH_BUFFER_BIT, GL_STENCIL_BUFFER_BIT,
-  GL_ELEMENT_ARRAY_BUFFER, GL_ARRAY_BUFFER, GL_TEXTURE0, GL_FRONT, GL_BACK, GL_UNSIGNED_SHORT, GL_ALWAYS,
+  GL_ELEMENT_ARRAY_BUFFER, GL_ARRAY_BUFFER, GL_TEXTURE0, GL_FRONT, GL_BACK, GL_ALWAYS,
   GL_FLOAT_VEC3, GL_FLOAT_VEC2, GL_FLOAT_VEC4, GL_FLOAT_MAT3, GL_FLOAT_MAT4
 } from '../device/glenums';
 import { GL_EXT_INSTANCING, MAX_VERTEX_ATTRIBS } from './const';
@@ -39,14 +39,11 @@ class NanoGLRenderingDevice implements GLRenderingDevice {
   public readonly canvas: Canvas;
 
   private readonly rctx: NanoGLRenderPassContext;
-  private readonly exts: Readonly<Record<GL1Feature | GL2Feature, unknown>>;
+  private readonly exts: Record<string, unknown> = {};
 
   constructor(public readonly gl: WebGLRenderingContext) {
     this.canvas = gl.canvas;
-
-    const extensions = this.exts = <Record<GL1Feature | GL2Feature, unknown>>{};
-    extensions[GL_EXT_INSTANCING] = gl.getExtension(GL_EXT_INSTANCING);
-
+    // CAVEAT: Only instancing is enabled by default
     this.rctx = new NanoGLRenderPassContext(gl, this.feature(GL_EXT_INSTANCING));
   }
 
@@ -117,8 +114,8 @@ class NanoGLRenderingDevice implements GLRenderingDevice {
     return this.rctx;
   }
 
-  public feature<F>(extension: GL1Feature | GL2Feature): F {
-    return <F>this.exts[extension];
+  public feature<F>(extension: GL1Feature | GL2Feature | string): F {
+    return <F>(this.exts[extension] = this.exts[extension] || this.gl.getExtension(extension));
   }
 
   public reset(): void {
@@ -228,11 +225,12 @@ class NanoGLRenderPassContext implements RenderPassContext {
 
   public drawIndexed(indexCount: number, instanceCount = 1, firstIndex = 0): RenderPassContext {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const { mode } = this.state.pipeObj!;
+    const { indexFormat, mode } = this.state.pipeObj!;
     if (instanceCount > 1) {
-      this.inst?.drawElementsInstancedANGLE(mode, indexCount, GL_UNSIGNED_SHORT, firstIndex * 2, instanceCount);
+      this.inst?.drawElementsInstancedANGLE(
+        mode, indexCount, indexFormat, firstIndex * indexSize(indexFormat), instanceCount);
     } else {
-      this.gl.drawElements(mode, indexCount, GL_UNSIGNED_SHORT, firstIndex * 2);
+      this.gl.drawElements(mode, indexCount, indexFormat, firstIndex * indexSize(indexFormat));
     }
     return this;
   }

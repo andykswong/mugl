@@ -21,11 +21,10 @@ const device = process.env.NANOGL_VIEWER ?
   })!;
 
 if (process.env.NANOGL_VIEWER) {
-  // Required by PBR shader, but not enabled for Nano device
-  device.gl.getExtension('OES_standard_derivatives');
+  // Features required by PBR shader, but not enabled by default for Nano device
+  device.feature('OES_standard_derivatives');
+  device.feature('OES_element_index_uint');
 }
-
-if (!device) throw new Error('WebGL is unsupported');
 
 const GLTF_SAMPLE_PATH = 'https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/63f026b2aa957d3e8207f6dd798608993e33fb0d/2.0';
 

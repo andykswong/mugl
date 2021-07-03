@@ -47,7 +47,7 @@ float getOcculsion() {
 }
 
 vec3 getEmissiveFactor() {
-  return emissiveFactor * texture(emissiveTexture, vec4(0)).rgb;
+  return emissiveFactor * sRGBToLinear(texture(emissiveTexture, vec4(0)).rgb);
 }
 
 `;
