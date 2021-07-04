@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>Resource | mugl</title>
+	<title>config | mugl</title>
 	<meta name="description" content="Documentation for mugl">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -55,13 +55,10 @@
 					<a href="../modules.html">mugl</a>
 				</li>
 				<li>
-					<a href="../modules/index.html">index</a>
-				</li>
-				<li>
-					<a href="index.resource.html">Resource</a>
+					<a href="config.html">config</a>
 				</li>
 			</ul>
-			<h1>Interface Resource</h1>
+			<h1>Module config</h1>
 		</div>
 	</div>
 </header>
@@ -71,68 +68,40 @@
 			<section class="tsd-panel tsd-comment">
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<p>A resource that can be destroyed.</p>
+						<p>Global configs for mugl, which can be set via process.env for Node.js, or EnvironmentPlugin for Webpack
+						(or similar plugins for other bundlers).</p>
 					</div>
 				</div>
-			</section>
-			<section class="tsd-panel tsd-hierarchy">
-				<h3>Hierarchy</h3>
-				<ul class="tsd-hierarchy">
-					<li>
-						<span class="target">Resource</span>
-						<ul class="tsd-hierarchy">
-							<li>
-								<a href="index.buffer.html" class="tsd-signature-type" data-tsd-kind="Interface">Buffer</a>
-							</li>
-							<li>
-								<a href="index.texture.html" class="tsd-signature-type" data-tsd-kind="Interface">Texture</a>
-							</li>
-							<li>
-								<a href="index.renderpass.html" class="tsd-signature-type" data-tsd-kind="Interface">RenderPass</a>
-							</li>
-							<li>
-								<a href="index.pipeline.html" class="tsd-signature-type" data-tsd-kind="Interface">Pipeline</a>
-							</li>
-						</ul>
-					</li>
-				</ul>
 			</section>
 			<section class="tsd-panel-group tsd-index-group">
 				<h2>Index</h2>
 				<section class="tsd-panel tsd-index-panel">
 					<div class="tsd-index-content">
 						<section class="tsd-index-section ">
-							<h3>Methods</h3>
+							<h3>Variables</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="index.resource.html#destroy" class="tsd-kind-icon">destroy</a></li>
+								<li class="tsd-kind-variable tsd-parent-kind-module"><a href="config.html#mugl_debug" class="tsd-kind-icon">MUGL_<wbr>DEBUG</a></li>
 							</ul>
 						</section>
 					</div>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
-				<h2>Methods</h2>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface">
-					<a name="destroy" class="tsd-anchor"></a>
-					<h3>destroy</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
-						<li class="tsd-signature tsd-kind-icon">destroy<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/andykswong/mugl/blob/f4d263a/src/device/resources.ts#L16">src/device/resources.ts:16</a></li>
-								</ul>
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Destroy the resource.</p>
-								</div>
-							</div>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
-						</li>
-					</ul>
+				<h2>Variables</h2>
+				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-module">
+					<a name="mugl_debug" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> MUGL_<wbr>DEBUG</h3>
+					<div class="tsd-signature tsd-kind-icon">MUGL_<wbr>DEBUG<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> = ...</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/andykswong/mugl/blob/f4d263a/src/config.ts#L11">src/config.ts:11</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>True to enable debug mode. Defaults to false.</p>
+						</div>
+					</div>
 				</section>
 			</section>
 		</div>
@@ -142,37 +111,28 @@
 					<li class=" ">
 						<a href="../modules.html">Modules</a>
 					</li>
-					<li class=" tsd-kind-module">
-						<a href="../modules/config.html">config</a>
-					</li>
-					<li class=" tsd-kind-module">
-						<a href="../modules/gltf.html">gltf</a>
-					</li>
 					<li class="current tsd-kind-module">
-						<a href="../modules/index.html">index</a>
+						<a href="config.html">config</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="../modules/nano.html">nano</a>
+						<a href="gltf.html">gltf</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="../modules/nano_features.html">nano/features</a>
+						<a href="index.html">index</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="nano.html">nano</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="nano_features.html">nano/features</a>
 					</li>
 				</ul>
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
-				</ul>
-				<ul class="current">
-					<li class="current tsd-kind-interface tsd-parent-kind-module">
-						<a href="index.resource.html" class="tsd-kind-icon">Resource</a>
-						<ul>
-							<li class=" tsd-kind-method tsd-parent-kind-interface">
-								<a href="index.resource.html#destroy" class="tsd-kind-icon">destroy</a>
-							</li>
-						</ul>
+					<li class=" tsd-kind-variable tsd-parent-kind-module">
+						<a href="config.html#mugl_debug" class="tsd-kind-icon">MUGL_<wbr>DEBUG</a>
 					</li>
-				</ul>
-				<ul class="after-current">
 				</ul>
 			</nav>
 		</div>
@@ -190,7 +150,6 @@
 			<ul class="tsd-legend">
 				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
 				<li class="tsd-kind-interface tsd-has-type-parameter"><span class="tsd-kind-icon">Interface with type parameter</span></li>
-				<li class="tsd-kind-method tsd-parent-kind-interface"><span class="tsd-kind-icon">Method</span></li>
 			</ul>
 		</div>
 	</div>

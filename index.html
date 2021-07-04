@@ -71,7 +71,7 @@
 				<p><code>mugl</code> is a minimalistic, modular WebGL1 / WebGL2 3D rendering library for Typescript / JavaScript.</p>
 				<ul>
 					<li><strong>Core module (<code>mugl</code>)</strong> : the <a href="./src/device/device.ts">rendering device interface</a> in a simplified <a href="https://gpuweb.github.io/gpuweb/">WebGPU</a>-style API that removes WebGL state management from you. (<strong>9KB</strong> in size)<ul>
-							<li><strong>Nano implementation (<code>mugl/nano</code>)</strong>: <strong>3KB</strong> implementation of the rendering device interface, but without WebGL2 support. You can even turn off some <a href="./src/nano/features.ts">features</a> that you do not need (e.g. scissor, stencil testing) to reduce the size to <strong>2KB</strong>!</li>
+							<li><strong>Nano implementation (<code>mugl/n</code> aka <code>ngl</code>)</strong>: <strong>3KB</strong> implementation of the rendering device interface, but without WebGL2 support. You can even turn off some <a href="./src/nano/features.ts">features</a> that you do not need (e.g. scissor, stencil testing) to reduce the size to <strong>2KB</strong>!</li>
 						</ul>
 					</li>
 					<li><strong>glTF module (<code>mugl/gltf</code>) (WIP)</strong>: a minimalistic glTF 2.0 model loader and renderer (<strong>10KB</strong> in size)</li>
@@ -176,10 +176,10 @@
 				<a href="#2-using-the-nano-implementation" id="2-using-the-nano-implementation" style="color: inherit; text-decoration: none;">
 					<h3>2. Using the Nano Implementation</h3>
 				</a>
-				<p>To use the Nano Implementation, import <code>getNanoGLDevice</code> from <code>mugl/nano</code> to create a device:</p>
-				<pre><code class="language-javascript"><span style="color: #AF00DB">import</span><span style="color: #000000"> { </span><span style="color: #001080">getNanoGLDevice</span><span style="color: #000000"> } </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;mugl/nano&#039;</span><span style="color: #000000">;</span>
+				<p>To use the Nano Implementation, import <code>getNGLDevice</code> from <code>mugl/n</code> to create a device:</p>
+				<pre><code class="language-javascript"><span style="color: #AF00DB">import</span><span style="color: #000000"> { </span><span style="color: #001080">getNGLDevice</span><span style="color: #000000"> } </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;mugl/n&#039;</span><span style="color: #000000">;</span>
 
-<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">device</span><span style="color: #000000"> = </span><span style="color: #795E26">getNanoGLDevice</span><span style="color: #000000">(</span><span style="color: #001080">canvas</span><span style="color: #000000">);</span>
+<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">device</span><span style="color: #000000"> = </span><span style="color: #795E26">getNGLDevice</span><span style="color: #000000">(</span><span style="color: #001080">canvas</span><span style="color: #000000">);</span>
 </code></pre>
 				<a href="#more-examples" id="more-examples" style="color: inherit; text-decoration: none;">
 					<h2><a href="http://andykswong.github.io/mugl/examples">More Examples</a></h2>
@@ -202,6 +202,9 @@
 						<a href="modules.html">Modules</a>
 					</li>
 					<li class=" tsd-kind-module">
+						<a href="modules/config.html">config</a>
+					</li>
+					<li class=" tsd-kind-module">
 						<a href="modules/gltf.html">gltf</a>
 					</li>
 					<li class=" tsd-kind-module">
@@ -209,6 +212,9 @@
 					</li>
 					<li class=" tsd-kind-module">
 						<a href="modules/nano.html">nano</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/nano_features.html">nano/features</a>
 					</li>
 				</ul>
 			</nav>
@@ -231,9 +237,6 @@
 			<ul class="tsd-legend">
 				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
 				<li class="tsd-kind-interface tsd-has-type-parameter"><span class="tsd-kind-icon">Interface with type parameter</span></li>
-			</ul>
-			<ul class="tsd-legend">
-				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
 			</ul>
 		</div>
 	</div>
