@@ -1,4 +1,5 @@
 import { DeepReadonly, DeepRequired } from 'ts-essentials';
+import { MUGL_DEBUG } from '../config';
 import { VertexBufferLayoutDescriptor } from '../device';
 import { GL_COMPILE_STATUS, GL_VERTEX_SHADER, GL_FRAGMENT_SHADER, GL_LINK_STATUS } from '../device';
 
@@ -27,7 +28,7 @@ export function createProgram(
   gl.deleteShader(vs);
   gl.deleteShader(fs);
 
-  if (process.env.DEBUG) {
+  if (MUGL_DEBUG) {
     console.assert(
       gl.getProgramParameter(program, GL_LINK_STATUS) || gl.isContextLost(),
       `Failed to link program: ${gl.getProgramInfoLog(program)}`
@@ -43,7 +44,7 @@ function createShader(gl: WebGLRenderingContext, shaderType: number, source: str
   gl.shaderSource(shader, source);
   gl.compileShader(shader);
 
-  if (process.env.DEBUG) {
+  if (MUGL_DEBUG) {
     console.assert(
       gl.getShaderParameter(shader, GL_COMPILE_STATUS) || gl.isContextLost(),
       `Failed to compile shader: ${gl.getShaderInfoLog(shader)}`

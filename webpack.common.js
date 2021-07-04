@@ -52,7 +52,7 @@ module.exports = {
   },
   plugins: [
     new webpack.EnvironmentPlugin({
-      'DEBUG': debug
+      'MUGL_DEBUG': debug
     })
   ],
   devtool: isProd ? false : 'source-map'

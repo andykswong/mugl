@@ -10,8 +10,8 @@ import {
 } from '../device/glenums';
 import { GL_EXT_INSTANCING, MAX_VERTEX_ATTRIBS } from './const';
 import {
-  NANOGL_ENABLE_BLEND, NANOGL_ENABLE_OFFSCREEN, NANOGL_ENABLE_SCISSOR, NANOGL_ENABLE_STENCIL,
-  NANOGL_ENABLE_TEXTURE
+  NGL_ENABLE_BLEND, NGL_ENABLE_OFFSCREEN, NGL_ENABLE_SCISSOR, NGL_ENABLE_STENCIL,
+  NGL_ENABLE_TEXTURE
 } from './features';
 import { GLBuffer, GLPipeline, GLRenderPass, GLTexture, applyPipelineState } from './resources';
 import { EMPTY_TEXTURE, renderPassLite } from './stubs';
@@ -22,7 +22,7 @@ import { EMPTY_TEXTURE, renderPassLite } from './stubs';
  * @param options context initialization options
  * @returns rendering device instance, or null if WebGL is not supported
  */
-export const getNanoGLDevice: GLRenderingDeviceFactory =
+export const getNGLDevice: GLRenderingDeviceFactory =
   (canvas: Canvas, options?: WebGLContextAttributes): GLRenderingDevice | null => {
     const gl: WebGLRenderingContext | null = canvas.getContext('webgl', options);
     if (!gl) {
@@ -52,7 +52,7 @@ class NanoGLRenderingDevice implements GLRenderingDevice {
   }
 
   public texture(desc: TextureDescriptor, sampler?: SamplerDescriptor): GLTexture {
-    if (NANOGL_ENABLE_TEXTURE) {
+    if (NGL_ENABLE_TEXTURE) {
       return new GLTexture(this.gl, desc, sampler);
     }
     return EMPTY_TEXTURE;
@@ -63,7 +63,7 @@ class NanoGLRenderingDevice implements GLRenderingDevice {
   }
 
   public pass(desc?: RenderPassDescriptor): GLRenderPass {
-    if (NANOGL_ENABLE_TEXTURE && NANOGL_ENABLE_OFFSCREEN) {
+    if (NGL_ENABLE_TEXTURE && NGL_ENABLE_OFFSCREEN) {
       return new GLRenderPass(this.gl, desc);
     }
     return renderPassLite(desc);
@@ -72,7 +72,7 @@ class NanoGLRenderingDevice implements GLRenderingDevice {
   public render(pass: GLRenderPass): RenderPassContext {
     let { width, height } = this.gl.canvas;
   
-    if (NANOGL_ENABLE_OFFSCREEN) {
+    if (NGL_ENABLE_OFFSCREEN) {
       if (pass.color[0]) {
         [width, height] = pass.color[0].tex.size;
       }
@@ -84,7 +84,7 @@ class NanoGLRenderingDevice implements GLRenderingDevice {
     // Reset viewport and scissor
     // CAVEAT: depthRange NOT supported and NOT reset
     this.gl.viewport(0, 0, width, height);
-    if (NANOGL_ENABLE_SCISSOR) {
+    if (NGL_ENABLE_SCISSOR) {
       this.gl.disable(GL_SCISSOR_TEST);
     }
 
@@ -93,7 +93,7 @@ class NanoGLRenderingDevice implements GLRenderingDevice {
     if (pass.clearColor) {
       clearMask |= GL_COLOR_BUFFER_BIT;
       this.gl.clearColor(...pass.clearColor);
-      if (NANOGL_ENABLE_BLEND) {
+      if (NGL_ENABLE_BLEND) {
         this.gl.colorMask(true, true, true, true);
       }
     }
@@ -102,7 +102,7 @@ class NanoGLRenderingDevice implements GLRenderingDevice {
       this.gl.clearDepth(pass.clearDepth);
       this.gl.depthMask(true);
     }
-    if (NANOGL_ENABLE_STENCIL && (pass.clearStencil !== false)) {
+    if (NGL_ENABLE_STENCIL && (pass.clearStencil !== false)) {
       clearMask |= GL_STENCIL_BUFFER_BIT;
       this.gl.clearStencil(pass.clearStencil);
       this.gl.stencilMask(BYTE_MASK);
@@ -201,7 +201,7 @@ class NanoGLRenderPassContext implements RenderPassContext {
           }
         } else if (typeof val === 'number') { // Single number
           this.gl.uniform1f(loc, val);
-        } else if (NANOGL_ENABLE_TEXTURE) { // Texture
+        } else if (NGL_ENABLE_TEXTURE) { // Texture
           this.gl.activeTexture(GL_TEXTURE0 + texId);
           this.gl.bindTexture((val as GLTexture).type, (val as GLTexture).glt);
           this.gl.uniform1i(loc, texId++);
@@ -242,21 +242,21 @@ class NanoGLRenderPassContext implements RenderPassContext {
   }
 
   public scissor(x: number, y: number, width: number, height: number): RenderPassContext {
-    if (NANOGL_ENABLE_SCISSOR) {
+    if (NGL_ENABLE_SCISSOR) {
       this.gl.scissor(x, y, width, height);
     }
     return this;
   }
 
   public blendColor(color: Color): RenderPassContext {
-    if (NANOGL_ENABLE_BLEND) {
+    if (NGL_ENABLE_BLEND) {
       this.gl.blendColor(...color);
     }
     return this;
   }
 
   public stencilRef(stencilRef: number): RenderPassContext {
-    if (NANOGL_ENABLE_STENCIL) {
+    if (NGL_ENABLE_STENCIL) {
       const stencil = this.state.pipeObj?.stencil;
       if (stencil) {
         const readMask = stencil.readMask ?? BYTE_MASK;

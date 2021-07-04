@@ -1,3 +1,4 @@
+import { MUGL_DEBUG } from '../config';
 import {
   BYTE_MASK, BufferBinding, BufferDescriptor, Canvas, Color, ColorMask, GL1Feature, GL2Feature, GLRenderingDevice,
   GLRenderingDeviceFactory, GLRenderingDeviceOptions, IndexFormat, indexSize, PipelineDescriptor, PrimitiveType,
@@ -48,7 +49,7 @@ export const getGLDevice: GLRenderingDeviceFactory =
 /**
  * The WebGL rendering context, in WebGPU API style.
  */
-export class WebGLRenderingDevice implements GLRenderingDevice {
+class WebGLRenderingDevice implements GLRenderingDevice {
   public readonly canvas: Canvas;
 
   private readonly renderCtx: WebGLRenderPassContext;
@@ -258,7 +259,7 @@ class WebGLRenderPassContext implements RenderPassContext {
     for (const key in desc) {
       const uniformInfo = this.state.pipeObj.cache[key];
       if (!uniformInfo) { // No such uniform
-        if (process.env.DEBUG) {
+        if (MUGL_DEBUG) {
           console.warn(`Unknown uniform: ${key}`);
         }
         continue;
@@ -275,17 +276,17 @@ class WebGLRenderPassContext implements RenderPassContext {
             case GL_FLOAT_VEC2: this.gl.uniform2fv(uniformInfo.loc, val); break;
             case GL_FLOAT: this.gl.uniform1fv(uniformInfo.loc, val); break;
             default:
-              if (process.env.DEBUG) {
+              if (MUGL_DEBUG) {
                 console.warn(`Cannot bind a number array to uniform: ${key}`);
               }
           }
         } else if (typeof val === 'number') { // Single number
           if (uniformInfo.format === GL_FLOAT) {
             this.gl.uniform1f(uniformInfo.loc, val);
-          } else if (process.env.DEBUG) {
+          } else if (MUGL_DEBUG) {
             console.warn(`Cannot bind a number to uniform: ${key}`);
           }
-        } else if (process.env.DEBUG) {
+        } else if (MUGL_DEBUG) {
           console.warn(`Invalid value bound to value uniform: ${key}`);
         }
       } else if (uniformInfo.type === UniformType.Tex) {
@@ -293,7 +294,7 @@ class WebGLRenderPassContext implements RenderPassContext {
           this.gl.activeTexture(GL_TEXTURE0 + uniformInfo.binding);
           this.gl.bindTexture((val as GLTexture).type, (val as GLTexture).glt);
           this.gl.uniform1i(uniformInfo.loc, uniformInfo.binding);
-        } else if (process.env.DEBUG) {
+        } else if (MUGL_DEBUG) {
           console.warn(`Invalid value bound to texture uniform: ${key}`);
         }
       } else { // Uniform buffer
@@ -307,7 +308,7 @@ class WebGLRenderPassContext implements RenderPassContext {
               offset,
               (val as BufferBinding).size || (((val as BufferBinding).buffer as GLBuffer).size - offset)
             );
-        } else if (process.env.DEBUG) {
+        } else if (MUGL_DEBUG) {
           console.warn(`Invalid value bound to uniform buffer: ${key}`);
         }
       }

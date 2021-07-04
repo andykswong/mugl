@@ -9,7 +9,7 @@
 `mugl` is a minimalistic, modular WebGL1 / WebGL2 3D rendering library for Typescript / JavaScript.
 
 - **Core module (`mugl`)** : the [rendering device interface](./src/device/device.ts) in a simplified [WebGPU](https://gpuweb.github.io/gpuweb/)-style API that removes WebGL state management from you. (**9KB** in size)
-  - **Nano implementation (`mugl/nano`)**: **3KB** implementation of the rendering device interface, but without WebGL2 support. You can even turn off some [features](./src/nano/features.ts) that you do not need (e.g. scissor, stencil testing) to reduce the size to **2KB**!
+  - **Nano implementation (`mugl/n` aka `ngl`)**: **3KB** implementation of the rendering device interface, but without WebGL2 support. You can even turn off some [features](./src/nano/features.ts) that you do not need (e.g. scissor, stencil testing) to reduce the size to **2KB**!
 - **glTF module (`mugl/gltf`) (WIP)**: a minimalistic glTF 2.0 model loader and renderer (**10KB** in size)
 
 *\* File sizes are measured from minified and gzipped UMD Webpack library bundles. Actual size can be even smaller, by using a module bundler with tree shaking.*
@@ -113,12 +113,12 @@ device
 ```
 
 ### 2. Using the Nano Implementation
-To use the Nano Implementation, import `getNanoGLDevice` from `mugl/nano` to create a device:
+To use the Nano Implementation, import `getNGLDevice` from `mugl/n` to create a device:
 
 ```javascript
-import { getNanoGLDevice } from 'mugl/nano';
+import { getNGLDevice } from 'mugl/n';
 
-const device = getNanoGLDevice(canvas);
+const device = getNGLDevice(canvas);
 ```
 
 ## [More Examples](http://andykswong.github.io/mugl/examples)

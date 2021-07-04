@@ -1,7 +1,7 @@
 import { vec3 } from 'gl-matrix';
 import { VIEWER_NANO } from '../config';
 import { getGLDevice } from '../../gl2';
-import { getNanoGLDevice } from '../../nano';
+import { getNGLDevice } from '../../nano';
 import { ResolvedGlTF, renderGlTF, resolveGlTF, updateGlTFAnimation } from '../../gltf';
 import { getDefaultCamera } from './utils';
 
@@ -15,7 +15,7 @@ let startTime = 0;
 let curAnimation = 0;
 
 const device = VIEWER_NANO ? 
-  getNanoGLDevice(canvas, { powerPreference: 'low-power' })! :
+  getNGLDevice(canvas, { powerPreference: 'low-power' })! :
   getGLDevice(canvas, {
     powerPreference: 'low-power',
     webgl2: false

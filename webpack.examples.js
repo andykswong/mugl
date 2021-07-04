@@ -23,9 +23,9 @@ module.exports = merge(common, {
     new webpack.DefinePlugin({
       'USE_WEBGL2': true,
       'VIEWER_NANO': true,
-      'NANOGL_ENABLE_SCISSOR': false,
-      'NANOGL_ENABLE_OFFSCREEN': false,
-      'NANOGL_ENABLE_STENCIL': false,
+      'NGL_ENABLE_SCISSOR': false,
+      'NGL_ENABLE_OFFSCREEN': false,
+      'NGL_ENABLE_STENCIL': false,
     }),
     new CopyPlugin({
       patterns: [

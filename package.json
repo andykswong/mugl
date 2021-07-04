@@ -21,7 +21,7 @@
       "import": "./dist/index.js",
       "require": "./dist/mugl.min.js"
     },
-    "./nano": {
+    "./n": {
       "import": "./dist/nano/index.js",
       "require": "./dist/ngl.min.js"
     },
@@ -46,7 +46,7 @@
     "build:examples": "webpack --config webpack.examples.js",
     "test": "jest",
     "test:watch": "jest --watch",
-    "doc": "typedoc --out docs src/index.ts src/nano/index.ts src/gltf/index.ts",
+    "doc": "typedoc --out docs src/index.ts src/config.ts src/nano/index.ts src/nano/features.ts src/gltf/index.ts",
     "examples": "cross-env NODE_ENV=development webpack serve --config webpack.examples.js",
     "start": "npm run examples"
   },

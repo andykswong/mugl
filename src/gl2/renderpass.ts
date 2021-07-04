@@ -1,3 +1,4 @@
+import { MUGL_DEBUG } from '../config';
 import {
   Color, GL1Feature, GLRenderingDevice, GLRenderPass as IGLRenderPass, GLTexture, hasStencil, isDepthStencil,
   is3DTexture, RenderPassDescriptor, TextureView
@@ -78,13 +79,13 @@ export class GLRenderPass implements IGLRenderPass {
         } else if (isDepthStencil(depth.tex.format)) { // Use depth texture
           framebufferTexture(gl, withStencil ? GL_DEPTH_STENCIL_ATTACHMENT : GL_DEPTH_ATTACHMENT, depth);
         } else {
-          if (process.env.DEBUG) {
+          if (MUGL_DEBUG) {
             console.error('Invalid depth texture format', depth.tex);
           }
         }
       }
   
-      if (process.env.DEBUG) {
+      if (MUGL_DEBUG) {
         console.assert(
           gl.checkFramebufferStatus(GL_FRAMEBUFFER) === GL_FRAMEBUFFER_COMPLETE || gl.isContextLost(),
           'Framebuffer completeness check failed'
@@ -147,7 +148,7 @@ function createResolveFrameBuffer(
   const fb = gl.createFramebuffer();
   gl.bindFramebuffer(GL_FRAMEBUFFER, fb);
   framebufferTexture(gl, attachment, texView);
-  if (process.env.DEBUG) {
+  if (MUGL_DEBUG) {
     console.assert(
       gl.checkFramebufferStatus(GL_FRAMEBUFFER) === GL_FRAMEBUFFER_COMPLETE || gl.isContextLost,
       'Framebuffer completeness check failed for MSAA resolve buffer'

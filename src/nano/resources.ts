@@ -1,4 +1,5 @@
 import { DeepReadonly, DeepRequired } from 'ts-essentials';
+import { MUGL_DEBUG } from '../config';
 import {
   AddressMode, BlendStateDescriptor, BufferDescriptor, BufferType, BYTE_MASK, Color, DepthStateDescriptor,
   Extent3D, FilterMode, GLBuffer as IGLBuffer, GLPipeline as IGLPipeline, GLRenderPass as IGLRenderPass,
@@ -18,7 +19,7 @@ import {
 } from '../device/glenums';
 import { COLOR_PIXEL_FORMAT, DEPTH_PIXEL_FORMAT } from './const';
 import {
-  NANOGL_ENABLE_OFFSCREEN, NANOGL_ENABLE_STENCIL, NANOGL_ENABLE_RASTER, NANOGL_ENABLE_BLEND
+  NGL_ENABLE_OFFSCREEN, NGL_ENABLE_STENCIL, NGL_ENABLE_RASTER, NGL_ENABLE_BLEND
 } from './features';
 
 const EMPTY = {};
@@ -81,9 +82,9 @@ export class GLTexture implements IGLTexture {
     // CAVEAT: Only supports RGBA8 vs DEPTH_STENCIL. No depth texture support
     const [width, height] = this.size;
     if (this.format <= DEPTH_PIXEL_FORMAT) { // depth/stencil renderbuffer
-      if (NANOGL_ENABLE_OFFSCREEN) {
+      if (NGL_ENABLE_OFFSCREEN) {
         gl.bindRenderbuffer(GL_RENDERBUFFER, this.glrb = gl.createRenderbuffer());
-        gl.renderbufferStorage(GL_RENDERBUFFER, NANOGL_ENABLE_STENCIL ? GL_DEPTH_STENCIL : GL_DEPTH_COMPONENT16,
+        gl.renderbufferStorage(GL_RENDERBUFFER, NGL_ENABLE_STENCIL ? GL_DEPTH_STENCIL : GL_DEPTH_COMPONENT16,
           width, height);
       }
     } else { // RGBA8 texture
@@ -160,11 +161,11 @@ export class GLRenderPass implements IGLRenderPass {
       // Attach optional depth-stencil buffer to framebuffer
       // CAVEAT: Depth texture is not supported
       if (this.depth) {
-        gl.framebufferRenderbuffer(GL_FRAMEBUFFER, NANOGL_ENABLE_STENCIL ? GL_DEPTH_STENCIL_ATTACHMENT : GL_DEPTH_ATTACHMENT,
+        gl.framebufferRenderbuffer(GL_FRAMEBUFFER, NGL_ENABLE_STENCIL ? GL_DEPTH_STENCIL_ATTACHMENT : GL_DEPTH_ATTACHMENT,
           GL_RENDERBUFFER, (this.depth.tex as GLTexture).glrb);
       }
   
-      if (process.env.DEBUG) {
+      if (MUGL_DEBUG) {
         console.assert(
           gl.checkFramebufferStatus(GL_FRAMEBUFFER) === GL_FRAMEBUFFER_COMPLETE || gl.isContextLost(),
           'Framebuffer completeness check failed'
@@ -227,7 +228,7 @@ export function applyPipelineState(
   const { blend, depth, stencil, raster } = state;
 
   // 1. Apply rasterizer state
-  if (NANOGL_ENABLE_RASTER) {
+  if (NGL_ENABLE_RASTER) {
     if (raster) {
       glToggle(gl, GL_SAMPLE_ALPHA_TO_COVERAGE, !!raster.alphaToCoverage);
       glToggle(gl, GL_CULL_FACE, !!raster.cullMode);
@@ -251,7 +252,7 @@ export function applyPipelineState(
   }
 
   // 3. Apply stencil state changes
-  if (NANOGL_ENABLE_STENCIL) {
+  if (NGL_ENABLE_STENCIL) {
     glToggle(gl, GL_STENCIL_TEST, !!stencil);
 
     if (stencil) {
@@ -267,7 +268,7 @@ export function applyPipelineState(
   }
 
   // 4. Apply blend state changes
-  if (NANOGL_ENABLE_BLEND) {
+  if (NGL_ENABLE_BLEND) {
     glToggle(gl, GL_BLEND, !!blend);
 
     if (blend) {
@@ -309,7 +310,7 @@ export function createProgram(
   gl.deleteShader(vs);
   gl.deleteShader(fs);
 
-  if (process.env.DEBUG) {
+  if (MUGL_DEBUG) {
     console.assert(
       gl.getProgramParameter(program, GL_LINK_STATUS) || gl.isContextLost(),
       `Failed to link program: ${gl.getProgramInfoLog(program)}`
@@ -325,7 +326,7 @@ function createShader(gl: WebGLRenderingContext, shaderType: number, source: str
   gl.shaderSource(shader, source);
   gl.compileShader(shader);
 
-  if (process.env.DEBUG) {
+  if (MUGL_DEBUG) {
     console.assert(
       gl.getShaderParameter(shader, GL_COMPILE_STATUS) || gl.isContextLost(),
       `Failed to compile shader: ${gl.getShaderInfoLog(shader)}`
