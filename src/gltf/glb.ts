@@ -1,5 +1,5 @@
 import { MarkRequired } from 'ts-essentials';
-import { GlTF } from './spec/glTF2';
+import { GlTF } from '../gltf-spec/glTF2';
 import { GlTFFile } from './types';
 import { decodeText } from './utils';
 

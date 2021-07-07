@@ -41,7 +41,7 @@
     "prebuild": "npm run lint",
     "build": "tsc",
     "postbuild": "npm run build:bundle",
-    "build:gltf-spec": "node ./gltfschema2ts.js src/gltf/spec",
+    "build:gltf-spec": "node ./gltfschema2ts.js src/gltf-spec",
     "build:bundle": "webpack",
     "build:examples": "webpack --config webpack.examples.js",
     "test": "jest",

@@ -2,7 +2,7 @@
 
 import { mat4, quat, vec3 } from 'gl-matrix';
 import { getAnimationDuration, getAnimationSamplerInput, getAnimationSamplerOutput, getExtras, getInverseBindMatrices } from './gltf-utils';
-import { Animation, Node } from './spec/glTF2';
+import { Animation, Node } from '../gltf-spec/glTF2';
 import { ResolvedGlTF } from './types';
 import { arrayCopy } from './utils';
 

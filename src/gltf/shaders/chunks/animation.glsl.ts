@@ -3,8 +3,8 @@ function addTarget(out: string, attr: string): string {
   let frag = '';
   for (let i = 0; i < 8; ++i) {
     frag += `
-#ifdef USE_TARGET_${attr}_${i}
-  ${out} += targetWeights[${i}] * TARGET_${attr}_${i};
+#ifdef USE_${attr}_${i}
+  ${out} += targetWeights[${i}] * ${attr}_${i};
 #endif
 `;
   }
@@ -46,15 +46,15 @@ ${['POSITION', 'NORMAL', 'TANGENT'].map(attr => {
   let frag = '';
   for (let i = 0; i < 8; ++i) {
     frag += `
-#ifdef USE_TARGET_${attr}_${i}
-  attribute vec3 TARGET_${attr}_${i};
+#ifdef USE_${attr}_${i}
+  attribute vec3 ${attr}_${i};
 #endif
 `;
   }
   return frag;
 }).join('\n')}
 
-#if defined(USE_TARGET_POSITION_0) || defined(USE_TARGET_NORMAL_0) || defined(USE_TARGET_TANGENT_0)
+#if defined(USE_POSITION_0) || defined(USE_NORMAL_0) || defined(USE_TANGENT_0)
 #define USE_MORPHING
 #ifndef NUM_MORPHS
 #define NUM_MORPHS 8

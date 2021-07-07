@@ -1,5 +1,5 @@
 /**
- * A minimal GlTF 2.0 model loader and renderer.
+ * A minimalistic GlTF 2.0 model loader and renderer.
  * @packageDocumentation
  */
 

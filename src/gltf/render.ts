@@ -6,7 +6,7 @@ import {
   RenderingDevice, RenderPassContext, SamplerDescriptor, Texture, TexType, UniformFormat, UniformLayoutDescriptor, UniformType,
   UniformValuesDescriptor, VertexBufferLayoutDescriptor, VertexFormat, vertexSize
 } from '../device';
-import { Accessor, GlTF, Mesh, MeshPrimitive, Node } from './spec/glTF2';
+import { Accessor, GlTF, Mesh, MeshPrimitive, Node } from '../gltf-spec/glTF2';
 import { ResolvedGlTF } from './types';
 import { getCameraProjection, getExtras, getAccessorVertexFormat, getAccessorData } from './gltf-utils';
 import primitiveVert from './shaders/primitive.vert';
@@ -16,6 +16,7 @@ import { updateGlTF } from './update';
 // Only supports 16 attributes
 const MAX_VERTEX_ATTRIBS = 16;
 const TARGET_ATTRIBUTES = ['POSITION', 'NORMAL', 'TANGENT'];
+const TARGET_ATTRIBUTE_MATCHER = /(POSITION|NORMAL|TANGENT)_(\d+)/;
 
 const I4 = mat4.create();
 const Z3 = vec3.create();
@@ -159,7 +160,7 @@ function renderGlTFPrimitive(
   // Bind vertex buffers
   for (let i = 0; i < pipeline.buffers.length; ++i) {
     const attr = pipeline.buffers[i].attrs[0].name;
-    const targetAttrMatch = attr.match(/TARGET_(.+)_(\d+)/);
+    const targetAttrMatch = TARGET_ATTRIBUTE_MATCHER.exec(attr);
     const buffer = loadGPUBuffer(
       device, glTF,
       targetAttrMatch ? primitive.targets![targetAttrMatch[2] as unknown as number][targetAttrMatch[1]] : primitive.attributes[attr],
@@ -374,7 +375,7 @@ function getVertexBufferLayouts(glTF: ResolvedGlTF, primitive: MeshPrimitive): V
         const accessor = accessors[j];
         if (accessor) {
           getBufferLayoutDescriptor(accessor).attrs.push({ 
-            name: `TARGET_${TARGET_ATTRIBUTES[j]}_${i}`,
+            name: `${TARGET_ATTRIBUTES[j]}_${i}`,
             format: VertexFormat.Float3,
             shaderLoc,
             offset: (getExtras(accessor).byteOffset as number) || 0
@@ -415,7 +416,7 @@ function loadMaterialUniforms(device: RenderingDevice, glTF: ResolvedGlTF, mater
       env[`${name}.tex`] = loadGPUTexture(device, glTF, obj[name].index);
       env[`${name}.texCoord`] = obj[name].texCoord || 0;
       if (scaleField) {
-        env[`${name}.scale`] = obj[name][scaleField] || env[`${name}.scale`];
+        env[`${name}.scale`] = obj[name][scaleField] ?? env[`${name}.scale`];
       }
     }
   }
@@ -437,7 +438,7 @@ function loadMaterialUniforms(device: RenderingDevice, glTF: ResolvedGlTF, mater
       setTexture(pbr, 'metallicRoughnessTexture');
     }
 
-    env.alphaCutoff = material.alphaCutoff || env.alphaCutoff;
+    env.alphaCutoff = material.alphaCutoff ?? env.alphaCutoff;
     env.emissiveFactor = material.emissiveFactor || env.emissiveFactor;
 
     setTexture(material, 'emissiveTexture');

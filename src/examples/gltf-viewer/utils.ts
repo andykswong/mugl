@@ -1,6 +1,6 @@
 import { mat4, vec3 } from 'gl-matrix';
 import { ResolvedGlTF } from '../../gltf';
-import { Scene, Accessor } from '../../gltf/spec/glTF2';
+import { Scene, Accessor } from '../../gltf-spec/glTF2';
 
 const I4 = mat4.create();
 

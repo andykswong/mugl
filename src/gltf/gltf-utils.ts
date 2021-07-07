@@ -2,8 +2,8 @@
 
 import { mat4 } from 'gl-matrix';
 import { GL_BYTE, GL_FLOAT, GL_SHORT, GL_UNSIGNED_BYTE, GL_UNSIGNED_INT, GL_UNSIGNED_SHORT, VertexFormat } from '../device';
-import { Accessor, Animation, AnimationSampler, BufferView, Camera, Extras, GlTF, GlTFProperty, Node, Scene, Skin } from './spec/glTF2';
-import { KHRLightsPunctualGlTFExtension } from './spec/KHR_lights_punctual';
+import { Accessor, Animation, AnimationSampler, BufferView, Camera, Extras, GlTF, GlTFProperty, Node, Scene, Skin } from '../gltf-spec/glTF2';
+import { KHRLightsPunctualGlTFExtension } from '../gltf-spec/KHR_lights_punctual';
 import { ResolvedBuffers } from './types';
 
 /**

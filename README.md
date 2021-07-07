@@ -2,11 +2,11 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE) [![NPM](https://img.shields.io/npm/v/mugl)](https://www.npmjs.com/package/mugl) [![build](https://github.com/andykswong/mugl/actions/workflows/build.yaml/badge.svg)](https://github.com/andykswong/mugl/actions/workflows/build.yaml)
 
-> A micro-sized, modular WebGL library in TypeScript.
+> A micro-sized, modular WebGL and glTF library in TypeScript.
 
 ## Overview
 
-`mugl` is a minimalistic, modular WebGL1 / WebGL2 3D rendering library for Typescript / JavaScript.
+`mugl` is a minimalistic, modular WebGL 3D rendering library for Typescript / JavaScript.
 
 - **Core module (`mugl`)** : the [rendering device interface](./src/device/device.ts) in a simplified [WebGPU](https://gpuweb.github.io/gpuweb/)-style API that removes WebGL state management from you. (**9KB** in size)
   - **Nano implementation (`mugl/n` aka `ngl`)**: **3KB** implementation of the rendering device interface, but without WebGL2 support. You can even turn off some [features](./src/nano/features.ts) that you do not need (e.g. scissor, stencil testing) to reduce the size to **2KB**!
