@@ -150,7 +150,7 @@ function createResolveFrameBuffer(
   framebufferTexture(gl, attachment, texView);
   if (MUGL_DEBUG) {
     console.assert(
-      gl.checkFramebufferStatus(GL_FRAMEBUFFER) === GL_FRAMEBUFFER_COMPLETE || gl.isContextLost,
+      gl.checkFramebufferStatus(GL_FRAMEBUFFER) === GL_FRAMEBUFFER_COMPLETE || gl.isContextLost(),
       'Framebuffer completeness check failed for MSAA resolve buffer'
     );
   }
