@@ -225,22 +225,20 @@ export class GLPipeline implements IGLPipeline {
 export function applyPipelineState(
   gl: WebGLRenderingContext, state: PipelineStateDescriptor, stencilRef = 0
 ): void {
-  const { blend, depth, stencil, raster } = state;
+  const { blend, depth, stencil, raster = {} } = state;
 
   // 1. Apply rasterizer state
   if (NGL_ENABLE_RASTER) {
-    if (raster) {
-      glToggle(gl, GL_SAMPLE_ALPHA_TO_COVERAGE, !!raster.alphaToCoverage);
-      glToggle(gl, GL_CULL_FACE, !!raster.cullMode);
-      glToggle(gl, GL_POLYGON_OFFSET_FILL, !!(raster.depthBiasSlopeScale || raster.depthBias));
+    glToggle(gl, GL_SAMPLE_ALPHA_TO_COVERAGE, !!raster.alphaToCoverage);
+    glToggle(gl, GL_CULL_FACE, !!raster.cullMode);
+    glToggle(gl, GL_POLYGON_OFFSET_FILL, !!(raster.depthBiasSlopeScale || raster.depthBias));
 
-      gl.polygonOffset(raster.depthBiasSlopeScale || 0, raster.depthBias || 0);
+    gl.polygonOffset(raster.depthBiasSlopeScale || 0, raster.depthBias || 0);
 
-      if (raster.cullMode) {
-        gl.cullFace(raster.cullMode);
-      }
-      gl.frontFace(raster.frontFace || GL_CCW);
+    if (raster.cullMode) {
+      gl.cullFace(raster.cullMode);
     }
+    gl.frontFace(raster.frontFace || GL_CCW);
   }
 
   // 2. Apply depth state changes
