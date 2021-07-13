@@ -1,7 +1,7 @@
-const { merge } = require('webpack-merge');
-const common = require('./webpack.common.js');
+import { merge } from 'webpack-merge';
+import common from './webpack.common.js';
 
-module.exports = [
+export default [
   merge(common, {
     entry: {
       mugl: './src'
@@ -33,6 +33,18 @@ module.exports = [
     output: {
       library: {
         name: 'mugltf',
+        type: 'umd',
+        umdNamedDefine: true,
+      }
+    }
+  }),
+  merge(common, {
+    entry: {
+      muglsc: './src/scene'
+    },
+    output: {
+      library: {
+        name: 'muglsc',
         type: 'umd',
         umdNamedDefine: true,
       }

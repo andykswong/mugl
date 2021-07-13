@@ -1,6 +1,6 @@
-const path = require('path');
-const webpack = require('webpack');
-const TerserPlugin = require('terser-webpack-plugin');
+import * as path from 'path';
+import webpack from 'webpack';
+import TerserPlugin from 'terser-webpack-plugin';
 
 const PRODUCTION = 'production';
 
@@ -8,11 +8,11 @@ const mode = process.env.NODE_ENV || PRODUCTION;
 const isProd = mode === PRODUCTION;
 const debug = process.env.DEBUG || !isProd;
 
-module.exports = {
+export default {
   mode,
   output: {
     filename: '[name].min.js',
-    path: path.resolve(__dirname, 'dist'),
+    path: path.resolve('./dist'),
   },
   module: {
     rules: [

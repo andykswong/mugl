@@ -1,5 +1,5 @@
 import { USE_WEBGL2 } from './config';
-import { getGLDevice } from '../gl2';
+import { getGLDevice } from '..';
 import { Example, ExampleConstructor } from './common';
 import { BasicExample } from './basic';
 import { CubeExample } from './cube';

@@ -1,13 +1,13 @@
-const path = require('path');
-const webpack = require('webpack');
-const CopyPlugin = require('copy-webpack-plugin');
-const { merge } = require('webpack-merge');
-const common = require('./webpack.common.js');
+import * as path from 'path';
+import webpack from 'webpack';
+import CopyPlugin from 'copy-webpack-plugin';
+import { merge } from 'webpack-merge';
+import common from './webpack.common.js';
 
-const ASSET_DIR = path.resolve(__dirname, 'src/examples/assets');
-const OUTPUT_DIR = path.resolve(__dirname, 'examples');
+const ASSET_DIR = path.resolve('./src/examples/assets');
+const OUTPUT_DIR = path.resolve('./examples');
 
-module.exports = merge(common, {
+export default merge(common, {
   entry: {
     examples: {
       import: './src/examples'

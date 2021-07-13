@@ -1,9 +1,9 @@
-const https = require('https');
-const fs = require('fs');
-const { URL } = require('url');
-const path = require('path');
-const refParser = require('json-schema-ref-parser');
-const json2ts = require('json-schema-to-typescript');
+import * as https from 'https';
+import * as fs from 'fs';
+import * as path from 'path';
+import { URL } from 'url';
+import refParser from 'json-schema-ref-parser';
+import json2ts from 'json-schema-to-typescript';
 
 const outputPath = process.argv[2];
 const glTFRepoPath = 'https://raw.githubusercontent.com/KhronosGroup/glTF/master';
@@ -35,8 +35,8 @@ const glTFSchemaResolver = {
 function schema2ts(outputPath, schemaPath) {
   refParser.dereference(schemaPath, { resolve: { gltf: glTFSchemaResolver }})
     .then(schema => json2ts.compile(transform(schema)))
-    .then((interface) => {
-      fs.writeFile(outputPath, interface, (err) => {
+    .then((definition) => {
+      fs.writeFile(outputPath, definition, (err) => {
         if (err) throw err;
         console.log(`Schema written to ${outputPath}`);
       });
