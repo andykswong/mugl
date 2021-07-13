@@ -42,7 +42,7 @@
   "scripts": {
     "prepublishOnly": "npm run build && npm test",
     "clean": "rimraf coverage dist node_modules",
-    "lint": "eslint . --ext .ts,.tsx --fix",
+    "lint": "eslint src --ext .ts,.tsx --fix",
     "prebuild": "npm run lint",
     "build": "tsc",
     "postbuild": "npm run build:bundle",
