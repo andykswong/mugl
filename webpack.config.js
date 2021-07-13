@@ -38,16 +38,4 @@ export default [
       }
     }
   }),
-  merge(common, {
-    entry: {
-      muglsc: './src/scene'
-    },
-    output: {
-      library: {
-        name: 'muglsc',
-        type: 'umd',
-        umdNamedDefine: true,
-      }
-    }
-  }),
 ];
