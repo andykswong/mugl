@@ -2,7 +2,7 @@ import * as path from 'path';
 import webpack from 'webpack';
 import CopyPlugin from 'copy-webpack-plugin';
 import { merge } from 'webpack-merge';
-import common from './webpack.common.js';
+import common from './webpack.common.mjs';
 
 const ASSET_DIR = path.resolve('./src/examples/assets');
 const OUTPUT_DIR = path.resolve('./examples');

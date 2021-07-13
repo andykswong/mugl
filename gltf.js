@@ -1,1 +1,1 @@
-export * from './dist/gltf/index';
+export * from './dist/gltf/index.js';

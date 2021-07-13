@@ -1,5 +1,5 @@
 import { merge } from 'webpack-merge';
-import common from './webpack.common.js';
+import common from './webpack.common.mjs';
 
 export default [
   merge(common, {
@@ -33,6 +33,18 @@ export default [
     output: {
       library: {
         name: 'mugltf',
+        type: 'umd',
+        umdNamedDefine: true,
+      }
+    }
+  }),
+  merge(common, {
+    entry: {
+      muglsc: './src/scene'
+    },
+    output: {
+      library: {
+        name: 'muglsc',
         type: 'umd',
         umdNamedDefine: true,
       }

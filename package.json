@@ -14,7 +14,6 @@
     "webgl",
     "webgl2"
   ],
-  "type": "module",
   "main": "./dist/index.js",
   "typings": "./dist/index.d.ts",
   "exports": {
@@ -46,13 +45,13 @@
     "prebuild": "npm run lint",
     "build": "tsc",
     "postbuild": "npm run build:bundle",
-    "build:gltf-spec": "node ./gltfschema2ts.js src/gltf-spec",
+    "build:gltf-spec": "node ./gltfschema2ts.mjs src/gltf-spec",
     "build:bundle": "webpack",
-    "build:examples": "webpack --config webpack.examples.js",
+    "build:examples": "webpack --config webpack.examples.mjs",
     "test": "jest",
     "test:watch": "jest --watch",
     "doc": "typedoc --out docs src/index.ts src/config.ts src/nano/index.ts src/nano/features.ts src/gltf/index.ts",
-    "examples": "cross-env NODE_ENV=development webpack serve --config webpack.examples.js",
+    "examples": "cross-env NODE_ENV=development webpack serve --config webpack.examples.mjs",
     "start": "npm run examples"
   },
   "dependencies": {
