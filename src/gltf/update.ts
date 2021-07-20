@@ -4,7 +4,7 @@ import { mat4, quat, vec3 } from 'gl-matrix';
 import { getAnimationDuration, getAnimationSamplerInput, getAnimationSamplerOutput, getExtras, getInverseBindMatrices } from './gltf-utils';
 import { Animation, Node } from '../gltf-spec/glTF2';
 import { ResolvedGlTF } from './types';
-import { arrayCopy } from './utils';
+import { arrayCopy } from '../utils';
 
 const I4 = mat4.create();
 const Iq = quat.create();

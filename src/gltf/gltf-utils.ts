@@ -287,7 +287,7 @@ export function getInverseBindMatrices(glTF: GlTF & ResolvedBuffers, skin: Skin)
     const accessor = glTF.accessors?.[skin.inverseBindMatrices!];
     if (accessor) {
       const { buffer, byteOffset } = getAccessorData(glTF, accessor);
-      matrices = new Float32Array(buffer.buffer, buffer.byteOffset + byteOffset + (accessor.byteOffset || 0), 16 * skin.joints.length);
+      matrices = new Float32Array(buffer.buffer, buffer.byteOffset + byteOffset, 16 * skin.joints.length);
     } else {
       matrices = new Float32Array(16 * skin.joints.length);
     }

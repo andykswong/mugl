@@ -34,10 +34,10 @@ varying vec3 vPosition;
 vec4 getPosition() {
   vec4 pos = vec4(POSITION, 1.0);
 
-#ifdef USE_MORPHING
+#ifdef USE_MORPH
   pos += getTargetPosition();
 #endif
-#ifdef USE_SKINNING
+#ifdef USE_SKIN
   pos = getSkinMatrix() * pos;
 #endif
 
@@ -54,10 +54,10 @@ varying mat3 vTBN;
 vec3 getTangent() {
   vec3 tan = TANGENT.xyz;
 
-#ifdef USE_MORPHING
+#ifdef USE_MORPH
   tan += getTargetTangent();
 #endif
-#ifdef USE_SKINNING
+#ifdef USE_SKIN
   tan = mat3(getSkinMatrix()) * tan;
 #endif
 
@@ -70,10 +70,10 @@ varying vec3 vNormal;
 vec3 getNormal() {
   vec3 norm = NORMAL;
 
-#ifdef USE_MORPHING
+#ifdef USE_MORPH
   norm += getTargetNormal();
 #endif
-#ifdef USE_SKINNING
+#ifdef USE_SKIN
   norm = mat3(getSkinMatrix()) * norm;
 #endif
 

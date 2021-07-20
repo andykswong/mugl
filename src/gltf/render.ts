@@ -9,8 +9,8 @@ import {
 import { Accessor, GlTF, Mesh, MeshPrimitive, Node } from '../gltf-spec/glTF2';
 import { ResolvedGlTF } from './types';
 import { getCameraProjection, getExtras, getAccessorVertexFormat, getAccessorData } from './gltf-utils';
-import primitiveVert from '../shaders/primitive.vert';
-import pbrFrag from '../shaders/pbr.frag';
+import primitiveVert from './shaders/primitive.vert';
+import pbrFrag from './shaders/pbr.frag';
 import { updateGlTF } from './update';
 
 // Only supports 16 attributes

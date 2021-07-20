@@ -4,9 +4,9 @@
  * @packageDocumentation
  */
 
- /**
- * No transparency for you!
- */
+/**
+* No transparency for you!
+*/
 export const NGL_ENABLE_BLEND = true;
 
 /**

@@ -1,3 +1,4 @@
+import { MUGL_GLTF_MORPH } from '../../config';
 
 function addTarget(out: string, attr: string): string {
   let frag = '';
@@ -11,37 +12,7 @@ function addTarget(out: string, attr: string): string {
   return frag;
 }
 
-// TODO: Do we need inverse transpose joint matrix for normal matrix?
-// TODO: To support min MAX_VERTEX_UNIFORM_VECTORS = 128, use bone texture instead?
-export default `
-#ifdef USE_JOINTS_0
-attribute vec4 JOINTS_0;
-#endif
-
-#ifdef USE_WEIGHTS_0
-attribute vec4 WEIGHTS_0;
-#endif
-
-#if defined(USE_WEIGHTS_0) && defined(USE_JOINTS_0)
-#define USE_SKINNING
-
-#ifndef NUM_JOINTS
-#define NUM_JOINTS 24
-#endif
-
-uniform mat4 jointMatrix[NUM_JOINTS];
-
-mat4 getSkinMatrix() {
-  mat4 skin =
-    WEIGHTS_0.x * jointMatrix[int(JOINTS_0.x)] +
-    WEIGHTS_0.y * jointMatrix[int(JOINTS_0.y)] +
-    WEIGHTS_0.z * jointMatrix[int(JOINTS_0.z)] +
-    WEIGHTS_0.w * jointMatrix[int(JOINTS_0.w)];
-
-  return skin;
-}
-#endif
-
+const MORPH_FN = MUGL_GLTF_MORPH ? `
 ${['POSITION', 'NORMAL', 'TANGENT'].map(attr => {
   let frag = '';
   for (let i = 0; i < 8; ++i) {
@@ -55,7 +26,7 @@ ${['POSITION', 'NORMAL', 'TANGENT'].map(attr => {
 }).join('\n')}
 
 #if defined(USE_POSITION_0) || defined(USE_NORMAL_0) || defined(USE_TANGENT_0)
-#define USE_MORPHING
+#define USE_MORPH
 #ifndef NUM_MORPHS
 #define NUM_MORPHS 8
 #endif
@@ -81,4 +52,37 @@ vec3 getTargetTangent() {
 }
 
 #endif
+` : '';
+
+// TODO: Do we need inverse transpose joint matrix for normal matrix?
+// TODO: To support min MAX_VERTEX_UNIFORM_VECTORS = 128, use bone texture instead?
+export default `
+#ifdef USE_JOINTS_0
+attribute vec4 JOINTS_0;
+#endif
+
+#ifdef USE_WEIGHTS_0
+attribute vec4 WEIGHTS_0;
+#endif
+
+#if defined(USE_WEIGHTS_0) && defined(USE_JOINTS_0)
+#define USE_SKIN
+
+#ifndef NUM_JOINTS
+#define NUM_JOINTS 24
+#endif
+
+uniform mat4 jointMatrix[NUM_JOINTS];
+
+mat4 getSkinMatrix() {
+  mat4 skin =
+    WEIGHTS_0.x * jointMatrix[int(JOINTS_0.x)] +
+    WEIGHTS_0.y * jointMatrix[int(JOINTS_0.y)] +
+    WEIGHTS_0.z * jointMatrix[int(JOINTS_0.z)] +
+    WEIGHTS_0.w * jointMatrix[int(JOINTS_0.w)];
+
+  return skin;
+}
+#endif
+${MORPH_FN}
 `;

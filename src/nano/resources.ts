@@ -20,7 +20,7 @@ import {
 import { COLOR_PIXEL_FORMAT, DEPTH_PIXEL_FORMAT } from './const';
 import {
   NGL_ENABLE_OFFSCREEN, NGL_ENABLE_STENCIL, NGL_ENABLE_RASTER, NGL_ENABLE_BLEND
-} from './features';
+} from './config';
 
 const EMPTY = {};
 const EMPTY3: [number?, number?, number?] = [];

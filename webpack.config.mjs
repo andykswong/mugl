@@ -28,6 +28,18 @@ export default [
   }),
   merge(common, {
     entry: {
+      muscene: './src/scene'
+    },
+    output: {
+      library: {
+        name: 'muscene',
+        type: 'umd',
+        umdNamedDefine: true,
+      }
+    }
+  }),
+  merge(common, {
+    entry: {
       mugltf: './src/gltf'
     },
     output: {

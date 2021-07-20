@@ -10,9 +10,8 @@ import {
 } from '../device/glenums';
 import { GL_EXT_INSTANCING, MAX_VERTEX_ATTRIBS } from './const';
 import {
-  NGL_ENABLE_BLEND, NGL_ENABLE_OFFSCREEN, NGL_ENABLE_SCISSOR, NGL_ENABLE_STENCIL,
-  NGL_ENABLE_TEXTURE
-} from './features';
+  NGL_ENABLE_BLEND, NGL_ENABLE_OFFSCREEN, NGL_ENABLE_SCISSOR, NGL_ENABLE_STENCIL, NGL_ENABLE_TEXTURE
+} from './config';
 import { GLBuffer, GLPipeline, GLRenderPass, GLTexture, applyPipelineState } from './resources';
 import { EMPTY_TEXTURE, renderPassLite } from './stubs';
 

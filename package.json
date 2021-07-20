@@ -1,6 +1,6 @@
 {
   "name": "mugl",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Micro WebGL library",
   "homepage": "https://github.com/andykswong/mugl",
   "author": "Andy K.S. Wong <andykswong@outlook.com>",
@@ -28,15 +28,21 @@
     "./gltf": {
       "import": "./dist/gltf/index.js",
       "require": "./dist/mugltf.min.js"
+    },
+    "./scene": {
+      "import": "./dist/scene/index.js",
+      "require": "./dist/muscene.min.js"
     }
   },
   "files": [
     "/dist",
     "/src",
+    "/gltf.js",
+    "/gltf.d.ts",
     "/n.js",
     "/n.d.ts",
-    "/gltf.js",
-    "/gltf.d.ts"
+    "/scene.js",
+    "/scene.d.ts"
   ],
   "scripts": {
     "prepublishOnly": "npm run build && npm test",
@@ -50,7 +56,7 @@
     "build:examples": "webpack --config webpack.examples.mjs",
     "test": "jest",
     "test:watch": "jest --watch",
-    "doc": "typedoc --out docs src/index.ts src/config.ts src/nano/index.ts src/nano/features.ts src/gltf/index.ts",
+    "doc": "typedoc --out docs src/index.ts src/config.ts src/nano/index.ts src/nano/config.ts src/gltf/index.ts",
     "examples": "cross-env NODE_ENV=development webpack serve --config webpack.examples.mjs",
     "start": "npm run examples"
   },
