@@ -1,10 +1,22 @@
 {
   "name": "mugl",
   "version": "0.0.4",
-  "description": "Micro WebGL library",
-  "homepage": "https://github.com/andykswong/mugl",
+  "description": "Micro WebGL Library in AssemblyScript",
+  "type": "module",
+  "sideEffects": false,
+  "ascMain": "assembly/index.ts",
+  "main": "index.mjs",
+  "types": "index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/andykswong/mugl.git"
+  },
   "author": "Andy K.S. Wong <andykswong@outlook.com>",
   "license": "MIT",
+  "homepage": "https://github.com/andykswong/mugl",
+  "bugs": {
+    "url": "https://github.com/andykswong/mugl/issues"
+  },
   "keywords": [
     "3d",
     "canvas",
@@ -14,62 +26,62 @@
     "webgl",
     "webgl2"
   ],
-  "main": "./dist/index.js",
-  "typings": "./dist/index.d.ts",
-  "exports": {
-    ".": {
-      "import": "./dist/index.js",
-      "require": "./dist/mugl.min.js"
-    },
-    "./n": {
-      "import": "./dist/nano/index.js",
-      "require": "./dist/ngl.min.js"
-    },
-    "./gltf": {
-      "import": "./dist/gltf/index.js",
-      "require": "./dist/mugltf.min.js"
-    },
-    "./scene": {
-      "import": "./dist/scene/index.js",
-      "require": "./dist/muscene.min.js"
-    }
-  },
   "files": [
+    "/assembly",
     "/dist",
     "/src",
-    "/gltf.js",
-    "/gltf.d.ts",
-    "/n.js",
-    "/n.d.ts",
-    "/scene.js",
-    "/scene.d.ts"
+    "index.mjs",
+    "index.d.ts",
+    "n.mjs",
+    "n.d.ts",
+    "tf.mjs",
+    "tf.d.ts"
   ],
   "scripts": {
     "prepublishOnly": "npm run build && npm test",
-    "clean": "rimraf coverage dist node_modules",
-    "lint": "eslint src --ext .ts,.tsx --fix",
+    "clean": "rimraf coverage docs dist node_modules **/__tests__/**/*.spec.map **/__tests__/**/*.spec.wat",
     "prebuild": "npm run lint",
-    "build": "tsc",
-    "postbuild": "npm run build:bundle",
-    "build:gltf-spec": "node ./gltfschema2ts.mjs src/gltf-spec",
-    "build:bundle": "webpack",
+    "build": "npm run asbuild && npm run tsbuild",
+    "postbuild": "npm run webpack",
+    "lint": "eslint src --ext .ts,.tsx",
+    "asbuild": "asc assembly/index.ts --target release",
+    "asbuild:debug": "asc assembly/index.ts --target debug",
+    "tsbuild": "npm run babel && npm run tsc && npm run copysrc",
+    "babel": "cross-env-shell babel src -d dist --source-maps --extensions '.mjs,.ts' --out-file-extension .mjs",
+    "tsc": "tsc --emitDeclarationOnly",
+    "copysrc": "copyfiles -u 1 src/**/*{.d.ts,.mjs} dist",
+    "webpack": "webpack",
+    "test": "npm run asp && npm run jest",
+    "asp": "asp -c as-pect.config.cjs",
+    "jest": "cross-env NODE_OPTIONS=--experimental-vm-modules npx jest",
+    "jest:watch": "npm run jest -- --watch",
+    "gltf-spec": "node ./gltfschema2ts.mjs src/gltf-spec",
+    "doc": "typedoc --out docs src/index.ts",
     "build:examples": "webpack --config webpack.examples.mjs",
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "doc": "typedoc --out docs src/index.ts src/config.ts src/nano/index.ts src/nano/config.ts src/gltf/index.ts",
     "examples": "cross-env NODE_ENV=development webpack serve --config webpack.examples.mjs",
     "start": "npm run examples"
   },
   "dependencies": {
-    "gl-matrix": "^3.3.0"
+    "munum": "^0.0.3"
   },
   "devDependencies": {
-    "@types/jest": "^26.0.20",
+    "@as-pect/cli": "^6.2.4",
+    "@babel/cli": "^7.14.8",
+    "@babel/core": "^7.14.8",
+    "@babel/preset-env": "^7.14.8",
+    "@babel/preset-typescript": "^7.14.5",
+    "@types/jest": "^26.0.24",
     "@types/node": "^15.12.5",
     "@types/webgl-ext": "0.0.32",
     "@typescript-eslint/eslint-plugin": "^4.2.0",
     "@typescript-eslint/parser": "^4.2.0",
+    "assemblyscript": "^0.19.7",
+    "babel-jest": "^27.0.6",
+    "babel-loader": "^8.2.2",
+    "babel-plugin-add-import-extension": "^1.6.0",
+    "babel-preset-const-enum": "^1.0.0",
     "copy-webpack-plugin": "^9.0.1",
+    "copyfiles": "^2.4.1",
     "cross-env": "^7.0.3",
     "eslint": "^7.10.0",
     "jest": "^27.0.5",
@@ -78,23 +90,11 @@
     "rimraf": "^3.0.2",
     "source-map-loader": "^3.0.0",
     "ts-essentials": "^7.0.1",
-    "ts-jest": "^27.0.3",
-    "ts-loader": "^9.1.2",
     "typedoc": "^0.21.2",
     "typescript": "^4.3.4",
     "webpack": "^5.27.0",
     "webpack-cli": "^4.2.0",
     "webpack-dev-server": "^3.11.0",
     "webpack-merge": "^5.7.3"
-  },
-  "jest": {
-    "preset": "ts-jest/presets/js-with-ts",
-    "rootDir": "src",
-    "collectCoverage": true,
-    "collectCoverageFrom": [
-      "**/*.{ts,tsx}"
-    ],
-    "coverageDirectory": "../coverage",
-    "testEnvironment": "node"
   }
 }

@@ -8,4 +8,4 @@
 /**
  * True to enable debug mode. Defaults to false.
  */
-export const MUGL_DEBUG = (typeof process !== 'undefined' && !!process.env.MUGL_DEBUG) || false;
+export const MUGL_DEBUG = false;
