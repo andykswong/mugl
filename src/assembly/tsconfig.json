@@ -1,5 +1,5 @@
 {
-  "extends": "assemblyscript/std/portable.json",
+  "extends": "assemblyscript/std/assembly.json",
   "compilerOptions": {
     "allowSyntheticDefaultImports": true,
     "isolatedModules": true,
@@ -13,23 +13,8 @@
     "declaration": true,
     "declarationMap": true,
     "sourceMap": true,
-    "typeRoots": [
-      "node_modules/@types",
-      "node_modules/assemblyscript/std/types"
-    ],
-    "types": [
-      "portable",
-      "jest"
-    ],
     "lib": [
-      "es2020",
-      "dom",
-      "webworker"
-    ],
-    "rootDir": "src",
-    "outDir": "dist"
-  },
-  "include": [
-    "src/**/*"
-  ]
+      "es2020"
+    ]
+  }
 }

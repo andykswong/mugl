@@ -6,7 +6,7 @@ const PRODUCTION = 'production';
 
 const mode = process.env.NODE_ENV || PRODUCTION;
 const isProd = mode === PRODUCTION;
-const debug = process.env.DEBUG || !isProd;
+export const debug = process.env.DEBUG || !isProd;
 
 export default {
   mode,
@@ -17,19 +17,24 @@ export default {
   module: {
     rules: [
       {
-        test: /\.js$/,
+        test: /\.m?js$/,
         enforce: 'pre',
         use: 'source-map-loader',
       },
       {
-        test: /\.tsx?$/,
-        use: 'ts-loader',
+        test: /\.(m?js|ts)$/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            envName: 'webpack'
+          }
+        },
         exclude: /node_modules/,
       },
     ],
   },
   resolve: {
-    extensions: [ '.tsx', '.ts', '.jsx', '.js' ],
+    extensions: [ '.js', '.mjs', '.ts' ],
   },
   optimization: {
     minimize: isProd,

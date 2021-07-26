@@ -1,1 +1,1 @@
-export * from './dist/nano/index';
+export * from './dist/js/nano';

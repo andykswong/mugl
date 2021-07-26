@@ -16,7 +16,7 @@ export default [
   }),
   merge(common, {
     entry: {
-      ngl: './src/nano'
+      ngl: './src/js/nano'
     },
     output: {
       library: {
@@ -28,19 +28,7 @@ export default [
   }),
   merge(common, {
     entry: {
-      muscene: './src/scene'
-    },
-    output: {
-      library: {
-        name: 'muscene',
-        type: 'umd',
-        umdNamedDefine: true,
-      }
-    }
-  }),
-  merge(common, {
-    entry: {
-      mugltf: './src/gltf'
+      mugltf: './src/js/gltf'
     },
     output: {
       library: {
