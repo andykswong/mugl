@@ -11,6 +11,7 @@ module.exports = api => {
     "plugins": [
     ],
     "ignore": [
+      "src/assembly",
       "node_modules"
     ],
     "comments": false,

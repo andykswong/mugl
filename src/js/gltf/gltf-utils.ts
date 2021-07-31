@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 
 import { Mat4, mat4, ortho, perspective } from 'munum';
-import { GL_BYTE, GL_FLOAT, GL_SHORT, GL_UNSIGNED_BYTE, GL_UNSIGNED_INT, GL_UNSIGNED_SHORT } from '../device/glenums';
+import { GLenum } from '../../common/gl';
 import { VertexFormat } from '../device';
 import { Accessor, Animation, AnimationSampler, BufferView, Camera, Extras, GlTF, GlTFProperty, Node, Scene, Skin } from '../gltf-spec/glTF2';
 import { KHRLightsPunctualGlTFExtension } from '../gltf-spec/KHR_lights_punctual';
@@ -77,10 +77,10 @@ export function getAnimationSamplerOutput(glTF: GlTF & ResolvedBuffers, sampler:
       const { buffer, byteOffset = 0 } = getAccessorData(glTF, accessor);
       let Type: SamplerOutputBufferConstructor = Float32Array;
       switch (accessor.componentType) {
-        case GL_BYTE: Type = Int8Array; break;
-        case GL_UNSIGNED_BYTE: Type = Uint8Array; break;
-        case GL_SHORT: Type = Uint16Array; break;
-        case GL_UNSIGNED_SHORT: Type = Uint16Array; break;
+        case GLenum.BYTE: Type = Int8Array; break;
+        case GLenum.UNSIGNED_BYTE: Type = Uint8Array; break;
+        case GLenum.SHORT: Type = Uint16Array; break;
+        case GLenum.UNSIGNED_SHORT: Type = Uint16Array; break;
       }
 
       getExtras(sampler).output = output =
@@ -115,26 +115,26 @@ export function getAnimationOutputValue(buffer: SamplerOutputBuffer, index: numb
 export function getAccessorVertexFormat(accessor: Accessor): VertexFormat | null {
   switch (accessor.type) {
     case 'VEC2':
-      if (accessor.componentType === GL_FLOAT) {
+      if (accessor.componentType === GLenum.FLOAT) {
         return VertexFormat.Float2;
-      } else if (accessor.componentType === GL_UNSIGNED_SHORT) {
+      } else if (accessor.componentType === GLenum.UNSIGNED_SHORT) {
         return accessor.normalized ? VertexFormat.UShort2N : VertexFormat.UShort2;
-      } else if (accessor.componentType === GL_UNSIGNED_BYTE) {
+      } else if (accessor.componentType === GLenum.UNSIGNED_BYTE) {
         return accessor.normalized ? VertexFormat.UChar2N : VertexFormat.UChar2;
       }
       break;
     case 'VEC3':
-      if (accessor.componentType === GL_FLOAT) {
+      if (accessor.componentType === GLenum.FLOAT) {
         return VertexFormat.Float3;
       }
       // TODO: UChar3N/UShort3N can be used for vertex color, but unsupported by WebGPU. Widen to UChar4N/UShort4N instead
       break;
     case 'VEC4':
-      if (accessor.componentType === GL_FLOAT) {
+      if (accessor.componentType === GLenum.FLOAT) {
         return VertexFormat.Float4;
-      } else if (accessor.componentType === GL_UNSIGNED_BYTE) {
+      } else if (accessor.componentType === GLenum.UNSIGNED_BYTE) {
         return accessor.normalized ? VertexFormat.UChar4N : VertexFormat.UChar4;
-      } else if (accessor.componentType === GL_UNSIGNED_SHORT) {
+      } else if (accessor.componentType === GLenum.UNSIGNED_SHORT) {
         return accessor.normalized ? VertexFormat.UShort4N : VertexFormat.UShort4;
       }
       break;
@@ -159,12 +159,12 @@ export function getAccessorElementSize(accessor: Accessor): number {
 
   let size = 0;
   switch (accessor.componentType) {
-    case GL_BYTE:
-    case GL_UNSIGNED_BYTE: size = 1; break;
-    case GL_SHORT:
-    case GL_UNSIGNED_SHORT: size = 2; break;
-    case GL_UNSIGNED_INT:
-    case GL_FLOAT: size = 4; break;
+    case GLenum.BYTE:
+    case GLenum.UNSIGNED_BYTE: size = 1; break;
+    case GLenum.SHORT:
+    case GLenum.UNSIGNED_SHORT: size = 2; break;
+    case GLenum.UNSIGNED_INT:
+    case GLenum.FLOAT: size = 4; break;
   }
 
   return length * size;
@@ -215,7 +215,7 @@ export function getAccessorData(glTF: GlTF & ResolvedBuffers, accessor: Accessor
 
       const indexBuffer = getBufferViewData(glTF, indexView);
       const valueBuffer = getBufferViewData(glTF, valueView);
-      const IndexBufferType = componentType === GL_UNSIGNED_BYTE ? Uint8Array : componentType === GL_UNSIGNED_SHORT ? Uint16Array : Uint32Array;
+      const IndexBufferType = componentType === GLenum.UNSIGNED_BYTE ? Uint8Array : componentType === GLenum.UNSIGNED_SHORT ? Uint16Array : Uint32Array;
       const indices = new IndexBufferType(indexBuffer.buffer, indexBuffer.byteOffset + indexViewOffset, count);
       const values = new Uint8Array(valueBuffer.buffer, valueBuffer.byteOffset + valueViewOffset, count * elementSize);
       for (let j = 0; j < count; ++j) {

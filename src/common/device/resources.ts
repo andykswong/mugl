@@ -1,10 +1,9 @@
 
-import { Int } from 'munum';
 import {
-  BufferProperties, TextureDescriptor, SamplerDescriptor, RenderPassDescriptor, PipelineDescriptor, TextureData
+  BufferProperties, PipelineProperties, RenderPassProperties, SamplerProperties, TextureData, TextureProperties
 } from './descriptor';
 import { MipmapHint, ShaderType } from './enums';
-import { ReadonlyExtent3D, ReadonlyOrigin3D } from './types';
+import { Int, ReadonlyExtent3D, ReadonlyOrigin3D } from './types';
 
 /**
  * A resource that can be destroyed.
@@ -44,10 +43,10 @@ export interface Buffer extends Resource {
  */
 export interface Texture extends Resource {
   /** The texture descriptor */
-  readonly props: TextureDescriptor;
+  readonly props: TextureProperties;
 
   /** The sampler descriptor */
-  readonly sampler: SamplerDescriptor;
+  readonly sampler: SamplerProperties;
 
   /**
    * Write data to the texture.
@@ -77,7 +76,7 @@ export interface Texture extends Resource {
  */
 export interface RenderPass extends Resource {
   /** The render pass descriptor. */
-  readonly props: RenderPassDescriptor;
+  readonly props: RenderPassProperties;
 
   /**
    * Perform MSAA framebuffer resolve.
@@ -103,5 +102,5 @@ export interface Shader extends Resource {
  */
 export interface Pipeline extends Resource {
   /** The pipeline descriptor. */
-  readonly props: PipelineDescriptor;
+  readonly props: PipelineProperties;
 }

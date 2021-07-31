@@ -1,18 +1,4 @@
-import {
-  GL_ALWAYS, GL_ARRAY_BUFFER, GL_BACK, GL_CCW, GL_CLAMP_TO_EDGE, GL_CONSTANT_COLOR, GL_CW, GL_DECR, GL_DECR_WRAP,
-  GL_DONT_CARE, GL_DST_ALPHA, GL_DST_COLOR, GL_DYNAMIC_DRAW, GL_ELEMENT_ARRAY_BUFFER, GL_EQUAL, GL_FASTEST, GL_FLOAT,
-  GL_FLOAT_MAT3, GL_FLOAT_MAT4, GL_FLOAT_VEC2, GL_FLOAT_VEC3, GL_FLOAT_VEC4, GL_FRAGMENT_SHADER, GL_FRONT, GL_FUNC_ADD,
-  GL_FUNC_REVERSE_SUBTRACT, GL_FUNC_SUBTRACT, GL_GEQUAL, GL_GREATER, GL_INCR, GL_INCR_WRAP, GL_INVERT,
-  GL_KEEP, GL_LEQUAL, GL_LESS, GL_LINEAR, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR_MIPMAP_NEAREST, GL_LINES, GL_LINE_STRIP,
-  GL_MAX_EXT, GL_MIN_EXT, GL_MIRRORED_REPEAT, GL_NEAREST, GL_NEAREST_MIPMAP_LINEAR, GL_NEAREST_MIPMAP_NEAREST,
-  GL_NEVER, GL_NICEST, GL_NONE, GL_NOTEQUAL, GL_ONE, GL_ONE_MINUS_CONSTANT_COLOR, GL_ONE_MINUS_DST_ALPHA,
-  GL_ONE_MINUS_DST_COLOR, GL_ONE_MINUS_SRC_ALPHA, GL_ONE_MINUS_SRC_COLOR, GL_POINTS, GL_REPEAT, GL_REPLACE,
-  GL_SRC_ALPHA, GL_SRC_ALPHA_SATURATE, GL_SRC_COLOR, GL_STATIC_DRAW, GL_STREAM_DRAW, GL_TEXTURE_2D,
-  GL_TEXTURE_2D_ARRAY, GL_TEXTURE_3D, GL_TEXTURE_CUBE_MAP, GL_TEXTURE_CUBE_MAP_NEGATIVE_X,
-  GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, GL_TEXTURE_CUBE_MAP_POSITIVE_X,
-  GL_TEXTURE_CUBE_MAP_POSITIVE_Y, GL_TEXTURE_CUBE_MAP_POSITIVE_Z, GL_TRIANGLES, GL_TRIANGLE_STRIP, GL_UNIFORM_BUFFER,
-  GL_UNSIGNED_INT, GL_UNSIGNED_SHORT, GL_VERTEX_SHADER, GL_ZERO
-} from './glenums';
+import * as GLenum from '../gl/const';
 
 /**
  * Texture addressing wrap mode (aka UV wrap).
@@ -21,13 +7,13 @@ import {
  */
 export enum AddressMode {
   /** Clamp texture coords to (0.0 .. 1.0) */
-  Clamp = GL_CLAMP_TO_EDGE,
+  Clamp = GLenum.CLAMP_TO_EDGE,
 
   /** Repeat texture coords within (0.0 .. 1.0) */
-  Repeat = GL_REPEAT,
+  Repeat = GLenum.REPEAT,
 
   /** Mirror-repeat texture coords (0.0 .. 1.0 .. 0.0) */
-  Mirror = GL_MIRRORED_REPEAT
+  Mirror = GLenum.MIRRORED_REPEAT
 }
 
 /**
@@ -37,43 +23,43 @@ export enum AddressMode {
  */
 export enum BlendFactor {
   /** blend factor of zero */
-  Zero = GL_ZERO,
+  Zero = GLenum.ZERO,
 
   /** blend factor of one */
-  One = GL_ONE,
+  One = GLenum.ONE,
 
   /** blend factor of source color */
-  SrcColor = GL_SRC_COLOR,
+  SrcColor = GLenum.SRC_COLOR,
 
   /** blend factor of one minus source color */
-  OneMinusSrcColor = GL_ONE_MINUS_SRC_COLOR,
+  OneMinusSrcColor = GLenum.ONE_MINUS_SRC_COLOR,
 
   /** blend factor of source alpha */
-  SrcAlpha = GL_SRC_ALPHA,
+  SrcAlpha = GLenum.SRC_ALPHA,
 
   /** blend factor of one minus source alpha */
-  OneMinusSrcAlpha = GL_ONE_MINUS_SRC_ALPHA,
+  OneMinusSrcAlpha = GLenum.ONE_MINUS_SRC_ALPHA,
 
   /** blend factor of destination color */
-  DstColor = GL_DST_COLOR,
+  DstColor = GLenum.DST_COLOR,
 
   /** blend factor of one minus destination alpha */
-  OneMinusDstColor = GL_ONE_MINUS_DST_COLOR,
+  OneMinusDstColor = GLenum.ONE_MINUS_DST_COLOR,
 
   /** blend factor of destination alpha */
-  DstAlpha = GL_DST_ALPHA,
+  DstAlpha = GLenum.DST_ALPHA,
 
   /** blend factor of one minus destination alpha */
-  OneMinusDstAlpha = GL_ONE_MINUS_DST_ALPHA,
+  OneMinusDstAlpha = GLenum.ONE_MINUS_DST_ALPHA,
 
   /** blend factor of the minimum of either source alpha or one minus destination alpha */
-  SrcAlphaSaturate = GL_SRC_ALPHA_SATURATE,
+  SrcAlphaSaturate = GLenum.SRC_ALPHA_SATURATE,
 
   /** blend factor of constant color */
-  BlendColor = GL_CONSTANT_COLOR,
+  BlendColor = GLenum.CONSTANT_COLOR,
 
   /** blend factor of one minus constant color */
-  OneMinusBlendColor = GL_ONE_MINUS_CONSTANT_COLOR
+  OneMinusBlendColor = GLenum.ONE_MINUS_CONSTANT_COLOR
 }
 
 /**
@@ -83,25 +69,25 @@ export enum BlendFactor {
  */
 export enum BlendOp {
   /** Add source and destination pixel values */
-  Add = GL_FUNC_ADD,
+  Add = GLenum.FUNC_ADD,
 
   /** Subtract destination from source pixel values */
-  Sub = GL_FUNC_SUBTRACT,
+  Sub = GLenum.FUNC_SUBTRACT,
 
   /** Subtract source from destination pixel values */
-  RevSub = GL_FUNC_REVERSE_SUBTRACT,
+  RevSub = GLenum.FUNC_REVERSE_SUBTRACT,
 
   /**
    * The minimum of the source and destination pixel values.
    * For WebGL1, this requires EXT_blend_minmax extension.
    */
-  Min = GL_MIN_EXT,
+  Min = GLenum.MIN_EXT,
 
   /**
    * The maximum of the source and destination pixel values.
    * For WebGL1, this requires EXT_blend_minmax extension.
    */
-  Max = GL_MAX_EXT
+  Max = GLenum.MAX_EXT
 }
 
 /**
@@ -111,13 +97,13 @@ export enum BlendOp {
  */
 export enum BufferType {
   /** Vertex buffer */
-  Vertex = GL_ARRAY_BUFFER,
+  Vertex = GLenum.ARRAY_BUFFER,
 
   /** Index buffer */
-  Index = GL_ELEMENT_ARRAY_BUFFER,
+  Index = GLenum.ELEMENT_ARRAY_BUFFER,
 
   /** Uniform buffer */
-  Uniform = GL_UNIFORM_BUFFER
+  Uniform = GLenum.UNIFORM_BUFFER
 }
 
 /**
@@ -141,28 +127,28 @@ export enum ColorMask {
  */
 export enum CompareFunc {
   /** new value never passes comparion test */
-  Never = GL_NEVER,
+  Never = GLenum.NEVER,
 
   /** new value passses if it is less than the existing value */
-  Less = GL_LESS,
+  Less = GLenum.LESS,
 
   /** new value passes if it is equal to existing value */
-  Equal = GL_EQUAL,
+  Equal = GLenum.EQUAL,
 
   /** new value passes if it is less than or equal to existing value */
-  LEqual = GL_LEQUAL,
+  LEqual = GLenum.LEQUAL,
 
   /** new value passes if it is greater than existing value */
-  Greater = GL_GREATER,
+  Greater = GLenum.GREATER,
 
   /** new value passes if it is not equal to existing value */
-  NotEqual = GL_NOTEQUAL,
+  NotEqual = GLenum.NOTEQUAL,
 
   /** new value passes if it is greater than or equal to existing value */
-  GEqual = GL_GEQUAL,
+  GEqual = GLenum.GEQUAL,
 
   /** new value always passes */
-  Always = GL_ALWAYS
+  Always = GLenum.ALWAYS
 }
 
 /**
@@ -171,22 +157,22 @@ export enum CompareFunc {
  */
 export enum CubeFace {
   /** Positive X face */
-  PosX = GL_TEXTURE_CUBE_MAP_POSITIVE_X,
+  PosX = GLenum.TEXTURE_CUBE_MAP_POSITIVE_X,
 
   /** Negative X face */
-  NegX = GL_TEXTURE_CUBE_MAP_NEGATIVE_X,
+  NegX = GLenum.TEXTURE_CUBE_MAP_NEGATIVE_X,
 
   /** Positive Y face */
-  PosY = GL_TEXTURE_CUBE_MAP_POSITIVE_Y,
+  PosY = GLenum.TEXTURE_CUBE_MAP_POSITIVE_Y,
 
   /** Negative Y face */
-  NegY = GL_TEXTURE_CUBE_MAP_NEGATIVE_Y,
+  NegY = GLenum.TEXTURE_CUBE_MAP_NEGATIVE_Y,
 
   /** Positive Z face */
-  PosZ = GL_TEXTURE_CUBE_MAP_POSITIVE_Z,
+  PosZ = GLenum.TEXTURE_CUBE_MAP_POSITIVE_Z,
 
   /** Negative Z face */
-  NegZ = GL_TEXTURE_CUBE_MAP_NEGATIVE_Z
+  NegZ = GLenum.TEXTURE_CUBE_MAP_NEGATIVE_Z
 }
 
 /**
@@ -196,13 +182,13 @@ export enum CubeFace {
  */
 export enum CullMode {
   /** Disable culling */
-  None = GL_NONE,
+  None = GLenum.NONE,
 
   /** Cull front face */
-  Front = GL_FRONT,
+  Front = GLenum.FRONT,
 
   /** Cull back face */
-  Back = GL_BACK
+  Back = GLenum.BACK
 }
 
 /**
@@ -212,10 +198,10 @@ export enum CullMode {
  */
 export enum FilterMode {
   /** use nearest-filtering (aka point-filtering) */
-  Nearest = GL_NEAREST,
+  Nearest = GLenum.NEAREST,
 
   /** use linear filtering */
-  Linear = GL_LINEAR
+  Linear = GLenum.LINEAR
 }
 
 /**
@@ -225,10 +211,10 @@ export enum FilterMode {
  */
 export enum FrontFace {
   /** Counter-clockwise winding. */
-  CCW = GL_CCW,
+  CCW = GLenum.CCW,
 
   /** Clockwise winding. */
-  CW = GL_CW
+  CW = GLenum.CW
 }
 
 /**
@@ -238,10 +224,10 @@ export enum FrontFace {
  */
 export enum IndexFormat {
   /** 16-bit indices */
-  UInt16 = GL_UNSIGNED_SHORT,
+  UInt16 = GLenum.UNSIGNED_SHORT,
 
   /** 32-bit indices. For WebGL1, this requires OES_element_index_uint extension. */
-  UInt32 = GL_UNSIGNED_INT
+  UInt32 = GLenum.UNSIGNED_INT
 }
 
 /**
@@ -250,13 +236,13 @@ export enum IndexFormat {
  */
 export enum MipmapHint {
   /** No preference. */
-  None = GL_DONT_CARE,
+  None = GLenum.DONT_CARE,
 
   /** The most efficient option should be chosen. */
-  Fast = GL_FASTEST,
+  Fast = GLenum.FASTEST,
 
   /** The most correct, or highest quality, option should be chosen. */
-  Nice = GL_NICEST
+  Nice = GLenum.NICEST
 }
 
 /**
@@ -266,22 +252,22 @@ export enum MipmapHint {
  */
 export enum MinFilterMode {
   /** use nearest-filtering (aka point-filtering) */
-  Nearest = GL_NEAREST,
+  Nearest = GLenum.NEAREST,
 
   /** use linear filtering */
-  Linear = GL_LINEAR,
+  Linear = GLenum.LINEAR,
 
   /** nearest within mipmap and between mipmaps */
-  NearestMipmapNearest = GL_NEAREST_MIPMAP_NEAREST,
+  NearestMipmapNearest = GLenum.NEAREST_MIPMAP_NEAREST,
 
   /** nearest within mipmap, linear between mipmaps */
-  NearestMipmapLinear = GL_NEAREST_MIPMAP_LINEAR,
+  NearestMipmapLinear = GLenum.NEAREST_MIPMAP_LINEAR,
 
   /** linear within mipmap, nearest between mipmaps */
-  LinearMipmapNearest = GL_LINEAR_MIPMAP_NEAREST,
+  LinearMipmapNearest = GLenum.LINEAR_MIPMAP_NEAREST,
 
   /** linear within and between mipmaps */
-  LinearMipmapLinear = GL_LINEAR_MIPMAP_LINEAR
+  LinearMipmapLinear = GLenum.LINEAR_MIPMAP_LINEAR
 }
 
 /**
@@ -346,27 +332,27 @@ export enum PixelFormat {
  */
 export enum PrimitiveType {
   /** Point list */
-  Points = GL_POINTS,
+  Points = GLenum.POINTS,
 
   /** Line list */
-  Lines = GL_LINES,
+  Lines = GLenum.LINES,
 
   /** Line strip */
-  LineStrip = GL_LINE_STRIP,
+  LineStrip = GLenum.LINE_STRIP,
 
   /** Triangle list */
-  Tri = GL_TRIANGLES,
+  Tri = GLenum.TRIANGLES,
 
   /** Triangle strip */
-  TriStrip = GL_TRIANGLE_STRIP
+  TriStrip = GLenum.TRIANGLE_STRIP
 }
 
 export enum ShaderType {
   /** Vertex shader */
-  Vertex = GL_VERTEX_SHADER,
+  Vertex = GLenum.VERTEX_SHADER,
 
   /** Fragment shader */
-  Fragment = GL_FRAGMENT_SHADER
+  Fragment = GLenum.FRAGMENT_SHADER
 }
 
 /**
@@ -376,28 +362,28 @@ export enum ShaderType {
  */
 export enum StencilOp {
   /** keep the current stencil value */
-  Keep = GL_KEEP,
+  Keep = GLenum.KEEP,
 
   /** set the stencil value to zero */
-  Zero = GL_ZERO,
+  Zero = GLenum.ZERO,
 
   /** replace the stencil value with stencil reference value */
-  Replace = GL_REPLACE,
+  Replace = GLenum.REPLACE,
 
   /** increment the current stencil value, clamp to max */
-  Incr = GL_INCR,
+  Incr = GLenum.INCR,
 
   /** decrement the current stencil value, clamp to zero */
-  Decr = GL_DECR,
+  Decr = GLenum.DECR,
 
   /** perform a logical bitwise invert operation on the stencil value */
-  Invert = GL_INVERT,
+  Invert = GLenum.INVERT,
 
   /** increment the current stencil value, with wrap-around */
-  IncrWrap = GL_INCR_WRAP,
+  IncrWrap = GLenum.INCR_WRAP,
 
   /** decrement the current stencil value, with wrap-around */
-  DecrWrap = GL_DECR_WRAP
+  DecrWrap = GLenum.DECR_WRAP
 }
 
 /**
@@ -407,16 +393,16 @@ export enum StencilOp {
  */
 export enum TexType {
   /** 2D texture */
-  Tex2D = GL_TEXTURE_2D,
+  Tex2D = GLenum.TEXTURE_2D,
 
   /** Cube map texture */
-  Cube = GL_TEXTURE_CUBE_MAP,
+  Cube = GLenum.TEXTURE_CUBE_MAP,
 
   /** 3D texture. WebGL2 only. */
-  Tex3D = GL_TEXTURE_3D,
+  Tex3D = GLenum.TEXTURE_3D,
 
   /** 2D array texture. WebGL2 only. */
-  Array = GL_TEXTURE_2D_ARRAY
+  Array = GLenum.TEXTURE_2D_ARRAY
 }
 
 /**
@@ -426,22 +412,25 @@ export enum TexType {
  */
 export enum UniformFormat {
   /** float type */
-  Float = GL_FLOAT,
+  Float = GLenum.FLOAT,
 
   /** 2D vector */
-  Vec2 = GL_FLOAT_VEC2,
+  Vec2 = GLenum.FLOAT_VEC2,
 
   /** 3D vector */
-  Vec3 = GL_FLOAT_VEC3,
+  Vec3 = GLenum.FLOAT_VEC3,
 
   /** 4D vector */
-  Vec4 = GL_FLOAT_VEC4,
+  Vec4 = GLenum.FLOAT_VEC4,
+
+  /** 2x2 matrix */
+  Mat2 = GLenum.FLOAT_MAT3,
 
   /** 3x3 matrix */
-  Mat3 = GL_FLOAT_MAT3,
+  Mat3 = GLenum.FLOAT_MAT3,
 
   /** 4x4 matrix */
-  Mat4 = GL_FLOAT_MAT4
+  Mat4 = GLenum.FLOAT_MAT4
 }
 
 /**
@@ -465,13 +454,13 @@ export enum UniformType {
  */
 export enum Usage {
   /** Data is static, cannot be modified after creation */
-  Static = GL_STATIC_DRAW,
+  Static = GLenum.STATIC_DRAW,
 
   /** Data is updated infrequently */
-  Dynamic = GL_DYNAMIC_DRAW,
+  Dynamic = GLenum.DYNAMIC_DRAW,
 
   /** Data is overwritten each frame */
-  Stream = GL_STREAM_DRAW
+  Stream = GLenum.STREAM_DRAW
 }
 
 /**

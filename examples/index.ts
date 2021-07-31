@@ -1,5 +1,5 @@
-import { USE_WEBGL2 } from './config';
-import { getNGLDevice } from '..';
+import { USE_WEBGL2, USE_NGL } from './config';
+import { getGLDevice, getNGLDevice } from '..';
 import { Example, ExampleConstructor } from './common';
 import { BasicExample } from './basic';
 import { CubeExample } from './cube';
@@ -59,7 +59,7 @@ if (dpr > 1) {
   canvas.style.height = `${height}px`;
 }
 
-const device = getNGLDevice(canvas, {
+const device = (USE_NGL ? getNGLDevice : getGLDevice)(canvas, {
   stencil: true,
   powerPreference: 'low-power',
   webgl2: USE_WEBGL2

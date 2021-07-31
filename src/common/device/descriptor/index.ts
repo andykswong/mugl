@@ -1,15 +1,9 @@
-import { Float, Int, Vec } from 'munum';
 import {
   AddressMode, BlendFactor, BlendOp, BufferType, ColorMask, CompareFunc, CullMode, FilterMode, FrontFace, IndexFormat,
   MinFilterMode, PixelFormat, PrimitiveType, ShaderType, StencilOp, TexType, UniformFormat, UniformType, Usage, VertexFormat
 } from '../enums';
-import { Color } from '../types';
 import { Buffer, Shader, Texture } from '../resources';
-
-/**
- * Texture image source pointer.
- */
-export type TexImageSource = Int;
+import { Float, FloatList, ImageSource, Int, ReadonlyColor } from '../types';
 
 /**
  * Descriptor of a Buffer.
@@ -58,11 +52,13 @@ export class TextureDescriptor {
   samples: Int = 1;
 
   /**
-   * Specifies if renderbuffer should be used for depth/stencil textures. Defaults to true.
-   * If set to false, depth texture will be used if available.
+   * Specifies if renderbuffer should be used for depth/stencil textures.
+   * Defaults to false, which will use a depth texture.
    */
-  renderTarget: boolean = true;
+  renderTarget: boolean = false;
 }
+
+export type TextureProperties = TextureDescriptor;
 
 /**
  * Descriptor of a texture sampler.
@@ -85,15 +81,17 @@ export class SamplerDescriptor {
   /** Texture filter mode for minimifaction. Defaults to {@link MinFilterMode.Nearest} */
   minFilter: MinFilterMode = MinFilterMode.Nearest;
 
-  /** Minimum levels of detail. Defaults to 0. WebGL2 only. */
-  minLOD: Float = 0;
+  /** Minimum levels of detail. Defaults to -1000. WebGL2 only. */
+  minLOD: Float = -1000;
 
-  /** Maximum levels of detail. Defaults to Number.MAX_VALUE. WebGL2 only. */
-  maxLOD: Float = f32.MAX_VALUE;
+  /** Maximum levels of detail. Defaults to 1000. WebGL2 only. */
+  maxLOD: Float = 1000;
 
   /** Max anisotropy level. Defaults to 1. Requires EXT_texture_filter_anisotropic extension. */
   maxAniso: Float = 1;
 }
+
+export type SamplerProperties = SamplerDescriptor;
 
 /**
  * Descriptor of a Render Pass.
@@ -101,7 +99,7 @@ export class SamplerDescriptor {
  */
 export class RenderPassDescriptor {
   /** List of color attachments. If null, defaults to render to screen. */
-  color: TextureView[] | null = null;
+  color: TextureView[] = [];
 
   /** The depth/stencil attachment. Defaults to null. */
   depth: TextureView | null = null;
@@ -110,7 +108,7 @@ export class RenderPassDescriptor {
    * The color load operation. Defaults to null, which does not clear the buffer.
    * If a color is specified, it represents the clear color.
    */
-  clearColor: Color | null = null;
+  clearColor: ReadonlyColor | null = null;
 
   /**
    * The depth load operation. Defaults to NaN, which does not clear the buffer.
@@ -125,6 +123,8 @@ export class RenderPassDescriptor {
   clearStencil: Float = NaN;
 }
 
+export type RenderPassProperties = RenderPassDescriptor;
+
 /**
  * Descriptor of a shader.
  * @see https://www.w3.org/TR/webgpu/#shader-module-creation
@@ -135,8 +135,7 @@ export class ShaderDescriptor {
   type: ShaderType;
 
   /** The shader source code. */
-  // @ts-ignore: Valid in AssemblyScript
-  source: string | null;
+  source: string = '';
 }
 
 /**
@@ -156,6 +155,8 @@ export class PipelineState {
   /** The blend states. Defaults to null, which disables blending. */
   blend: BlendState | null = null;
 }
+
+export type ReadonlyPipelineState = PipelineState;
 
 /**
  * Descriptor of a GPU pipeline resource.
@@ -177,12 +178,13 @@ export class PipelineDescriptor extends PipelineState {
   mode: PrimitiveType = PrimitiveType.Tri;
 
   /** The vertex buffer layouts. */
-  // @ts-ignore: Valid in AssemblyScript
-  buffers: VertexBufferLayout[] | null;
+  buffers: VertexBufferLayout[] = [];
 
   /** The uniform layouts. */
-  uniforms: UniformLayout | null = null;
+  uniforms: UniformLayout = [];
 }
+
+export type PipelineProperties = PipelineDescriptor;
 
 /**
  * Descriptor of vertex buffer layout.
@@ -190,8 +192,7 @@ export class PipelineDescriptor extends PipelineState {
  */
 export class VertexBufferLayout {
   /** The attribute descriptors */
-  // @ts-ignore: Valid in AssemblyScript
-  attrs: VertexAttribute[] | null;
+  attrs: VertexAttribute[] = [];
 
   /** Stride in bytes. Defaults to be auto calculated. */
   stride: Int = 0;
@@ -200,14 +201,15 @@ export class VertexBufferLayout {
   instanced: boolean = false;
 }
 
+export type ReadonlyVertexBufferLayout = VertexBufferLayout;
+
 /**
  * Descriptor of vertex attributes.
  * @see https://gpuweb.github.io/gpuweb/#dictdef-gpuvertexattributedescriptor
  */
 export class VertexAttribute {
   /** Attribute name. */
-  // @ts-ignore: Valid in AssemblyScript
-  name: string | null;
+  name: string = '';
 
   /** Vertex format */
   // @ts-ignore: Valid in AssemblyScript
@@ -219,6 +221,8 @@ export class VertexAttribute {
   /** Offset in buffer in bytes. Defaults to be auto calculated. */
   offset: Int = 0;
 }
+
+export type ReadonlyVertexAttribute = VertexAttribute;
 
 /**
  * Descriptor of the rasterization state.
@@ -321,8 +325,7 @@ export class BlendState {
  */
 export class UniformLayoutEntry {
   /** Uniform name. */
-  // @ts-ignore: Valid in AssemblyScript
-  name: string | null;
+  name: string = '';
 
   /** Uniform type. Defaults to {@link UniformType.Value} */
   type: UniformType = UniformType.Value;
@@ -348,14 +351,13 @@ export type UniformLayout = UniformLayoutEntry[];
 */
 export class UniformBinding {
   /** Uniform name. */
-  // @ts-ignore: Valid in AssemblyScript
-  name: string | null;
+  name: string = '';
 
   /** The uniform value to bind */
   value: Float = 0;
 
   /** The uniform array value to bind */
-  values: Vec | null = null;
+  values: FloatList | null = null;
 
   /** The texture to bind */
   tex: Texture | null = null;
@@ -385,14 +387,15 @@ export class TextureData {
   /** Texture data buffer. */
   buffer: ArrayBufferView | null = null;
 
-  /** Texture array data buffer. */
-  buffers: ArrayBufferView[] | null = null;
+  /** Array textures data buffer. */
+  buffers: ArrayBufferView[] = [];
 
   /** Texture image pointer. */
-  image: TexImageSource = 0;
+  // @ts-ignore: Valid for AssemblyScript
+  image: ImageSource = 0;
 
-  /** Texture array image pointer. */
-  images: TexImageSource[] | null = null;
+  /** Array textures image pointer. */
+  images: ImageSource[] = [];
 }
 
 /**
@@ -401,8 +404,7 @@ export class TextureData {
 */
 export class TextureView {
   /** The texture to bind */
-  // @ts-ignore: Valid in AssemblyScript
-  tex: Texture | null;
+  tex: Texture | null = null;
 
   /** Rendering mip level. Defaults to 0 */
   mipLevel: Int = 0;
@@ -410,3 +412,8 @@ export class TextureView {
   /** Rendering texture slice. Defaults to 0 */
   slice: Int = 0;
 }
+
+/**
+ * Readonly descriptor of a texture view. All proerties are defined.
+ */
+export type ReadonlyTextureView = TextureView;

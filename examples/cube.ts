@@ -159,7 +159,7 @@ export class CubeExample extends BaseExample {
       return true;
     }
 
-    const proj = perspective(this.device.canvas.width / this.device.canvas.height, Math.PI / 4, 0.01, 100);
+    const proj = perspective(this.device.width / this.device.height, Math.PI / 4, 0.01, 100);
     const view = lookAt([10 * Math.cos(t), 5 * Math.sin(t), 10 * Math.sin(t)], [0, 0, 0]);
     const vp = mat4.mul(proj, view);
 

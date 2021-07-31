@@ -4,22 +4,7 @@ import {
   BufferDescriptor, PipelineDescriptor, RenderPassDescriptor, SamplerDescriptor, TextureDescriptor, UniformBindings
 } from './descriptor';
 import { Buffer, Pipeline, RenderPass, Shader, Texture } from './resources';
-import { Color } from './types';
-
-/**
- * Opaque canvas object.
- */
-export interface AbstractCanvas {
-  /**
-   * Width of the canvas.
-   */
-  readonly width: Int;
-
-  /**
-   * Height of the canvas.
-   */
-  readonly height: Int;
-}
+import { ReadonlyColor } from './types';
 
 /**
  * The rendering device, in WebGPU API style.
@@ -28,9 +13,14 @@ export interface AbstractCanvas {
  */
 export interface RenderingDevice {
   /**
-   * The canvas that this device renders to.
+   * Width of the drawing buffer.
    */
-  readonly canvas: AbstractCanvas;
+  readonly width: Int;
+
+  /**
+   * Height of the drawing buffer.
+   */
+  readonly height: Int;
 
   /**
    * Creates a new buffer object.
@@ -85,7 +75,7 @@ export interface RenderingDevice {
    * @param feature feature type
    * @returns the feature object, or null if not supported
    */
-  feature<F>(feature: string): F | null;
+  feature<F>(feature: string): F;
 }
 
 /**
@@ -169,7 +159,7 @@ export interface RenderPassContext {
    * @param color the blend color
    * @returns this context for chaining
    */
-  blendColor(color: Color): RenderPassContext;
+  blendColor(color: ReadonlyColor): RenderPassContext;
 
   /**
    * Set the stencil reference value.

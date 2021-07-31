@@ -189,14 +189,14 @@ export class PbrExample extends BaseExample {
     if (ctx.webgl2) {
       this.matBuffer = bufferWithData(ctx, BufferType.Uniform, new Float32Array([
         1.0, 1.0, 1.0, 1.0, // albedo
-        0.2, // metallic
+        0.5, // metallic
         0.5, // roughness
         0, 0 // padding
       ]));
 
       this.envBuffer = bufferWithData(ctx, BufferType.Uniform, new Float32Array([
         0xdf / 0xff * .75, 0xf6 / 0xff * .75, 0xf5 / 0xff * .75, 1.0, // ambient
-        1.0, -3.0, 1.0, 0.0, // lightDir
+        1.0, -2.0, 1.0, 0.0, // lightDir
         0xfc / 0xff, 0xcb / 0xff, 0xcb / 0xff, 2.0, // lightColor / intensity
       ]));
     }
@@ -299,7 +299,7 @@ export class PbrExample extends BaseExample {
 
     const camPos = vec3.create(10 * Math.cos(t), 5 * Math.sin(t), 10 * Math.sin(t));
     const model = mat4.create();
-    const proj = perspective(this.device.canvas.width / this.device.canvas.height, Math.PI / 4, 0.01, 100);
+    const proj = perspective(this.device.width / this.device.height, Math.PI / 4, 0.01, 100);
     const view = lookAt(camPos, [0, 0, 0]);
     const vp = mat4.mul(proj, view);
 

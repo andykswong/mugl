@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 
 import { Mat3, mat3, Mat4, mat4, Vec3, vec3 } from 'munum';
-import { GL_UNSIGNED_BYTE } from '../device/glenums';
+import { GLenum } from '../../common/gl';
 import {
   AddressMode, BlendFactor, Buffer, BufferType, CompareFunc, CullMode, FilterMode, IndexFormat, MinFilterMode, Pipeline, PrimitiveType,
   RenderingDevice, RenderPassContext, SamplerDescriptor, Texture, TexType, UniformFormat, UniformLayout, UniformType,
@@ -73,7 +73,7 @@ export function renderGlTF(device: RenderingDevice, glTF: ResolvedGlTF, options:
     const activeCamera = glTF.cameras?.[options.camera.index || 0];
     if (activeCamera) {
       view = (activeCamera.extras?.view as Mat4) || I4;
-      proj = getCameraProjection(tmpViewProj, activeCamera, device.canvas.width / device.canvas.height);
+      proj = getCameraProjection(tmpViewProj, activeCamera, device.width / device.height);
       cameraPosition = (activeCamera.extras?.translation as Vec3) || Z3;
     }
     if (options.camera.model) {
@@ -479,7 +479,7 @@ function loadGPUBuffer(device: RenderingDevice, glTF: ResolvedGlTF, accessorId: 
 
   // sparse accessor uses its own buffer
   // ubyte index is not supported in mugl, thus uses its own widened buffer
-  const isUByteIndex = targetHint === BufferType.Index && accessor.componentType === GL_UNSIGNED_BYTE;
+  const isUByteIndex = targetHint === BufferType.Index && accessor.componentType === GLenum.UNSIGNED_BYTE;
   if (accessor.sparse || isUByteIndex) {
     let gpuBuffer: Buffer | undefined = getExtras(accessor).gpuBuffer as Buffer | undefined;
     if (!gpuBuffer) {

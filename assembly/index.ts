@@ -1,1 +1,1 @@
-export * from '../src/assembly';
+export * from '../src/common/device';

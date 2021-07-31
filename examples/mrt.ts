@@ -153,7 +153,8 @@ export class MRTExample extends BaseExample {
 
     this.depthTex = this.device.texture({
       ...offTexDesc,
-      format: PixelFormat.Depth
+      format: PixelFormat.Depth,
+      renderTarget: true
     });
 
     this.quadVertBuffer = bufferWithData(this.device, BufferType.Vertex, quadVertices);
@@ -202,7 +203,7 @@ export class MRTExample extends BaseExample {
 
   render(t: number): boolean {
     const pos = vec3.create(.5, .5, .5);
-    const proj = perspective(this.device.canvas.width / this.device.canvas.height, Math.PI / 4, 0.01, 100);
+    const proj = perspective(this.device.width / this.device.height, Math.PI / 4, 0.01, 100);
     const view = lookAt(vec3.add([5 * Math.cos(t), 2.5 * Math.sin(t), 5 * Math.sin(t)], pos), pos);
     const vp = mat4.mul(proj, view);
 

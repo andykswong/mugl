@@ -1,6 +1,6 @@
 import { Int } from 'munum';
 import { IndexFormat, PixelFormat, TexType, VertexFormat } from '../enums';
-import { GL_BYTE, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT16, GL_DEPTH_STENCIL, GL_FLOAT, GL_HALF_FLOAT, GL_HALF_FLOAT_OES, GL_R16F, GL_R32F, GL_RED, GL_RG, GL_RG16F, GL_RG32F, GL_RGBA, GL_RGBA16F, GL_RGBA32F, GL_RGBA8, GL_SHORT, GL_UNSIGNED_BYTE, GL_UNSIGNED_INT, GL_UNSIGNED_INT_24_8_WEBGL, GL_UNSIGNED_SHORT } from '../glenums';
+import { GLenum } from '../../gl';
 import { glTexFormat, glTexInternalFormat, glTexType, hasStencil, indexSize, is3DTexture, isDepthStencil, vertexByteSize, vertexNormalized, vertexSize, vertexType } from '../utils';
 
 class VertexFormatSpec {
@@ -12,30 +12,30 @@ class VertexFormatSpec {
 }
 
 const VERTEX_FORMAT_SPECS: VertexFormatSpec[] = [
-  { id: VertexFormat.Float, bytes: 4, size: 1, type: GL_FLOAT, norm: false },
-  { id: VertexFormat.Float2, bytes: 8, size: 2, type: GL_FLOAT, norm: false },
-  { id: VertexFormat.Float3, bytes: 12, size: 3, type: GL_FLOAT, norm: false },
-  { id: VertexFormat.Float4, bytes: 16, size: 4, type: GL_FLOAT, norm: false },
+  { id: VertexFormat.Float, bytes: 4, size: 1, type: GLenum.FLOAT, norm: false },
+  { id: VertexFormat.Float2, bytes: 8, size: 2, type: GLenum.FLOAT, norm: false },
+  { id: VertexFormat.Float3, bytes: 12, size: 3, type: GLenum.FLOAT, norm: false },
+  { id: VertexFormat.Float4, bytes: 16, size: 4, type: GLenum.FLOAT, norm: false },
 
-  { id: VertexFormat.Char2, bytes: 2, size: 2, type: GL_BYTE, norm: false },
-  { id: VertexFormat.Char2N, bytes: 2, size: 2, type: GL_BYTE, norm: true },
-  { id: VertexFormat.Char4, bytes: 4, size: 4, type: GL_BYTE, norm: false },
-  { id: VertexFormat.Char4N, bytes: 4, size: 4, type: GL_BYTE, norm: true },
+  { id: VertexFormat.Char2, bytes: 2, size: 2, type: GLenum.BYTE, norm: false },
+  { id: VertexFormat.Char2N, bytes: 2, size: 2, type: GLenum.BYTE, norm: true },
+  { id: VertexFormat.Char4, bytes: 4, size: 4, type: GLenum.BYTE, norm: false },
+  { id: VertexFormat.Char4N, bytes: 4, size: 4, type: GLenum.BYTE, norm: true },
 
-  { id: VertexFormat.UChar2, bytes: 2, size: 2, type: GL_UNSIGNED_BYTE, norm: false },
-  { id: VertexFormat.UChar2N, bytes: 2, size: 2, type: GL_UNSIGNED_BYTE, norm: true },
-  { id: VertexFormat.UChar4, bytes: 4, size: 4, type: GL_UNSIGNED_BYTE, norm: false },
-  { id: VertexFormat.UChar4N, bytes: 4, size: 4, type: GL_UNSIGNED_BYTE, norm: true },
+  { id: VertexFormat.UChar2, bytes: 2, size: 2, type: GLenum.UNSIGNED_BYTE, norm: false },
+  { id: VertexFormat.UChar2N, bytes: 2, size: 2, type: GLenum.UNSIGNED_BYTE, norm: true },
+  { id: VertexFormat.UChar4, bytes: 4, size: 4, type: GLenum.UNSIGNED_BYTE, norm: false },
+  { id: VertexFormat.UChar4N, bytes: 4, size: 4, type: GLenum.UNSIGNED_BYTE, norm: true },
 
-  { id: VertexFormat.Short2, bytes: 4, size: 2, type: GL_SHORT, norm: false },
-  { id: VertexFormat.Short2N, bytes: 4, size: 2, type: GL_SHORT, norm: true },
-  { id: VertexFormat.Short4, bytes: 8, size: 4, type: GL_SHORT, norm: false },
-  { id: VertexFormat.Short4N, bytes: 8, size: 4, type: GL_SHORT, norm: true },
+  { id: VertexFormat.Short2, bytes: 4, size: 2, type: GLenum.SHORT, norm: false },
+  { id: VertexFormat.Short2N, bytes: 4, size: 2, type: GLenum.SHORT, norm: true },
+  { id: VertexFormat.Short4, bytes: 8, size: 4, type: GLenum.SHORT, norm: false },
+  { id: VertexFormat.Short4N, bytes: 8, size: 4, type: GLenum.SHORT, norm: true },
 
-  { id: VertexFormat.UShort2, bytes: 4, size: 2, type: GL_UNSIGNED_SHORT, norm: false },
-  { id: VertexFormat.UShort2N, bytes: 4, size: 2, type: GL_UNSIGNED_SHORT, norm: true },
-  { id: VertexFormat.UShort4, bytes: 8, size: 4, type: GL_UNSIGNED_SHORT, norm: false },
-  { id: VertexFormat.UShort4N, bytes: 8, size: 4, type: GL_UNSIGNED_SHORT, norm: true },
+  { id: VertexFormat.UShort2, bytes: 4, size: 2, type: GLenum.UNSIGNED_SHORT, norm: false },
+  { id: VertexFormat.UShort2N, bytes: 4, size: 2, type: GLenum.UNSIGNED_SHORT, norm: true },
+  { id: VertexFormat.UShort4, bytes: 8, size: 4, type: GLenum.UNSIGNED_SHORT, norm: false },
+  { id: VertexFormat.UShort4N, bytes: 8, size: 4, type: GLenum.UNSIGNED_SHORT, norm: true },
 ];
 
 class PixelFormatSpec {
@@ -48,16 +48,16 @@ class PixelFormatSpec {
 }
 
 const PIXEL_FORMAT_SPECS: PixelFormatSpec[] = [
-  { id: PixelFormat.Depth, format: GL_DEPTH_COMPONENT, internal: GL_DEPTH_COMPONENT16, type: GL_UNSIGNED_INT, depth: true, stencil: false },
-  { id: PixelFormat.Stencil, format: GL_DEPTH_STENCIL, internal: GL_DEPTH_STENCIL, type: GL_UNSIGNED_INT_24_8_WEBGL, depth: false, stencil: true },
-  { id: PixelFormat.DepthStencil, format: GL_DEPTH_STENCIL, internal: GL_DEPTH_STENCIL, type: GL_UNSIGNED_INT_24_8_WEBGL, depth: true, stencil: true },
-  { id: PixelFormat.RGBA8, format: GL_RGBA, internal: GL_RGBA8, type: GL_UNSIGNED_BYTE, depth: false, stencil: false },
-  { id: PixelFormat.RGBA32F, format: GL_RGBA, internal: GL_RGBA32F, type: GL_FLOAT, depth: false, stencil: false },
-  { id: PixelFormat.RGBA16F, format: GL_RGBA, internal: GL_RGBA16F, type: GL_HALF_FLOAT_OES, depth: false, stencil: false },
-  { id: PixelFormat.R32F, format: GL_RED, internal: GL_R32F, type: GL_FLOAT, depth: false, stencil: false },
-  { id: PixelFormat.R16F, format: GL_RED, internal: GL_R16F, type: GL_HALF_FLOAT_OES, depth: false, stencil: false },
-  { id: PixelFormat.RG32F, format: GL_RG, internal: GL_RG32F, type: GL_FLOAT, depth: false, stencil: false },
-  { id: PixelFormat.RG16F, format: GL_RG, internal: GL_RG16F, type: GL_HALF_FLOAT_OES, depth: false, stencil: false },
+  { id: PixelFormat.Depth, format: GLenum.DEPTH_COMPONENT, internal: GLenum.DEPTH_COMPONENT16, type: GLenum.UNSIGNED_INT, depth: true, stencil: false },
+  { id: PixelFormat.Stencil, format: GLenum.DEPTH_STENCIL, internal: GLenum.DEPTH_STENCIL, type: GLenum.UNSIGNED_INT_24_8_WEBGL, depth: false, stencil: true },
+  { id: PixelFormat.DepthStencil, format: GLenum.DEPTH_STENCIL, internal: GLenum.DEPTH_STENCIL, type: GLenum.UNSIGNED_INT_24_8_WEBGL, depth: true, stencil: true },
+  { id: PixelFormat.RGBA8, format: GLenum.RGBA, internal: GLenum.RGBA8, type: GLenum.UNSIGNED_BYTE, depth: false, stencil: false },
+  { id: PixelFormat.RGBA32F, format: GLenum.RGBA, internal: GLenum.RGBA32F, type: GLenum.FLOAT, depth: false, stencil: false },
+  { id: PixelFormat.RGBA16F, format: GLenum.RGBA, internal: GLenum.RGBA16F, type: GLenum.HALF_FLOAT_OES, depth: false, stencil: false },
+  { id: PixelFormat.R32F, format: GLenum.RED, internal: GLenum.R32F, type: GLenum.FLOAT, depth: false, stencil: false },
+  { id: PixelFormat.R16F, format: GLenum.RED, internal: GLenum.R16F, type: GLenum.HALF_FLOAT_OES, depth: false, stencil: false },
+  { id: PixelFormat.RG32F, format: GLenum.RG, internal: GLenum.RG32F, type: GLenum.FLOAT, depth: false, stencil: false },
+  { id: PixelFormat.RG16F, format: GLenum.RG, internal: GLenum.RG16F, type: GLenum.HALF_FLOAT_OES, depth: false, stencil: false },
 ];
 
 describe('utils', () => {
@@ -156,8 +156,8 @@ describe('utils', () => {
     test('glTexType should return the WebGL2 data type for each format', () => {
       for (let i = 0; i < PIXEL_FORMAT_SPECS.length; ++i) {
         let expectedType = PIXEL_FORMAT_SPECS[i].type;
-        if (expectedType === GL_HALF_FLOAT_OES) {
-          expectedType = GL_HALF_FLOAT; // WebGL2 uses a different value for half float
+        if (expectedType === GLenum.HALF_FLOAT_OES) {
+          expectedType = GLenum.HALF_FLOAT; // WebGL2 uses a different value for half float
         }
         expect(glTexType(PIXEL_FORMAT_SPECS[i].id, true)).toBe(expectedType);
       }
