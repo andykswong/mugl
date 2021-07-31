@@ -37,7 +37,7 @@ export default merge(common, {
     new webpack.DefinePlugin({
       'MUGL_DEBUG': debug,
       'USE_WEBGL2': true,
-      'USE_NGL': true,
+      'USE_NGL': false,
       'NGL_ENABLE_SCISSOR': false,
     }),
     new CopyPlugin({

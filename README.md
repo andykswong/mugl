@@ -11,7 +11,7 @@
 
 `mugl` is a minimalistic, modular WebGL 3D rendering library in AssemblyScript. It allows you to run the same 3D app on both JavaScript and WebAssembly environments using portable TypeScript/AssemblyScript code.
 
-- **Core module (`mugl`)** : the [rendering device interface](./src/device/device.ts) in a simplified [WebGPU](https://gpuweb.github.io/gpuweb/)-style API that removes WebGL state management from you. (**10KB** in size)
+- **Core module (`mugl`)** : the [rendering device interface](./src/common/device/device.ts) in a simplified [WebGPU](https://gpuweb.github.io/gpuweb/)-style API that removes WebGL state management from you. (**10KB** in size)
   - **Nano device (`mugl/n` aka `ngl`)**: **3KB** WebGL1 implementation of the rendering device interface. You can even turn off some [features](./src/js/nano/config.ts) that you do not need (e.g. scissor, stencil testing) to reduce the size to **2KB**!
 - **glTF module (`mugl/tf`) (WIP)**: a minimalistic glTF 2.0 model loader and renderer (**11KB** in size)
 

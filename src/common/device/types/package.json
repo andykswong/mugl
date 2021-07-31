@@ -1,0 +1,4 @@
+{
+  "main": "index.mjs",
+  "types": "index.d.ts"
+}

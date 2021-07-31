@@ -1,50 +1,46 @@
 import { Int } from 'munum';
 import { IndexFormat, PixelFormat, TexType, VertexFormat } from './enums';
-import {
-  GL_BYTE, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT16, GL_DEPTH_STENCIL, GL_FLOAT, GL_HALF_FLOAT, GL_HALF_FLOAT_OES,
-  GL_NONE, GL_R16F, GL_R32F, GL_RED, GL_RG, GL_RG16F, GL_RG32F, GL_RGBA, GL_RGBA16F, GL_RGBA32F, GL_RGBA8, GL_SHORT,
-  GL_TEXTURE_2D_ARRAY, GL_TEXTURE_3D, GL_UNSIGNED_BYTE, GL_UNSIGNED_INT, GL_UNSIGNED_INT_24_8_WEBGL, GL_UNSIGNED_SHORT
-} from './glenums';
+import * as GLenum from '../gl/const';
 
 const TEX_INTERNAL_FORMAT_MAP = [
-  GL_NONE,
-  GL_DEPTH_COMPONENT16,
-  GL_DEPTH_STENCIL,
-  GL_DEPTH_STENCIL,
-  GL_RGBA8,
-  GL_RGBA32F,
-  GL_RGBA16F,
-  GL_R32F,
-  GL_R16F,
-  GL_RG32F,
-  GL_RG16F
+  GLenum.NONE,
+  GLenum.DEPTH_COMPONENT16,
+  GLenum.DEPTH_STENCIL,
+  GLenum.DEPTH_STENCIL,
+  GLenum.RGBA8,
+  GLenum.RGBA32F,
+  GLenum.RGBA16F,
+  GLenum.R32F,
+  GLenum.R16F,
+  GLenum.RG32F,
+  GLenum.RG16F
 ];
 
 const TEX_FORMAT_MAP = [
-  GL_NONE,
-  GL_DEPTH_COMPONENT,
-  GL_DEPTH_STENCIL,
-  GL_DEPTH_STENCIL,
-  GL_RGBA,
-  GL_RED,
-  GL_RG
+  GLenum.NONE,
+  GLenum.DEPTH_COMPONENT,
+  GLenum.DEPTH_STENCIL,
+  GLenum.DEPTH_STENCIL,
+  GLenum.RGBA,
+  GLenum.RED,
+  GLenum.RG
 ];
 
 const TEX_TYPE_MAP = [
-  GL_NONE,
-  GL_UNSIGNED_BYTE,
-  GL_FLOAT,
-  GL_HALF_FLOAT_OES,
-  GL_UNSIGNED_INT,
-  GL_UNSIGNED_INT_24_8_WEBGL
+  GLenum.NONE,
+  GLenum.UNSIGNED_BYTE,
+  GLenum.FLOAT,
+  GLenum.HALF_FLOAT_OES,
+  GLenum.UNSIGNED_INT,
+  GLenum.UNSIGNED_INT_24_8_WEBGL
 ];
 
 const VERTEX_TYPE_MAP = [
-  GL_FLOAT,
-  GL_BYTE,
-  GL_UNSIGNED_BYTE,
-  GL_SHORT,
-  GL_UNSIGNED_SHORT
+  GLenum.FLOAT,
+  GLenum.BYTE,
+  GLenum.UNSIGNED_BYTE,
+  GLenum.SHORT,
+  GLenum.UNSIGNED_SHORT
 ];
 
 const VERTEX_TYPE_SIZE_MAP = [
@@ -68,7 +64,7 @@ export const BYTE_MASK = 0xFF;
  * @return whether the texture type is 3D
  */
 export function is3DTexture(type: TexType): boolean {
-  return type === GL_TEXTURE_3D || type === GL_TEXTURE_2D_ARRAY;
+  return type === GLenum.TEXTURE_3D || type === GLenum.TEXTURE_2D_ARRAY;
 }
 
 /**
@@ -138,7 +134,7 @@ export function vertexNormalized(format: VertexFormat): boolean {
  * @returns byte size of the format
  */
 export function indexSize(format: IndexFormat): Int {
-  return (format - GL_UNSIGNED_SHORT) + 2;
+  return (format - GLenum.UNSIGNED_SHORT) + 2;
 }
 
 /**
@@ -172,8 +168,8 @@ export function glTexFormat(format: PixelFormat): Int {
  */
 export function glTexType(format: PixelFormat, isWebGL2: boolean = false): Int {
   const type = TEX_TYPE_MAP[format & BYTE_MASK];
-  if (isWebGL2 && type === GL_HALF_FLOAT_OES) {
-    return GL_HALF_FLOAT; // WebGL2 uses a different enum value for half float
+  if (isWebGL2 && type === GLenum.HALF_FLOAT_OES) {
+    return GLenum.HALF_FLOAT; // WebGL2 uses a different enum value for half float
   }
   return type;
 }

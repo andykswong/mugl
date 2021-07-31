@@ -15,11 +15,13 @@
     "sourceMap": true,
     "typeRoots": [
       "node_modules/@types",
-      "node_modules/assemblyscript/std/types"
+      "node_modules/assemblyscript/std/types",
+      "assembly"
     ],
     "types": [
       "portable",
-      "jest"
+      "jest",
+      "types"
     ],
     "lib": [
       "es2020",
@@ -30,6 +32,6 @@
     "outDir": "dist"
   },
   "include": [
-    "src/**/*"
+    "src"
   ]
 }

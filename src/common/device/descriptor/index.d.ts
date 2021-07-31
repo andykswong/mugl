@@ -1,10 +1,9 @@
-import { Float, Int, Vec } from 'munum';
 import {
   AddressMode, BlendFactor, BlendOp, BufferType, ColorMask, CompareFunc, CullMode, FilterMode, FrontFace, IndexFormat,
   MinFilterMode, PixelFormat, PrimitiveType, StencilOp, TexType, UniformFormat, UniformType, Usage, VertexFormat
 } from '../enums';
-import { Color } from '../types';
 import { Buffer, Shader, Texture } from '../resources';
+import { Float, FloatList, Int, ImageSource, ReadonlyColor } from '../types';
 
 /**
  * Descriptor of a Buffer.
@@ -24,7 +23,7 @@ export interface BufferDescriptor {
 }
 
 /**
- * Readonly descriptor of a created Buffer. All proerties are defined.
+ * Readonly descriptor of a created Buffer. All properties are defined.
  */
 export type BufferProperties = Readonly<Required<BufferDescriptor>>;
 
@@ -55,11 +54,16 @@ export interface TextureDescriptor {
   samples?: Int;
 
   /**
-   * Specifies if renderbuffer should be used for depth/stencil textures. Defaults to true.
-   * If set to false, depth texture will be used if available.
+   * Specifies if renderbuffer should be used for depth/stencil textures.
+   * Defaults to false, which will use a depth texture.
    */
   renderTarget?: boolean;
 }
+
+/**
+ * Readonly descriptor of a created texture. All properties are defined.
+ */
+ export type TextureProperties = Readonly<Required<TextureDescriptor>>;
 
 /**
  * Descriptor of a texture sampler.
@@ -82,10 +86,10 @@ export interface SamplerDescriptor {
   /** Texture filter mode for minimifaction. Defaults to {@link MinFilterMode.Nearest} */
   minFilter?: MinFilterMode;
 
-  /** Minimum levels of detail. Defaults to 0. WebGL2 only. */
+  /** Minimum levels of detail. Defaults to -1000. WebGL2 only. */
   minLOD?: Float;
 
-  /** Maximum levels of detail. Defaults to Number.MAX_VALUE. WebGL2 only. */
+  /** Maximum levels of detail. Defaults to 1000. WebGL2 only. */
   maxLOD?: Float;
 
   /** Max anisotropy level. Defaults to 1. Requires EXT_texture_filter_anisotropic extension. */
@@ -93,12 +97,17 @@ export interface SamplerDescriptor {
 }
 
 /**
+ * Readonly descriptor of a created texture sampler. All properties are defined.
+ */
+ export type SamplerProperties = Readonly<Required<SamplerDescriptor>>;
+
+/**
  * Descriptor of a Render Pass.
  * @see https://gpuweb.github.io/gpuweb/#dictdef-gpurenderpassdescriptor
  */
 export interface RenderPassDescriptor {
-  /** List of color attachments. If null, defaults to render to screen. */
-  color?: [TextureView, ...TextureView[]] | null;
+  /** List of color attachments. If null or empty, defaults to render to screen. */
+  color?: TextureView[];
 
   /** The depth/stencil attachment. Defaults to null. */
   depth?: TextureView | null;
@@ -107,7 +116,7 @@ export interface RenderPassDescriptor {
    * The color load operation. Defaults to null, which does not clear the buffer.
    * If a color is specified, it represents the clear color.
    */
-  clearColor?: Color | null;
+  clearColor?: ReadonlyColor | null;
 
   /**
    * The depth load operation. Defaults to NaN, which does not clear the buffer.
@@ -121,6 +130,32 @@ export interface RenderPassDescriptor {
    */
   clearStencil?: Float;
 }
+
+/**
+ * Readonly descriptor of a created render pass. All properties are defined.
+ */
+ export interface RenderPassProperties {
+  /** List of color attachments. */
+  readonly color: readonly ReadonlyTextureView[];
+
+  /** The depth/stencil attachment. */
+  readonly depth: ReadonlyTextureView | null;
+
+  /**
+   * The color load operation.
+   */
+  readonly clearColor: ReadonlyColor | null;
+
+  /**
+   * The depth load operation. If NaN, does not clear the buffer.
+   */
+  readonly clearDepth: Float;
+
+  /**
+   * The stencil load operation. If NaN, which does not clear the buffer.
+   */
+  readonly clearStencil: Float;
+ }
 
 /**
  * Descriptor of a shader.
@@ -140,7 +175,7 @@ export interface ShaderDescriptor {
  */
 export interface PipelineState {
   /** The rasterization states. Defaults to empty. */
-  raster?: RasterizationState | null;
+  raster?: RasterizationState;
 
   /** The depth states. Defaults to null, which disables depth test. */
   depth?: DepthState | null;
@@ -153,14 +188,31 @@ export interface PipelineState {
 }
 
 /**
+ * Readonly descriptor of pipeline state. All properties are defined.
+ */
+export interface ReadonlyPipelineState {
+  /** The rasterization states. */
+  readonly raster: Readonly<Required<RasterizationState>>;
+
+  /** The depth states. */
+  readonly depth: Readonly<Required<DepthState>> | null;
+
+  /** The stencil states. */
+  readonly stencil: Readonly<Required<StencilState>> | null;
+
+  /** The blend states. */
+  readonly blend: Readonly<Required<BlendState>> | null;
+}
+
+/**
  * Descriptor of a GPU pipeline resource.
  * @see https://gpuweb.github.io/gpuweb/#dictdef-gpurenderpipelinedescriptor
  */
 export interface PipelineDescriptor extends PipelineState {
-  /** The vertex shader source code. */
+  /** The vertex shader. */
   vert: Shader;
 
-  /** The fragment shader source code. */
+  /** The fragment shader. */
   frag: Shader;
 
   /** The index format. Defaults to {@link IndexFormat.Uint16} */
@@ -173,7 +225,30 @@ export interface PipelineDescriptor extends PipelineState {
   buffers: VertexBufferLayout[];
 
   /** The uniform layouts. Defaults to empty. */
-  uniforms?: UniformLayout | null;
+  uniforms?: UniformLayout;
+}
+
+/**
+ * Readonly descriptor of a created pipeline. All properties are defined.
+ */
+export interface PipelineProperties extends ReadonlyPipelineState {
+  /** The vertex shader. */
+  readonly vert: Shader;
+
+  /** The fragment shader. */
+  readonly frag: Shader;
+
+  /** The index format. */
+  readonly indexFormat: IndexFormat;
+
+  /** The primitive rendering mode. */
+  readonly mode: PrimitiveType;
+
+  /** The vertex buffer layouts. */
+  readonly buffers: readonly ReadonlyVertexBufferLayout[];
+
+  /** The uniform layouts. Defaults to empty. */
+  readonly uniforms: readonly Readonly<Required<UniformLayoutEntry>>[];
 }
 
 /**
@@ -189,6 +264,21 @@ export interface VertexBufferLayout {
 
   /** Specify if this buffer's data is instanced. Defaults to false. */
   instanced?: boolean;
+}
+
+/**
+ * Readonly descriptor of vertex buffer layout. All properties are defined.
+ * @see https://gpuweb.github.io/gpuweb/#dictdef-gpuvertexbufferlayoutdescriptor
+ */
+ export interface ReadonlyVertexBufferLayout {
+  /** The attribute descriptors */
+  readonly attrs: readonly ReadonlyVertexAttribute[];
+
+  /** Stride in bytes. */
+  stride: Int;
+
+  /** Specify if this buffer's data is instanced. */
+  instanced: boolean;
 }
 
 /**
@@ -208,6 +298,11 @@ export interface VertexAttribute {
   /** Offset in buffer in bytes. Defaults to be auto calculated. */
   offset?: Int;
 }
+
+/**
+ * Readonly descriptor of vertex attribute. All properties are defined.
+ */
+export type ReadonlyVertexAttribute = Readonly<Required<VertexAttribute>>;
 
 /**
  * Descriptor of the rasterization state.
@@ -335,7 +430,7 @@ export type UniformLayout = UniformLayoutEntry[];
 * @see https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/uniformMatrix
 * @see https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/bindBufferRange
 */
-export class UniformBinding {
+export interface UniformBinding {
   /** Uniform name. */
   name: string;
 
@@ -343,7 +438,7 @@ export class UniformBinding {
   value?: Float;
 
   /** The uniform array value to bind */
-  values?: Vec | null;
+  values?: FloatList | null;
 
   /** The texture to bind */
   tex?: Texture | null;
@@ -373,14 +468,14 @@ export interface TextureData {
   /** Texture data buffer. */
   buffer?: ArrayBufferView | null;
 
-  /** Texture array data buffer. */
+  /** Array textures data buffer. */
   buffers?: ArrayBufferView[] | null;
 
   /** Texture image pointer. */
-  image?: TexImageSource;
+  image?: ImageSource;
 
-  /** Texture array image pointer. */
-  images?: TexImageSource[] | null;
+  /** Array textures array image pointer. */
+  images?: ImageSource[] | null;
 }
 
 /**
@@ -397,3 +492,8 @@ export interface TextureView {
   /** Rendering texture slice. Defaults to 0 */
   slice?: Int;
 }
+
+/**
+ * Readonly descriptor of a texture view. All proerties are defined.
+ */
+ export type ReadonlyTextureView = Readonly<Required<TextureView>>;

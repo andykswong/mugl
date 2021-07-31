@@ -1,14 +1,10 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import {
-  BYTE_MASK, BufferDescriptor, Canvas, Color, GL1Feature, GL2Feature, GLRenderingDevice, GLRenderingDeviceFactory,
-  PipelineDescriptor, RenderPassContext, RenderPassDescriptor, SamplerDescriptor,
-  TextureDescriptor, vertexSize, vertexType, vertexNormalized, indexSize, UniformBindings, ShaderDescriptor
+  BYTE_MASK, BufferDescriptor, Canvas, GLRenderingDevice, GLRenderingDeviceFactory, PipelineDescriptor,
+  ReadonlyColor, RenderPassContext, RenderPassDescriptor, SamplerDescriptor, TextureDescriptor, vertexSize,
+  vertexType, vertexNormalized, indexSize, UniformBindings, ShaderDescriptor
 } from '../device';
-import {
-  GL_FRAMEBUFFER, GL_SCISSOR_TEST, GL_COLOR_BUFFER_BIT, GL_DEPTH_BUFFER_BIT, GL_STENCIL_BUFFER_BIT,
-  GL_ELEMENT_ARRAY_BUFFER, GL_ARRAY_BUFFER, GL_TEXTURE0, GL_FRONT, GL_BACK, GL_ALWAYS,
-  GL_FLOAT_VEC3, GL_FLOAT_VEC2, GL_FLOAT_VEC4, GL_FLOAT_MAT3, GL_FLOAT_MAT4
-} from '../device/glenums';
+import { GLenum } from '../../common/gl';
 import { GL_EXT_DRAW_BUFFERS, GL_EXT_INSTANCING, MAX_VERTEX_ATTRIBS } from './const';
 import {
   NGL_ENABLE_BLEND, NGL_ENABLE_MRT, NGL_ENABLE_OFFSCREEN, NGL_ENABLE_SCISSOR, NGL_ENABLE_STENCIL, NGL_ENABLE_TEXTURE
@@ -49,6 +45,14 @@ class NanoGLRenderingDevice implements GLRenderingDevice {
     this.rctx = new NanoGLRenderPassContext(gl, this.feature(GL_EXT_INSTANCING));
   }
 
+  public get width(): number {
+    return this.gl.drawingBufferWidth;
+  }
+
+  public get height(): number {
+    return this.gl.drawingBufferHeight;
+  }
+
   public buffer(desc: BufferDescriptor): GLBuffer {
     return new GLBuffer(this.gl, desc);
   }
@@ -84,33 +88,33 @@ class NanoGLRenderingDevice implements GLRenderingDevice {
       }
   
       // Bind the pass framebuffer
-      this.gl.bindFramebuffer(GL_FRAMEBUFFER, pass.glfb);
+      this.gl.bindFramebuffer(GLenum.FRAMEBUFFER, pass.glfb);
     }
 
     // Reset viewport and scissor
     // CAVEAT: depthRange NOT supported and NOT reset
     this.gl.viewport(0, 0, width, height);
     if (NGL_ENABLE_SCISSOR) {
-      this.gl.disable(GL_SCISSOR_TEST);
+      this.gl.disable(GLenum.SCISSOR_TEST);
     }
 
     // Clear buffers
     let clearMask = 0;
     if (pass.props.clearColor) {
-      clearMask |= GL_COLOR_BUFFER_BIT;
+      clearMask |= GLenum.COLOR_BUFFER_BIT;
       this.gl.clearColor(...pass.props.clearColor);
       if (NGL_ENABLE_BLEND) {
         this.gl.colorMask(true, true, true, true);
       }
     }
-    if (!isNaN(pass.props.clearDepth!)) {
-      clearMask |= GL_DEPTH_BUFFER_BIT;
-      this.gl.clearDepth(pass.props.clearDepth!);
+    if (!isNaN(pass.props.clearDepth)) {
+      clearMask |= GLenum.DEPTH_BUFFER_BIT;
+      this.gl.clearDepth(pass.props.clearDepth);
       this.gl.depthMask(true);
     }
-    if (NGL_ENABLE_STENCIL && !isNaN(pass.props.clearStencil!)) {
-      clearMask |= GL_STENCIL_BUFFER_BIT;
-      this.gl.clearStencil(pass.props.clearStencil!);
+    if (NGL_ENABLE_STENCIL && !isNaN(pass.props.clearStencil)) {
+      clearMask |= GLenum.STENCIL_BUFFER_BIT;
+      this.gl.clearStencil(pass.props.clearStencil);
       this.gl.stencilMask(BYTE_MASK);
     }
     if (clearMask) {
@@ -120,7 +124,7 @@ class NanoGLRenderingDevice implements GLRenderingDevice {
     return this.rctx;
   }
 
-  public feature<F>(extension: GL1Feature | GL2Feature | string): F {
+  public feature<F>(extension: string): F {
     return this.gl.getExtension(extension);
   }
 
@@ -161,7 +165,7 @@ class NanoGLRenderPassContext implements RenderPassContext {
       for (const { attrs } of pipeline.props.buffers) {
         for (const { shaderLoc } of attrs) {
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          this.gl.enableVertexAttribArray(shaderLoc!);
+          this.gl.enableVertexAttribArray(shaderLoc);
         }
       }
     }
@@ -170,19 +174,19 @@ class NanoGLRenderPassContext implements RenderPassContext {
   }
 
   public index({ glb }: GLBuffer): RenderPassContext {
-    this.gl.bindBuffer(GL_ELEMENT_ARRAY_BUFFER, glb);
+    this.gl.bindBuffer(GLenum.ELEMENT_ARRAY_BUFFER, glb);
     return this;
   }
 
   public vertex(slot: number, { glb }: GLBuffer): RenderPassContext {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const { attrs, stride, instanced } = this.state.pipeObj!.props.buffers[slot];
-    this.gl.bindBuffer(GL_ARRAY_BUFFER, glb);
+    this.gl.bindBuffer(GLenum.ARRAY_BUFFER, glb);
     for (const { format, offset, shaderLoc } of attrs) {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      this.gl.vertexAttribPointer(shaderLoc!, vertexSize(format), vertexType(format), vertexNormalized(format), stride!, offset!);
+      this.gl.vertexAttribPointer(shaderLoc, vertexSize(format), vertexType(format), vertexNormalized(format), stride!, offset!);
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      this.inst?.vertexAttribDivisorANGLE(shaderLoc!, instanced ? 1 : 0);
+      this.inst?.vertexAttribDivisorANGLE(shaderLoc, instanced ? 1 : 0);
     }
     return this;
   }
@@ -198,20 +202,22 @@ class NanoGLRenderPassContext implements RenderPassContext {
       if (loc) {
         if (binding.values) { // Array types
           // TODO: this is inefficient
-          const format = this.state.pipeObj!.props.uniforms!.find(u => u.name === binding.name)?.valueFormat;
+          const format = this.state.pipeObj!.props.uniforms.find(u => u.name === binding.name)?.valueFormat;
           switch (format) {
-            case GL_FLOAT_MAT4: this.gl.uniformMatrix4fv(loc, false, binding.values as number[]); break;
-            case GL_FLOAT_MAT3: this.gl.uniformMatrix3fv(loc, false, binding.values as number[]); break;
-            case GL_FLOAT_VEC4: this.gl.uniform4fv(loc, binding.values as number[]); break;
-            case GL_FLOAT_VEC3: this.gl.uniform3fv(loc, binding.values as number[]); break;
-            case GL_FLOAT_VEC2: this.gl.uniform2fv(loc, binding.values as number[]); break;
+            case GLenum.FLOAT_MAT4: this.gl.uniformMatrix4fv(loc, false, binding.values as number[]); break;
+            case GLenum.FLOAT_MAT3: this.gl.uniformMatrix3fv(loc, false, binding.values as number[]); break;
+            // CAVEAT: mat2 uniform is not commonly used and thus disabled
+            // case GLenum.FLOAT_MAT2: this.gl.uniformMatrix2fv(loc, false, binding.values as number[]); break;
+            case GLenum.FLOAT_VEC4: this.gl.uniform4fv(loc, binding.values as number[]); break;
+            case GLenum.FLOAT_VEC3: this.gl.uniform3fv(loc, binding.values as number[]); break;
+            case GLenum.FLOAT_VEC2: this.gl.uniform2fv(loc, binding.values as number[]); break;
             default: this.gl.uniform1fv(loc, binding.values as number[]);
           }
         } else if (!isNaN(binding.value!)) { // Single number
           this.gl.uniform1f(loc, binding.value!);
         } else if (NGL_ENABLE_TEXTURE && binding.tex) { // Texture
-          this.gl.activeTexture(GL_TEXTURE0 + texId);
-          this.gl.bindTexture(binding.tex.props.type!, (binding.tex as GLTexture).glt);
+          this.gl.activeTexture(GLenum.TEXTURE0 + texId);
+          this.gl.bindTexture(binding.tex.props.type, (binding.tex as GLTexture).glt);
           this.gl.uniform1i(loc, texId++);
         }
       }
@@ -223,9 +229,9 @@ class NanoGLRenderPassContext implements RenderPassContext {
   public draw(vertexCount: number, instanceCount = 1, firstVertex = 0): RenderPassContext {
     const { mode } = this.state.pipeObj!.props;
     if (instanceCount > 1) {
-      this.inst?.drawArraysInstancedANGLE(mode!, firstVertex, vertexCount, instanceCount);
+      this.inst?.drawArraysInstancedANGLE(mode, firstVertex, vertexCount, instanceCount);
     } else {
-      this.gl.drawArrays(mode!, firstVertex, vertexCount);
+      this.gl.drawArrays(mode, firstVertex, vertexCount);
     }
     return this;
   }
@@ -234,9 +240,9 @@ class NanoGLRenderPassContext implements RenderPassContext {
     const { indexFormat, mode } = this.state.pipeObj!.props;
     if (instanceCount > 1) {
       this.inst?.drawElementsInstancedANGLE(
-        mode!, indexCount, indexFormat!, firstIndex * indexSize(indexFormat!), instanceCount);
+        mode, indexCount, indexFormat, firstIndex * indexSize(indexFormat), instanceCount);
     } else {
-      this.gl.drawElements(mode!, indexCount, indexFormat!, firstIndex * indexSize(indexFormat!));
+      this.gl.drawElements(mode, indexCount, indexFormat, firstIndex * indexSize(indexFormat));
     }
     return this;
   }
@@ -254,7 +260,7 @@ class NanoGLRenderPassContext implements RenderPassContext {
     return this;
   }
 
-  public blendColor(color: Color): RenderPassContext {
+  public blendColor(color: ReadonlyColor): RenderPassContext {
     if (NGL_ENABLE_BLEND) {
       this.gl.blendColor(...color);
     }
@@ -266,8 +272,8 @@ class NanoGLRenderPassContext implements RenderPassContext {
       const stencil = this.state.pipeObj?.props.stencil;
       if (stencil) {
         const readMask = stencil.readMask ?? BYTE_MASK;
-        this.gl.stencilFuncSeparate(GL_FRONT, stencil.frontCompare || GL_ALWAYS, stencilRef, readMask);
-        this.gl.stencilFuncSeparate(GL_BACK, stencil.backCompare || GL_ALWAYS, stencilRef, readMask);
+        this.gl.stencilFuncSeparate(GLenum.FRONT, stencil.frontCompare || GLenum.ALWAYS, stencilRef, readMask);
+        this.gl.stencilFuncSeparate(GLenum.BACK, stencil.backCompare || GLenum.ALWAYS, stencilRef, readMask);
       }
       this.state.stencilRef = stencilRef;
     }
