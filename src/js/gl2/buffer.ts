@@ -1,4 +1,4 @@
-import { BufferDescriptor, BufferProperties, GLenum, Int } from '../../common';
+import { BufferDescriptor, BufferProperties, BufferType, Uint, Usage } from '../../common';
 import { GLBuffer as IGLBuffer, GLRenderingDevice } from '../device';
 
 export class GLBuffer implements IGLBuffer {
@@ -10,8 +10,8 @@ export class GLBuffer implements IGLBuffer {
   public constructor(context: GLRenderingDevice, props: BufferDescriptor) {
     const gl = this.gl = context.gl;
     this.props = {
-      type: props.type || GLenum.ARRAY_BUFFER,
-      usage: props.usage || GLenum.STATIC_DRAW,
+      type: props.type || BufferType.Vertex,
+      usage: props.usage || Usage.Static,
       size: props.size
     };
 
@@ -19,7 +19,7 @@ export class GLBuffer implements IGLBuffer {
     gl.bufferData(this.props.type, this.props.size, this.props.usage);
   }
 
-  public data(data: ArrayBufferView, offset: Int = 0): GLBuffer {
+  public data(data: ArrayBufferView, offset: Uint = 0): GLBuffer {
     this.gl.bindBuffer(this.props.type, this.glb);
     this.gl.bufferSubData(this.props.type, offset, data);
     return this;

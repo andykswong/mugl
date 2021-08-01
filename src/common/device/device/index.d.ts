@@ -1,59 +1,25 @@
-import { Float, Int } from 'munum';
-import { ShaderDescriptor } from './descriptor';
-import {
-  BufferDescriptor, PipelineDescriptor, RenderPassDescriptor, SamplerDescriptor, TextureDescriptor, UniformBindings
-} from './descriptor';
-import { Buffer, Pipeline, RenderPass, Shader, Texture } from './resources';
-import { ReadonlyColor } from './types';
+import { TextureDescriptor, SamplerDescriptor, RenderPassDescriptor, UniformBindings } from '../descriptor';
+import { Buffer, Pipeline, RenderPass, Texture } from '../resources';
+import { RenderingDevice as BaseRenderingDevice, RenderPassContext as BaseRenderPassContext } from './device';
+import { Int, ReadonlyColor, Uint } from '../types';
 
 /**
  * The rendering device, in WebGPU API style.
  * The APIs are designed to be simplified version of WebGPU APIs, and without features unsupported by WebGL.
  * @see https://gpuweb.github.io/gpuweb/#gpudevice
  */
-export interface RenderingDevice {
-  /**
-   * Width of the drawing buffer.
-   */
-  readonly width: Int;
-
-  /**
-   * Height of the drawing buffer.
-   */
-  readonly height: Int;
-
-  /**
-   * Creates a new buffer object.
-   * @param desc the buffer descriptor
-   * @returns new buffer object
-   */
-  buffer(desc: BufferDescriptor): Buffer;
-
+export interface RenderingDevice extends BaseRenderingDevice {
   /**
    * Creates a new texture object.
    * @param desc the texture descriptor
-   * @param sampler the sampler descriptor
+   * @param sampler optional sampler descriptor
    * @returns new texture object
    */
   texture(desc: TextureDescriptor, sampler?: SamplerDescriptor): Texture;
 
   /**
-   * Creates a new shader module object.
-   * @param desc the shader descriptor
-   * @returns new shader object
-   */
-  shader(desc: ShaderDescriptor): Shader;
-
-  /**
-   * Creates a new pipeline state object.
-   * @param desc the pipeline descriptor
-   * @returns new pipeline state object
-   */
-  pipeline(desc: PipelineDescriptor): Pipeline;
-
-  /**
    * Creates a new render pass object.
-   * @param desc the render pass descriptor.
+   * @param desc optional render pass descriptor.
    * @returns new render pass
    */
   pass(desc?: RenderPassDescriptor): RenderPass;
@@ -64,25 +30,13 @@ export interface RenderingDevice {
    * @returns the pass rendering context.
    */
   render(pass: RenderPass): RenderPassContext;
-
-  /**
-   * Reset the state of the rendering context.
-   */
-  reset(): void;
-
-  /**
-   * Query the availability of optional features.
-   * @param feature feature type
-   * @returns the feature object, or null if not supported
-   */
-  feature<F>(feature: string): F;
 }
 
 /**
  * The render pass context object for submitting render commands.
  * @see https://gpuweb.github.io/gpuweb/#gpurenderpassencoder
  */
-export interface RenderPassContext {
+export interface RenderPassContext extends BaseRenderPassContext {
   /**
    * Bind a pipeline.
    * @param pipeline the pipeline to bind
@@ -103,7 +57,7 @@ export interface RenderPassContext {
    * @param buffer the buffer to bind
    * @returns this context for chaining
    */
-  vertex(slot: Int, buffer: Buffer): RenderPassContext;
+  vertex(slot: Uint, buffer: Buffer): RenderPassContext;
 
   /**
    * Set the shader uniforms.
@@ -119,7 +73,7 @@ export interface RenderPassContext {
    * @param firstVertex the offset to the first vertex to draw. Defaults to 0
    * @returns this context for chaining
    */
-  draw(vertexCount: Int, instanceCount?: Int, firstVertex?: Int): RenderPassContext;
+  draw(vertexCount: Uint, instanceCount?: Uint, firstVertex?: Uint): RenderPassContext;
 
   /**
    * Submite an indexed draw call.
@@ -129,7 +83,7 @@ export interface RenderPassContext {
    * @returns this context for chaining
    */
   drawIndexed(
-    indexCount: Int, instanceCount?: Int, firstIndex?: Int): RenderPassContext;
+    indexCount: Uint, instanceCount?: Uint, firstIndex?: Uint): RenderPassContext;
 
   /**
    * Set the 3D viewport area.

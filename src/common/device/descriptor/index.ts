@@ -3,7 +3,7 @@ import {
   MinFilterMode, PixelFormat, PrimitiveType, ShaderType, StencilOp, TexType, UniformFormat, UniformType, Usage, VertexFormat
 } from '../enums';
 import { Buffer, Shader, Texture } from '../resources';
-import { Float, FloatList, ImageSource, Int, ReadonlyColor } from '../types';
+import { Float, FloatList, ImageSource, ReadonlyColor, Uint } from '../types';
 
 /**
  * Descriptor of a Buffer.
@@ -20,7 +20,7 @@ export class BufferDescriptor {
 
   /** Buffer size in bytes */
   // @ts-ignore: Valid in AssemblyScript
-  size: Int;
+  size: Uint;
 }
 
 export type BufferProperties = BufferDescriptor;
@@ -37,19 +37,19 @@ export class TextureDescriptor {
   format: PixelFormat = PixelFormat.RGBA8;
 
   /** Width of texture. */
-  width: Int = 1;
+  width: Uint = 1;
 
   /** Height of texture. */
-  height: Int = 1;
+  height: Uint = 1;
 
   /** Depth of texture. */
-  depth: Int = 1;
+  depth: Uint = 1;
 
-  /** Float of mipmap levels. Defaults to 1. */
-  mipLevels: Int = 1;
+  /** Number of mipmap levels. Defaults to 1. */
+  mipLevels: Uint = 1;
 
-  /** The Float of samples for MSAA render targets. Defaults to 1. WebGL2 only. */
-  samples: Int = 1;
+  /** The number of samples for MSAA render targets. Defaults to 1. WebGL2 only. */
+  samples: Uint = 1;
 
   /**
    * Specifies if renderbuffer should be used for depth/stencil textures.
@@ -144,7 +144,8 @@ export class ShaderDescriptor {
  */
 export class PipelineState {
   /** The rasterization states. Defaults to empty. */
-  raster: RasterizationState | null = null;
+  // @ts-ignore: Valid in AssemblyScript
+  raster: RasterizationState = {};
 
   /** The depth states. Defaults to null, which disables depth test. */
   depth: DepthState | null = null;
@@ -195,7 +196,7 @@ export class VertexBufferLayout {
   attrs: VertexAttribute[] = [];
 
   /** Stride in bytes. Defaults to be auto calculated. */
-  stride: Int = 0;
+  stride: Uint = 0;
 
   /** Specify if this buffer's data is instanced. Defaults to false. */
   instanced: boolean = false;
@@ -216,10 +217,10 @@ export class VertexAttribute {
   format: VertexFormat;
 
   /** Shader location to bind to. Defaults to be auto calculated. */
-  shaderLoc: Int = 0;
+  shaderLoc: Uint = -1;
 
   /** Offset in buffer in bytes. Defaults to be auto calculated. */
-  offset: Int = 0;
+  offset: Uint = -1;
 }
 
 export type ReadonlyVertexAttribute = VertexAttribute;
@@ -287,10 +288,10 @@ export class StencilState {
   backPassOp: StencilOp = StencilOp.Keep;
 
   /** Stencil read mask. Defaults to 0xFF */
-  readMask: Int = 0xFF;
+  readMask: Uint = 0xFF;
 
   /** Stencil write mask. Defaults to 0xFF */
-  writeMask: Int = 0xFF;
+  writeMask: Uint = 0xFF;
 }
 
 /**
@@ -366,13 +367,13 @@ export class UniformBinding {
   buffer: Buffer | null = null;
 
   /** The starting offset of the uniform buffer. Defaults to 0 */
-  bufferOffset: Int = 0;
+  bufferOffset: Uint = 0;
 
   /**
    * The byte size of data to read from the buffer.
    * Defaults to the range starting at offset and ending at the end of the buffer.
    */
-  bufferSize: Int = 0;
+  bufferSize: Uint = 0;
 }
 
 /**
@@ -407,10 +408,10 @@ export class TextureView {
   tex: Texture | null = null;
 
   /** Rendering mip level. Defaults to 0 */
-  mipLevel: Int = 0;
+  mipLevel: Uint = 0;
 
   /** Rendering texture slice. Defaults to 0 */
-  slice: Int = 0;
+  slice: Uint = 0;
 }
 
 /**

@@ -58,6 +58,16 @@ export type Extent3D = [width: number, height: number, depth: number];
 export type ReadonlyExtent3D = Readonly<Extent3D>;
 
 /**
+ * A (x, y) 2D point.
+ */
+ export type Origin2D = [x: number, y: number];
+
+ /**
+  * A readonly (x, y) 2D point.
+  */
+ export type ReadonlyOrigin2D = Readonly<Origin2D>;
+ 
+/**
  * A (x, y, z) 3D point.
  * @see https://gpuweb.github.io/gpuweb/#typedefdef-gpuorigin3d
  */
