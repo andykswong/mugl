@@ -1,51 +1,42 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Examples</title>
-  <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      font-family: Arial, Helvetica, sans-serif;
-    }
-
-    #menu {
-      list-style-type: none;
-      overflow: hidden;
-      background-color: #ddd;
-      margin: 0;
-      padding: 0.5em;
-    }
-
-    #menu li {
-      float: left;
-    }
-
-    #menu li a {
-      display: block;
-      margin: 0.5em;
-      color: #555;
-      text-decoration: none;
-    }
-
-    #menu > li + li a {
-      border-left: 1px solid #555;
-      padding-left: 1em;
-    }
-
-    #menu li a:hover {
-      color: #822;
-    }
-
-    #menu li a:target {
-      color: #c44;
-      font-weight: bold;
-    }
-  </style>
+  <title>mugl examples</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body onhashchange="loadExample()">
-  <ul id="menu"></ul>
-  <canvas id="canvas" width="512" height="512"></canvas>
+  <div class="container">
+    <div id="sidebar" class="sidebar">
+      <div class="menuBtn">
+        <a id="menuBtn" href="#" onclick="event.preventDefault(); document.getElementById('sidebar').classList.toggle('collapsed'); ">☰</a>
+      </div>
+      <div class="menu">
+        <a href="https://github.com/andykswong/mugl"><h3>mugl examples</h3></a>
+        <label class="switch">
+          <input id="mode" type="checkbox" />
+          <span class="slider round"></span>
+          <span class="label">
+            <span class="unchecked">JS</span> / <span class="checked">WASM</span>
+          </span>
+        </label>
+        <br/> <br/>
+        <ul id="menu"></ul>
+      </div>
+    </div>
+    <div class="header">
+      <h3 id="title">Hello World</h3>
+      <div>
+        <a id="code" href="#" target="_blank">&lt;/&gt;</a>
+      </div>
+    </div>
+    <div class="content">
+      <canvas id="canvas" width="512" height="512"></canvas>
+    </div>
+    <div class="footer"></div>
+  </div>
   <script src="examples.min.js"></script>
 </body>
 </html>
