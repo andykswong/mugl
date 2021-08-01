@@ -21,7 +21,7 @@ export interface Resource {
  * @see https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/bufferData
  * @see https://gpuweb.github.io/gpuweb/#dictdef-gpubufferdescriptor
  */
-export interface Buffer extends Resource {
+export interface Buffer {
   /** The buffer properties. */
   readonly props: BufferProperties;
 
@@ -41,7 +41,7 @@ export interface Buffer extends Resource {
  * @see https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/bindTexture
  * @see https://gpuweb.github.io/gpuweb/#gputexture
  */
-export interface Texture extends Resource {
+export interface Texture {
   /** The texture descriptor */
   readonly props: TextureProperties;
 
@@ -74,7 +74,7 @@ export interface Texture extends Resource {
  * @see https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/bindFramebuffer
  * @see https://gpuweb.github.io/gpuweb/#dictdef-gpurenderpassdescriptor
  */
-export interface RenderPass extends Resource {
+export interface RenderPass {
   /** The render pass descriptor. */
   readonly props: RenderPassProperties;
 
@@ -88,7 +88,7 @@ export interface RenderPass extends Resource {
  * A GPU shader object.
  * @see https://www.w3.org/TR/webgpu/#shader-module-creation
  */
-export interface Shader extends Resource {
+export interface Shader {
   /** The shader type. */
   readonly type: ShaderType;
 
@@ -100,7 +100,7 @@ export interface Shader extends Resource {
  * A GPU render pipeline object.
  * @see https://gpuweb.github.io/gpuweb/#gpurenderpipeline
  */
-export interface Pipeline extends Resource {
+export interface Pipeline {
   /** The pipeline descriptor. */
   readonly props: PipelineProperties;
 }

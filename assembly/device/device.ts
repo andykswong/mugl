@@ -2,8 +2,8 @@ import {
   Buffer, BufferDescriptor, BufferProperties, Int, Pipeline, PipelineDescriptor, PipelineProperties, ReadonlyColor, RenderPass,
   RenderPassDescriptor, RenderPassProperties, SamplerDescriptor, SamplerProperties, ShaderDescriptor, TextureDescriptor,
   TextureProperties, Uint, UniformBindings
-} from '../../src/common';
-import { RenderingDevice, RenderPassContext } from '../../src/common/device/device/index';
+} from '../common';
+import { RenderingDevice, RenderPassContext } from '../common/device/device/index';
 import {
   bindIndexBuffer, bindPipeline, bindUniform, bindVertexBuffer, blendColor, deviceFeature, draw, endRender, getCanvasHeight,
   getCanvasWidth, render, RenderingDeviceId, RenderPassContextId, resetDevice, scissor, stencilRef, viewport

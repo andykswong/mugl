@@ -1,0 +1,21 @@
+{
+  "options": {
+    "sourceMap": true,
+    "exportRuntime": true,
+    "runtime": "incremental"
+  },
+  "targets": {
+    "debug": {
+      "binaryFile": "dist/examples.wasm",
+      "textFile": "dist/examples.wat",
+      "debug": true
+    },
+    "release": {
+      "binaryFile": "dist/examples.wasm",
+      "optimizeLevel": 3,
+      "shrinkLevel": 0,
+      "converge": false,
+      "noAssert": true
+    }
+  }
+}

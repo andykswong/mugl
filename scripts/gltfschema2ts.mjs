@@ -89,7 +89,7 @@ function httpsGet(url) {
 };
 
 // Generate the Typescript definitions at outputPath
-fs.mkdir(outputPath, { recursive: true }, (err) => { if (err) { throw err; } });
+fs.mkdirSync(outputPath, { recursive: true });
 for (const schemaName of Object.keys(schemas)) {
   schema2ts(`${outputPath}/${schemaName}.ts`, schemas[schemaName]);
 }

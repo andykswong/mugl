@@ -1,4 +1,4 @@
-import { MUGL_DEBUG } from '../../config';
+import { MUGL_DEBUG } from '../../common/config';
 import {
   GLenum, Texture, hasStencil, Int, isDepthStencil, is3DTexture, RenderPassDescriptor, ReadonlyTextureView,
   RenderPassProperties, TextureView

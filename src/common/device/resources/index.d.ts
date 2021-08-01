@@ -1,9 +1,12 @@
 import { TextureData } from '../descriptor';
 import { MipmapHint } from '../enums';
 import { ReadonlyExtent2D, ReadonlyExtent3D, ReadonlyOrigin2D, ReadonlyOrigin3D, Uint } from '../types';
-import { Buffer as BaseBuffer, Texture as BaseTexture } from './resources';
+import {
+  Buffer as BaseBuffer, Pipeline as BasePipeline, Resource, RenderPass as BaseRenderPass, Shader as BaseShader,
+  Texture as BaseTexture 
+} from './resources';
 
-export { Resource, RenderPass, Shader, Pipeline } from './resources';
+export { Resource } from './resources';
 
 /**
  * A GPU buffer resource.
@@ -11,7 +14,7 @@ export { Resource, RenderPass, Shader, Pipeline } from './resources';
  * @see https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/bufferData
  * @see https://gpuweb.github.io/gpuweb/#dictdef-gpubufferdescriptor
  */
-export interface Buffer extends BaseBuffer {
+export interface Buffer extends BaseBuffer, Resource {
   /**
    * Write data to the buffer.
    * @param data the data to write
@@ -28,7 +31,7 @@ export interface Buffer extends BaseBuffer {
  * @see https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/bindTexture
  * @see https://gpuweb.github.io/gpuweb/#gputexture
  */
- export interface Texture extends BaseTexture {
+ export interface Texture extends BaseTexture, Resource {
   /**
    * Write data to the texture.
    * @param data the data to write
@@ -49,3 +52,22 @@ export interface Buffer extends BaseBuffer {
    */
   mipmap(hint?: MipmapHint): Texture;
 }
+
+/**
+ * A GPU render pass object.
+ * @see https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/bindFramebuffer
+ * @see https://gpuweb.github.io/gpuweb/#dictdef-gpurenderpassdescriptor
+ */
+ export interface RenderPass extends BaseRenderPass, Resource {}
+
+/**
+ * A GPU shader object.
+ * @see https://www.w3.org/TR/webgpu/#shader-module-creation
+ */
+export interface Shader extends BaseShader, Resource {}
+
+/**
+ * A GPU render pipeline object.
+ * @see https://gpuweb.github.io/gpuweb/#gpurenderpipeline
+ */
+export interface Pipeline extends BasePipeline, Resource {}

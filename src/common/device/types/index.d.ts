@@ -24,6 +24,11 @@ export type ImageSource = TexImageSource;
 export type FloatList = Float32Array | number[];
 
 /**
+ * Float list type.
+ */
+ export type ReadonlyFloatList = Float32Array | readonly number[];
+
+/**
  * RGBA color type.
  * @see https://gpuweb.github.io/gpuweb/#typedefdef-gpucolor
  */

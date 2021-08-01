@@ -1,18 +1,24 @@
 import { lookAt, mat4, perspective, scale } from 'munum';
 import {
-  BufferType, CompareFunc, CullMode, RenderingDevice, VertexFormat, PixelFormat, TexType, AddressMode, MinFilterMode,
-  UniformFormat, UniformType, PipelineDescriptor, ShaderType
-} from '..';
-import { BaseExample, bufferWithData, flatMap } from './common';
-import { USE_NGL } from './config';
-import { airplane, Cube, skyBox } from './data';
+  Buffer, BufferType, CompareFunc, CullMode, RenderingDevice, VertexFormat, PixelFormat, TexType, AddressMode,
+  MinFilterMode, UniformFormat, UniformType, PipelineDescriptor, ShaderType, Float, Pipeline, RenderPass, Texture
+} from 'mugl';
+import { BaseExample, createBuffer, Cube, getImageById, Model, TEX_SIZE, toIndices, toVertices, USE_NGL } from '../common';
+import { airplane, skyBox } from '../images';
 
-const texSize = 512;
+const texSize = TEX_SIZE;
 
 // Double the cube UVs for repeating effect
-const cubeVertices = new Float32Array(flatMap(Cube.positions, (p, i) => [...p, Cube.uvs[i][0] * 2, Cube.uvs[i][1] * 2]));
-
-const cubeIndices = new Uint16Array(flatMap(Cube.indices, v => v));
+const cubeUvs: Float[][] = [];
+for (let i = 0; i < Cube.uvs!.length; ++i) {
+  const uv = Cube.uvs![i];
+  cubeUvs.push([uv[0] * 2, uv[1] * 2]);
+}
+const cubeVertices = toVertices({
+  positions: Cube.positions,
+  uvs: cubeUvs
+} as Model);
+const cubeIndices = toIndices(Cube);
 
 const vert = `
 precision mediump float;
@@ -46,31 +52,36 @@ void main () {
 }
 `;
 
-export class CubeExample extends BaseExample {
-  pass: any;
-  vertBuffer: any;
-  indexBuffer: any;
-  cubePipeline: any;
-  cubeTex: any;
-  skyPipeline: any;
-  skyTex: any;
-  loaded = false;
+export class TextureExample extends BaseExample {
+  pass: RenderPass | null = null;
+  vertBuffer: Buffer | null = null;
+  indexBuffer: Buffer | null = null;
+  cubePipeline: Pipeline | null = null;
+  cubeTex: Texture | null = null;
+  skyPipeline: Pipeline | null = null;
+  skyTex: Texture | null = null;
 
   constructor(private readonly device: RenderingDevice) {
     super();
   }
 
   init(): void {
+    // Get texture images
+    const airplane = getImageById('airplane');
+    const sky0 = getImageById('sky0');
+    const sky1 = getImageById('sky1');
+    const sky2 = getImageById('sky2');
+
     const ctx = this.device;
 
     const vs = this.device.shader({ type: ShaderType.Vertex, source: vert });
     const cubeFs = this.device.shader({ type: ShaderType.Fragment, source: fragCube });
     const skyFs = this.device.shader({ type: ShaderType.Fragment, source: fragSky });
 
-    this.vertBuffer = bufferWithData(ctx, BufferType.Vertex, cubeVertices);
+    this.vertBuffer = createBuffer(ctx, cubeVertices);
+    this.indexBuffer = createBuffer(ctx, cubeIndices, BufferType.Index);
 
     // Setup the cube
-    this.indexBuffer = bufferWithData(ctx, BufferType.Index, cubeIndices);
     this.cubeTex = ctx.texture({
       type: TexType.Tex2D,
       format: PixelFormat.RGBA8,
@@ -82,6 +93,12 @@ export class CubeExample extends BaseExample {
       wrapV: AddressMode.Repeat,
       maxAniso: 16
     });
+    if (airplane) {
+      this.cubeTex!
+        .data({ image: airplane })
+        .mipmap();
+    }
+
     const cubePipelineDesc: PipelineDescriptor = {
       vert: vs,
       frag: cubeFs,
@@ -95,7 +112,7 @@ export class CubeExample extends BaseExample {
       ],
       uniforms: [
         { name: 'mvp', valueFormat: UniformFormat.Mat4 },
-        { name: 'tex', type: UniformType.Tex, texType: this.cubeTex.type },
+        { name: 'tex', type: UniformType.Tex, texType: this.cubeTex!.props.type },
       ],
       depth: {
         compare: CompareFunc.LEqual,
@@ -115,12 +132,20 @@ export class CubeExample extends BaseExample {
         width: texSize,
         height: texSize
       });
+      if (sky0 && sky1 && sky2) {
+        this.skyTex!
+          .data({ images: [sky0, sky0, sky1, sky2, sky0, sky0] })
+          .mipmap();
+      }
+
       this.skyPipeline = ctx.pipeline({
-        ...cubePipelineDesc,
+        buffers: cubePipelineDesc.buffers,
+        depth: cubePipelineDesc.depth,
+        vert: vs,
         frag: skyFs,
         uniforms: [
           { name: 'mvp', valueFormat: UniformFormat.Mat4 },
-          { name: 'tex', type: UniformType.Tex, texType: this.skyTex.type },
+          { name: 'tex', type: UniformType.Tex, texType: this.skyTex!.props.type },
         ],
         raster: {
           cullMode: CullMode.Front // Render back face for sky box
@@ -133,43 +158,28 @@ export class CubeExample extends BaseExample {
       clearDepth: 1
     });
 
-    // Load textures
-    this.loaded = false;
-    Promise.all([
-      airplane(),
-      skyBox(texSize)
-    ]).then(([cubeImg, skyImgs]) => {
-      this.skyTex?.data({ images: [skyImgs[0], ...skyImgs, skyImgs[0], skyImgs[0]] });
-      this.cubeTex.data({ image: cubeImg }).mipmap();
-      this.loaded = true;
-    });
-
-    this.register(
-      this.pass, this.vertBuffer,
-      this.cubePipeline, this.indexBuffer, this.cubeTex,
-      this.skyPipeline, this.skyTex,
+    this.register([
+      this.pass!, this.vertBuffer!,
+      this.cubePipeline!, this.indexBuffer!, this.cubeTex!,
       vs, cubeFs, skyFs
-    );
+    ]);
+    if (this.skyPipeline) {
+      this.register([this.skyPipeline!, this.skyTex!]);
+    }
   }
 
-  render(t: number): boolean {
-    if (!this.loaded) {
-      // To avoid errors, skip rendering until textures are ready
-      // Alternatively you can use a placeholder texture
-      return true;
-    }
-
-    const proj = perspective(this.device.width / this.device.height, Math.PI / 4, 0.01, 100);
-    const view = lookAt([10 * Math.cos(t), 5 * Math.sin(t), 10 * Math.sin(t)], [0, 0, 0]);
+  render(t: Float): boolean {
+    const proj = perspective((this.device.width  as Float) / (this.device.height  as Float), Math.PI / 4 as Float, 0.01, 100);
+    const view = lookAt([10 * Math.cos(t) as Float, 5 * Math.sin(t) as Float, 10 * Math.sin(t) as Float], [0, 0, 0]);
     const vp = mat4.mul(proj, view);
 
-    const ctx = this.device.render(this.pass);
+    const ctx = this.device.render(this.pass!);
 
     // Draw cube
     let mvp = vp; // Cube at (0, 0, 0)
-    ctx.pipeline(this.cubePipeline)
-      .vertex(0, this.vertBuffer)
-      .index(this.indexBuffer)
+    ctx.pipeline(this.cubePipeline!)
+      .vertex(0, this.vertBuffer!)
+      .index(this.indexBuffer!)
       .uniforms([
         { name: 'mvp', values: mvp },
         { name: 'tex', tex: this.cubeTex },
@@ -177,11 +187,11 @@ export class CubeExample extends BaseExample {
       .drawIndexed(cubeIndices.length);
 
     // Draw skybox
-    if (this.skyTex) {
+    if (this.skyPipeline) {
       mvp = mat4.mul(vp, scale([10, 10, 10]), vp);  // Make the skybox bigger
-      ctx.pipeline(this.skyPipeline)
-        .vertex(0, this.vertBuffer)
-        .index(this.indexBuffer)
+      ctx.pipeline(this.skyPipeline!)
+        .vertex(0, this.vertBuffer!)
+        .index(this.indexBuffer!)
         .uniforms([
           { name: 'mvp', values: mvp },
           { name: 'tex', tex: this.skyTex },

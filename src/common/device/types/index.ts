@@ -8,6 +8,7 @@ export type ImageSource = u32;
 
 /* Static array type alias */
 export type FloatList = StaticArray<Float>;
+export type ReadonlyFloatList = FloatList;
 export type Color = StaticArray<Float>;
 export type ReadonlyColor = Color;
 export type Extent2D = StaticArray<Float>;

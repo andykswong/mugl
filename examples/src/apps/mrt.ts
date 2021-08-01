@@ -1,7 +1,6 @@
 import { lookAt, mat4, perspective, scale, translate, vec3 } from 'munum';
-import { BufferType, CompareFunc, CullMode, GLRenderingDevice, PixelFormat, VertexFormat, UniformType, UniformFormat, ShaderType } from '..';
-import { BaseExample, bufferWithData, flatMap } from './common';
-import { Cube, Quad } from './data';
+import { Buffer, BufferType, CompareFunc, CullMode, RenderingDevice, PixelFormat, TextureDescriptor, VertexFormat, UniformType, UniformFormat, ShaderType, RenderPass, Pipeline, Texture, Float } from 'mugl';
+import { BaseExample, createBuffer, Cube, Model, Quad, toIndices, toVertices } from '../common';
 
 const texSize = 1024;
 
@@ -84,38 +83,43 @@ void main(void) {
 }
 `;
 
-const cubeVertices = new Float32Array(flatMap(Cube.positions, (p, i) => [...p, ...Cube.uvs[i]]));
-const cubeIndices = new Uint16Array(flatMap(Cube.indices, v => v));
+const cubeVertices = toVertices({
+  positions: Cube.positions,
+  uvs: Cube.uvs
+} as Model);
+const cubeIndices = toIndices(Cube);
 
-const quadVertices = new Float32Array(flatMap(Quad.positions, (p, i) => [...p, ...Quad.uvs[i]]));
+const quadVertices = toVertices(Quad);
 
 export class MRTExample extends BaseExample {
-  offscreenPass: any;
-  defaultPass: any;
-  vertBuffer: any;
-  indexBuffer: any;
-  cubePipeline: any;
-  quadVertBuffer: any;
-  quadPipeline: any;
-  colorTex: any;
-  uvTex: any;
-  positionTex: any;
-  depthTex: any;
+  offscreenPass: RenderPass | null = null;
+  defaultPass: RenderPass | null = null;
+  vertBuffer: Buffer | null = null;
+  indexBuffer: Buffer | null = null;
+  cubePipeline: Pipeline | null = null;
+  quadVertBuffer: Buffer | null = null;
+  quadPipeline: Pipeline | null = null;
+  colorTex: Texture | null = null;
+  uvTex: Texture | null = null;
+  positionTex: Texture | null = null;
+  depthTex: Texture | null = null;
 
-  constructor(private readonly device: GLRenderingDevice) {
+  constructor(
+    private readonly device: RenderingDevice,
+    private readonly webgl2: boolean
+  ) {
     super();
-    // device.gl.getExtension('WEBGL_draw_buffers')
   }
 
   init(): void {
-    const cubeVs = this.device.shader({ type: ShaderType.Vertex, source: this.device.webgl2 ? vertCubeGL2 : vertCube });
-    const cubeFs = this.device.shader({ type: ShaderType.Fragment, source: this.device.webgl2 ? fragCubeGL2 : fragCube });
+    const cubeVs = this.device.shader({ type: ShaderType.Vertex, source: this.webgl2 ? vertCubeGL2 : vertCube });
+    const cubeFs = this.device.shader({ type: ShaderType.Fragment, source: this.webgl2 ? fragCubeGL2 : fragCube });
     const quadVs = this.device.shader({ type: ShaderType.Vertex, source: vertQuad });
     const quadFs = this.device.shader({ type: ShaderType.Fragment, source: fragQuad });
 
     // Setup the cube
-    this.vertBuffer = bufferWithData(this.device, BufferType.Vertex, cubeVertices);
-    this.indexBuffer = bufferWithData(this.device, BufferType.Index, cubeIndices);
+    this.vertBuffer = createBuffer(this.device, cubeVertices);
+    this.indexBuffer = createBuffer(this.device, cubeIndices, BufferType.Index);
     this.cubePipeline = this.device.pipeline({
       vert: cubeVs,
       frag: cubeFs,
@@ -142,7 +146,7 @@ export class MRTExample extends BaseExample {
     });
 
     // Setup the fullscreen quad
-    const offTexDesc = {
+    const offTexDesc: TextureDescriptor = {
       width: texSize,
       height: texSize
     };
@@ -152,12 +156,13 @@ export class MRTExample extends BaseExample {
     this.positionTex = this.device.texture(offTexDesc);
 
     this.depthTex = this.device.texture({
-      ...offTexDesc,
+      width: texSize,
+      height: texSize,
       format: PixelFormat.Depth,
       renderTarget: true
     });
 
-    this.quadVertBuffer = bufferWithData(this.device, BufferType.Vertex, quadVertices);
+    this.quadVertBuffer = createBuffer(this.device, quadVertices);
     this.quadPipeline = this.device.pipeline({
       vert: quadVs,
       frag: quadFs,
@@ -170,9 +175,9 @@ export class MRTExample extends BaseExample {
         }
       ],
       uniforms: [
-        { name: 'tex0', type: UniformType.Tex, texType: this.colorTex.type },
-        { name: 'tex1', type: UniformType.Tex, texType: this.uvTex.type },
-        { name: 'tex2', type: UniformType.Tex, texType: this.positionTex.type }
+        { name: 'tex0', type: UniformType.Tex, texType: this.colorTex!.props.type },
+        { name: 'tex1', type: UniformType.Tex, texType: this.uvTex!.props.type },
+        { name: 'tex2', type: UniformType.Tex, texType: this.positionTex!.props.type }
       ]
     });
 
@@ -192,29 +197,29 @@ export class MRTExample extends BaseExample {
       clearDepth: 1
     });
 
-    this.register(
-      this.defaultPass, this.offscreenPass,
-      this.cubePipeline, this.vertBuffer, this.indexBuffer,
-      this.quadPipeline, this.quadVertBuffer,
-      this.colorTex, this.uvTex, this.positionTex, this.depthTex,
+    this.register([
+      this.defaultPass!, this.offscreenPass!,
+      this.cubePipeline!, this.vertBuffer!, this.indexBuffer!,
+      this.quadPipeline!, this.quadVertBuffer!,
+      this.colorTex!, this.uvTex!, this.positionTex!, this.depthTex!,
       cubeFs, cubeVs, quadFs, quadVs
-    );
+    ]);
   }
 
-  render(t: number): boolean {
+  render(t: Float): boolean {
     const pos = vec3.create(.5, .5, .5);
-    const proj = perspective(this.device.width / this.device.height, Math.PI / 4, 0.01, 100);
-    const view = lookAt(vec3.add([5 * Math.cos(t), 2.5 * Math.sin(t), 5 * Math.sin(t)], pos), pos);
+    const proj = perspective((this.device.width as Float) / (this.device.height as Float), Math.PI / 4 as Float, 0.01, 100);
+    const view = lookAt(vec3.add([5 * Math.cos(t) as Float, 2.5 * Math.sin(t) as Float, 5 * Math.sin(t) as Float], pos), pos);
     const vp = mat4.mul(proj, view);
 
     let model = translate(pos);
     model = mat4.mul(model, scale([.5, .5, .5]), model);
 
     // Draw cube to textures
-    this.device.render(this.offscreenPass)
-      .pipeline(this.cubePipeline)
-      .vertex(0, this.vertBuffer)
-      .index(this.indexBuffer)
+    this.device.render(this.offscreenPass!)
+      .pipeline(this.cubePipeline!)
+      .vertex(0, this.vertBuffer!)
+      .index(this.indexBuffer!)
       .uniforms([
         { name: 'model', values: model },
         { name: 'vp', values: vp },
@@ -224,9 +229,9 @@ export class MRTExample extends BaseExample {
       .end();
 
     // Draw to screen
-    this.device.render(this.defaultPass)
-      .pipeline(this.quadPipeline)
-      .vertex(0, this.quadVertBuffer)
+    this.device.render(this.defaultPass!)
+      .pipeline(this.quadPipeline!)
+      .vertex(0, this.quadVertBuffer!)
       .uniforms([
         { name: 'tex0', tex: this.colorTex },
         { name: 'tex1', tex: this.uvTex },

@@ -1,7 +1,6 @@
-import { lookAt, mat3, mat4, perspective, ReadonlyMat3 } from 'munum';
-import { BufferType, CompareFunc, CullMode, GLRenderingDevice, PixelFormat, VertexFormat, UniformType, UniformFormat, ShaderType } from '..';
-import { BaseExample, bufferWithData, flatMap } from './common';
-import { Cube, Quad } from './data';
+import { lookAt, mat4, perspective, ReadonlyMat3 } from 'munum';
+import { Buffer, BufferType, CompareFunc, CullMode, Float, Int, Pipeline, PixelFormat, RenderPass, Texture, VertexFormat, UniformType, UniformFormat, ShaderType, RenderingDevice } from 'mugl';
+import { BaseExample, createBuffer, Cube, Model, Quad, toIndices, toVertices } from '../common';
 
 const texSize = 1024;
 
@@ -76,28 +75,26 @@ void main(void) {
 }
 `;
 
-const cubeVertices = new Float32Array(flatMap(Cube.positions, (p, i) => [...p, ...Cube.colors[i]]));
-const cubeIndices = new Uint16Array(flatMap(Cube.indices, v => v));
+const cubeVertices = toVertices({
+  positions: Cube.positions,
+  colors: Cube.colors
+} as Model);
+const cubeIndices = toIndices(Cube);
 
-const quadVertices = new Float32Array(flatMap(Quad.positions, (p, i) => [...p, ...Quad.uvs[i]]));
+const quadVertices = toVertices(Quad);
 
 export class PostprocessExample extends BaseExample {
-  offscreenPass: any;
-  defaultPass: any;
-  vertBuffer: any;
-  indexBuffer: any;
-  cubePipeline: any;
-  quadVertBuffer: any;
-  quadPipeline: any;
-  offscreenTex: any;
-  depthTex: any;
-  kernel = 0;
+  offscreenPass: RenderPass | null = null;
+  defaultPass: RenderPass | null = null;
+  vertBuffer: Buffer | null = null;
+  indexBuffer: Buffer | null = null;
+  cubePipeline: Pipeline | null = null;
+  quadVertBuffer: Buffer | null = null;
+  quadPipeline: Pipeline | null = null;
+  offscreenTex: Texture | null = null;
+  depthTex: Texture | null = null;
 
-  nextKernel = (): void => {
-    this.kernel = (this.kernel + 1) % kernels.length;
-  };
-
-  constructor(private readonly device: GLRenderingDevice) {
+  constructor(private readonly device: RenderingDevice) {
     super();
   }
 
@@ -110,8 +107,8 @@ export class PostprocessExample extends BaseExample {
     const quadFs = this.device.shader({ type: ShaderType.Fragment, source: fragQuad });
 
     // Setup the cube
-    this.vertBuffer = bufferWithData(ctx, BufferType.Vertex, cubeVertices);
-    this.indexBuffer = bufferWithData(ctx, BufferType.Index, cubeIndices);
+    this.vertBuffer = createBuffer(ctx, cubeVertices);
+    this.indexBuffer = createBuffer(ctx, cubeIndices, BufferType.Index);
     this.cubePipeline = ctx.pipeline({
       vert: cubeVs,
       frag: cubeFs,
@@ -141,7 +138,7 @@ export class PostprocessExample extends BaseExample {
       height: texSize
     });
 
-    this.quadVertBuffer = bufferWithData(ctx, BufferType.Vertex, quadVertices);
+    this.quadVertBuffer = createBuffer(ctx, quadVertices);
     this.quadPipeline = ctx.pipeline({
       vert: quadVs,
       frag: quadFs,
@@ -154,7 +151,7 @@ export class PostprocessExample extends BaseExample {
         }
       ],
       uniforms: [
-        { name: 'tex', type: UniformType.Tex, texType: this.offscreenTex.type },
+        { name: 'tex', type: UniformType.Tex, texType: this.offscreenTex!.props.type },
         { name: 'texSize', valueFormat: UniformFormat.Vec2 },
         { name: 'kernel', valueFormat: UniformFormat.Mat3 },
         { name: 'kernelWeight' },
@@ -180,41 +177,42 @@ export class PostprocessExample extends BaseExample {
       clearDepth: 1
     });
 
-    ctx.canvas.addEventListener('click', this.nextKernel);
-
-    this.register(
-      this.defaultPass, this.offscreenPass,
-      this.cubePipeline, this.vertBuffer, this.indexBuffer,
-      this.quadPipeline, this.quadVertBuffer, this.offscreenTex, this.depthTex,
+    this.register([
+      this.defaultPass!, this.offscreenPass!,
+      this.cubePipeline!, this.vertBuffer!, this.indexBuffer!,
+      this.quadPipeline!, this.quadVertBuffer!, this.offscreenTex!, this.depthTex!,
       cubeFs, cubeVs, quadFs, quadVs
-    );
+    ]);
   }
 
-  render(t: number): boolean {
-    const proj = perspective(this.device.width / this.device.height, Math.PI / 4, 0.01, 100);
-    const view = lookAt([10 * Math.cos(t), 5 * Math.sin(t), 10 * Math.sin(t)], [0, 0, 0]);
+  render(t: Float): boolean {
+    const proj = perspective((this.device.width as Float) / (this.device.height as Float), Math.PI / 4 as Float, 0.01, 100);
+    const view = lookAt([10 * Math.cos(t) as Float, 5 * Math.sin(t) as Float, 10 * Math.sin(t) as Float], [0, 0, 0]);
     const mvp = mat4.mul(proj, view);
 
     // Draw cube to texture
-    this.device.render(this.offscreenPass)
-      .pipeline(this.cubePipeline)
-      .vertex(0, this.vertBuffer)
-      .index(this.indexBuffer)
+    this.device.render(this.offscreenPass!)
+      .pipeline(this.cubePipeline!)
+      .vertex(0, this.vertBuffer!)
+      .index(this.indexBuffer!)
       .uniforms([{ name: 'mvp', values: mvp }])
       .drawIndexed(cubeIndices.length)
       .end();
 
-    const kernel = kernels[this.kernel];
-    let kernelWeight = kernel.reduce((x, y) => x + y);
+    const kernel = kernels[Math.floor(t / 2) as Int % kernels.length];
+    let kernelWeight: Float = 0;
+    for (let i = 0; i < kernel.length; ++i) {
+      kernelWeight += kernel[i];
+    }
     kernelWeight = kernelWeight <= 0 ? 1 : kernelWeight;
 
     // Draw to screen
-    this.device.render(this.defaultPass)
-      .pipeline(this.quadPipeline)
-      .vertex(0, this.quadVertBuffer)
+    this.device.render(this.defaultPass!)
+      .pipeline(this.quadPipeline!)
+      .vertex(0, this.quadVertBuffer!)
       .uniforms([
         { name: 'tex', tex: this.offscreenTex },
-        { name: 'texSize', values: [this.offscreenTex.props.width, this.offscreenTex.props.height] },
+        { name: 'texSize', values: [this.offscreenTex!.props.width as Float, this.offscreenTex!.props.height as Float] },
         { name: 'kernel', values: kernel },
         { name: 'kernelWeight', value: kernelWeight },
       ])
@@ -222,10 +220,5 @@ export class PostprocessExample extends BaseExample {
       .end();
 
     return true;
-  }
-
-  destroy(): void {
-    super.destroy();
-    this.device.canvas.removeEventListener('click', this.nextKernel);
   }
 }
