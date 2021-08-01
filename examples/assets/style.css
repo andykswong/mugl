@@ -1,0 +1,192 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: 'Roboto', Helvetica, sans-serif;
+}
+
+a {
+  text-decoration: none;
+}
+
+a:focus {
+  outline: none;
+}
+
+h1, h2, h3 {
+  color: #111;
+}
+
+.container {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: min-content auto min-content;
+  grid-auto-flow: row;
+  grid-template-areas:
+    "sidebar header"
+    "sidebar content"
+    "sidebar footer";
+}
+
+.sidebar {
+  grid-area: sidebar;
+  justify-self: center;
+  overflow-y: auto;
+  background-color: #eee;
+  min-width: 150px;
+}
+
+.sidebar > .menu {
+  padding: 0 2em;
+}
+
+.sidebar > .menuBtn {
+  float: left;
+}
+
+.sidebar.collapsed {
+  background-color: transparent;
+  min-width: 50px;
+}
+
+.sidebar.collapsed > .menu {
+  display: none;
+}
+
+.header {
+  grid-area: header;
+  padding: 0 2em;
+  display: grid; 
+  grid-template-columns: 1fr min-content; 
+  grid-template-rows: auto;
+  align-items: center;
+}
+
+.content {
+  grid-area: content;
+  justify-self: center;
+  align-self: center;
+  min-width: 512px;
+  min-height: 512px;
+}
+
+.footer {
+  grid-area: footer;
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+}
+
+.switch input {
+  position: absolute;
+  top: 0;
+  width: 0;
+  height: 0;
+  opacity: 0;
+}
+
+.switch span.label {
+  margin-left: 2.8em;
+  line-height: 1.5em;
+}
+
+.switch .label {
+  color: #555;
+}
+
+.switch input:checked ~ .label span.checked,
+.switch input:not(:checked) ~ .label span.unchecked {
+  color: #c44;
+  font-weight: bold;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 2.4em;
+  height: 1.5em;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 1em;
+  width: 1em;
+  left: 0.2em;
+  bottom: 0.25em;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: #29F;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 2px #29F;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(1em);
+  -ms-transform: translateX(1em);
+  transform: translateX(1em);
+}
+
+.slider.round {
+  border-radius: 1em;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+
+#menuBtn {
+  display: block;
+  padding: 0.5em;
+  font-size: 1.5em;
+  font-weight: bold;
+  color: #555;
+}
+
+#menu {
+  list-style-type: none;
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+}
+
+#menu li a {
+  display: block;
+  margin: 1em 0;
+  color: #555;
+}
+
+#menu li a:hover, #menu li a:focus {
+  color: #822;
+}
+
+#menu li a:target {
+  color: #c44;
+  font-weight: bold;
+}
+
+#code {
+  display: inline-block;
+  margin: 0.5em;
+  padding: 0.5em;
+  border-radius: 50%;
+  color: #555;
+  font-weight: bold;
+  box-shadow: 1px 1px 6px #ddd;
+}

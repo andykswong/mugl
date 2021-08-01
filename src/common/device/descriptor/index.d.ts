@@ -3,7 +3,7 @@ import {
   MinFilterMode, PixelFormat, PrimitiveType, StencilOp, TexType, UniformFormat, UniformType, Usage, VertexFormat
 } from '../enums';
 import { Buffer, Shader, Texture } from '../resources';
-import { Float, FloatList, ImageSource, ReadonlyColor, Uint } from '../types';
+import { Float, ImageSource, ReadonlyColor, ReadonlyFloatList, Uint } from '../types';
 
 /**
  * Descriptor of a Buffer.
@@ -438,7 +438,7 @@ export interface UniformBinding {
   value?: Float;
 
   /** The uniform array value to bind */
-  values?: FloatList | null;
+  values?: ReadonlyFloatList | null;
 
   /** The texture to bind */
   tex?: Texture | null;

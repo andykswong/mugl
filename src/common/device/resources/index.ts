@@ -1,10 +1,17 @@
-import { BufferProperties, TextureData, TextureProperties } from '../descriptor';
-import { MipmapHint } from '../enums';
+import { BufferProperties, PipelineProperties, RenderPassProperties, TextureData, TextureProperties } from '../descriptor';
+import { MipmapHint, ShaderType } from '../enums';
 import { ReadonlyExtent3D, ReadonlyOrigin3D, Uint } from '../types';
-import { Buffer as BaseBuffer, Texture as BaseTexture } from './resources';
+import {
+  Buffer as IBuffer, Pipeline as IPipeline, RenderPass as IRenderPass, Resource as IResource, Shader as IShader,
+  Texture as ITexture
+} from './resources';
 
-// @ts-ignore: Valid AssemblyScript export
-export { Resource, RenderPass, Shader, Pipeline } from './resources';
+/**
+ * A resource that can be destroyed.
+ */
+export abstract class Resource implements IResource {
+  abstract destroy(): void;
+}
 
 /**
  * A GPU buffer resource.
@@ -12,13 +19,11 @@ export { Resource, RenderPass, Shader, Pipeline } from './resources';
  * @see https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/bufferData
  * @see https://gpuweb.github.io/gpuweb/#dictdef-gpubufferdescriptor
  */
-export abstract class Buffer implements BaseBuffer {
+export abstract class Buffer extends Resource implements IBuffer {
   abstract get props(): BufferProperties;
 
   // @ts-ignore: Valid AssemblyScript
   abstract data(data: ArrayBufferView, offset: Uint = 0): Buffer;
-
-  abstract destroy(): void;
 }
 
 /**
@@ -26,7 +31,7 @@ export abstract class Buffer implements BaseBuffer {
  * @see https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/bindTexture
  * @see https://gpuweb.github.io/gpuweb/#gputexture
  */
-export abstract class Texture implements BaseTexture {
+export abstract class Texture extends Resource implements ITexture {
   abstract get props(): TextureProperties;
 
   // @ts-ignore: Valid AssemblyScript
@@ -34,6 +39,32 @@ export abstract class Texture implements BaseTexture {
 
   // @ts-ignore: Valid AssemblyScript
   abstract mipmap(hint: MipmapHint = MipmapHint.None): Texture;
+}
 
-  abstract destroy(): void;
+/**
+ * A GPU render pass object.
+ * @see https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/bindFramebuffer
+ * @see https://gpuweb.github.io/gpuweb/#dictdef-gpurenderpassdescriptor
+ */
+ export abstract class RenderPass extends Resource implements IRenderPass {
+  abstract get props(): RenderPassProperties;
+
+  abstract resolve(): void;
+}
+
+/**
+ * A GPU shader object.
+ * @see https://www.w3.org/TR/webgpu/#shader-module-creation
+ */
+export abstract class Shader extends Resource implements IShader {
+  abstract get type(): ShaderType;
+  abstract get source(): string;
+}
+
+/**
+ * A GPU render pipeline object.
+ * @see https://gpuweb.github.io/gpuweb/#gpurenderpipeline
+ */
+export abstract class Pipeline extends Resource implements IPipeline {
+  abstract get props(): PipelineProperties;
 }

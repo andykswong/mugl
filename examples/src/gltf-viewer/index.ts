@@ -1,6 +1,6 @@
 import { vec3 } from 'munum';
-import { getNGLDevice } from '../../n';
-import { ResolvedGlTF, renderGlTF, resolveGlTF, updateGlTFAnimation } from '../../tf';
+import { getNGLDevice } from 'mugl/n';
+import { ResolvedGlTF, renderGlTF, resolveGlTF, updateGlTFAnimation } from 'mugl/tf';
 import { getDefaultCamera } from './utils';
 
 const camDir = vec3.create(-1, -2, -2);

@@ -10,7 +10,7 @@ import {
   AddressMode, BlendFactor, BlendOp, BufferType, ColorMask, CompareFunc, CullMode, FilterMode, Float, FloatList, FrontFace,
   ImageSource, IndexFormat, Int, MinFilterMode, MipmapHint, PixelFormat, PrimitiveType, ReadonlyColor, ReadonlyExtent3D,
   ReadonlyOrigin3D, ShaderType, StencilOp, TexType, Uint, UniformType, Usage, VertexFormat
-} from '../src/common';
+} from './common';
 
 /* Resource pointer */
 export type Canvas = u32;
@@ -24,6 +24,7 @@ export type PipelineId = u32;
 
 /* Image functions */
 export declare function createImage(uri: string): ImageSource;
+export declare function getImageById(id: string): ImageSource;
 export declare function deleteImage(image: ImageSource): void;
 
 /**

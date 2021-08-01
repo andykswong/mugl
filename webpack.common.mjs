@@ -1,5 +1,4 @@
 import * as path from 'path';
-import webpack from 'webpack';
 import TerserPlugin from 'terser-webpack-plugin';
 
 const PRODUCTION = 'production';
@@ -55,10 +54,6 @@ export default {
       }),
     ],
   },
-  plugins: [
-    new webpack.EnvironmentPlugin({
-      'MUGL_DEBUG': debug
-    })
-  ],
+  plugins: [],
   devtool: isProd ? false : 'source-map'
 };

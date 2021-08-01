@@ -120,7 +120,7 @@ export interface RenderPassContext extends BaseRenderPassContext {
    * @param ref the stencil reference value.
    * @returns this context for chaining
    */
-  stencilRef(ref: Float): RenderPassContext;
+  stencilRef(ref: Uint): RenderPassContext;
 
   /**
    * End the render pass.

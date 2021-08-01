@@ -1,8 +1,8 @@
 import {
-  BufferProperties, MipmapHint, Pipeline, PipelineProperties, ReadonlyExtent3D, ReadonlyOrigin3D, ReadonlyVertexAttribute, RenderPass, RenderPassProperties, SamplerProperties, Shader, ShaderDescriptor, ShaderType, TextureData, TextureProperties, Uint, UniformType, VertexFormat
-} from '../../src/common';
-import { BlendState, DepthState, StencilState } from '../../src/common/device/descriptor/index';
-import { Buffer, Texture } from '../../src/common/device/resources/index';
+  BufferProperties, MipmapHint, PipelineProperties, ReadonlyExtent3D, ReadonlyOrigin3D, ReadonlyVertexAttribute, RenderPassProperties, SamplerProperties, ShaderDescriptor, ShaderType, TextureData, TextureProperties, Uint, UniformType, VertexFormat
+} from '../common';
+import { BlendState, DepthState, StencilState } from '../common/device/descriptor/index';
+import { Buffer, Texture, Shader, RenderPass, Pipeline } from '../common/device/resources/index';
 import {
   bufferData, createBuffer, BufferId, RenderingDeviceId, deleteBuffer, ShaderId, createShader, deleteShader, deleteTexture, TextureId, createTexture, mipmap, textureBuffers, textureImages, RenderPassId, deleteRenderPass, resolveRenderPass, createRenderPass, PipelineId, deletePipeline, createPipeline
 } from '../mugl';
@@ -66,11 +66,11 @@ export class GLTexture extends Texture {
     const images = data.images;
     if (buffer) {
       textureBuffers(this.id, [buffer], origin, extent, mipLevel);
-    } else if (buffers) {
-      textureBuffers(this.id, buffers, origin, extent, mipLevel);
     } else if (image) {
       textureImages(this.id, [image], origin, extent, mipLevel);
-    } else if (images) {
+    } else if (buffers && buffers.length) {
+      textureBuffers(this.id, buffers, origin, extent, mipLevel);
+    } else if (images && images.length) {
       textureImages(this.id, images, origin, extent, mipLevel);
     }
     return this;
@@ -86,12 +86,13 @@ export class GLTexture extends Texture {
   }
 }
 
-export class GLShader implements Shader {
+export class GLShader extends Shader {
   public readonly id: ShaderId;
   private readonly _type: ShaderType;
   private readonly _source: string;
 
   public constructor(deviceId: RenderingDeviceId, desc: ShaderDescriptor) {
+    super();
     this._type = desc.type;
     this._source = desc.source;
     this.id = createShader(deviceId, this._type, this._source);
@@ -110,13 +111,14 @@ export class GLShader implements Shader {
   }
 }
 
-export class GLRenderPass implements RenderPass {
+export class GLRenderPass extends RenderPass {
   public readonly id: RenderPassId;
 
   public constructor(
     deviceId: RenderingDeviceId,
     private readonly _props: RenderPassProperties
   ) {
+    super();
     const hasColor = _props.color.length > 0;
     const depth = _props.depth;
     this.id = createRenderPass(deviceId,
@@ -143,13 +145,14 @@ export class GLRenderPass implements RenderPass {
   }
 }
 
-export class GLPipeline implements Pipeline {
+export class GLPipeline extends Pipeline {
   public readonly id: PipelineId;
 
   public constructor(
     deviceId: RenderingDeviceId,
     private readonly _props: PipelineProperties
   ) {
+    super();
     const attrNames: string[] = [];
     const attrBufferIds: Uint[] = [];
     const attrFormats: VertexFormat[] = [];

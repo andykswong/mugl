@@ -1,0 +1,1 @@
+export { getImageById } from 'mugl';

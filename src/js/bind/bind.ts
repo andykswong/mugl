@@ -35,9 +35,11 @@ export interface MuglBind {
    */
   bindModule(exports: ASUtil & Record<string, unknown>): void;
 
+  pinned: Record<Ptr, Ptr>;
   canvasIdMap: Record<string, CanvasId>;
   canvas: Record<CanvasId, HTMLCanvasElement>;
-  images: Record<ImageId, HTMLImageElement>;
+  imageIdMap: Record<string, ImageId>;
+  images: Record<ImageId, TexImageSource>;
   devices: Record<RenderingDeviceId, RenderingDevice>;
   renderPassContexts: Record<RenderPassContextId, RenderPassContext>;
   boundUniforms: Record<RenderPassContextId, UniformBindings>;
@@ -57,11 +59,13 @@ export function muglBind(
 ): MuglBind {
   let module: any = {};
 
+  const pinned: Record<Ptr, Ptr> = {};
   let canvasId: CanvasId = 1;
   const canvasIdMap: Record<string, CanvasId> = {};
   const canvas: Record<CanvasId, HTMLCanvasElement> = {};
   let imageId: ImageId = 1;
-  const images: Record<ImageId, HTMLImageElement> = {};
+  const imageIdMap: Record<string, ImageId> = {};
+  const images: Record<ImageId, TexImageSource> = {};
   let deviceId: RenderingDeviceId = 1;
   const devices: Record<RenderingDeviceId, RenderingDevice> = {};
   let renderPassContextId: RenderPassContextId = 1;
@@ -93,6 +97,15 @@ export function muglBind(
       const img = images[imageId] = new Image();
       img.crossOrigin = 'anonymous';
       img.src = module.__getString(uri);
+      return imageId++;
+    },
+    getImageById(id: Ptr): ImageId {
+      const idStr = module.__getString(id);
+      if (imageIdMap[idStr]) { return imageIdMap[idStr]; }
+      const img = document.getElementById(idStr) as TexImageSource;
+      if (!img) { return 0; }
+      imageIdMap[idStr] = imageId;
+      images[imageId] = img;
       return imageId++;
     },
     deleteImage(ptr: ImageId): void {
@@ -203,13 +216,12 @@ export function muglBind(
     ): RenderPassId {
       const d = devices[device];
       if (!d) { return 0; }
-      let color = [];
+      const color = [];
       if (colorTex) {
         const mipLevels = module.__getArrayView(colorMipLevel);
         const slices = module.__getArrayView(colorSlice);
         const colorTexes = module.__getArrayView(colorTex);
-        color = Array(colorTexes.length);
-        for (let i = 0; i < color.length; ++i) {
+        for (let i = 0; i < colorTexes.length; ++i) {
           color.push({
             tex: textures[colorTexes[i]],
             mipLevel: mipLevels[i],
@@ -224,7 +236,7 @@ export function muglBind(
           mipLevel: depthMipLevel,
           slice: depthSlice
         } : null,
-        clearColor: clearColor ? module.__getArrayView(clearColor) : null,
+        clearColor: clearColor ? module.__getArray(clearColor) : null,
         clearDepth,
         clearStencil
       });
@@ -359,13 +371,19 @@ export function muglBind(
       }
     },
     bindUniform(
-      context: RenderPassContextId, name: Ptr, value: Float, values: Ptr, tex: TextureId,
+      context: RenderPassContextId, name: Ptr, value: Float, valuesPtr: Ptr, tex: TextureId,
       buffer: BufferId, bufferOffset: Uint, bufferSize: Uint
     ) {
+      let values = undefined;
+      if (valuesPtr) {
+        values = module.__getArrayView(valuesPtr);
+        module.__pin(valuesPtr);
+        pinned[valuesPtr] = valuesPtr;
+      }
       boundUniforms[context]?.push({
         name: module.__getString(name),
         value,
-        values: values ? module.__getArrayView(values) : undefined,
+        values,
         tex: textures[tex],
         buffer: buffers[buffer],
         bufferOffset,
@@ -382,6 +400,10 @@ export function muglBind(
         renderPassContexts[context]?.drawIndexed(count, instanceCount, first);
       } else {
         renderPassContexts[context]?.draw(count, instanceCount, first);
+      }
+      for (const ptr in pinned) {
+        module.__unpin(pinned[ptr]);
+        delete pinned[ptr];
       }
     },
     viewport(context: RenderPassContextId, x: Int, y: Int, width: Int, height: Int, minDepth: Int, maxDepth: Int): void {
@@ -402,8 +424,10 @@ export function muglBind(
     bindModule(exports) {
       module = exports;
     },
+    pinned,
     canvasIdMap,
     canvas,
+    imageIdMap,
     images,
     devices,
     renderPassContexts,

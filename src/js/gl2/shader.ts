@@ -1,4 +1,4 @@
-import { MUGL_DEBUG } from '../../config';
+import { MUGL_DEBUG } from '../../common/config';
 import { GLenum, ShaderDescriptor, ShaderType, VertexBufferLayout } from '../../common';
 import { GLRenderingDevice, GLShader as IGLShader } from '../device';
 

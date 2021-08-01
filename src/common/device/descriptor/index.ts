@@ -3,7 +3,7 @@ import {
   MinFilterMode, PixelFormat, PrimitiveType, ShaderType, StencilOp, TexType, UniformFormat, UniformType, Usage, VertexFormat
 } from '../enums';
 import { Buffer, Shader, Texture } from '../resources';
-import { Float, FloatList, ImageSource, ReadonlyColor, Uint } from '../types';
+import { Float, ImageSource, ReadonlyColor, ReadonlyFloatList, Uint } from '../types';
 
 /**
  * Descriptor of a Buffer.
@@ -358,7 +358,7 @@ export class UniformBinding {
   value: Float = 0;
 
   /** The uniform array value to bind */
-  values: FloatList | null = null;
+  values: ReadonlyFloatList | null = null;
 
   /** The texture to bind */
   tex: Texture | null = null;
@@ -392,7 +392,7 @@ export class TextureData {
   buffers: ArrayBufferView[] = [];
 
   /** Texture image pointer. */
-  // @ts-ignore: Valid for AssemblyScript
+  // @ts-ignore: Valid in AssemblyScript
   image: ImageSource = 0;
 
   /** Array textures image pointer. */

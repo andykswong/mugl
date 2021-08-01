@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 
-import { MUGL_DEBUG } from '../../config';
+import { MUGL_DEBUG } from '../../common/config';
 import {
   BufferDescriptor, BufferProperties, BYTE_MASK, GLBuffer as IGLBuffer, GLPipeline as IGLPipeline, GLRenderPass as IGLRenderPass, GLShader as IGLShader,
   GLTexture as IGLTexture, PipelineDescriptor, PipelineState, ReadonlyExtent3D, ReadonlyOrigin3D, RenderPassDescriptor, SamplerDescriptor,
