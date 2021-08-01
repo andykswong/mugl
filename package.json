@@ -58,7 +58,7 @@
     "jest": "cross-env NODE_OPTIONS=--experimental-vm-modules npx jest",
     "jest:watch": "npm run jest -- --watch",
     "gltf-spec": "node scripts/gltfschema2ts.mjs src/js/gltf-spec",
-    "doc": "typedoc --out docs src/index.ts",
+    "doc": "typedoc --out docs src/index.ts src/common/config.ts src/js/nano/index.ts src/js/nano/config.ts",
     "build:examples": "cd examples && npm install && npm run build",
     "examples": "cd examples && npm start",
     "start": "npm run examples"

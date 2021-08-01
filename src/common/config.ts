@@ -3,6 +3,7 @@
  * (or similar plugins for other bundlers).
  *
  * @packageDocumentation
+ * @module config
  */
 
 /**

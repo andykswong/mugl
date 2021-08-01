@@ -11,9 +11,13 @@
 
 `mugl` is a minimalistic WebGL 3D rendering library written in [AssemblyScript](https://www.assemblyscript.org/). It allows you to run the same 3D app on both JavaScript and WebAssembly (WASM) environments using portable TypeScript/AssemblyScript code.
 
-- **Full Library (`mugl`)** : Provides a simple, modern [WebGPU](https://gpuweb.github.io/gpuweb/)-style [API](./src/common/device/device/index.d.ts) on top of WebGL 1.0 / 2.0 that removes WebGL state management from you. (**10KB** in size, including both libraries below!)
+Modules:
+- **The main library (`mugl`)** : Provides a simple, modern [WebGPU](https://gpuweb.github.io/gpuweb/)-style [API](./src/common/device/device/index.d.ts) on top of WebGL 1.0 / 2.0 that removes WebGL state management from you. (**10KB** in size, including both modules below!)
 - **WebAssembly binding (```import { muglBind } from 'mugl'```)**: Provides a `mugl` API binding that allows you to use the same `mugl` interface in both AssemblyScript/WASM and TypeScript/JavaScript environments.
-- **Nano (`mugl/n` aka `ngl`)**: A **3KB** WebGL 1.0 implementation of the rendering device interface. You can even turn off some [features](./src/js/nano/config.ts) that you do not need (e.g. scissor, stencil testing) to reduce the size to **2KB**!
+- **Nano device (`mugl/n` aka `ngl`)**: A **3KB** WebGL 1.0 implementation of the rendering device interface. You can even turn off some [features](./src/js/nano/config.ts) that you do not need (e.g. scissor, stencil testing) to reduce the size to **2KB**!
+
+Dependencies: 
+- [munum](https://github.com/andykswong/munum) - minimalistic AssemblyScript numerical library for JavaScript and WebAssembly. Used for 3D math calculations.
 
 *\* File sizes are measured from minified and gzipped UMD Webpack library bundles. Actual size should be even smaller after with tree-shaking.*
 

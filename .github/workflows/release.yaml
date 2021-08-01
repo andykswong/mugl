@@ -1,0 +1,31 @@
+name: release
+on:
+  release:
+    types: [created]
+jobs:
+  npm_publish:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-node@v2
+      with:
+        node-version: '16'
+        registry-url: 'https://registry.npmjs.org'
+    - run: npm ci
+    - run: npm run build:examples
+    - run: npm run doc -- --excludeInternal
+    - run: npm publish
+      env:
+        NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+    - name: Deploy docs
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        destination_dir: docs
+        publish_dir: ./docs
+    - name: Deploy examples
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        destination_dir: examples
+        publish_dir: ./dist/examples

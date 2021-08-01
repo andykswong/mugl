@@ -18,3 +18,15 @@ jobs:
       - run: npm test
         env:
           CI: true
+      - run: npm run build:examples
+      - run: npm run doc -- --excludeInternal
+      - name: Copy files to public
+        run: |
+          cp -r ./docs ./public/docs
+          cp -r ./dist/examples ./public/examples
+      - name: Deploy public
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          destination_dir: latest
+          publish_dir: ./public
