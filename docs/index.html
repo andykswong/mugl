@@ -1,0 +1,287 @@
+<!doctype html>
+<html class="default no-js">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>mugl</title>
+	<meta name="description" content="Documentation for mugl">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="assets/css/main.css">
+	<script async src="assets/js/search.js" id="search-script"></script>
+</head>
+<body>
+<header>
+	<div class="tsd-page-toolbar">
+		<div class="container">
+			<div class="table-wrap">
+				<div class="table-cell" id="tsd-search" data-index="assets/js/search.json" data-base=".">
+					<div class="field">
+						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+						<input id="tsd-search-field" type="text" />
+					</div>
+					<ul class="results">
+						<li class="state loading">Preparing search index...</li>
+						<li class="state failure">The search index is not available</li>
+					</ul>
+					<a href="index.html" class="title">mugl</a>
+				</div>
+				<div class="table-cell" id="tsd-widgets">
+					<div id="tsd-filter">
+						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+						<div class="tsd-filter-group">
+							<div class="tsd-select" id="tsd-filter-visibility">
+								<span class="tsd-select-label">All</span>
+								<ul class="tsd-select-list">
+									<li data-value="public">Public</li>
+									<li data-value="protected">Public/Protected</li>
+									<li data-value="private" class="selected">All</li>
+								</ul>
+							</div>
+							<input type="checkbox" id="tsd-filter-inherited" checked />
+							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+							<input type="checkbox" id="tsd-filter-externals" checked />
+							<label class="tsd-widget" for="tsd-filter-externals">Externals</label>
+						</div>
+					</div>
+					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tsd-page-title">
+		<div class="container">
+			<h1>mugl</h1>
+		</div>
+	</div>
+</header>
+<div class="container container-main">
+	<div class="row">
+		<div class="col-8 col-content">
+			<div class="tsd-panel tsd-typography">
+				<h1 align="center">█▓▒­░⡷⠂μ ＧＬ⠐⢾░▒▓█</h1>
+				<h2 align="center">muGL - Micro WebGL Library in AssemblyScript</h2>
+				<br />
+				<p align="center">
+					<a href="./LICENSE"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT" /></a>
+					<a href="https://www.npmjs.com/package/mugl"><img src="https://img.shields.io/npm/v/mugl" alt="NPM" /></a>
+					<a href="https://github.com/andykswong/mugl/actions/workflows/build.yaml"><img src="https://github.com/andykswong/mugl/actions/workflows/build.yaml/badge.svg" alt="build" /></a>
+				</p>
+				<a href="#overview" id="overview" style="color: inherit; text-decoration: none;">
+					<h2>Overview</h2>
+				</a>
+				<p><code>mugl</code> is a minimalistic WebGL 3D rendering library written in <a href="https://www.assemblyscript.org/">AssemblyScript</a>. It allows you to run the same 3D app on both JavaScript and WebAssembly (WASM) environments using portable TypeScript/AssemblyScript code.</p>
+				<p>Modules:</p>
+				<ul>
+					<li><strong>The main library (<code>mugl</code>)</strong> : Provides a simple, modern <a href="https://gpuweb.github.io/gpuweb/">WebGPU</a>-style <a href="./src/common/device/device/index.d.ts">API</a> on top of WebGL 1.0 / 2.0 that removes WebGL state management from you. (<strong>10KB</strong> in size, including both modules below!)</li>
+					<li><strong>WebAssembly binding (<code>import { muglBind } from &#39;mugl&#39;</code>)</strong>: Provides a <code>mugl</code> API binding that allows you to use the same <code>mugl</code> interface in both AssemblyScript/WASM and TypeScript/JavaScript environments.</li>
+					<li><strong>Nano device (<code>mugl/n</code> aka <code>ngl</code>)</strong>: A <strong>3KB</strong> WebGL 1.0 implementation of the rendering device interface. You can even turn off some <a href="./src/js/nano/config.ts">features</a> that you do not need (e.g. scissor, stencil testing) to reduce the size to <strong>2KB</strong>!</li>
+				</ul>
+				<p>Dependencies: </p>
+				<ul>
+					<li><a href="https://github.com/andykswong/munum">munum</a> - minimalistic AssemblyScript numerical library for JavaScript and WebAssembly. Used for 3D math calculations.</li>
+				</ul>
+				<p><em>* File sizes are measured from minified and gzipped UMD Webpack library bundles. Actual size should be even smaller after with tree-shaking.</em></p>
+				<a href="#examples" id="examples" style="color: inherit; text-decoration: none;">
+					<h2><a href="http://andykswong.github.io/mugl/examples">Examples</a></h2>
+				</a>
+				<p>Check out the <a href="http://andykswong.github.io/mugl/examples">live examples</a>!
+				The source code of all examples can be found <a href="./examples">here</a>.</p>
+				<p>All examples run on <strong>both JavaScript and WebAssembly, using the exact same code base</strong>! Click the toggle in the examples menu to seamlessly switch between the two environments.</p>
+				<a href="#gltf-20-model-viewer-wip" id="gltf-20-model-viewer-wip" style="color: inherit; text-decoration: none;">
+					<h2><a href="http://andykswong.github.io/mugl/examples/gltf.html">glTF 2.0 Model Viewer</a> (WIP)</h2>
+				</a>
+				<p>A minimal <strong>13KB</strong> (gzipped) glTF model viewer built on <code>mugl</code> is available as an <a href="http://andykswong.github.io/mugl/examples/gltf.html">example</a> usage of this library. The source code can be found <a href="./examples/src/gltf-viewer">here</a>. Currently only running on JavaScript, but it is planned to be ported to AssemblyScript/WASM.</p>
+				<p>Any model from <a href="https://github.com/KhronosGroup/glTF-Sample-Models">glTF-Sample-Models</a> can be loaded using the <code>model</code> and <code>variant</code> URL parameter, e.g.: <a href="http://andykswong.github.io/mugl/examples/gltf.html?model=Buggy&amp;variant=glTF-Binary&amp;camera=0&amp;scene=0">?model=Buggy&amp;variant=glTF-Binary</a> to load the <a href="https://github.com/KhronosGroup/glTF-Sample-Models/tree/master/2.0/Buggy">Buggy</a> model. You can also use the <code>url</code> URL parameter to load a model from any source (<a href="http://andykswong.github.io/mugl/examples/gltf.html?url=https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Avocado/glTF/Avocado.gltf">example</a>).</p>
+				<p><img src="./screenshots/DamagedHelmet.png" alt="alt text"></p>
+				<a href="#install" id="install" style="color: inherit; text-decoration: none;">
+					<h2>Install</h2>
+				</a>
+				<pre><code class="language-shell"><span style="color: #000000">npm install --save mugl</span>
+</code></pre>
+				<a href="#api" id="api" style="color: inherit; text-decoration: none;">
+					<h2>API</h2>
+				</a>
+				<p>See TSDoc: <a href="http://andykswong.github.io/mugl">http://andykswong.github.io/mugl</a></p>
+				<a href="#usage" id="usage" style="color: inherit; text-decoration: none;">
+					<h2>Usage</h2>
+				</a>
+				<a href="#1-basic-rendering-example" id="1-basic-rendering-example" style="color: inherit; text-decoration: none;">
+					<h3>1. Basic Rendering Example</h3>
+				</a>
+				<p>Below is a simple <code>mugl</code> program to draw a triangle (See this example live <a href="https://andykswong.github.io/mugl/examples/#basic">here</a>):</p>
+				<pre><code class="language-javascript"><span style="color: #AF00DB">import</span><span style="color: #000000"> { </span><span style="color: #001080">getGLDevice</span><span style="color: #000000">, </span><span style="color: #001080">VertexFormat</span><span style="color: #000000"> } </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;mugl&#039;</span><span style="color: #000000">;</span>
+
+<span style="color: #008000">// 0. Prepare triangle vertex positions and colors data</span>
+<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">triangle</span><span style="color: #000000"> = </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #267F99">Float32Array</span><span style="color: #000000">([</span>
+<span style="color: #000000">  </span><span style="color: #008000">// position  color</span>
+<span style="color: #000000">  +</span><span style="color: #098658">0.0</span><span style="color: #000000">, +</span><span style="color: #098658">0.5</span><span style="color: #000000">,  </span><span style="color: #098658">1.0</span><span style="color: #000000">, </span><span style="color: #098658">0.0</span><span style="color: #000000">, </span><span style="color: #098658">0.0</span><span style="color: #000000">, </span><span style="color: #098658">1.0</span><span style="color: #000000">,</span>
+<span style="color: #000000">  +</span><span style="color: #098658">0.5</span><span style="color: #000000">, -</span><span style="color: #098658">0.5</span><span style="color: #000000">,  </span><span style="color: #098658">0.0</span><span style="color: #000000">, </span><span style="color: #098658">1.0</span><span style="color: #000000">, </span><span style="color: #098658">0.0</span><span style="color: #000000">, </span><span style="color: #098658">1.0</span><span style="color: #000000">,</span>
+<span style="color: #000000">  -</span><span style="color: #098658">0.5</span><span style="color: #000000">, -</span><span style="color: #098658">0.5</span><span style="color: #000000">,  </span><span style="color: #098658">0.0</span><span style="color: #000000">, </span><span style="color: #098658">0.0</span><span style="color: #000000">, </span><span style="color: #098658">1.0</span><span style="color: #000000">, </span><span style="color: #098658">1.0</span><span style="color: #000000">,</span>
+<span style="color: #000000">]);</span>
+
+<span style="color: #008000">// 1. Create WebGL rendering device from an existing canvas</span>
+<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">device</span><span style="color: #000000"> = </span><span style="color: #795E26">getGLDevice</span><span style="color: #000000">(</span><span style="color: #001080">canvas</span><span style="color: #000000">);</span>
+<span style="color: #AF00DB">if</span><span style="color: #000000"> (!</span><span style="color: #001080">device</span><span style="color: #000000">) </span><span style="color: #AF00DB">throw</span><span style="color: #000000"> </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #267F99">Error</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;WebGL is unsupported&#039;</span><span style="color: #000000">);</span>
+
+<span style="color: #008000">// 2. Create GPU buffer for the triangle data</span>
+<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">buffer</span><span style="color: #000000"> = </span><span style="color: #001080">device</span><span style="color: #000000">.</span><span style="color: #795E26">buffer</span><span style="color: #000000">({ </span><span style="color: #001080">size:</span><span style="color: #000000"> </span><span style="color: #001080">triangle</span><span style="color: #000000">.</span><span style="color: #001080">byteLength</span><span style="color: #000000"> }).</span><span style="color: #795E26">data</span><span style="color: #000000">(</span><span style="color: #001080">triangle</span><span style="color: #000000">);</span>
+
+<span style="color: #008000">// 3. Compiler the vertex and fragment shaders</span>
+<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">vert</span><span style="color: #000000"> = </span><span style="color: #0000FF">this</span><span style="color: #000000">.</span><span style="color: #001080">device</span><span style="color: #000000">.</span><span style="color: #795E26">shader</span><span style="color: #000000">({</span>
+<span style="color: #000000">  </span><span style="color: #001080">type:</span><span style="color: #000000"> </span><span style="color: #001080">ShaderType</span><span style="color: #000000">.</span><span style="color: #001080">Vertex</span><span style="color: #000000">,</span>
+<span style="color: #000000">  </span><span style="color: #001080">source:</span><span style="color: #000000"> </span><span style="color: #A31515">`</span>
+<span style="color: #A31515">    uniform float angle;</span>
+<span style="color: #A31515">    attribute vec2 position;</span>
+<span style="color: #A31515">    attribute vec4 color;</span>
+<span style="color: #A31515">    varying lowp vec4 vColor;</span>
+<span style="color: #A31515">    void main () {</span>
+<span style="color: #A31515">      gl_Position = vec4(</span>
+<span style="color: #A31515">        cos(angle) * position.x - sin(angle) * position.y,</span>
+<span style="color: #A31515">        sin(angle) * position.x + cos(angle) * position.y,</span>
+<span style="color: #A31515">        0, 1);</span>
+<span style="color: #A31515">      vColor = color;</span>
+<span style="color: #A31515">    }`</span>
+<span style="color: #000000">});</span>
+<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">frag</span><span style="color: #000000"> = </span><span style="color: #0000FF">this</span><span style="color: #000000">.</span><span style="color: #001080">device</span><span style="color: #000000">.</span><span style="color: #795E26">shader</span><span style="color: #000000">({</span>
+<span style="color: #000000">  </span><span style="color: #001080">type:</span><span style="color: #000000"> </span><span style="color: #001080">ShaderType</span><span style="color: #000000">.</span><span style="color: #001080">Fragment</span><span style="color: #000000">,</span>
+<span style="color: #000000">  </span><span style="color: #001080">source:</span><span style="color: #000000"> </span><span style="color: #A31515">`</span>
+<span style="color: #A31515">    varying lowp vec4 vColor;</span>
+<span style="color: #A31515">    void main () {</span>
+<span style="color: #A31515">      gl_FragColor = vColor;</span>
+<span style="color: #A31515">    }`</span>
+<span style="color: #000000">});</span>
+
+<span style="color: #008000">// 4. Create pipeline object for drawing the triangle</span>
+<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">pipeline</span><span style="color: #000000"> = </span><span style="color: #001080">device</span><span style="color: #000000">.</span><span style="color: #795E26">pipeline</span><span style="color: #000000">({</span>
+<span style="color: #000000">  </span><span style="color: #001080">vert</span><span style="color: #000000">,</span>
+<span style="color: #000000">  </span><span style="color: #001080">frag</span><span style="color: #000000">,</span>
+<span style="color: #000000">  </span><span style="color: #001080">buffers:</span><span style="color: #000000"> [{</span>
+<span style="color: #000000">    </span><span style="color: #001080">attrs:</span><span style="color: #000000"> [</span>
+<span style="color: #000000">      { </span><span style="color: #001080">name:</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;position&#039;</span><span style="color: #000000">, </span><span style="color: #001080">format:</span><span style="color: #000000"> </span><span style="color: #001080">VertexFormat</span><span style="color: #000000">.</span><span style="color: #001080">Float2</span><span style="color: #000000"> },</span>
+<span style="color: #000000">      { </span><span style="color: #001080">name:</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;color&#039;</span><span style="color: #000000">, </span><span style="color: #001080">format:</span><span style="color: #000000"> </span><span style="color: #001080">VertexFormat</span><span style="color: #000000">.</span><span style="color: #001080">Float4</span><span style="color: #000000"> }</span>
+<span style="color: #000000">    ]</span>
+<span style="color: #000000">  }],</span>
+<span style="color: #000000">  </span><span style="color: #001080">uniforms:</span><span style="color: #000000"> [ { </span><span style="color: #001080">name:</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;angle&#039;</span><span style="color: #000000"> } ]</span>
+<span style="color: #000000">});</span>
+
+<span style="color: #008000">// 5. Create default render pass object</span>
+<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">pass</span><span style="color: #000000"> = </span><span style="color: #001080">device</span><span style="color: #000000">.</span><span style="color: #795E26">pass</span><span style="color: #000000">();</span>
+
+<span style="color: #008000">// 6. Submit draw call in a render pass</span>
+<span style="color: #001080">device</span>
+<span style="color: #000000">  .</span><span style="color: #795E26">render</span><span style="color: #000000">(</span><span style="color: #001080">pass</span><span style="color: #000000">)</span>
+<span style="color: #000000">    .</span><span style="color: #795E26">pipeline</span><span style="color: #000000">(</span><span style="color: #001080">pipeline</span><span style="color: #000000">)</span>
+<span style="color: #000000">    .</span><span style="color: #795E26">vertex</span><span style="color: #000000">(</span><span style="color: #098658">0</span><span style="color: #000000">, </span><span style="color: #001080">buffer</span><span style="color: #000000">)</span>
+<span style="color: #000000">    .</span><span style="color: #795E26">uniforms</span><span style="color: #000000">([ { </span><span style="color: #001080">name:</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;angle&#039;</span><span style="color: #000000">, </span><span style="color: #001080">value:</span><span style="color: #000000"> </span><span style="color: #267F99">Math</span><span style="color: #000000">.PI / </span><span style="color: #098658">2</span><span style="color: #000000"> } ])</span>
+<span style="color: #000000">    .</span><span style="color: #795E26">draw</span><span style="color: #000000">(</span><span style="color: #098658">3</span><span style="color: #000000">)</span>
+<span style="color: #000000">  .</span><span style="color: #795E26">end</span><span style="color: #000000">();</span>
+</code></pre>
+				<a href="#2-using-the-nano-implementation" id="2-using-the-nano-implementation" style="color: inherit; text-decoration: none;">
+					<h3>2. Using the Nano Implementation</h3>
+				</a>
+				<p>To use the Nano Implementation, use <code>getNGLDevice</code> to create a device:</p>
+				<pre><code class="language-javascript"><span style="color: #AF00DB">import</span><span style="color: #000000"> { </span><span style="color: #001080">getNGLDevice</span><span style="color: #000000"> } </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;mugl/n&#039;</span><span style="color: #000000">;</span>
+
+<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">device</span><span style="color: #000000"> = </span><span style="color: #795E26">getNGLDevice</span><span style="color: #000000">(</span><span style="color: #001080">canvas</span><span style="color: #000000">);</span>
+</code></pre>
+				<a href="#3-running-on-webassemblyassemblyscript" id="3-running-on-webassemblyassemblyscript" style="color: inherit; text-decoration: none;">
+					<h3>3. Running on WebAssembly/AssemblyScript</h3>
+				</a>
+				<p>Use <code>muglBind</code> to bind a device implementation to an AssemblyScript WASM module:</p>
+				<pre><code class="language-javascript"><span style="color: #AF00DB">import</span><span style="color: #000000"> </span><span style="color: #001080">loader</span><span style="color: #000000"> </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;@assemblyscript/loader&#039;</span><span style="color: #000000">;</span>
+<span style="color: #AF00DB">import</span><span style="color: #000000"> { </span><span style="color: #001080">getGLDevice</span><span style="color: #000000">, </span><span style="color: #001080">muglBind</span><span style="color: #000000"> } </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;mugl&#039;</span><span style="color: #000000">;</span>
+
+<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">imports</span><span style="color: #000000"> = {};</span>
+<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">mugl</span><span style="color: #000000"> = </span><span style="color: #795E26">muglBind</span><span style="color: #000000">(</span><span style="color: #001080">imports</span><span style="color: #000000">, </span><span style="color: #001080">getGLDevice</span><span style="color: #000000">);</span>
+
+<span style="color: #AF00DB">return</span><span style="color: #000000"> </span><span style="color: #001080">loader</span><span style="color: #000000">.</span><span style="color: #795E26">instantiate</span><span style="color: #000000">(</span>
+<span style="color: #000000">  </span><span style="color: #795E26">fetch</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;module.wasm&#039;</span><span style="color: #000000">),</span>
+<span style="color: #000000">  </span><span style="color: #001080">imports</span>
+<span style="color: #000000">).</span><span style="color: #795E26">then</span><span style="color: #000000">(({ </span><span style="color: #001080">exports</span><span style="color: #000000"> }) </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> {</span>
+<span style="color: #000000">  </span><span style="color: #001080">mugl</span><span style="color: #000000">.</span><span style="color: #795E26">bindModule</span><span style="color: #000000">(</span><span style="color: #267F99">exports</span><span style="color: #000000">);</span>
+<span style="color: #000000">  </span><span style="color: #AF00DB">return</span><span style="color: #000000"> </span><span style="color: #267F99">exports</span><span style="color: #000000">;</span>
+<span style="color: #000000">});</span>
+</code></pre>
+				<p>You can then use <code>getGLDevice</code> to initialize a device in AssemblyScript in the same way:</p>
+				<pre><code class="language-typescript"><span style="color: #AF00DB">import</span><span style="color: #000000"> { </span><span style="color: #001080">getGLDevice</span><span style="color: #000000">, </span><span style="color: #001080">getCanvasById</span><span style="color: #000000">, </span><span style="color: #001080">RenderingDevice</span><span style="color: #000000"> } </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;mugl&#039;</span><span style="color: #000000">;</span>
+
+<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">device</span><span style="color: #000000">: </span><span style="color: #267F99">RenderingDevice</span><span style="color: #000000"> = </span><span style="color: #795E26">getGLDevice</span><span style="color: #000000">(</span><span style="color: #795E26">getCanvasById</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;canvasId&#039;</span><span style="color: #000000">));</span>
+</code></pre>
+				<p>See the <a href="./examples">examples source code</a> on how to build an AssemblyScript mugl app.</p>
+				<a href="#4-gltf-20-rendering-wip" id="4-gltf-20-rendering-wip" style="color: inherit; text-decoration: none;">
+					<h3>4. GlTF 2.0 Rendering (WIP)</h3>
+				</a>
+				<p>Below is the minimum setup required to render a GlTF 2.0 model:</p>
+				<pre><code class="language-javascript"><span style="color: #AF00DB">import</span><span style="color: #000000"> { </span><span style="color: #001080">getGLDevice</span><span style="color: #000000"> } </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;mugl&#039;</span><span style="color: #000000">;</span>
+<span style="color: #AF00DB">import</span><span style="color: #000000"> { </span><span style="color: #001080">renderGlTF</span><span style="color: #000000">, </span><span style="color: #001080">resolveGlTF</span><span style="color: #000000"> } </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;mugl/tf&#039;</span><span style="color: #000000">;</span>
+
+<span style="color: #008000">// 1. Create WebGL rendering device from an existing canvas</span>
+<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">device</span><span style="color: #000000"> = </span><span style="color: #795E26">getGLDevice</span><span style="color: #000000">(</span><span style="color: #001080">canvas</span><span style="color: #000000">);</span>
+<span style="color: #AF00DB">if</span><span style="color: #000000"> (!</span><span style="color: #001080">device</span><span style="color: #000000">) </span><span style="color: #AF00DB">throw</span><span style="color: #000000"> </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #267F99">Error</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;WebGL is unsupported&#039;</span><span style="color: #000000">);</span>
+
+<span style="color: #008000">// 2. Async load a GlTF/GLB file</span>
+<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">glTFPromise</span><span style="color: #000000"> = </span><span style="color: #795E26">resolveGlTF</span><span style="color: #000000">({ </span><span style="color: #001080">uri:</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;DamagedHelmet.gltf&#039;</span><span style="color: #000000"> });</span>
+
+<span style="color: #008000">// 3. Render the GlTF model</span>
+<span style="color: #001080">glTFPromise</span><span style="color: #000000">.</span><span style="color: #795E26">then</span><span style="color: #000000">(</span><span style="color: #001080">glTF</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> {</span>
+<span style="color: #000000">  </span><span style="color: #795E26">renderGlTF</span><span style="color: #000000">(</span><span style="color: #001080">device</span><span style="color: #000000">, </span><span style="color: #001080">glTF</span><span style="color: #000000">);</span>
+<span style="color: #000000">});</span>
+</code></pre>
+				<a href="#license" id="license" style="color: inherit; text-decoration: none;">
+					<h2>License</h2>
+				</a>
+				<p>This repository and the code inside it is licensed under the MIT License. Read <a href="./LICENSE">LICENSE</a> for more information.</p>
+			</div>
+		</div>
+		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+			<nav class="tsd-navigation primary">
+				<ul>
+					<li class=" ">
+						<a href="modules.html">Modules</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/config.html">config</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/mugl.html">mugl</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/mugl_n.html">mugl/n</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/mugl_n_config.html">mugl/n/config</a>
+					</li>
+				</ul>
+			</nav>
+			<nav class="tsd-navigation secondary menu-sticky">
+				<ul class="before-current">
+				</ul>
+			</nav>
+		</div>
+	</div>
+</div>
+<footer class="with-border-bottom">
+	<div class="container">
+		<h2>Legend</h2>
+		<div class="tsd-legend-group">
+			<ul class="tsd-legend">
+				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
+				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
+				<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
+			</ul>
+		</div>
+	</div>
+</footer>
+<div class="container tsd-generator">
+	<p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p>
+</div>
+<div class="overlay"></div>
+<script src="assets/js/main.js"></script>
+</body>
+</html>
