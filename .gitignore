@@ -45,7 +45,6 @@ pids
 node_modules/
 
 # Output folders
-assembly/common
 coverage/
 dist/
 docs/
