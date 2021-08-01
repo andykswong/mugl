@@ -2,6 +2,7 @@
  * Features that can be selectively disabled by setting the corresponding flags to false.
  * Use Webpack DefinePlugin to set these flags to reduce code size after treeshaking.
  * @packageDocumentation
+ * @module mugl/n/config
  */
 
 /**
