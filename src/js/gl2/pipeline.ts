@@ -2,7 +2,7 @@ import {
   GLenum, IndexFormat, PipelineDescriptor, PipelineProperties, PrimitiveType, ReadonlyVertexAttribute, TexType,
   UniformFormat, UniformLayoutEntry, UniformType, vertexByteSize
 } from '../../common';
-import { GLPipeline as IGLPipeline, GLRenderingDevice,  } from '../device';
+import { GLPipeline as IGLPipeline, GLRenderingDevice } from '../device';
 import { MAX_VERTEX_ATTRIBS } from './const';
 import { DEFAULT_RASTER_STATE, DEFAULT_DEPTH_STATE, DEFAULT_STENCIL_STATE, DEFAULT_BLEND_STATE } from './pipestate';
 import { createProgram, GLShader } from './shader';

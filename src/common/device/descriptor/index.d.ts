@@ -3,7 +3,7 @@ import {
   MinFilterMode, PixelFormat, PrimitiveType, StencilOp, TexType, UniformFormat, UniformType, Usage, VertexFormat
 } from '../enums';
 import { Buffer, Shader, Texture } from '../resources';
-import { Float, FloatList, Int, ImageSource, ReadonlyColor } from '../types';
+import { Float, FloatList, ImageSource, ReadonlyColor, Uint } from '../types';
 
 /**
  * Descriptor of a Buffer.
@@ -19,7 +19,7 @@ export interface BufferDescriptor {
   usage?: Usage;
 
   /** Buffer size in bytes */
-  size: Int;
+  size: Uint;
 }
 
 /**
@@ -39,19 +39,19 @@ export interface TextureDescriptor {
   format?: PixelFormat;
 
   /** Width of texture. Defaults to 1. */
-  width?: Int;
+  width?: Uint;
 
   /** Height of texture. Defaults to 1. */
-  height?: Int;
+  height?: Uint;
 
   /** Depth of texture. Defaults to 1. */
-  depth?: Int;
+  depth?: Uint;
 
-  /** number of mipmap levels. Defaults to 1. */
-  mipLevels?: Int;
+  /** The number of mipmap levels. Defaults to 1. */
+  mipLevels?: Uint;
 
   /** The number of samples for MSAA render targets. Defaults to 1. WebGL2 only. */
-  samples?: Int;
+  samples?: Uint;
 
   /**
    * Specifies if renderbuffer should be used for depth/stencil textures.
@@ -260,7 +260,7 @@ export interface VertexBufferLayout {
   attrs: VertexAttribute[];
 
   /** Stride in bytes. Defaults to be auto calculated. */
-  stride?: Int;
+  stride?: Uint;
 
   /** Specify if this buffer's data is instanced. Defaults to false. */
   instanced?: boolean;
@@ -275,7 +275,7 @@ export interface VertexBufferLayout {
   readonly attrs: readonly ReadonlyVertexAttribute[];
 
   /** Stride in bytes. */
-  stride: Int;
+  stride: Uint;
 
   /** Specify if this buffer's data is instanced. */
   instanced: boolean;
@@ -293,10 +293,10 @@ export interface VertexAttribute {
   format: VertexFormat;
 
   /** Shader location to bind to. Defaults to be auto calculated. */
-  shaderLoc?: Int;
+  shaderLoc?: Uint;
 
   /** Offset in buffer in bytes. Defaults to be auto calculated. */
-  offset?: Int;
+  offset?: Uint;
 }
 
 /**
@@ -367,10 +367,10 @@ export interface StencilState {
   backPassOp?: StencilOp;
 
   /** Stencil read mask. Defaults to 0xFF */
-  readMask?: Int;
+  readMask?: Uint;
 
   /** Stencil write mask. Defaults to 0xFF */
-  writeMask?: Int;
+  writeMask?: Uint;
 }
 
 /**
@@ -447,13 +447,13 @@ export interface UniformBinding {
   buffer?: Buffer | null;
 
   /** The starting offset of the uniform buffer. Defaults to 0 */
-  bufferOffset?: Int;
+  bufferOffset?: Uint;
 
   /**
    * The byte size of data to read from the buffer.
    * Defaults to the range starting at offset and ending at the end of the buffer.
    */
-  bufferSize?: Int;
+  bufferSize?: Uint;
 }
 
 /**
@@ -487,10 +487,10 @@ export interface TextureView {
   tex: Texture;
 
   /** Rendering mip level. Defaults to 0 */
-  mipLevel?: Int;
+  mipLevel?: Uint;
 
   /** Rendering texture slice. Defaults to 0 */
-  slice?: Int;
+  slice?: Uint;
 }
 
 /**

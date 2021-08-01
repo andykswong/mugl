@@ -43,7 +43,7 @@
     "prebuild": "npm run lint",
     "build": "npm run asbuild && npm run tsbuild",
     "postbuild": "npm run webpack",
-    "lint": "eslint src/common src/js --ext .ts,.tsx",
+    "lint": "eslint src --ext .ts,.tsx",
     "asbuild": "asc assembly/index.ts --target release",
     "asbuild:debug": "asc assembly/index.ts --target debug",
     "tsbuild": "npm run babel && npm run tsc && npm run copysrc",

@@ -213,12 +213,12 @@ class NanoGLRenderPassContext implements RenderPassContext {
             case GLenum.FLOAT_VEC2: this.gl.uniform2fv(loc, binding.values as number[]); break;
             default: this.gl.uniform1fv(loc, binding.values as number[]);
           }
-        } else if (!isNaN(binding.value!)) { // Single number
-          this.gl.uniform1f(loc, binding.value!);
         } else if (NGL_ENABLE_TEXTURE && binding.tex) { // Texture
           this.gl.activeTexture(GLenum.TEXTURE0 + texId);
           this.gl.bindTexture(binding.tex.props.type, (binding.tex as GLTexture).glt);
           this.gl.uniform1i(loc, texId++);
+        } else if (!isNaN(binding.value!)) { // Single number
+          this.gl.uniform1f(loc, binding.value!);
         }
       }
     }

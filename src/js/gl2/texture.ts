@@ -1,9 +1,9 @@
 import {
-  glTexInternalFormat, glTexFormat, glTexType, isDepthStencil, is3DTexture, FilterMode, Float, GLenum, Int,
+  glTexInternalFormat, glTexFormat, glTexType, isDepthStencil, is3DTexture, FilterMode, Float, GLenum,
   MinFilterMode, MipmapHint, PixelFormat, SamplerProperties, ReadonlyExtent3D, ReadonlyOrigin3D, SamplerDescriptor,
-  TextureData, TextureDescriptor, TexType, TextureProperties
+  TextureData, TextureDescriptor, TexType, TextureProperties, Uint
 } from '../../common';
-import { GLRenderingDevice, GLTexture as IGLTexture, ImageSource } from '../device';
+import { AddressMode, GLRenderingDevice, GLTexture as IGLTexture, ImageSource, ReadonlyExtent2D, ReadonlyOrigin2D } from '../device';
 
 export class GLTexture implements IGLTexture {
   public readonly props: TextureProperties;
@@ -22,7 +22,7 @@ export class GLTexture implements IGLTexture {
     const gl = this.gl = context.gl;
     const type = props.type || TexType.Tex2D;
     const format = props.format || PixelFormat.RGBA8;
-    const isCube = type === GLenum.TEXTURE_CUBE_MAP;
+    const isCube = type === TexType.Cube;
     const renderTarget = isDepthStencil(format) && (props.renderTarget || false);
     const glInternalFormat = glTexInternalFormat(format, webgl2);
 
@@ -37,9 +37,9 @@ export class GLTexture implements IGLTexture {
       renderTarget
     };
     this.sampler = {
-      wrapU: sampler.wrapU || GLenum.CLAMP_TO_EDGE,
-      wrapV: sampler.wrapV || GLenum.CLAMP_TO_EDGE,
-      wrapW: sampler.wrapW || GLenum.CLAMP_TO_EDGE,
+      wrapU: sampler.wrapU || AddressMode.Clamp,
+      wrapV: sampler.wrapV || AddressMode.Clamp,
+      wrapW: sampler.wrapW || AddressMode.Clamp,
       magFilter: sampler.magFilter || FilterMode.Nearest,
       minFilter: sampler.minFilter || MinFilterMode.Nearest,
       maxLOD: sampler.maxLOD ?? 1000,
@@ -103,18 +103,21 @@ export class GLTexture implements IGLTexture {
 
   public data(
     data: TextureData,
-    [x, y, z = 0]: ReadonlyOrigin3D = [0, 0, 0],
-    [width, height, depth]: ReadonlyExtent3D = [
+    [x, y, z = 0]: ReadonlyOrigin2D | ReadonlyOrigin3D = [0, 0],
+    [
+      width,
+      height,
+      depth = (this.props.depth as Float) - z
+    ]: ReadonlyExtent2D | ReadonlyExtent3D = [
       (this.props.width as Float) - x,
-      (this.props.height as Float) - y,
-      (this.props.depth as Float) - z
+      (this.props.height as Float) - y
     ],
-    mipLevel: Int = 0
+    mipLevel: Uint = 0
   ): GLTexture {
     const glFormat = glTexFormat(this.props.format);
     const glType = glTexType(this.props.format, this.webgl2);
-    const isCube = this.props.type === GLenum.TEXTURE_CUBE_MAP;
-    const isTexArray = this.props.type === GLenum.TEXTURE_2D_ARRAY;
+    const isCube = this.props.type === TexType.Cube;
+    const isTexArray = this.props.type === TexType.Array;
     const baseTarget = isCube ? GLenum.TEXTURE_CUBE_MAP_POSITIVE_X + z : this.props.type;
 
     this.gl.activeTexture(GLenum.TEXTURE0);
@@ -143,7 +146,7 @@ export class GLTexture implements IGLTexture {
     return this;
   }
 
-  public mipmap(type: MipmapHint = GLenum.DONT_CARE): GLTexture {
+  public mipmap(type: MipmapHint = MipmapHint.None): GLTexture {
     this.gl.activeTexture(GLenum.TEXTURE0);
     this.gl.bindTexture(this.props.type, this.glt);
     this.gl.hint(GLenum.GENERATE_MIPMAP_HINT, type);
