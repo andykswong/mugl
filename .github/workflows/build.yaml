@@ -22,6 +22,7 @@ jobs:
       - run: npm run doc -- --excludeInternal
       - name: Copy files to public
         run: |
+          mkdir ./public
           cp -r ./docs ./public/docs
           cp -r ./dist/examples ./public/examples
       - name: Deploy public
