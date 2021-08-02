@@ -4,7 +4,6 @@ import {
   MinFilterMode, UniformFormat, UniformType, PipelineDescriptor, ShaderType, Float, Pipeline, RenderPass, Texture
 } from 'mugl';
 import { BaseExample, createBuffer, Cube, getImageById, Model, TEX_SIZE, toIndices, toVertices, USE_NGL } from '../common';
-import { airplane, skyBox } from '../images';
 
 const texSize = TEX_SIZE;
 

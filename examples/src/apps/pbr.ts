@@ -151,10 +151,10 @@ void main () {
 const fragSky = `
 precision mediump float;
 uniform samplerCube tex;
-varying vec3 vNormal;
+varying vec3 vPosition;
 
 void main () {
-  gl_FragColor = textureCube(tex, normalize(vNormal));
+  gl_FragColor = textureCube(tex, normalize(vPosition));
 }
 `;
 
@@ -266,7 +266,8 @@ export class PbrExample extends BaseExample {
       });
       if (sky0 && sky1 && sky2) {
         this.skyTex!
-          .data({ images: [sky0, sky0, sky1, sky2, sky0, sky0] });
+          .data({ images: [sky0, sky0, sky1, sky2, sky0, sky0] })
+          .mipmap();
       }
 
       this.skyPipeline = ctx.pipeline({

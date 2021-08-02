@@ -8,11 +8,13 @@ declare const window: Window & {
   loadExample: (url?: string) => void;
 };
 
-class GlTFRedirect implements ExampleApplication {
+class Redirect implements ExampleApplication {
+  constructor(private readonly uri: string) {
+  }
   init(): void {
   }
   render(): boolean {
-    window.location.replace('./gltf.html');
+    window.location.replace(this.uri);
     return false;
   }
   destroy(): void {
@@ -61,7 +63,8 @@ for (let i = 0; i < Apps.length; ++i) {
     Apps[i].id, Apps[i].title, wasmAwareFactory(i, Apps[i].id, Apps[i].factory)
   );
 }
-appMap['gltf'] = new AppDefinition('gltf', 'glTF Model Viewer', () => new GlTFRedirect());
+appMap['gltf'] = new AppDefinition('gltf', 'glTF Model Viewer 🔗', () => new Redirect('./gltf.html'));
+appMap['docs'] = new AppDefinition('docs', 'API Documentation 🔗', () => new Redirect('../docs'));
 
 // Setup menu
 const menu: HTMLElement = document.getElementById('menu')!;
