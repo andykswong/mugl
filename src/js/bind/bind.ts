@@ -3,12 +3,12 @@
 import { ASUtil } from '@assemblyscript/loader';
 import {
   AddressMode, BlendFactor, BlendOp, Buffer, BufferType, ColorMask, CompareFunc, CullMode, FilterMode, Float,
-  FrontFace, IndexFormat, Int, MinFilterMode, MipmapHint, Pipeline, PixelFormat, PrimitiveType,
+  FrontFace, ImageSource, IndexFormat, Int, MinFilterMode, MipmapHint, Pipeline, PixelFormat, PrimitiveType,
   ReadonlyVertexAttribute, RenderingDevice, RenderPass, RenderPassContext, Shader, ShaderType, StencilOp, Texture,
   TexType, UniformType, Usage, VertexFormat
 } from '../../common';
 import { UniformBindings, UniformLayout } from '../../common/device/descriptor';
-import { GLRenderingDeviceFactory, GLRenderingDeviceOptions } from '../device';
+import { Canvas, GLRenderingDeviceFactory, GLRenderingDeviceOptions } from '../device';
 import { getGLDevice } from '../gl2';
 
 type Ptr = number;
@@ -35,11 +35,27 @@ export interface MuglBind {
    */
   bindModule(exports: ASUtil & Record<string, unknown>): void;
 
+  /**
+   * Register a canvas for use in WASM.
+   * @param id ID of the canvas
+   * @param canvas the canvas
+   * @returns pointer to the given canvas
+   */
+  addCanvas(id: string, canvas: Canvas): CanvasId;
+
+  /**
+   * Register an image for use in WASM.
+   * @param id ID of the image
+   * @param image the image
+   * @returns pointer to the given image
+   */
+  addImage(id: string, image: ImageSource): ImageId;
+
   pinned: Record<Ptr, Ptr>;
   canvasIdMap: Record<string, CanvasId>;
-  canvas: Record<CanvasId, HTMLCanvasElement>;
+  canvas: Record<CanvasId, Canvas>;
   imageIdMap: Record<string, ImageId>;
-  images: Record<ImageId, TexImageSource>;
+  images: Record<ImageId, ImageSource>;
   devices: Record<RenderingDeviceId, RenderingDevice>;
   renderPassContexts: Record<RenderPassContextId, RenderPassContext>;
   boundUniforms: Record<RenderPassContextId, UniformBindings>;
@@ -62,15 +78,12 @@ export function muglBind(
   const pinned: Record<Ptr, Ptr> = {};
   let canvasId: CanvasId = 1;
   const canvasIdMap: Record<string, CanvasId> = {};
-  const canvas: Record<CanvasId, HTMLCanvasElement> = {};
+  const canvas: Record<CanvasId, Canvas> = {};
   let imageId: ImageId = 1;
   const imageIdMap: Record<string, ImageId> = {};
   const images: Record<ImageId, TexImageSource> = {};
   let deviceId: RenderingDeviceId = 1;
   const devices: Record<RenderingDeviceId, RenderingDevice> = {};
-  let renderPassContextId: RenderPassContextId = 1;
-  const renderPassContexts: Record<RenderPassContextId, RenderPassContext> = {};
-  const boundUniforms: Record<RenderPassContextId, UniformBindings> = {};
   let bufferId: BufferId = 1;
   const buffers: Record<BufferId, Buffer> = {};
   let textureId: TextureId = 1;
@@ -81,6 +94,10 @@ export function muglBind(
   const renderPasses: Record<RenderPassId, RenderPass> = {};
   let pipelineId: PipelineId = 1;
   const pipelines: Record<PipelineId, Pipeline> = {};
+  // TODO: New RenderPassContext is created every frame, we may want to check for overflow and reuse IDs
+  let renderPassContextId: RenderPassContextId = 1;
+  const renderPassContexts: Record<RenderPassContextId, RenderPassContext> = {};
+  const boundUniforms: Record<RenderPassContextId, UniformBindings> = {};
 
   imports.mugl = {
     getCanvasById(id: Ptr): CanvasId {
@@ -421,9 +438,22 @@ export function muglBind(
   };
 
   return {
-    bindModule(exports) {
+    bindModule(exports: ASUtil & Record<string, unknown>): void {
       module = exports;
     },
+
+    addCanvas(id: string, c: Canvas): CanvasId {
+      canvasIdMap[id] = canvasId;
+      canvas[canvasId] = c;
+      return canvasId++;
+    },
+
+    addImage(id: string, image: ImageSource): ImageId {
+      imageIdMap[id] = imageId;
+      images[imageId] = image;
+      return imageId++;
+    },
+
     pinned,
     canvasIdMap,
     canvas,

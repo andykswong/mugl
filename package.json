@@ -7,6 +7,7 @@
   "ascMain": "assembly/index.ts",
   "main": "index.mjs",
   "types": "index.d.ts",
+  "react-native": "./dist/mugl.min.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/andykswong/mugl.git"

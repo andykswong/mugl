@@ -6,9 +6,24 @@ import { RenderingDevice, RenderPassContext } from '../../common/device';
 import { Buffer, Pipeline, RenderPass, Texture } from '../../common/device';
 
 /**
- * A canvas element, which can be HTMLCanvasElement or OffscreenCanvas.
+ * Interface for a provider of WebGLRenderingContext provider.
+ * Useful for non-Web environments where HTML Canvas element does not exist.
  */
-export type Canvas = HTMLCanvasElement | OffscreenCanvas;
+export interface WebGLRenderingContextProvider {
+  /**
+   * Get a WebGLRenderingContext.
+   *
+   * @param type WebGL version. Use 'webgl2' for WebGL 2.0, or 'webgl' for WebGL 1.0
+   * @param options optional WebGL rendering context attributes
+   * @returns a WebGLRenderingContext or WebGL2RenderingContext depending on requested type, or null if unsupported.
+   */
+  getContext(type: 'webgl' | 'webgl2', options?: WebGLContextAttributes): WebGLRenderingContext | null;
+}
+
+/**
+ * A canvas element from which a WebGLRenderingContext can be retrieved.
+ */
+export type Canvas = HTMLCanvasElement | OffscreenCanvas | WebGLRenderingContextProvider;
 
 const GLCommonFeatures = {
   Aniso: 'EXT_texture_filter_anisotropic',

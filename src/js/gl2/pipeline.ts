@@ -60,7 +60,7 @@ export class GLPipeline implements IGLPipeline {
       vert: props.vert,
       frag: props.frag,
       indexFormat: props.indexFormat || IndexFormat.UInt16,
-      mode: props.mode || PrimitiveType.Tri,
+      mode: props.mode ?? PrimitiveType.Tri,
       buffers,
       uniforms,
       raster: { ...DEFAULT_RASTER_STATE, ...props.raster },
