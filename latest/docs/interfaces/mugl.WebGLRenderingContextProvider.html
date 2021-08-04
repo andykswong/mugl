@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>IndexFormat | mugl</title>
+	<title>WebGLRenderingContextProvider | mugl</title>
 	<meta name="description" content="Documentation for mugl">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -58,10 +58,10 @@
 					<a href="../modules/mugl.html">mugl</a>
 				</li>
 				<li>
-					<a href="mugl.IndexFormat.html">IndexFormat</a>
+					<a href="mugl.WebGLRenderingContextProvider.html">WebGLRenderingContextProvider</a>
 				</li>
 			</ul>
-			<h1>Enumeration IndexFormat</h1>
+			<h1>Interface WebGLRenderingContextProvider</h1>
 		</div>
 	</div>
 </header>
@@ -71,63 +71,71 @@
 			<section class="tsd-panel tsd-comment">
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<p>Vertex index formats.</p>
+						<p>Interface for a provider of WebGLRenderingContext provider.
+						Useful for non-Web environments where HTML Canvas element does not exist.</p>
 					</div>
-					<dl class="tsd-comment-tags">
-						<dt>see</dt>
-						<dd><p><a href="https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/drawElements">https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/drawElements</a></p>
-						</dd>
-						<dt>see</dt>
-						<dd><p><a href="https://gpuweb.github.io/gpuweb/#enumdef-gpuindexformat">https://gpuweb.github.io/gpuweb/#enumdef-gpuindexformat</a></p>
-						</dd>
-					</dl>
 				</div>
+			</section>
+			<section class="tsd-panel tsd-hierarchy">
+				<h3>Hierarchy</h3>
+				<ul class="tsd-hierarchy">
+					<li>
+						<span class="target">WebGLRenderingContextProvider</span>
+					</li>
+				</ul>
 			</section>
 			<section class="tsd-panel-group tsd-index-group">
 				<h2>Index</h2>
 				<section class="tsd-panel tsd-index-panel">
 					<div class="tsd-index-content">
 						<section class="tsd-index-section ">
-							<h3>Enumeration members</h3>
+							<h3>Methods</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="mugl.IndexFormat.html#UInt16" class="tsd-kind-icon">UInt16</a></li>
-								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="mugl.IndexFormat.html#UInt32" class="tsd-kind-icon">UInt32</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="mugl.WebGLRenderingContextProvider.html#getContext" class="tsd-kind-icon">get<wbr>Context</a></li>
 							</ul>
 						</section>
 					</div>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
-				<h2>Enumeration members</h2>
-				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
-					<a name="UInt16" class="tsd-anchor"></a>
-					<h3>UInt16</h3>
-					<div class="tsd-signature tsd-kind-icon">UInt16<span class="tsd-signature-symbol">:</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/andykswong/mugl/blob/2dcd97c/src/common/device/enums.ts#L227">src/common/device/enums.ts:227</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>16-bit indices</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
-					<a name="UInt32" class="tsd-anchor"></a>
-					<h3>UInt32</h3>
-					<div class="tsd-signature tsd-kind-icon">UInt32<span class="tsd-signature-symbol">:</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/andykswong/mugl/blob/2dcd97c/src/common/device/enums.ts#L230">src/common/device/enums.ts:230</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>32-bit indices. For WebGL1, this requires OES_element_index_uint extension.</p>
-						</div>
-					</div>
+				<h2>Methods</h2>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface">
+					<a name="getContext" class="tsd-anchor"></a>
+					<h3>get<wbr>Context</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Context<span class="tsd-signature-symbol">(</span>type<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">&quot;webgl&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;webgl2&quot;</span>, options<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">WebGLContextAttributes</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">WebGLRenderingContext</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/andykswong/mugl/blob/2dcd97c/src/js/device/webgl.ts#L20">src/js/device/webgl.ts:20</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Get a WebGLRenderingContext.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>type: <span class="tsd-signature-type">&quot;webgl&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;webgl2&quot;</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>WebGL version. Use &#39;webgl2&#39; for WebGL 2.0, or &#39;webgl&#39; for WebGL 1.0</p>
+									</div>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> options: <span class="tsd-signature-type">WebGLContextAttributes</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>optional WebGL rendering context attributes</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">WebGLRenderingContext</span></h4>
+							<p>a WebGLRenderingContext or WebGL2RenderingContext depending on requested type, or null if unsupported.</p>
+						</li>
+					</ul>
 				</section>
 			</section>
 		</div>
@@ -155,14 +163,11 @@
 				<ul class="before-current">
 				</ul>
 				<ul class="current">
-					<li class="current tsd-kind-enum tsd-parent-kind-module">
-						<a href="mugl.IndexFormat.html" class="tsd-kind-icon">Index<wbr>Format</a>
+					<li class="current tsd-kind-interface tsd-parent-kind-module">
+						<a href="mugl.WebGLRenderingContextProvider.html" class="tsd-kind-icon">WebGLRendering<wbr>Context<wbr>Provider</a>
 						<ul>
-							<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
-								<a href="mugl.IndexFormat.html#UInt16" class="tsd-kind-icon">UInt16</a>
-							</li>
-							<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
-								<a href="mugl.IndexFormat.html#UInt32" class="tsd-kind-icon">UInt32</a>
+							<li class=" tsd-kind-method tsd-parent-kind-interface">
+								<a href="mugl.WebGLRenderingContextProvider.html#getContext" class="tsd-kind-icon">get<wbr>Context</a>
 							</li>
 						</ul>
 					</li>
@@ -183,10 +188,11 @@
 				<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
 			</ul>
 			<ul class="tsd-legend">
-				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
+				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-interface"><span class="tsd-kind-icon">Method</span></li>
 			</ul>
 			<ul class="tsd-legend">
-				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
+				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
 			</ul>
 		</div>
 	</div>
