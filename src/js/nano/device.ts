@@ -80,7 +80,7 @@ class NanoGLRenderingDevice implements GLRenderingDevice {
   }
 
   public render(pass: GLRenderPass): RenderPassContext {
-    let { width, height } = this.gl.canvas;
+    let width = this.width, height = this.height;
   
     if (NGL_ENABLE_OFFSCREEN) {
       if (pass.props.color) {

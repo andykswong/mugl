@@ -11,10 +11,11 @@
 
 `mugl` is a minimalistic WebGL 3D rendering library written in [AssemblyScript](https://www.assemblyscript.org/). It allows you to run the same 3D app on both JavaScript and WebAssembly (WASM) environments using portable TypeScript/AssemblyScript code.
 
-Modules:
-- **The main library (`mugl`)** : Provides a simple, modern [WebGPU](https://gpuweb.github.io/gpuweb/)-style [API](./src/common/device/device/index.d.ts) on top of WebGL 1.0 / 2.0 that removes WebGL state management from you. (**10KB** in size, including both modules below!)
-- **WebAssembly binding (```import { muglBind } from 'mugl'```)**: Provides a `mugl` API binding that allows you to use the same `mugl` interface in both AssemblyScript/WASM and TypeScript/JavaScript environments.
-- **Nano device (`mugl/n` aka `ngl`)**: A **3KB** WebGL 1.0 implementation of the rendering device interface. You can even turn off some [features](./src/js/nano/config.ts) that you do not need (e.g. scissor, stencil testing) to reduce the size to **2KB**!
+The core `mugl` library provides a simple, modern [WebGPU](https://gpuweb.github.io/gpuweb/)-style [API](./src/common/device/device/index.d.ts) abstraction layer that removes WebGL state management from you. There are several backend implementation of the API ([see usage here](#usage)):
+1. **Default WebGL backend (```getGLDevice```)**: Full-featured backend implementation on top of WebGL 1.0 / 2.0.
+1. **Nano backend (```getNGLDevice```)**: A **3KB** WebGL 1.0 only backend implementation. You can even turn off some [features](./src/js/nano/config.ts) that you do not need (e.g. scissor, stencil testing) to reduce the size to **2KB**!
+1. **WebAssembly binding (```muglBind```)**: An API binding that allows you to use the same `mugl` interface in AssemblyScript / WASM. It simply forwards API calls to one of the above backends.
+1. More backends WIP, including WebGPU and native graphics backends
 
 Dependencies: 
 - [munum](https://github.com/andykswong/munum) - minimalistic AssemblyScript numerical library for JavaScript and WebAssembly. Used for 3D math calculations.
@@ -39,13 +40,13 @@ Any model from [glTF-Sample-Models](https://github.com/KhronosGroup/glTF-Sample-
 npm install --save mugl
 ```
 
-## API
+## API Documentation
 See TSDoc: http://andykswong.github.io/mugl
 
 ## Usage
 
 ### 1. Basic Rendering Example
-Below is a simple `mugl` program to draw a triangle (See this example live [here](https://andykswong.github.io/mugl/examples/#basic)):
+Below is a simple `mugl` program to draw a triangle using the default backend (See this example live [here](https://andykswong.github.io/mugl/examples/#basic)):
 
 ```javascript
 import { getGLDevice, VertexFormat } from 'mugl';
@@ -116,8 +117,8 @@ device
   .end();
 ```
 
-### 2. Using the Nano Implementation
-To use the Nano Implementation, use `getNGLDevice` to create a device:
+### 2. Using the Nano Backend
+To use the Nano backend, use `getNGLDevice` to create a device:
 
 ```javascript
 import { getNGLDevice } from 'mugl/n';
@@ -126,7 +127,7 @@ const device = getNGLDevice(canvas);
 ```
 
 ### 3. Running on WebAssembly/AssemblyScript
-Use `muglBind` to bind a device implementation to an AssemblyScript WASM module:
+Use `muglBind` to bind a device backend to an AssemblyScript WASM module:
 
 ```javascript
 import loader from '@assemblyscript/loader';

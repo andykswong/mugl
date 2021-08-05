@@ -1,13 +1,26 @@
 {
   "name": "mugl",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Micro WebGL Library in AssemblyScript",
   "type": "module",
   "sideEffects": false,
   "ascMain": "assembly/index.ts",
-  "main": "index.mjs",
+  "main": "index.js",
   "types": "index.d.ts",
-  "react-native": "./dist/mugl.min.js",
+  "exports": {
+    ".": {
+      "import": "./index.js",
+      "require": "./dist/mugl.min.js"
+    },
+    "./n": {
+      "import": "./n.js",
+      "require": "./dist/ngl.min.js"
+    },
+    "./tf": {
+      "import": "./tf.js",
+      "require": "./dist/mugltf.min.js"
+    }
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/andykswong/mugl.git"
@@ -31,11 +44,11 @@
     "/assembly",
     "/dist",
     "/src",
-    "index.mjs",
+    "index.js",
     "index.d.ts",
-    "n.mjs",
+    "n.js",
     "n.d.ts",
-    "tf.mjs",
+    "tf.js",
     "tf.d.ts"
   ],
   "scripts": {
@@ -50,9 +63,9 @@
     "asbuild": "asc assembly/index.ts --target release",
     "asbuild:debug": "asc assembly/index.ts --target debug",
     "tsbuild": "npm run babel && npm run tsc",
-    "babel": "cross-env-shell babel src -d dist --source-maps --extensions '.mjs,.ts' --out-file-extension .mjs",
+    "babel": "cross-env-shell babel src -d dist --source-maps --extensions '.js,.mjs,.ts' --out-file-extension .js",
     "tsc": "tsc --emitDeclarationOnly",
-    "posttsc": "copyfiles -u 1 src/**/*{.d.ts,.mjs} dist",
+    "posttsc": "copyfiles -u 1 src/**/*{.d.ts,.js,.mjs} dist",
     "webpack": "webpack",
     "test": "npm run asp && npm run jest",
     "asp": "asp -c as-pect.config.cjs",
@@ -66,7 +79,7 @@
   },
   "dependencies": {
     "@assemblyscript/loader": "^0.19.9",
-    "munum": "^0.0.4"
+    "munum": "^0.0.5"
   },
   "devDependencies": {
     "@as-pect/cli": "^6.2.4",

@@ -38,7 +38,7 @@ module.exports = api => {
 
   if (!(isTest || isWebpack)) {
     config.plugins.push(
-      ["babel-plugin-add-import-extension", { "extension": "mjs" }]
+      ["babel-plugin-add-import-extension", { "extension": "js" }]
     );
   }
 

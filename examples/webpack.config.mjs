@@ -9,8 +9,7 @@ const isProd = mode === PRODUCTION;
 export const debug = process.env.DEBUG || !isProd;
 
 const ASSET_DIR = path.resolve('./assets');
-const DIST_DIR = path.resolve('./dist');
-const OUTPUT_DIR = path.resolve('../dist/examples');
+const OUTPUT_DIR = path.resolve('./dist');
 const WASM_FILES = '*.{wasm,wasm.map}';
 
 export default {
@@ -61,7 +60,7 @@ export default {
     }),
     new CopyPlugin({
       patterns: [
-        { from: WASM_FILES, to: OUTPUT_DIR, context: DIST_DIR },
+        { from: WASM_FILES, context: OUTPUT_DIR },
         { from: ASSET_DIR, to: OUTPUT_DIR }
       ],
     })

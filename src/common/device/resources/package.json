@@ -1,5 +1,5 @@
 {
   "ascMain": "index.ts",
-  "main": "index.mjs",
+  "main": "index.js",
   "types": "index.d.ts"
 }
