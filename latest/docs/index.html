@@ -70,12 +70,13 @@
 					<h2>Overview</h2>
 				</a>
 				<p><code>mugl</code> is a minimalistic WebGL 3D rendering library written in <a href="https://www.assemblyscript.org/">AssemblyScript</a>. It allows you to run the same 3D app on both JavaScript and WebAssembly (WASM) environments using portable TypeScript/AssemblyScript code.</p>
-				<p>Modules:</p>
-				<ul>
-					<li><strong>The main library (<code>mugl</code>)</strong> : Provides a simple, modern <a href="https://gpuweb.github.io/gpuweb/">WebGPU</a>-style <a href="./src/common/device/device/index.d.ts">API</a> on top of WebGL 1.0 / 2.0 that removes WebGL state management from you. (<strong>10KB</strong> in size, including both modules below!)</li>
-					<li><strong>WebAssembly binding (<code>import { muglBind } from &#39;mugl&#39;</code>)</strong>: Provides a <code>mugl</code> API binding that allows you to use the same <code>mugl</code> interface in both AssemblyScript/WASM and TypeScript/JavaScript environments.</li>
-					<li><strong>Nano device (<code>mugl/n</code> aka <code>ngl</code>)</strong>: A <strong>3KB</strong> WebGL 1.0 implementation of the rendering device interface. You can even turn off some <a href="./src/js/nano/config.ts">features</a> that you do not need (e.g. scissor, stencil testing) to reduce the size to <strong>2KB</strong>!</li>
-				</ul>
+				<p>The core <code>mugl</code> library provides a simple, modern <a href="https://gpuweb.github.io/gpuweb/">WebGPU</a>-style <a href="./src/common/device/device/index.d.ts">API</a> abstraction layer that removes WebGL state management from you. There are several backend implementation of the API (<a href="#usage">see usage here</a>):</p>
+				<ol>
+					<li><strong>Default WebGL backend (<code>getGLDevice</code>)</strong>: Full-featured backend implementation on top of WebGL 1.0 / 2.0.</li>
+					<li><strong>Nano backend (<code>getNGLDevice</code>)</strong>: A <strong>3KB</strong> WebGL 1.0 only backend implementation. You can even turn off some <a href="./src/js/nano/config.ts">features</a> that you do not need (e.g. scissor, stencil testing) to reduce the size to <strong>2KB</strong>!</li>
+					<li><strong>WebAssembly binding (<code>muglBind</code>)</strong>: An API binding that allows you to use the same <code>mugl</code> interface in AssemblyScript / WASM. It simply forwards API calls to one of the above backends.</li>
+					<li>More backends WIP, including WebGPU and native graphics backends</li>
+				</ol>
 				<p>Dependencies: </p>
 				<ul>
 					<li><a href="https://github.com/andykswong/munum">munum</a> - minimalistic AssemblyScript numerical library for JavaScript and WebAssembly. Used for 3D math calculations.</li>
@@ -98,8 +99,8 @@
 				</a>
 				<pre><code class="language-shell"><span style="color: #000000">npm install --save mugl</span>
 </code></pre>
-				<a href="#api" id="api" style="color: inherit; text-decoration: none;">
-					<h2>API</h2>
+				<a href="#api-documentation" id="api-documentation" style="color: inherit; text-decoration: none;">
+					<h2>API Documentation</h2>
 				</a>
 				<p>See TSDoc: <a href="http://andykswong.github.io/mugl">http://andykswong.github.io/mugl</a></p>
 				<a href="#usage" id="usage" style="color: inherit; text-decoration: none;">
@@ -108,7 +109,7 @@
 				<a href="#1-basic-rendering-example" id="1-basic-rendering-example" style="color: inherit; text-decoration: none;">
 					<h3>1. Basic Rendering Example</h3>
 				</a>
-				<p>Below is a simple <code>mugl</code> program to draw a triangle (See this example live <a href="https://andykswong.github.io/mugl/examples/#basic">here</a>):</p>
+				<p>Below is a simple <code>mugl</code> program to draw a triangle using the default backend (See this example live <a href="https://andykswong.github.io/mugl/examples/#basic">here</a>):</p>
 				<pre><code class="language-javascript"><span style="color: #AF00DB">import</span><span style="color: #000000"> { </span><span style="color: #001080">getGLDevice</span><span style="color: #000000">, </span><span style="color: #001080">VertexFormat</span><span style="color: #000000"> } </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;mugl&#039;</span><span style="color: #000000">;</span>
 
 <span style="color: #008000">// 0. Prepare triangle vertex positions and colors data</span>
@@ -176,10 +177,10 @@
 <span style="color: #000000">    .</span><span style="color: #795E26">draw</span><span style="color: #000000">(</span><span style="color: #098658">3</span><span style="color: #000000">)</span>
 <span style="color: #000000">  .</span><span style="color: #795E26">end</span><span style="color: #000000">();</span>
 </code></pre>
-				<a href="#2-using-the-nano-implementation" id="2-using-the-nano-implementation" style="color: inherit; text-decoration: none;">
-					<h3>2. Using the Nano Implementation</h3>
+				<a href="#2-using-the-nano-backend" id="2-using-the-nano-backend" style="color: inherit; text-decoration: none;">
+					<h3>2. Using the Nano Backend</h3>
 				</a>
-				<p>To use the Nano Implementation, use <code>getNGLDevice</code> to create a device:</p>
+				<p>To use the Nano backend, use <code>getNGLDevice</code> to create a device:</p>
 				<pre><code class="language-javascript"><span style="color: #AF00DB">import</span><span style="color: #000000"> { </span><span style="color: #001080">getNGLDevice</span><span style="color: #000000"> } </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;mugl/n&#039;</span><span style="color: #000000">;</span>
 
 <span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">device</span><span style="color: #000000"> = </span><span style="color: #795E26">getNGLDevice</span><span style="color: #000000">(</span><span style="color: #001080">canvas</span><span style="color: #000000">);</span>
@@ -187,7 +188,7 @@
 				<a href="#3-running-on-webassemblyassemblyscript" id="3-running-on-webassemblyassemblyscript" style="color: inherit; text-decoration: none;">
 					<h3>3. Running on WebAssembly/AssemblyScript</h3>
 				</a>
-				<p>Use <code>muglBind</code> to bind a device implementation to an AssemblyScript WASM module:</p>
+				<p>Use <code>muglBind</code> to bind a device backend to an AssemblyScript WASM module:</p>
 				<pre><code class="language-javascript"><span style="color: #AF00DB">import</span><span style="color: #000000"> </span><span style="color: #001080">loader</span><span style="color: #000000"> </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;@assemblyscript/loader&#039;</span><span style="color: #000000">;</span>
 <span style="color: #AF00DB">import</span><span style="color: #000000"> { </span><span style="color: #001080">getGLDevice</span><span style="color: #000000">, </span><span style="color: #001080">muglBind</span><span style="color: #000000"> } </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;mugl&#039;</span><span style="color: #000000">;</span>
 
