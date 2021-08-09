@@ -1,10 +1,14 @@
 import {
-  BufferProperties, MipmapHint, PipelineProperties, ReadonlyExtent3D, ReadonlyOrigin3D, ReadonlyVertexAttribute, RenderPassProperties, SamplerProperties, ShaderDescriptor, ShaderType, TextureData, TextureProperties, Uint, UniformType, VertexFormat
+  BufferProperties, MipmapHint, PipelineProperties, ReadonlyExtent3D, ReadonlyOrigin3D, ReadonlyVertexAttribute,
+  RenderPassProperties, SamplerProperties, ShaderDescriptor, ShaderType, TextureData, TextureProperties, Uint,
+  UniformType, VertexFormat
 } from '../common';
 import { BlendState, DepthState, StencilState } from '../common/device/descriptor/index';
 import { Buffer, Texture, Shader, RenderPass, Pipeline } from '../common/device/resources/index';
 import {
-  bufferData, createBuffer, BufferId, RenderingDeviceId, deleteBuffer, ShaderId, createShader, deleteShader, deleteTexture, TextureId, createTexture, mipmap, textureBuffers, textureImages, RenderPassId, deleteRenderPass, resolveRenderPass, createRenderPass, PipelineId, deletePipeline, createPipeline
+  bufferData, createBuffer, BufferId, RenderingDeviceId, deleteBuffer, ShaderId, createShader, deleteShader,
+  deleteTexture, TextureId, createTexture, mipmap, textureBuffer, textureImages, RenderPassId, deleteRenderPass,
+  resolveRenderPass, createRenderPass, PipelineId, deletePipeline, createPipeline
 } from '../mugl';
 
 export class GLBuffer extends Buffer {
@@ -61,15 +65,12 @@ export class GLTexture extends Texture {
     data: TextureData, origin: ReadonlyOrigin3D = [0, 0, 0], extent: ReadonlyExtent3D = [0, 0, 0], mipLevel: Uint = 0
   ): GLTexture {
     const buffer = data.buffer;
-    const buffers = data.buffers;
     const image = data.image;
     const images = data.images;
     if (buffer) {
-      textureBuffers(this.id, [buffer], origin, extent, mipLevel);
+      textureBuffer(this.id, buffer, origin, extent, mipLevel);
     } else if (image) {
       textureImages(this.id, [image], origin, extent, mipLevel);
-    } else if (buffers && buffers.length) {
-      textureBuffers(this.id, buffers, origin, extent, mipLevel);
     } else if (images && images.length) {
       textureImages(this.id, images, origin, extent, mipLevel);
     }

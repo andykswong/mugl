@@ -194,13 +194,9 @@ export function muglBind(
       textures[texture]?.destroy();
       delete textures[texture];
     },
-    textureBuffers(texture: TextureId, bufferPtr: Ptr, origin: Ptr, extent: Ptr, mipLevel: Uint): void {
-      const bufferPtrs = module.__getArrayView(bufferPtr);
-      const bufferData = new Array(bufferPtrs.length);
-      for (let i = 0; i < bufferPtrs.length; ++i) {
-        bufferData[i] = module.__getArrayView(bufferPtrs[i]);
-      }
-      textures[texture]?.data({ buffers: bufferData }, module.__getArrayView(origin), module.__getArrayView(extent), mipLevel);
+    textureBuffer(texture: TextureId, bufferPtr: Ptr, origin: Ptr, extent: Ptr, mipLevel: Uint): void {
+      const buffer = module.__getArrayView(bufferPtr);
+      textures[texture]?.data({ buffer }, module.__getArrayView(origin), module.__getArrayView(extent), mipLevel);
     },
     textureImages(texture: TextureId, imagesPtr: Ptr, origin: Ptr, extent: Ptr, mipLevel: Uint): void {
       const imagePtrs = module.__getArrayView(imagesPtr);

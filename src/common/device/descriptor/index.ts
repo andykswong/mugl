@@ -388,9 +388,6 @@ export class TextureData {
   /** Texture data buffer. */
   buffer: ArrayBufferView | null = null;
 
-  /** Array textures data buffer. */
-  buffers: ArrayBufferView[] = [];
-
   /** Texture image pointer. */
   // @ts-ignore: Valid in AssemblyScript
   image: ImageSource = 0;

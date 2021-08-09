@@ -123,12 +123,11 @@ export class GLTexture implements IGLTexture {
     this.gl.activeTexture(GLenum.TEXTURE0);
     this.gl.bindTexture(this.props.type, this.glt);
 
-    const targetCount = ((isCube || isTexArray) && (data.images?.length || data.buffers?.length)) || 1;
-    let buffer: ArrayBufferView | null = data.buffer || null;
+    const targetCount = ((isCube || isTexArray) && data.images?.length) || 1;
+    const buffer: ArrayBufferView | null = data.buffer || null;
     let image: ImageSource | null = data.image || null;
 
     for (let i = 0; i < targetCount; ++i) {
-      buffer = data.buffers?.[i] || buffer;
       image = data.images?.[i] || image;
       if (is3DTexture(this.props.type)) {
         (this.gl as WebGL2RenderingContext).texSubImage3D(baseTarget, mipLevel, x, y, z + i * depth, width, height, depth,

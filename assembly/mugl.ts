@@ -58,7 +58,7 @@ export declare function createTexture(
   wrapU: AddressMode, wrapV: AddressMode, wrapW: AddressMode, magFilter: FilterMode, minFilter: MinFilterMode, minLOD: Float, maxLOD: Float, maxAniso: Float
 ): TextureId;
 export declare function deleteTexture(texture: TextureId): void;
-export declare function textureBuffers(texture: TextureId, buffers: ArrayBufferView[], origin: ReadonlyOrigin3D, extent: ReadonlyExtent3D, mipLevel: Uint): void;
+export declare function textureBuffer(texture: TextureId, buffers: ArrayBufferView, origin: ReadonlyOrigin3D, extent: ReadonlyExtent3D, mipLevel: Uint): void;
 export declare function textureImages(texture: TextureId, images: ImageSource[], origin: ReadonlyOrigin3D, extent: ReadonlyExtent3D, mipLevel: Uint): void;
 export declare function mipmap(texture: TextureId, hint: MipmapHint): void;
 

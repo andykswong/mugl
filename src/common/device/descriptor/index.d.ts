@@ -468,9 +468,6 @@ export interface TextureData {
   /** Texture data buffer. */
   buffer?: ArrayBufferView | null;
 
-  /** Array textures data buffer. */
-  buffers?: ArrayBufferView[] | null;
-
   /** Texture image pointer. */
   image?: ImageSource;
 
