@@ -110,7 +110,7 @@
 					<h3>1. Basic Rendering Example</h3>
 				</a>
 				<p>Below is a simple <code>mugl</code> program to draw a triangle using the default backend (See this example live <a href="https://andykswong.github.io/mugl/examples/#basic">here</a>):</p>
-				<pre><code class="language-javascript"><span style="color: #AF00DB">import</span><span style="color: #000000"> { </span><span style="color: #001080">getGLDevice</span><span style="color: #000000">, </span><span style="color: #001080">VertexFormat</span><span style="color: #000000"> } </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;mugl&#039;</span><span style="color: #000000">;</span>
+				<pre><code class="language-javascript"><span style="color: #AF00DB">import</span><span style="color: #000000"> { </span><span style="color: #001080">getGLDevice</span><span style="color: #000000">, </span><span style="color: #001080">ShaderType</span><span style="color: #000000">, </span><span style="color: #001080">VertexFormat</span><span style="color: #000000"> } </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;mugl&#039;</span><span style="color: #000000">;</span>
 
 <span style="color: #008000">// 0. Prepare triangle vertex positions and colors data</span>
 <span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">triangle</span><span style="color: #000000"> = </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #267F99">Float32Array</span><span style="color: #000000">([</span>
@@ -128,7 +128,7 @@
 <span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">buffer</span><span style="color: #000000"> = </span><span style="color: #001080">device</span><span style="color: #000000">.</span><span style="color: #795E26">buffer</span><span style="color: #000000">({ </span><span style="color: #001080">size:</span><span style="color: #000000"> </span><span style="color: #001080">triangle</span><span style="color: #000000">.</span><span style="color: #001080">byteLength</span><span style="color: #000000"> }).</span><span style="color: #795E26">data</span><span style="color: #000000">(</span><span style="color: #001080">triangle</span><span style="color: #000000">);</span>
 
 <span style="color: #008000">// 3. Compiler the vertex and fragment shaders</span>
-<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">vert</span><span style="color: #000000"> = </span><span style="color: #0000FF">this</span><span style="color: #000000">.</span><span style="color: #001080">device</span><span style="color: #000000">.</span><span style="color: #795E26">shader</span><span style="color: #000000">({</span>
+<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">vert</span><span style="color: #000000"> = </span><span style="color: #001080">device</span><span style="color: #000000">.</span><span style="color: #795E26">shader</span><span style="color: #000000">({</span>
 <span style="color: #000000">  </span><span style="color: #001080">type:</span><span style="color: #000000"> </span><span style="color: #001080">ShaderType</span><span style="color: #000000">.</span><span style="color: #001080">Vertex</span><span style="color: #000000">,</span>
 <span style="color: #000000">  </span><span style="color: #001080">source:</span><span style="color: #000000"> </span><span style="color: #A31515">`</span>
 <span style="color: #A31515">    uniform float angle;</span>
@@ -143,7 +143,7 @@
 <span style="color: #A31515">      vColor = color;</span>
 <span style="color: #A31515">    }`</span>
 <span style="color: #000000">});</span>
-<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">frag</span><span style="color: #000000"> = </span><span style="color: #0000FF">this</span><span style="color: #000000">.</span><span style="color: #001080">device</span><span style="color: #000000">.</span><span style="color: #795E26">shader</span><span style="color: #000000">({</span>
+<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">frag</span><span style="color: #000000"> = </span><span style="color: #001080">device</span><span style="color: #000000">.</span><span style="color: #795E26">shader</span><span style="color: #000000">({</span>
 <span style="color: #000000">  </span><span style="color: #001080">type:</span><span style="color: #000000"> </span><span style="color: #001080">ShaderType</span><span style="color: #000000">.</span><span style="color: #001080">Fragment</span><span style="color: #000000">,</span>
 <span style="color: #000000">  </span><span style="color: #001080">source:</span><span style="color: #000000"> </span><span style="color: #A31515">`</span>
 <span style="color: #A31515">    varying lowp vec4 vColor;</span>
