@@ -1,6 +1,6 @@
 import {
   AddressMode, BlendFactor, BlendOp, BufferType, ColorMask, CompareFunc, CullMode, FilterMode, FrontFace, IndexFormat,
-  MinFilterMode, PixelFormat, PrimitiveType, StencilOp, TexType, UniformFormat, UniformType, Usage, VertexFormat
+  MinFilterMode, PixelFormat, PrimitiveType, ShaderType, StencilOp, TexType, UniformFormat, UniformType, Usage, VertexFormat
 } from '../enums';
 import { Buffer, Shader, Texture } from '../resources';
 import { Float, ImageSource, ReadonlyColor, ReadonlyFloatList, Uint } from '../types';
