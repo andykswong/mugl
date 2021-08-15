@@ -49,7 +49,7 @@ See TSDoc: http://andykswong.github.io/mugl
 Below is a simple `mugl` program to draw a triangle using the default backend (See this example live [here](https://andykswong.github.io/mugl/examples/#basic)):
 
 ```javascript
-import { getGLDevice, VertexFormat } from 'mugl';
+import { getGLDevice, ShaderType, VertexFormat } from 'mugl';
 
 // 0. Prepare triangle vertex positions and colors data
 const triangle = new Float32Array([
@@ -67,7 +67,7 @@ if (!device) throw new Error('WebGL is unsupported');
 const buffer = device.buffer({ size: triangle.byteLength }).data(triangle);
 
 // 3. Compiler the vertex and fragment shaders
-const vert = this.device.shader({
+const vert = device.shader({
   type: ShaderType.Vertex,
   source: `
     uniform float angle;
@@ -82,7 +82,7 @@ const vert = this.device.shader({
       vColor = color;
     }`
 });
-const frag = this.device.shader({
+const frag = device.shader({
   type: ShaderType.Fragment,
   source: `
     varying lowp vec4 vColor;
