@@ -59,7 +59,7 @@
 		<div class="col-8 col-content">
 			<div class="tsd-panel tsd-typography">
 				<h1 align="center">█▓▒­░⡷⠂μ ＧＬ⠐⢾░▒▓█</h1>
-				<h2 align="center">muGL - Micro WebGL Library in AssemblyScript</h2>
+				<h2 align="center">muGL - Micro WebGL Library for JavaScript and WebAssembly</h2>
 				<br />
 				<p align="center">
 					<a href="./LICENSE"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT" /></a>
@@ -69,11 +69,11 @@
 				<a href="#overview" id="overview" style="color: inherit; text-decoration: none;">
 					<h2>Overview</h2>
 				</a>
-				<p><code>mugl</code> is a minimalistic WebGL 3D rendering library written in <a href="https://www.assemblyscript.org/">AssemblyScript</a>. It allows you to run the same 3D app on both JavaScript and WebAssembly (WASM) environments using portable TypeScript/AssemblyScript code.</p>
-				<p>The core <code>mugl</code> library provides a simple, modern <a href="https://gpuweb.github.io/gpuweb/">WebGPU</a>-style <a href="./src/common/device/device/index.d.ts">API</a> abstraction layer that removes WebGL state management from you. There are several backend implementation of the API (<a href="#usage">see usage here</a>):</p>
+				<p><code>mugl</code> is a minimalistic WebGL 3D rendering library that allows you to run the same 3D app on both JavaScript and WebAssembly (WASM) environments using portable <a href="https://www.typescriptlang.org/">TypeScript</a> / <a href="https://www.assemblyscript.org/">AssemblyScript</a> code.</p>
+				<p>The core <code>mugl</code> library provides a simple, modern <a href="https://gpuweb.github.io/gpuweb/">WebGPU</a>-style <a href="./src/common/device/device/index.d.ts">API</a> abstraction layer that removes the verbosity and state management aspect of WebGL. There are several backend implementation of the API (<a href="#usage">see usage here</a>):</p>
 				<ol>
 					<li><strong>Default WebGL backend (<code>getGLDevice</code>)</strong>: Full-featured backend implementation on top of WebGL 1.0 / 2.0.</li>
-					<li><strong>Nano backend (<code>getNGLDevice</code>)</strong>: A <strong>3KB</strong> WebGL 1.0 only backend implementation. You can even turn off some <a href="./src/js/nano/config.ts">features</a> that you do not need (e.g. scissor, stencil testing) to reduce the size to <strong>2KB</strong>!</li>
+					<li><strong>Nano backend (<code>getNGLDevice</code>)</strong>: A <strong>3KB</strong> WebGL 1.0 only backend implementation. The size can be reduced to less than <strong>2KB</strong> with Webpack tree-shaking and toggling off <a href="./src/js/nano/config.ts">features</a> that you do not need (e.g. scissor, stencil testing)!</li>
 					<li><strong>WebAssembly binding (<code>muglBind</code>)</strong>: An API binding that allows you to use the same <code>mugl</code> interface in AssemblyScript / WASM. It simply forwards API calls to one of the above backends.</li>
 					<li>More backends WIP, including WebGPU and native graphics backends</li>
 				</ol>
@@ -81,7 +81,6 @@
 				<ul>
 					<li><a href="https://github.com/andykswong/munum">munum</a> - minimalistic AssemblyScript numerical library for JavaScript and WebAssembly. Used for 3D math calculations.</li>
 				</ul>
-				<p><em>* File sizes are measured from minified and gzipped UMD Webpack library bundles. Actual size should be even smaller after with tree-shaking.</em></p>
 				<a href="#examples" id="examples" style="color: inherit; text-decoration: none;">
 					<h2><a href="http://andykswong.github.io/mugl/examples">Examples</a></h2>
 				</a>
