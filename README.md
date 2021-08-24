@@ -1,5 +1,5 @@
 <h1 align="center">█▓▒­░⡷⠂μ ＧＬ⠐⢾░▒▓█</h1>
-<h2 align="center">muGL - Micro WebGL Library in AssemblyScript</h2>
+<h2 align="center">muGL - Micro WebGL Library for JavaScript and WebAssembly</h2>
 <br />
 <p align="center">
   <a href="./LICENSE"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT" /></a> 
@@ -9,18 +9,16 @@
 
 ## Overview
 
-`mugl` is a minimalistic WebGL 3D rendering library written in [AssemblyScript](https://www.assemblyscript.org/). It allows you to run the same 3D app on both JavaScript and WebAssembly (WASM) environments using portable TypeScript/AssemblyScript code.
+`mugl` is a minimalistic WebGL 3D rendering library that allows you to run the same 3D app on both JavaScript and WebAssembly (WASM) environments using portable [TypeScript](https://www.typescriptlang.org/) / [AssemblyScript](https://www.assemblyscript.org/) code.
 
-The core `mugl` library provides a simple, modern [WebGPU](https://gpuweb.github.io/gpuweb/)-style [API](./src/common/device/device/index.d.ts) abstraction layer that removes WebGL state management from you. There are several backend implementation of the API ([see usage here](#usage)):
+The core `mugl` library provides a simple, modern [WebGPU](https://gpuweb.github.io/gpuweb/)-style [API](./src/common/device/device/index.d.ts) abstraction layer that removes the verbosity and state management aspect of WebGL. There are several backend implementation of the API ([see usage here](#usage)):
 1. **Default WebGL backend (```getGLDevice```)**: Full-featured backend implementation on top of WebGL 1.0 / 2.0.
-1. **Nano backend (```getNGLDevice```)**: A **3KB** WebGL 1.0 only backend implementation. You can even turn off some [features](./src/js/nano/config.ts) that you do not need (e.g. scissor, stencil testing) to reduce the size to **2KB**!
+1. **Nano backend (```getNGLDevice```)**: A **3KB** WebGL 1.0 only backend implementation. The size can be reduced to less than **2KB** with Webpack tree-shaking and toggling off [features](./src/js/nano/config.ts) that you do not need (e.g. scissor, stencil testing)!
 1. **WebAssembly binding (```muglBind```)**: An API binding that allows you to use the same `mugl` interface in AssemblyScript / WASM. It simply forwards API calls to one of the above backends.
 1. More backends WIP, including WebGPU and native graphics backends
 
 Dependencies: 
 - [munum](https://github.com/andykswong/munum) - minimalistic AssemblyScript numerical library for JavaScript and WebAssembly. Used for 3D math calculations.
-
-*\* File sizes are measured from minified and gzipped UMD Webpack library bundles. Actual size should be even smaller after with tree-shaking.*
 
 ## [Examples](http://andykswong.github.io/mugl/examples)
 Check out the [live examples](http://andykswong.github.io/mugl/examples)! 

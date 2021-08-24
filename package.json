@@ -1,7 +1,7 @@
 {
   "name": "mugl",
   "version": "0.0.6",
-  "description": "Micro WebGL Library in AssemblyScript",
+  "description": "Micro WebGL Library for JavaScript and WebAssembly",
   "type": "module",
   "sideEffects": false,
   "ascMain": "assembly/index.ts",
@@ -34,11 +34,14 @@
   "keywords": [
     "3d",
     "canvas",
-    "html5",
+    "webgl",
+    "webgl2",
     "javascript",
     "typescript",
-    "webgl",
-    "webgl2"
+    "wasm",
+    "assemblyscript",
+    "webassembly",
+    "html5"
   ],
   "files": [
     "/assembly",

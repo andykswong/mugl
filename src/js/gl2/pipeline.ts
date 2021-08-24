@@ -27,6 +27,7 @@ export class GLPipeline implements IGLPipeline {
   public glp: WebGLProgram | null;
 
   public readonly cache: UniformCache;
+  public readonly instanced: boolean;
 
   private readonly gl: WebGLRenderingContext;
 
@@ -36,7 +37,9 @@ export class GLPipeline implements IGLPipeline {
     // Auto calculate buffer offsets, stride and shaderLoc
     const hasAttr: boolean[] = Array(MAX_VERTEX_ATTRIBS);
     let nextShaderLoc = 0;
+    let hasInstanced = false;
     const buffers = props.buffers.map(({ attrs: descAttrs, stride = 0, instanced = false }) => {
+      hasInstanced = hasInstanced || instanced;
       const attrs: ReadonlyVertexAttribute[] = Array(descAttrs.length);
       let maxOffset = 0, minOffset = descAttrs.length > 0 ? Infinity : 0;
       for (let j = 0; j < descAttrs.length; ++j) {
@@ -56,6 +59,7 @@ export class GLPipeline implements IGLPipeline {
       valueFormat: uniform.valueFormat || UniformFormat.Float
     }));
 
+    this.instanced = hasInstanced;
     this.props = {
       vert: props.vert,
       frag: props.frag,

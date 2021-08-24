@@ -328,7 +328,11 @@ class WebGLRenderPassContext implements RenderPassContext {
   }
 
   public draw(vertexCount: number, instanceCount = 1, firstVertex = 0): RenderPassContext {
-    if (instanceCount > 1 && (this.webgl2 || this.extInst)) {
+    if (!this.state.pipeObj) {
+      return this; // Skipping draw call. No effect if pipeline not bound
+    }
+
+    if (this.state.pipeObj.instanced && (this.webgl2 || this.extInst)) {
       if (this.webgl2) {
         (this.gl as WebGL2RenderingContext)
           .drawArraysInstanced(this.state.mode, firstVertex, vertexCount, instanceCount);
@@ -343,9 +347,13 @@ class WebGLRenderPassContext implements RenderPassContext {
   }
 
   public drawIndexed(indexCount: number, instanceCount = 1, firstIndex = 0): RenderPassContext {
+    if (!this.state.pipeObj) {
+      return this; // Skipping draw call. No effect if pipeline not bound
+    }
+
     const { mode, idxFmt } = this.state;
     const offset = firstIndex * indexSize(idxFmt);
-    if (instanceCount > 1 && (this.webgl2 || this.extInst)) {
+    if (this.state.pipeObj.instanced && (this.webgl2 || this.extInst)) {
       if (this.webgl2) {
         (this.gl as WebGL2RenderingContext)
           .drawElementsInstanced(mode, indexCount, idxFmt, offset, instanceCount);

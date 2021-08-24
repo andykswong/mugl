@@ -34,15 +34,18 @@ class NanoGLRenderingDevice implements GLRenderingDevice {
   public readonly webgl2 = false;
   public readonly canvas: Canvas;
 
-  private readonly rctx: NanoGLRenderPassContext;
-  private readonly drawExt: WEBGL_draw_buffers | undefined;
+  /** Render pass context. */
+  private readonly r: NanoGLRenderPassContext;
+  
+  /** Draw buffers extension. */
+  private readonly d: WEBGL_draw_buffers | undefined;
 
   constructor(public readonly gl: WebGLRenderingContext) {
     this.canvas = gl.canvas;
     if (NGL_ENABLE_MRT) {
-      this.drawExt = this.feature(GL_EXT_DRAW_BUFFERS);
+      this.d = this.feature(GL_EXT_DRAW_BUFFERS);
     }
-    this.rctx = new NanoGLRenderPassContext(gl, this.feature(GL_EXT_INSTANCING));
+    this.r = new NanoGLRenderPassContext(gl, this.feature(GL_EXT_INSTANCING));
   }
 
   public get width(): number {
@@ -74,7 +77,7 @@ class NanoGLRenderingDevice implements GLRenderingDevice {
 
   public pass(desc: RenderPassDescriptor = {}): GLRenderPass {
     if (NGL_ENABLE_TEXTURE && NGL_ENABLE_OFFSCREEN) {
-      return new GLRenderPass(this.gl, desc, this.drawExt);
+      return new GLRenderPass(this.gl, desc, this.d);
     }
     return renderPassLite(desc);
   }
@@ -121,7 +124,7 @@ class NanoGLRenderingDevice implements GLRenderingDevice {
       this.gl.clear(clearMask);
     }
 
-    return this.rctx;
+    return this.r;
   }
 
   public feature<F>(extension: string): F {
@@ -129,12 +132,13 @@ class NanoGLRenderingDevice implements GLRenderingDevice {
   }
 
   public reset(): void {
-    this.rctx.reset();
+    this.r.reset();
   }
 }
 
 class NanoGLRenderPassContext implements RenderPassContext {
-  private state!: WebGLState;
+  /** Current state. */
+  private s!: WebGLState;
 
   constructor(
     private readonly gl: WebGLRenderingContext,
@@ -144,19 +148,19 @@ class NanoGLRenderPassContext implements RenderPassContext {
   }
 
   public reset(): void {
-    this.state = {
-      pipeObj: null,
-      stencilRef: 0
+    this.s = {
+      p: null,
+      r: 0
     };
   }
 
   public pipeline(pipeline: GLPipeline): RenderPassContext {
-    if (this.state.pipeObj !== pipeline) {
-      this.state.pipeObj = pipeline;
+    if (this.s.p !== pipeline) {
+      this.s.p = pipeline;
 
       // Update shader program
       this.gl.useProgram(pipeline.glp);
-      applyPipelineState(this.gl, pipeline.props, this.state.stencilRef);
+      applyPipelineState(this.gl, pipeline.props, this.s.r);
 
       // Enable/Disable vertex attributes
       for (let i = 0; i < MAX_VERTEX_ATTRIBS; ++i) {
@@ -180,7 +184,7 @@ class NanoGLRenderPassContext implements RenderPassContext {
 
   public vertex(slot: number, { glb }: GLBuffer): RenderPassContext {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const { attrs, stride, instanced } = this.state.pipeObj!.props.buffers[slot];
+    const { attrs, stride, instanced } = this.s.p!.props.buffers[slot];
     this.gl.bindBuffer(GLenum.ARRAY_BUFFER, glb);
     for (const { format, offset, shaderLoc } of attrs) {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -197,12 +201,12 @@ class NanoGLRenderPassContext implements RenderPassContext {
     for (const binding of bindings) {
       // CAVEAT: uniform buffer is unsupported
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      const loc = this.gl.getUniformLocation(this.state.pipeObj!.glp!, binding.name);
+      const loc = this.gl.getUniformLocation(this.s.p!.glp!, binding.name);
 
       if (loc) {
         if (binding.values) { // Array types
           // TODO: this is inefficient
-          const format = this.state.pipeObj!.props.uniforms.find(u => u.name === binding.name)?.valueFormat;
+          const format = this.s.p!.props.uniforms.find(u => u.name === binding.name)?.valueFormat;
           switch (format) {
             case GLenum.FLOAT_MAT4: this.gl.uniformMatrix4fv(loc, false, binding.values as number[]); break;
             case GLenum.FLOAT_MAT3: this.gl.uniformMatrix3fv(loc, false, binding.values as number[]); break;
@@ -227,8 +231,8 @@ class NanoGLRenderPassContext implements RenderPassContext {
   }
 
   public draw(vertexCount: number, instanceCount = 1, firstVertex = 0): RenderPassContext {
-    const { mode } = this.state.pipeObj!.props;
-    if (instanceCount > 1) {
+    const { props: { mode }, i } = this.s.p!;
+    if (i) {
       this.inst?.drawArraysInstancedANGLE(mode, firstVertex, vertexCount, instanceCount);
     } else {
       this.gl.drawArrays(mode, firstVertex, vertexCount);
@@ -237,8 +241,8 @@ class NanoGLRenderPassContext implements RenderPassContext {
   }
 
   public drawIndexed(indexCount: number, instanceCount = 1, firstIndex = 0): RenderPassContext {
-    const { indexFormat, mode } = this.state.pipeObj!.props;
-    if (instanceCount > 1) {
+    const { props: { indexFormat, mode }, i } = this.s.p!;
+    if (i) {
       this.inst?.drawElementsInstancedANGLE(
         mode, indexCount, indexFormat, firstIndex * indexSize(indexFormat), instanceCount);
     } else {
@@ -269,13 +273,13 @@ class NanoGLRenderPassContext implements RenderPassContext {
 
   public stencilRef(stencilRef: number): RenderPassContext {
     if (NGL_ENABLE_STENCIL) {
-      const stencil = this.state.pipeObj?.props.stencil;
+      const stencil = this.s.p?.props.stencil;
       if (stencil) {
         const readMask = stencil.readMask ?? BYTE_MASK;
         this.gl.stencilFuncSeparate(GLenum.FRONT, stencil.frontCompare || GLenum.ALWAYS, stencilRef, readMask);
         this.gl.stencilFuncSeparate(GLenum.BACK, stencil.backCompare || GLenum.ALWAYS, stencilRef, readMask);
       }
-      this.state.stencilRef = stencilRef;
+      this.s.r = stencilRef;
     }
     return this;
   }
@@ -286,6 +290,9 @@ class NanoGLRenderPassContext implements RenderPassContext {
 }
 
 interface WebGLState {
-  pipeObj: GLPipeline | null;
-  stencilRef: number;
+  /** Current pipeline. */
+  p: GLPipeline | null;
+
+  /** Current stencil ref. */
+  r: number;
 }

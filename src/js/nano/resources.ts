@@ -205,23 +205,27 @@ export class GLPipeline implements IGLPipeline {
 
   public glp: WebGLProgram | null;
 
+  /** Indicates if pipeline has instanced attribute. */
+  public i!: boolean;
+
   public constructor(private readonly gl: WebGLRenderingContext, props: PipelineDescriptor) {
     // CAVEAT: Auto calculated buffer offsets, stride and shaderLoc may not be what you expected.
     // TODO: Consider moving auto calculation to a shared util method
-    let shaderLoc = 0;
+    let curShaderLoc = 0;
     this.props = {
       mode: GLenum.TRIANGLES,
       indexFormat: GLenum.UNSIGNED_SHORT,
       ...props,
       buffers: props.buffers.map(({ attrs: descAttrs, stride, instanced = false }) => {
+        this.i = this.i || instanced;
         const attrs: Required<VertexAttribute>[] = Array(descAttrs.length);
-        let offset = 0;
-        for (let j = 0; j < descAttrs.length; ++j, ++shaderLoc) {
-          const { name, format, offset: curOffset = offset, shaderLoc: curShaderLoc = shaderLoc } = descAttrs[j];
-          attrs[j] = { name, format, offset: curOffset, shaderLoc: curShaderLoc };
-          offset = Math.max(offset, curOffset) + vertexByteSize(format);
+        let maxOffset = 0;
+        for (let j = 0; j < descAttrs.length; ++j, ++curShaderLoc) {
+          const { name, format, offset = maxOffset, shaderLoc = curShaderLoc } = descAttrs[j];
+          attrs[j] = { name, format, offset, shaderLoc };
+          maxOffset = Math.max(maxOffset, offset) + vertexByteSize(format);
         }
-        return { attrs, stride: stride || offset, instanced };
+        return { attrs, stride: stride || maxOffset, instanced };
       })
     } as PipelineProperties;
 
