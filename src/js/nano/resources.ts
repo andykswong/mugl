@@ -132,7 +132,7 @@ export class GLRenderPass implements IGLRenderPass {
     drawBuffersExt?: WEBGL_draw_buffers
   ) {
     this.props = props as RenderPassProperties;
-    if (props.color?.length) {
+    if (props.color && props.color.length) {
       // An offscreen pass, need to create a framebuffer with color and depth attachments
       gl.bindFramebuffer(GLenum.FRAMEBUFFER, this.glfb = gl.createFramebuffer());
 

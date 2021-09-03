@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import {
   BYTE_MASK, BufferDescriptor, Canvas, GLRenderingDevice, GLRenderingDeviceFactory, PipelineDescriptor,
   ReadonlyColor, RenderPassContext, RenderPassDescriptor, SamplerDescriptor, TextureDescriptor, vertexSize,
@@ -189,8 +188,7 @@ class NanoGLRenderPassContext implements RenderPassContext {
     for (const { format, offset, shaderLoc } of attrs) {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       this.gl.vertexAttribPointer(shaderLoc, vertexSize(format), vertexType(format), vertexNormalized(format), stride!, offset!);
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      this.inst?.vertexAttribDivisorANGLE(shaderLoc, instanced ? 1 : 0);
+      this.inst && this.inst.vertexAttribDivisorANGLE(shaderLoc, instanced ? 1 : 0);
     }
     return this;
   }
@@ -206,22 +204,27 @@ class NanoGLRenderPassContext implements RenderPassContext {
       if (loc) {
         if (binding.values) { // Array types
           // TODO: this is inefficient
-          const format = this.s.p!.props.uniforms.find(u => u.name === binding.name)?.valueFormat;
-          switch (format) {
-            case GLenum.FLOAT_MAT4: this.gl.uniformMatrix4fv(loc, false, binding.values as number[]); break;
-            case GLenum.FLOAT_MAT3: this.gl.uniformMatrix3fv(loc, false, binding.values as number[]); break;
-            // CAVEAT: mat2 uniform is not commonly used and thus disabled
-            // case GLenum.FLOAT_MAT2: this.gl.uniformMatrix2fv(loc, false, binding.values as number[]); break;
-            case GLenum.FLOAT_VEC4: this.gl.uniform4fv(loc, binding.values as number[]); break;
-            case GLenum.FLOAT_VEC3: this.gl.uniform3fv(loc, binding.values as number[]); break;
-            case GLenum.FLOAT_VEC2: this.gl.uniform2fv(loc, binding.values as number[]); break;
-            default: this.gl.uniform1fv(loc, binding.values as number[]);
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          const uniform = this.s.p!.props.uniforms.find(u => u.name === binding.name);
+          if (uniform) {
+            switch (uniform.valueFormat) {
+              case GLenum.FLOAT_MAT4: this.gl.uniformMatrix4fv(loc, false, binding.values as number[]); break;
+              case GLenum.FLOAT_MAT3: this.gl.uniformMatrix3fv(loc, false, binding.values as number[]); break;
+              // CAVEAT: mat2 uniform is not commonly used and thus disabled
+              // case GLenum.FLOAT_MAT2: this.gl.uniformMatrix2fv(loc, false, binding.values as number[]); break;
+              case GLenum.FLOAT_VEC4: this.gl.uniform4fv(loc, binding.values as number[]); break;
+              case GLenum.FLOAT_VEC3: this.gl.uniform3fv(loc, binding.values as number[]); break;
+              case GLenum.FLOAT_VEC2: this.gl.uniform2fv(loc, binding.values as number[]); break;
+              default: this.gl.uniform1fv(loc, binding.values as number[]);
+            }
           }
         } else if (NGL_ENABLE_TEXTURE && binding.tex) { // Texture
           this.gl.activeTexture(GLenum.TEXTURE0 + texId);
           this.gl.bindTexture(binding.tex.props.type, (binding.tex as GLTexture).glt);
           this.gl.uniform1i(loc, texId++);
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         } else if (!isNaN(binding.value!)) { // Single number
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           this.gl.uniform1f(loc, binding.value!);
         }
       }
@@ -231,9 +234,10 @@ class NanoGLRenderPassContext implements RenderPassContext {
   }
 
   public draw(vertexCount: number, instanceCount = 1, firstVertex = 0): RenderPassContext {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const { props: { mode }, i } = this.s.p!;
     if (i) {
-      this.inst?.drawArraysInstancedANGLE(mode, firstVertex, vertexCount, instanceCount);
+      this.inst && this.inst.drawArraysInstancedANGLE(mode, firstVertex, vertexCount, instanceCount);
     } else {
       this.gl.drawArrays(mode, firstVertex, vertexCount);
     }
@@ -241,9 +245,10 @@ class NanoGLRenderPassContext implements RenderPassContext {
   }
 
   public drawIndexed(indexCount: number, instanceCount = 1, firstIndex = 0): RenderPassContext {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const { props: { indexFormat, mode }, i } = this.s.p!;
     if (i) {
-      this.inst?.drawElementsInstancedANGLE(
+      this.inst && this.inst.drawElementsInstancedANGLE(
         mode, indexCount, indexFormat, firstIndex * indexSize(indexFormat), instanceCount);
     } else {
       this.gl.drawElements(mode, indexCount, indexFormat, firstIndex * indexSize(indexFormat));
@@ -273,7 +278,7 @@ class NanoGLRenderPassContext implements RenderPassContext {
 
   public stencilRef(stencilRef: number): RenderPassContext {
     if (NGL_ENABLE_STENCIL) {
-      const stencil = this.s.p?.props.stencil;
+      const stencil = this.s.p && this.s.p.props.stencil;
       if (stencil) {
         const readMask = stencil.readMask ?? BYTE_MASK;
         this.gl.stencilFuncSeparate(GLenum.FRONT, stencil.frontCompare || GLenum.ALWAYS, stencilRef, readMask);
