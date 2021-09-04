@@ -1,0 +1,1 @@
+{"version":3,"sources":["../../../src/js/gl2/const.ts"],"names":["MAX_VERTEX_ATTRIBS"],"mappings":"AAIA,MAAO,MAAMA,CAAAA,kBAAkB,CAAG,EAA3B","sourcesContent":["/**\r\n * The max number of vertex attributes.\r\n * TODO: [Feature] Move to separate config file and implement capability queries\r\n */\r\nexport const MAX_VERTEX_ATTRIBS = 16;\r\n"],"file":"const.js"}

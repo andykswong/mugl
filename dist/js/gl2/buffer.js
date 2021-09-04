@@ -1,0 +1,2 @@
+import{BufferType,Usage}from"../../common/index.js";export class GLBuffer{constructor(context,props){const gl=this.gl=context.gl;this.props={type:props.type||BufferType.Vertex,usage:props.usage||Usage.Static,size:props.size};gl.bindBuffer(this.props.type,this.glb=gl.createBuffer());gl.bufferData(this.props.type,this.props.size,this.props.usage)}data(data,offset=0){this.gl.bindBuffer(this.props.type,this.glb);this.gl.bufferSubData(this.props.type,offset,data);return this}destroy(){this.gl.deleteBuffer(this.glb);this.glb=null}}
+//# sourceMappingURL=buffer.js.map

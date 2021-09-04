@@ -46,9 +46,14 @@ node_modules/
 
 # Output folders
 coverage/
-dist/
 docs/
+examples/dist/
 
-# as-pect compiled test files
+# Compiled test files
+dist/**/__tests__/
 **/__tests__/**/*.spec.map
 **/__tests__/**/*.spec.wat
+
+# Compiled WASM files
+*.wasm
+*.wasm.map

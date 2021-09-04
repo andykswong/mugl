@@ -1,0 +1,1 @@
+{"version":3,"sources":["../../../src/common/gl/index.ts"],"names":["GLenum"],"mappings":"MAKO,GAAKA,CAAAA,M,kBACZ,OAASA,MAAT","sourcesContent":["/**\r\n * WebGL API and constant definitions.\r\n * @packageDocumentation\r\n */\r\n\r\nimport * as GLenum from './const';\r\nexport { GLenum };\r\n"],"file":"index.js"}

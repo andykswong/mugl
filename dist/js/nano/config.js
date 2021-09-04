@@ -1,0 +1,2 @@
+export const NGL_ENABLE_BLEND=true;export const NGL_ENABLE_STENCIL=true;export const NGL_ENABLE_RASTER=true;export const NGL_ENABLE_OFFSCREEN=true;export const NGL_ENABLE_MRT=true;export const NGL_ENABLE_TEXTURE=true;export const NGL_ENABLE_SCISSOR=true;
+//# sourceMappingURL=config.js.map
