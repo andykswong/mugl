@@ -55,7 +55,7 @@
     "tf.d.ts"
   ],
   "scripts": {
-    "postinstall": "npm link common",
+    "postinstall": "npm run link-common",
     "prepublishOnly": "npm run build && npm test",
     "link-common": "node scripts/lnk.mjs",
     "clean": "rimraf coverage docs dist node_modules **/__tests__/**/*.spec.map **/__tests__/**/*.spec.wat",
