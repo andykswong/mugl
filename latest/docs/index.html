@@ -69,7 +69,7 @@
 				<a href="#overview" id="overview" style="color: inherit; text-decoration: none;">
 					<h2>Overview</h2>
 				</a>
-				<p><code>mugl</code> is a minimalistic WebGL 3D rendering library that allows you to run the same 3D app on both JavaScript and WebAssembly (WASM) environments using portable <a href="https://www.typescriptlang.org/">TypeScript</a> / <a href="https://www.assemblyscript.org/">AssemblyScript</a> code.</p>
+				<p><code>mugl</code> is a minimalistic WebGL 3D rendering library that allows you to run the same 3D app on both JavaScript and WebAssembly (WASM) environments using portable <a href="https://www.typescriptlang.org/">TypeScript</a> / <a href="https://www.assemblyscript.org/">AssemblyScript</a> code. It runs on any modern web browser and mobile via React Native.</p>
 				<p>The core <code>mugl</code> library provides a simple, modern <a href="https://gpuweb.github.io/gpuweb/">WebGPU</a>-style <a href="./src/common/device/device/index.d.ts">API</a> abstraction layer that removes the verbosity and state management aspect of WebGL. There are several backend implementation of the API (<a href="#usage">see usage here</a>):</p>
 				<ol>
 					<li><strong>Default WebGL backend (<code>getGLDevice</code>)</strong>: Full-featured backend implementation on top of WebGL 1.0 / 2.0.</li>
@@ -79,7 +79,7 @@
 				</ol>
 				<p>Dependencies: </p>
 				<ul>
-					<li><a href="https://github.com/andykswong/munum">munum</a> - minimalistic AssemblyScript numerical library for JavaScript and WebAssembly. Used for 3D math calculations.</li>
+					<li><a href="https://github.com/andykswong/munum">munum</a> - minimalistic AssemblyScript 3D Math Library</li>
 				</ul>
 				<a href="#examples" id="examples" style="color: inherit; text-decoration: none;">
 					<h2><a href="http://andykswong.github.io/mugl/examples">Examples</a></h2>
@@ -108,8 +108,10 @@
 				<a href="#1-basic-rendering-example" id="1-basic-rendering-example" style="color: inherit; text-decoration: none;">
 					<h3>1. Basic Rendering Example</h3>
 				</a>
-				<p>Below is a simple <code>mugl</code> program to draw a triangle using the default backend (See this example live <a href="https://andykswong.github.io/mugl/examples/#basic">here</a>):</p>
+				<p>Below is a simple <code>mugl</code> program to draw a triangle using the default or Nano backend:</p>
+				<p>(See this example live <a href="https://andykswong.github.io/mugl/examples/#basic">here</a>)</p>
 				<pre><code class="language-javascript"><span style="color: #AF00DB">import</span><span style="color: #000000"> { </span><span style="color: #001080">getGLDevice</span><span style="color: #000000">, </span><span style="color: #001080">ShaderType</span><span style="color: #000000">, </span><span style="color: #001080">VertexFormat</span><span style="color: #000000"> } </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;mugl&#039;</span><span style="color: #000000">;</span>
+<span style="color: #AF00DB">import</span><span style="color: #000000"> { </span><span style="color: #001080">getNGLDevice</span><span style="color: #000000"> } </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;mugl/n&#039;</span><span style="color: #000000">;  </span><span style="color: #008000">// For nano backend</span>
 
 <span style="color: #008000">// 0. Prepare triangle vertex positions and colors data</span>
 <span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">triangle</span><span style="color: #000000"> = </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #267F99">Float32Array</span><span style="color: #000000">([</span>
@@ -121,6 +123,8 @@
 
 <span style="color: #008000">// 1. Create WebGL rendering device from an existing canvas</span>
 <span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">device</span><span style="color: #000000"> = </span><span style="color: #795E26">getGLDevice</span><span style="color: #000000">(</span><span style="color: #001080">canvas</span><span style="color: #000000">);</span>
+<span style="color: #008000">// For Nano backend, use getNGLDevice instead of getGLDevice:</span>
+<span style="color: #008000">// const device = getNGLDevice(canvas);</span>
 <span style="color: #AF00DB">if</span><span style="color: #000000"> (!</span><span style="color: #001080">device</span><span style="color: #000000">) </span><span style="color: #AF00DB">throw</span><span style="color: #000000"> </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #267F99">Error</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;WebGL is unsupported&#039;</span><span style="color: #000000">);</span>
 
 <span style="color: #008000">// 2. Create GPU buffer for the triangle data</span>
@@ -176,16 +180,51 @@
 <span style="color: #000000">    .</span><span style="color: #795E26">draw</span><span style="color: #000000">(</span><span style="color: #098658">3</span><span style="color: #000000">)</span>
 <span style="color: #000000">  .</span><span style="color: #795E26">end</span><span style="color: #000000">();</span>
 </code></pre>
-				<a href="#2-using-the-nano-backend" id="2-using-the-nano-backend" style="color: inherit; text-decoration: none;">
-					<h3>2. Using the Nano Backend</h3>
+				<a href="#2-running-on-native-mobile-apps-via-expo-gl" id="2-running-on-native-mobile-apps-via-expo-gl" style="color: inherit; text-decoration: none;">
+					<h3>2. Running on Native Mobile Apps via expo-gl</h3>
 				</a>
-				<p>To use the Nano backend, use <code>getNGLDevice</code> to create a device:</p>
-				<pre><code class="language-javascript"><span style="color: #AF00DB">import</span><span style="color: #000000"> { </span><span style="color: #001080">getNGLDevice</span><span style="color: #000000"> } </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;mugl/n&#039;</span><span style="color: #000000">;</span>
+				<p><code>mugl</code> is compatible with <a href="https://docs.expo.dev/versions/latest/sdk/gl-view/">expo-gl</a> for 3D rendering on Expo / React Native mobile apps.
+				Below is the setup required to use <code>mugl</code> with <code>expo-gl</code>.</p>
+				<p>(See the full example live <a href="https://snack.expo.dev/@andywong/3ac3c0">here</a>)</p>
+				<pre><code class="language-javascript"><span style="color: #AF00DB">import</span><span style="color: #000000"> </span><span style="color: #001080">React</span><span style="color: #000000"> </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;react&#039;</span><span style="color: #000000">;</span>
+<span style="color: #AF00DB">import</span><span style="color: #000000"> { </span><span style="color: #001080">Asset</span><span style="color: #000000"> } </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;expo-asset&#039;</span><span style="color: #000000">;</span>
+<span style="color: #AF00DB">import</span><span style="color: #000000"> { </span><span style="color: #001080">GLView</span><span style="color: #000000"> } </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;expo-gl&#039;</span><span style="color: #000000">;</span>
+<span style="color: #AF00DB">import</span><span style="color: #000000"> { </span><span style="color: #001080">getGLDevice</span><span style="color: #000000"> } </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;mugl&#039;</span><span style="color: #000000">;</span>
 
-<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">device</span><span style="color: #000000"> = </span><span style="color: #795E26">getNGLDevice</span><span style="color: #000000">(</span><span style="color: #001080">canvas</span><span style="color: #000000">);</span>
+<span style="color: #AF00DB">export</span><span style="color: #000000"> </span><span style="color: #AF00DB">default</span><span style="color: #000000"> </span><span style="color: #0000FF">function</span><span style="color: #000000"> </span><span style="color: #795E26">App</span><span style="color: #000000">() {</span>
+<span style="color: #000000">  </span><span style="color: #AF00DB">return</span><span style="color: #000000"> (</span><span style="color: #800000">&lt;</span><span style="color: #267F99">GLView</span><span style="color: #000000"> </span><span style="color: #FF0000">style</span><span style="color: #000000">=</span><span style="color: #0000FF">{</span><span style="color: #000000FF">{ </span><span style="color: #001080">width:</span><span style="color: #000000FF"> </span><span style="color: #098658">300</span><span style="color: #000000FF">, </span><span style="color: #001080">height:</span><span style="color: #000000FF"> </span><span style="color: #098658">300</span><span style="color: #000000FF"> }</span><span style="color: #0000FF">}</span><span style="color: #000000"> </span><span style="color: #FF0000">onContextCreate</span><span style="color: #000000">=</span><span style="color: #0000FF">{</span><span style="color: #001080">onContextCreate</span><span style="color: #0000FF">}</span><span style="color: #000000"> </span><span style="color: #800000">/&gt;</span><span style="color: #000000">);</span>
+<span style="color: #000000">}</span>
+
+<span style="color: #0000FF">async</span><span style="color: #000000"> </span><span style="color: #0000FF">function</span><span style="color: #000000"> </span><span style="color: #795E26">onContextCreate</span><span style="color: #000000">(</span><span style="color: #001080">gl</span><span style="color: #000000">) {</span>
+<span style="color: #000000">  </span><span style="color: #008000">// 1. Create device by passing a canvas-like object that wraps the gl context</span>
+<span style="color: #000000">  </span><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">canvas</span><span style="color: #000000"> = {</span>
+<span style="color: #000000">    </span><span style="color: #795E26">getContext</span><span style="color: #000000">(</span><span style="color: #001080">type</span><span style="color: #000000">) { </span><span style="color: #AF00DB">return</span><span style="color: #000000"> </span><span style="color: #001080">gl</span><span style="color: #000000">; }</span>
+<span style="color: #000000">  };</span>
+<span style="color: #000000">  </span><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">device</span><span style="color: #000000"> = </span><span style="color: #795E26">getGLDevice</span><span style="color: #000000">(</span><span style="color: #001080">canvas</span><span style="color: #000000">, { </span><span style="color: #001080">webgl2:</span><span style="color: #000000"> </span><span style="color: #001080">gl</span><span style="color: #000000"> </span><span style="color: #0000FF">instanceof</span><span style="color: #000000"> </span><span style="color: #267F99">WebGL2RenderingContext</span><span style="color: #000000"> });</span>
+
+<span style="color: #000000">  </span><span style="color: #008000">// 2. Use expo-asset to load an image for textures</span>
+<span style="color: #000000">  </span><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">image</span><span style="color: #000000"> = (</span><span style="color: #AF00DB">await</span><span style="color: #000000"> </span><span style="color: #001080">Asset</span><span style="color: #000000">.</span><span style="color: #795E26">loadAsync</span><span style="color: #000000">(</span><span style="color: #795E26">require</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;./image.png&#039;</span><span style="color: #000000">)))[</span><span style="color: #098658">0</span><span style="color: #000000">];</span>
+<span style="color: #000000">  </span><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">tex</span><span style="color: #000000"> = </span><span style="color: #001080">device</span><span style="color: #000000">.</span><span style="color: #795E26">texture</span><span style="color: #000000">({ </span><span style="color: #001080">width:</span><span style="color: #000000"> </span><span style="color: #098658">512</span><span style="color: #000000">, </span><span style="color: #001080">height:</span><span style="color: #000000"> </span><span style="color: #098658">512</span><span style="color: #000000"> })</span>
+<span style="color: #000000">    .</span><span style="color: #795E26">data</span><span style="color: #000000">({ </span><span style="color: #001080">image</span><span style="color: #000000"> });</span>
+
+<span style="color: #000000">  </span><span style="color: #008000">// 3. Setup other resources and render as usual</span>
+<span style="color: #000000">  </span><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">pass</span><span style="color: #000000"> = </span><span style="color: #001080">device</span><span style="color: #000000">.</span><span style="color: #795E26">pass</span><span style="color: #000000">();</span>
+<span style="color: #000000">  </span><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">buffer</span><span style="color: #000000"> = </span><span style="color: #001080">device</span><span style="color: #000000">.</span><span style="color: #795E26">buffer</span><span style="color: #000000">(...).</span><span style="color: #795E26">data</span><span style="color: #000000">(...);</span>
+<span style="color: #000000">  </span><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">pipeline</span><span style="color: #000000"> = </span><span style="color: #001080">device</span><span style="color: #000000">.</span><span style="color: #795E26">pipeline</span><span style="color: #000000">(...);</span>
+<span style="color: #000000">  </span><span style="color: #001080">device</span><span style="color: #000000">.</span><span style="color: #795E26">render</span><span style="color: #000000">(</span><span style="color: #001080">pass</span><span style="color: #000000">)</span>
+<span style="color: #000000">    .</span><span style="color: #795E26">pipeline</span><span style="color: #000000">(</span><span style="color: #001080">pipeline</span><span style="color: #000000">)</span>
+<span style="color: #000000">    .</span><span style="color: #795E26">vertex</span><span style="color: #000000">(</span><span style="color: #098658">0</span><span style="color: #000000">, </span><span style="color: #001080">buffer</span><span style="color: #000000">)</span>
+<span style="color: #000000">    .</span><span style="color: #795E26">uniforms</span><span style="color: #000000">([{ </span><span style="color: #001080">name:</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;tex&#039;</span><span style="color: #000000">, </span><span style="color: #001080">tex</span><span style="color: #000000"> }])</span>
+<span style="color: #000000">    .</span><span style="color: #795E26">draw</span><span style="color: #000000">(</span><span style="color: #098658">3</span><span style="color: #000000">)</span>
+<span style="color: #000000">    .</span><span style="color: #795E26">end</span><span style="color: #000000">();</span>
+
+<span style="color: #000000">  </span><span style="color: #008000">// 4. Call the expo-gl &#039;swap buffers&#039; API at the end of each frame</span>
+<span style="color: #000000">  </span><span style="color: #008000">// See: https://docs.expo.dev/versions/latest/sdk/gl-view/#webgl-api</span>
+<span style="color: #000000">  </span><span style="color: #001080">gl</span><span style="color: #000000">.</span><span style="color: #795E26">endFrameEXP</span><span style="color: #000000">();</span>
+<span style="color: #000000">}</span>
 </code></pre>
-				<a href="#3-running-on-webassemblyassemblyscript" id="3-running-on-webassemblyassemblyscript" style="color: inherit; text-decoration: none;">
-					<h3>3. Running on WebAssembly/AssemblyScript</h3>
+				<a href="#3-running-on-webassembly-via-assemblyscript" id="3-running-on-webassembly-via-assemblyscript" style="color: inherit; text-decoration: none;">
+					<h3>3. Running on WebAssembly via AssemblyScript</h3>
 				</a>
 				<p>Use <code>muglBind</code> to bind a device backend to an AssemblyScript WASM module:</p>
 				<pre><code class="language-javascript"><span style="color: #AF00DB">import</span><span style="color: #000000"> </span><span style="color: #001080">loader</span><span style="color: #000000"> </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;@assemblyscript/loader&#039;</span><span style="color: #000000">;</span>
