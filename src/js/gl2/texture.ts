@@ -133,9 +133,8 @@ export class GLTexture implements IGLTexture {
         (this.gl as WebGL2RenderingContext).texSubImage3D(baseTarget, mipLevel, x, y, z + i * depth, width, height, depth,
           glFormat, glType, (image || buffer) as ArrayBufferView | null);
       } else {
-        if (buffer || (this.webgl2 && image)) {
-          this.gl.texSubImage2D(baseTarget + i, mipLevel, x, y, width, height, glFormat, glType,
-            (image || buffer) as ArrayBufferView | null);
+        if (buffer) {
+          this.gl.texSubImage2D(baseTarget + i, mipLevel, x, y, width, height, glFormat, glType, buffer);
         } else if (image) {
           this.gl.texSubImage2D(baseTarget + i, mipLevel, x, y, glFormat, glType, image);
         }

@@ -19,7 +19,7 @@ export interface WebGLRenderingContextProvider {
 /**
  * A canvas element from which a WebGLRenderingContext can be retrieved.
  */
-export declare type Canvas = HTMLCanvasElement | OffscreenCanvas | WebGLRenderingContextProvider;
+export declare type Canvas = HTMLCanvasElement | WebGLRenderingContextProvider;
 /**
  * WebGL1 feature used by mugl.
  */

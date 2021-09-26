@@ -8,7 +8,7 @@
   "dependencies": {
     "@assemblyscript/loader": "^0.19.9",
     "mugl": "file:..",
-    "munum": "^0.0.5"
+    "munum": "^0.0.6"
   },
   "scripts": {
     "build": "npm run asbuild && npm run webpack",

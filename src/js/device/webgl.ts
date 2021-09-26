@@ -23,7 +23,7 @@ export interface WebGLRenderingContextProvider {
 /**
  * A canvas element from which a WebGLRenderingContext can be retrieved.
  */
-export type Canvas = HTMLCanvasElement | OffscreenCanvas | WebGLRenderingContextProvider;
+export type Canvas = HTMLCanvasElement | WebGLRenderingContextProvider;
 
 const GLCommonFeatures = {
   Aniso: 'EXT_texture_filter_anisotropic',

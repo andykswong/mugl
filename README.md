@@ -9,7 +9,7 @@
 
 ## Overview
 
-`mugl` is a minimalistic WebGL 3D rendering library that allows you to run the same 3D app on both JavaScript and WebAssembly (WASM) environments using portable [TypeScript](https://www.typescriptlang.org/) / [AssemblyScript](https://www.assemblyscript.org/) code.
+`mugl` is a minimalistic WebGL 3D rendering library that allows you to run the same 3D app on both JavaScript and WebAssembly (WASM) environments using portable [TypeScript](https://www.typescriptlang.org/) / [AssemblyScript](https://www.assemblyscript.org/) code. It runs on any modern web browser and mobile via React Native.
 
 The core `mugl` library provides a simple, modern [WebGPU](https://gpuweb.github.io/gpuweb/)-style [API](./src/common/device/device/index.d.ts) abstraction layer that removes the verbosity and state management aspect of WebGL. There are several backend implementation of the API ([see usage here](#usage)):
 1. **Default WebGL backend (```getGLDevice```)**: Full-featured backend implementation on top of WebGL 1.0 / 2.0.
@@ -18,7 +18,7 @@ The core `mugl` library provides a simple, modern [WebGPU](https://gpuweb.github
 1. More backends WIP, including WebGPU and native graphics backends
 
 Dependencies: 
-- [munum](https://github.com/andykswong/munum) - minimalistic AssemblyScript numerical library for JavaScript and WebAssembly. Used for 3D math calculations.
+- [munum](https://github.com/andykswong/munum) - minimalistic AssemblyScript 3D Math Library
 
 ## [Examples](http://andykswong.github.io/mugl/examples)
 Check out the [live examples](http://andykswong.github.io/mugl/examples)! 
@@ -44,10 +44,12 @@ See TSDoc: http://andykswong.github.io/mugl
 ## Usage
 
 ### 1. Basic Rendering Example
-Below is a simple `mugl` program to draw a triangle using the default backend (See this example live [here](https://andykswong.github.io/mugl/examples/#basic)):
+Below is a simple `mugl` program to draw a triangle using the default or Nano backend:
 
+(See this example live [here](https://andykswong.github.io/mugl/examples/#basic))
 ```javascript
 import { getGLDevice, ShaderType, VertexFormat } from 'mugl';
+import { getNGLDevice } from 'mugl/n';  // For nano backend
 
 // 0. Prepare triangle vertex positions and colors data
 const triangle = new Float32Array([
@@ -59,6 +61,8 @@ const triangle = new Float32Array([
 
 // 1. Create WebGL rendering device from an existing canvas
 const device = getGLDevice(canvas);
+// For Nano backend, use getNGLDevice instead of getGLDevice:
+// const device = getNGLDevice(canvas);
 if (!device) throw new Error('WebGL is unsupported');
 
 // 2. Create GPU buffer for the triangle data
@@ -115,16 +119,51 @@ device
   .end();
 ```
 
-### 2. Using the Nano Backend
-To use the Nano backend, use `getNGLDevice` to create a device:
+### 2. Running on Native Mobile Apps via expo-gl
+`mugl` is compatible with [expo-gl](https://docs.expo.dev/versions/latest/sdk/gl-view/) for 3D rendering on Expo / React Native mobile apps.
+Below is the setup required to use `mugl` with `expo-gl`.
 
+(See the full example live [here](https://snack.expo.dev/@andywong/3ac3c0))
 ```javascript
-import { getNGLDevice } from 'mugl/n';
+import React from 'react';
+import { Asset } from 'expo-asset';
+import { GLView } from 'expo-gl';
+import { getGLDevice } from 'mugl';
 
-const device = getNGLDevice(canvas);
+export default function App() {
+  return (<GLView style={{ width: 300, height: 300 }} onContextCreate={onContextCreate} />);
+}
+
+async function onContextCreate(gl) {
+  // 1. Create device by passing a canvas-like object that wraps the gl context
+  const canvas = {
+    getContext(type) { return gl; }
+  };
+  const device = getGLDevice(canvas, { webgl2: gl instanceof WebGL2RenderingContext });
+
+  // 2. Use expo-asset to load an image for textures
+  const image = (await Asset.loadAsync(require('./image.png')))[0];
+  const tex = device.texture({ width: 512, height: 512 })
+    .data({ image });
+
+  // 3. Setup other resources and render as usual
+  const pass = device.pass();
+  const buffer = device.buffer(...).data(...);
+  const pipeline = device.pipeline(...);
+  device.render(pass)
+    .pipeline(pipeline)
+    .vertex(0, buffer)
+    .uniforms([{ name: 'tex', tex }])
+    .draw(3)
+    .end();
+
+  // 4. Call the expo-gl 'swap buffers' API at the end of each frame
+  // See: https://docs.expo.dev/versions/latest/sdk/gl-view/#webgl-api
+  gl.endFrameEXP();
+}
 ```
 
-### 3. Running on WebAssembly/AssemblyScript
+### 3. Running on WebAssembly via AssemblyScript
 Use `muglBind` to bind a device backend to an AssemblyScript WASM module:
 
 ```javascript

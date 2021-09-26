@@ -111,7 +111,7 @@ window.loadExample = function(hash: string = location.hash): void {
       device.reset();
     }
 
-    example = nextExample.factory(device, USE_WEBGL2);
+    example = nextExample.factory(device, device.webgl2);
     example.init();
     render();
   }

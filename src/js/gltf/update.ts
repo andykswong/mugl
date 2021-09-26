@@ -4,7 +4,7 @@ import { array, Mat4, mat4, quat, transform, Vec3, vec3 } from 'munum';
 import { getAnimationDuration, getAnimationSamplerInput, getAnimationSamplerOutput, getExtras, getInverseBindMatrices } from './gltf-utils';
 import { Animation, Node } from '../gltf-spec/glTF2';
 import { ResolvedGlTF } from './types';
-import { Quat } from 'munum/dist/quat';
+import { Quat } from 'munum';
 
 const I4 = mat4.create();
 const Iq = quat.create();

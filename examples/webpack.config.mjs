@@ -54,7 +54,7 @@ export default {
   plugins: [
     new webpack.DefinePlugin({
       'MUGL_DEBUG': debug,
-      'USE_WEBGL2': false,
+      'USE_WEBGL2': true,
       'USE_NGL': false,
       'NGL_ENABLE_SCISSOR': false,
     }),
