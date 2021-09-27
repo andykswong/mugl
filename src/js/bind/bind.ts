@@ -13,15 +13,16 @@ import { getGLDevice } from '../gl2';
 
 type Ptr = number;
 type Uint = number;
-type ImageId = Uint;
-type CanvasId = Uint;
-type RenderingDeviceId = Uint;
-type RenderPassContextId = Uint;
-type BufferId = Uint;
-type TextureId = Uint;
-type RenderPassId = Uint;
-type ShaderId = Uint;
-type PipelineId = Uint;
+
+type ImageId = Ptr;
+type CanvasId = Ptr;
+type RenderingDeviceId = Ptr;
+type RenderPassContextId = Ptr;
+type BufferId = Ptr;
+type TextureId = Ptr;
+type RenderPassId = Ptr;
+type ShaderId = Ptr;
+type PipelineId = Ptr;
 
 const UINT_MAX = 4294967295;
 
@@ -94,7 +95,6 @@ export function muglBind(
   const renderPasses: Record<RenderPassId, RenderPass> = {};
   let pipelineId: PipelineId = 1;
   const pipelines: Record<PipelineId, Pipeline> = {};
-  // TODO: New RenderPassContext is created every frame, we may want to check for overflow and reuse IDs
   let renderPassContextId: RenderPassContextId = 1;
   const renderPassContexts: Record<RenderPassContextId, RenderPassContext> = {};
   const boundUniforms: Record<RenderPassContextId, UniformBindings> = {};

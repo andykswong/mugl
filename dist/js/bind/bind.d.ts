@@ -3,16 +3,15 @@ import { Buffer, ImageSource, Pipeline, RenderingDevice, RenderPass, RenderPassC
 import { UniformBindings } from '../../common/device/descriptor';
 import { Canvas, GLRenderingDeviceFactory } from '../device';
 declare type Ptr = number;
-declare type Uint = number;
-declare type ImageId = Uint;
-declare type CanvasId = Uint;
-declare type RenderingDeviceId = Uint;
-declare type RenderPassContextId = Uint;
-declare type BufferId = Uint;
-declare type TextureId = Uint;
-declare type RenderPassId = Uint;
-declare type ShaderId = Uint;
-declare type PipelineId = Uint;
+declare type ImageId = Ptr;
+declare type CanvasId = Ptr;
+declare type RenderingDeviceId = Ptr;
+declare type RenderPassContextId = Ptr;
+declare type BufferId = Ptr;
+declare type TextureId = Ptr;
+declare type RenderPassId = Ptr;
+declare type ShaderId = Ptr;
+declare type PipelineId = Ptr;
 /**
  * mugl-WASM binding object.
  */

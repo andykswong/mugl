@@ -1,4 +1,4 @@
-import { BufferProperties, PipelineProperties, RenderPassProperties, TextureData, TextureProperties } from '../descriptor';
+import { BufferProperties, PipelineProperties, RenderPassProperties, SamplerProperties, TextureData, TextureProperties } from '../descriptor';
 import { MipmapHint, ShaderType } from '../enums';
 import { ReadonlyExtent3D, ReadonlyOrigin3D, Uint } from '../types';
 import {
@@ -34,6 +34,8 @@ export abstract class Buffer extends Resource implements IBuffer {
 export abstract class Texture extends Resource implements ITexture {
   abstract get props(): TextureProperties;
 
+  abstract get sampler(): SamplerProperties;
+
   // @ts-ignore: Valid AssemblyScript
   abstract data(data: TextureData, offset: ReadonlyOrigin3D = [0, 0, 0], size: ReadonlyExtent3D = [0, 0, 0], mipLevel: Uint = 0): Texture;
 
@@ -46,7 +48,7 @@ export abstract class Texture extends Resource implements ITexture {
  * @see https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/bindFramebuffer
  * @see https://gpuweb.github.io/gpuweb/#dictdef-gpurenderpassdescriptor
  */
- export abstract class RenderPass extends Resource implements IRenderPass {
+export abstract class RenderPass extends Resource implements IRenderPass {
   abstract get props(): RenderPassProperties;
 
   abstract resolve(): void;

@@ -15,12 +15,14 @@ import {
 /* Resource pointer */
 export type Canvas = u32;
 export type RenderingDeviceId = u32;
-export type RenderPassContextId = u32;
 export type BufferId = u32;
 export type TextureId = u32;
-export type RenderPassId = u32;
 export type ShaderId = u32;
 export type PipelineId = u32;
+
+// Render pass may be created once per frame. Use f64 to be safe from overflow
+export type RenderPassId = f64;
+export type RenderPassContextId = f64;
 
 /* Image functions */
 export declare function createImage(uri: string): ImageSource;
