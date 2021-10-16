@@ -17,8 +17,8 @@ The core `mugl` library provides a simple, modern [WebGPU](https://gpuweb.github
 1. **WebAssembly binding (```muglBind```)**: An API binding that allows you to use the same `mugl` interface in AssemblyScript / WASM. It simply forwards API calls to one of the above backends.
 1. More backends WIP, including WebGPU and native graphics backends
 
-Dependencies: 
-- [munum](https://github.com/andykswong/munum) - minimalistic AssemblyScript 3D Math Library
+## API Documentation
+See TSDoc: http://andykswong.github.io/mugl
 
 ## [Examples](http://andykswong.github.io/mugl/examples)
 Check out the [live examples](http://andykswong.github.io/mugl/examples)! 
@@ -27,21 +27,18 @@ The source code of all examples can be found [here](./examples).
 All examples run on **both JavaScript and WebAssembly, using the exact same code base**! Click the toggle in the examples menu to seamlessly switch between the two environments.
 
 ## [glTF 2.0 Model Viewer](http://andykswong.github.io/mugl/examples/gltf.html) (WIP)
-A minimal **13KB** (gzipped) glTF model viewer built on `mugl` is available as an [example](http://andykswong.github.io/mugl/examples/gltf.html) usage of this library. The source code can be found [here](./examples/src/gltf-viewer). Currently only running on JavaScript, but it is planned to be ported to AssemblyScript/WASM.
+A minimal glTF model viewer built on `mugl` is available as an [example](http://andykswong.github.io/mugl/examples/gltf.html) usage of this library. The source code can be found [here](./examples/src/gltf-viewer). Currently only running on JavaScript, but it is planned to be ported to AssemblyScript/WASM.
 
 Any model from [glTF-Sample-Models](https://github.com/KhronosGroup/glTF-Sample-Models) can be loaded using the `model` and `variant` URL parameter, e.g.: [?model=Buggy&variant=glTF-Binary](http://andykswong.github.io/mugl/examples/gltf.html?model=Buggy&variant=glTF-Binary&camera=0&scene=0) to load the [Buggy](https://github.com/KhronosGroup/glTF-Sample-Models/tree/master/2.0/Buggy) model. You can also use the `url` URL parameter to load a model from any source ([example](http://andykswong.github.io/mugl/examples/gltf.html?url=https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Avocado/glTF/Avocado.gltf)).
 
 ![alt text](./screenshots/DamagedHelmet.png)
 
-## Install
+## Usage
+
+### 0. Install
 ```shell
 npm install --save mugl
 ```
-
-## API Documentation
-See TSDoc: http://andykswong.github.io/mugl
-
-## Usage
 
 ### 1. Basic Rendering Example
 Below is a simple `mugl` program to draw a triangle using the default or Nano backend:

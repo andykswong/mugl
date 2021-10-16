@@ -276,15 +276,15 @@ class WebGLRenderPassContext implements RenderPassContext {
       }
 
       if (uniformInfo.type === UniformType.Value) {
-        if (binding.values) { // Array types
+        if (binding.values || binding.valueBuffer) { // Array types
           switch (uniformInfo.valueFormat) {
-            case UniformFormat.Mat4: this.gl.uniformMatrix4fv(uniformInfo.loc, false, binding.values as FloatList); break;
-            case UniformFormat.Mat3: this.gl.uniformMatrix3fv(uniformInfo.loc, false, binding.values as FloatList); break;
-            case UniformFormat.Mat2: this.gl.uniformMatrix2fv(uniformInfo.loc, false, binding.values as FloatList); break;
-            case UniformFormat.Vec4: this.gl.uniform4fv(uniformInfo.loc, binding.values as FloatList); break;
-            case UniformFormat.Vec3: this.gl.uniform3fv(uniformInfo.loc, binding.values as FloatList); break;
-            case UniformFormat.Vec2: this.gl.uniform2fv(uniformInfo.loc, binding.values as FloatList); break;
-            case UniformFormat.Float: this.gl.uniform1fv(uniformInfo.loc, binding.values as FloatList); break;
+            case UniformFormat.Mat4: this.gl.uniformMatrix4fv(uniformInfo.loc, false, (binding.values || binding.valueBuffer) as FloatList); break;
+            case UniformFormat.Mat3: this.gl.uniformMatrix3fv(uniformInfo.loc, false, (binding.values || binding.valueBuffer) as FloatList); break;
+            case UniformFormat.Mat2: this.gl.uniformMatrix2fv(uniformInfo.loc, false, (binding.values || binding.valueBuffer) as FloatList); break;
+            case UniformFormat.Vec4: this.gl.uniform4fv(uniformInfo.loc, (binding.values || binding.valueBuffer) as FloatList); break;
+            case UniformFormat.Vec3: this.gl.uniform3fv(uniformInfo.loc, (binding.values || binding.valueBuffer) as FloatList); break;
+            case UniformFormat.Vec2: this.gl.uniform2fv(uniformInfo.loc, (binding.values || binding.valueBuffer) as FloatList); break;
+            case UniformFormat.Float: this.gl.uniform1fv(uniformInfo.loc, (binding.values || binding.valueBuffer) as FloatList); break;
             default:
               if (MUGL_DEBUG) {
                 console.warn(`Cannot bind a number array to uniform: ${binding.name}`);

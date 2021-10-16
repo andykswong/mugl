@@ -384,14 +384,14 @@ export function muglBind(
       }
     },
     bindUniform(
-      context: RenderPassContextId, name: Ptr, value: Float, valuesPtr: Ptr, tex: TextureId,
+      context: RenderPassContextId, name: Ptr, value: Float, valuesPtr: Ptr, valueBufferPtr: Ptr, tex: TextureId,
       buffer: BufferId, bufferOffset: Uint, bufferSize: Uint
     ) {
       let values = undefined;
-      if (valuesPtr) {
-        values = module.__getArrayView(valuesPtr);
-        module.__pin(valuesPtr);
-        pinned[valuesPtr] = valuesPtr;
+      if (valuesPtr || valueBufferPtr) {
+        values = module.__getArrayView(valuesPtr || valueBufferPtr);
+        module.__pin(valuesPtr || valueBufferPtr);
+        pinned[valuesPtr || valueBufferPtr] = valuesPtr || valueBufferPtr;
       }
       boundUniforms[context]?.push({
         name: module.__getString(name),

@@ -19,3 +19,11 @@ export type Origin2D = StaticArray<Float>;
 export type ReadonlyOrigin2D = Origin2D;
 export type Origin3D = StaticArray<Float>;
 export type ReadonlyOrigin3D = Origin3D;
+
+/**
+ * Convert a dynamic array to float list.
+ */
+export function toFloatList(array: Float[]): FloatList {
+  // @ts-ignore: valid AssemblyScript
+  return StaticArray.fromArray(array);
+}

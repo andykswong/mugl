@@ -437,8 +437,11 @@ export interface UniformBinding {
   /** The uniform value to bind */
   value?: Float;
 
-  /** The uniform array value to bind */
+  /** The array uniform value to bind */
   values?: ReadonlyFloatList | null;
+
+  /** The typed array uniform value to bind */
+  valueBuffer?: Float32Array | null;
 
   /** The texture to bind */
   tex?: Texture | null;

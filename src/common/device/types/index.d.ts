@@ -82,3 +82,8 @@ export type Origin3D = [x: number, y: number, z: number];
  * A readonly (x, y, z) 3D point.
  */
 export type ReadonlyOrigin3D = Readonly<Origin3D>;
+
+/**
+ * Convert a dynamic array to float list.
+ */
+ export function toFloatList(array: Float[]): FloatList;

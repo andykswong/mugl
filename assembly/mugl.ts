@@ -101,7 +101,8 @@ export declare function bindVertexBuffer(context: RenderPassContextId, slot: Uin
 export declare function bindIndexBuffer(context: RenderPassContextId, buffer: BufferId): void;
 export declare function bindUniform(
   context: RenderPassContextId,
-  name: string, value: Float, values: FloatList | null, tex: TextureId, buffer: BufferId, bufferOffset: Uint, bufferSize: Uint
+  name: string, value: Float, values: FloatList | null, valueBuffer: Float32Array | null, tex: TextureId,
+  buffer: BufferId, bufferOffset: Uint, bufferSize: Uint
 ): void;
 export declare function draw(context: RenderPassContextId, indexed: boolean, count: Uint, instanceCount: Uint, first: Uint): void;
 export declare function viewport(context: RenderPassContextId, x: Int, y: Int, width: Int, height: Int, minDepth: Int, maxDepth: Int): void;

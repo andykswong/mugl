@@ -1,3 +1,0 @@
-declare const _default: "\nvarying vec2 vTexCoord0;\nvarying vec2 vTexCoord1;\n\nstruct TextureInfo {\n  sampler2D tex;\n  float texCoord;\n  float scale;\n};\n\nvec2 getTexCoord(TextureInfo tex) {\n  return mix(vTexCoord0, vTexCoord1, step(1., tex.texCoord));\n}\n\nvec4 texture(TextureInfo tex) {\n  return texture2D(tex.tex, getTexCoord(tex));\n}\n\nvec4 texture(TextureInfo tex, vec4 defaultValue) {\n  return mix(defaultValue, texture2D(tex.tex, getTexCoord(tex)), step(0., tex.texCoord));\n}\n";
-export default _default;
-//# sourceMappingURL=texture.glsl.d.ts.map

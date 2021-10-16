@@ -89,7 +89,8 @@ class GLRenderPassContext extends RenderPassContext {
     for (let i = 0; i < bindings.length; ++i) {
       const uniform = bindings[i];
       bindUniform(
-        this.id, uniform.name, uniform.value || 0, uniform.values || null, uniform.tex ? (uniform.tex as GLTexture).id : 0,
+        this.id, uniform.name, uniform.value || 0, uniform.values || null, uniform.valueBuffer || null,
+        uniform.tex ? (uniform.tex as GLTexture).id : 0,
         uniform.buffer ? (uniform.buffer as GLBuffer).id : 0, uniform.bufferOffset || 0, uniform.bufferSize || 0
       );
     }

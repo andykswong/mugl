@@ -2,6 +2,8 @@
 
 import { Mat3, mat3, Mat4, mat4, Vec3, vec3 } from 'munum';
 import { GLenum } from '../../common/gl';
+import { PRIMITIVE_VS_SRC } from '../../common/shaders/gltf/primitive.vs.glsl';
+import { PBR_FS_SRC } from '../../common/shaders/gltf/pbr.fs.glsl';
 import {
   AddressMode, BlendFactor, Buffer, BufferType, CompareFunc, CullMode, FilterMode, IndexFormat, MinFilterMode, Pipeline, PrimitiveType,
   RenderingDevice, RenderPassContext, SamplerDescriptor, Texture, TexType, UniformFormat, UniformLayout, UniformType,
@@ -10,8 +12,6 @@ import {
 import { Accessor, GlTF, Mesh, MeshPrimitive, Node } from '../gltf-spec/glTF2';
 import { ResolvedGlTF } from './types';
 import { getCameraProjection, getExtras, getAccessorVertexFormat, getAccessorData } from './gltf-utils';
-import primitiveVert from './shaders/primitive.vert';
-import pbrFrag from './shaders/pbr.frag';
 import { updateGlTF } from './update';
 
 // Only supports 16 attributes
@@ -267,7 +267,7 @@ function loadGPUPipeline(device: RenderingDevice, glTF: ResolvedGlTF, primitive:
   if (unlit) {
     defines.push('MATERIAL_UNLIT');
   }
-  const defineStr = defines.map(define => `#define ${define}`).join('\n');
+  const defineStr = defines.map(define => `#define ${define}\n`).join('');
 
   const additionalUniforms: UniformLayout = [];
   if (normNumJoints > 0) {
@@ -277,8 +277,8 @@ function loadGPUPipeline(device: RenderingDevice, glTF: ResolvedGlTF, primitive:
     additionalUniforms.push({ name: 'targetWeights', type: UniformType.Value, valueFormat: UniformFormat.Float });
   }
 
-  const vert = device.shader({ type: ShaderType.Vertex, source: defineStr + primitiveVert });
-  const frag = device.shader({ type: ShaderType.Fragment, source: defineStr + pbrFrag });
+  const vert = device.shader({ type: ShaderType.Vertex, source: defineStr + PRIMITIVE_VS_SRC });
+  const frag = device.shader({ type: ShaderType.Fragment, source: defineStr + PBR_FS_SRC });
 
   pipeline = getExtras(primitive).pipeline = pipelines[pipelineKey] = device.pipeline({
     vert,

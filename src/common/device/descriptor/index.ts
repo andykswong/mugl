@@ -357,8 +357,11 @@ export class UniformBinding {
   /** The uniform value to bind */
   value: Float = 0;
 
-  /** The uniform array value to bind */
+  /** The array uniform value to bind */
   values: ReadonlyFloatList | null = null;
+
+  /** The typed array uniform value to bind */
+  valueBuffer: Float32Array | null = null;
 
   /** The texture to bind */
   tex: Texture | null = null;

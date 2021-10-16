@@ -202,20 +202,20 @@ class NanoGLRenderPassContext implements RenderPassContext {
       const loc = this.gl.getUniformLocation(this.s.p!.glp!, binding.name);
 
       if (loc) {
-        if (binding.values) { // Array types
+        if (binding.values || binding.valueBuffer) { // Array types
           // TODO: this is inefficient
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           const uniform = this.s.p!.props.uniforms.find(u => u.name === binding.name);
           if (uniform) {
             switch (uniform.valueFormat) {
-              case GLenum.FLOAT_MAT4: this.gl.uniformMatrix4fv(loc, false, binding.values as number[]); break;
-              case GLenum.FLOAT_MAT3: this.gl.uniformMatrix3fv(loc, false, binding.values as number[]); break;
+              case GLenum.FLOAT_MAT4: this.gl.uniformMatrix4fv(loc, false, (binding.values || binding.valueBuffer) as number[]); break;
+              case GLenum.FLOAT_MAT3: this.gl.uniformMatrix3fv(loc, false, (binding.values || binding.valueBuffer) as number[]); break;
               // CAVEAT: mat2 uniform is not commonly used and thus disabled
-              // case GLenum.FLOAT_MAT2: this.gl.uniformMatrix2fv(loc, false, binding.values as number[]); break;
-              case GLenum.FLOAT_VEC4: this.gl.uniform4fv(loc, binding.values as number[]); break;
-              case GLenum.FLOAT_VEC3: this.gl.uniform3fv(loc, binding.values as number[]); break;
-              case GLenum.FLOAT_VEC2: this.gl.uniform2fv(loc, binding.values as number[]); break;
-              default: this.gl.uniform1fv(loc, binding.values as number[]);
+              // case GLenum.FLOAT_MAT2: this.gl.uniformMatrix2fv(loc, false, (binding.values || binding.valueBuffer) as number[]); break;
+              case GLenum.FLOAT_VEC4: this.gl.uniform4fv(loc, (binding.values || binding.valueBuffer) as number[]); break;
+              case GLenum.FLOAT_VEC3: this.gl.uniform3fv(loc, (binding.values || binding.valueBuffer) as number[]); break;
+              case GLenum.FLOAT_VEC2: this.gl.uniform2fv(loc, (binding.values || binding.valueBuffer) as number[]); break;
+              default: this.gl.uniform1fv(loc, (binding.values || binding.valueBuffer) as number[]);
             }
           }
         } else if (NGL_ENABLE_TEXTURE && binding.tex) { // Texture
