@@ -77,10 +77,10 @@
 					<li><strong>WebAssembly binding (<code>muglBind</code>)</strong>: An API binding that allows you to use the same <code>mugl</code> interface in AssemblyScript / WASM. It simply forwards API calls to one of the above backends.</li>
 					<li>More backends WIP, including WebGPU and native graphics backends</li>
 				</ol>
-				<p>Dependencies: </p>
-				<ul>
-					<li><a href="https://github.com/andykswong/munum">munum</a> - minimalistic AssemblyScript 3D Math Library</li>
-				</ul>
+				<a href="#api-documentation" id="api-documentation" style="color: inherit; text-decoration: none;">
+					<h2>API Documentation</h2>
+				</a>
+				<p>See TSDoc: <a href="http://andykswong.github.io/mugl">http://andykswong.github.io/mugl</a></p>
 				<a href="#examples" id="examples" style="color: inherit; text-decoration: none;">
 					<h2><a href="http://andykswong.github.io/mugl/examples">Examples</a></h2>
 				</a>
@@ -90,21 +90,17 @@
 				<a href="#gltf-20-model-viewer-wip" id="gltf-20-model-viewer-wip" style="color: inherit; text-decoration: none;">
 					<h2><a href="http://andykswong.github.io/mugl/examples/gltf.html">glTF 2.0 Model Viewer</a> (WIP)</h2>
 				</a>
-				<p>A minimal <strong>13KB</strong> (gzipped) glTF model viewer built on <code>mugl</code> is available as an <a href="http://andykswong.github.io/mugl/examples/gltf.html">example</a> usage of this library. The source code can be found <a href="./examples/src/gltf-viewer">here</a>. Currently only running on JavaScript, but it is planned to be ported to AssemblyScript/WASM.</p>
+				<p>A minimal glTF model viewer built on <code>mugl</code> is available as an <a href="http://andykswong.github.io/mugl/examples/gltf.html">example</a> usage of this library. The source code can be found <a href="./examples/src/gltf-viewer">here</a>. Currently only running on JavaScript, but it is planned to be ported to AssemblyScript/WASM.</p>
 				<p>Any model from <a href="https://github.com/KhronosGroup/glTF-Sample-Models">glTF-Sample-Models</a> can be loaded using the <code>model</code> and <code>variant</code> URL parameter, e.g.: <a href="http://andykswong.github.io/mugl/examples/gltf.html?model=Buggy&amp;variant=glTF-Binary&amp;camera=0&amp;scene=0">?model=Buggy&amp;variant=glTF-Binary</a> to load the <a href="https://github.com/KhronosGroup/glTF-Sample-Models/tree/master/2.0/Buggy">Buggy</a> model. You can also use the <code>url</code> URL parameter to load a model from any source (<a href="http://andykswong.github.io/mugl/examples/gltf.html?url=https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Avocado/glTF/Avocado.gltf">example</a>).</p>
 				<p><img src="./screenshots/DamagedHelmet.png" alt="alt text"></p>
-				<a href="#install" id="install" style="color: inherit; text-decoration: none;">
-					<h2>Install</h2>
-				</a>
-				<pre><code class="language-shell"><span style="color: #000000">npm install --save mugl</span>
-</code></pre>
-				<a href="#api-documentation" id="api-documentation" style="color: inherit; text-decoration: none;">
-					<h2>API Documentation</h2>
-				</a>
-				<p>See TSDoc: <a href="http://andykswong.github.io/mugl">http://andykswong.github.io/mugl</a></p>
 				<a href="#usage" id="usage" style="color: inherit; text-decoration: none;">
 					<h2>Usage</h2>
 				</a>
+				<a href="#0-install" id="0-install" style="color: inherit; text-decoration: none;">
+					<h3>0. Install</h3>
+				</a>
+				<pre><code class="language-shell"><span style="color: #000000">npm install --save mugl</span>
+</code></pre>
 				<a href="#1-basic-rendering-example" id="1-basic-rendering-example" style="color: inherit; text-decoration: none;">
 					<h3>1. Basic Rendering Example</h3>
 				</a>
@@ -304,6 +300,7 @@
 		<h2>Legend</h2>
 		<div class="tsd-legend-group">
 			<ul class="tsd-legend">
+				<li class="tsd-kind-namespace"><span class="tsd-kind-icon">Namespace</span></li>
 				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
 				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
 				<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
