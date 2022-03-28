@@ -16,7 +16,7 @@
 Additional WASM language bindings (e.g. Rust) and platform supports (e.g. native Desktop) are planned.
 
 ## API Documentation
-For JavaScript / AssemblyScript interface, see TSDoc: http://andykswong.github.io/mugl
+For JavaScript / AssemblyScript interface, see TSDoc: http://andykswong.github.io/mugl/latest/docs
 
 For raw WebAssembly interface, see the API spec: [API.wit](./API.wit) \
 or the AssemblyScript imports: [mugl.ts](./assembly/mugl.ts)
@@ -171,7 +171,7 @@ imports.mugl.memory = instance.exports.memory;
 ```
 
 In the AssemblyScript WASM module, you can then use `getCanvasById` to get a canvas handle for creating a device:
-```typescript
+```javascript
 import { getCanvasById, WebGL } from 'mugl';
 
 const device = WebGL.requestWebGL2Device(getCanvasById('canvasId'));
