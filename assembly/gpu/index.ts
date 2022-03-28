@@ -3,7 +3,6 @@
  * @packageDocumentation
  */
 
-export * from './config';
 export * from './descriptor';
 export * from './dom';
 export * from './gpu';

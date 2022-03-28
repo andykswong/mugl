@@ -51,7 +51,7 @@
   "scripts": {
     "postinstall": "npm run copy-gpu-types",
     "prepublishOnly": "npm run build && npm test",
-    "copy-gpu-types": "copyfiles -u 1 js/gpu/{config,gl-const,gl-util,gpu,type}.ts assembly",
+    "copy-gpu-types": "copyfiles -u 1 js/gpu/{gl-const,gl-util,gpu,type}.ts assembly",
     "clean": "rimraf coverage docs dist **/__tests__/**/*.spec.map **/__tests__/**/*.spec.wat",
     "prebuild": "npm run copy-gpu-types && npm run lint",
     "build": "npm run asbuild && npm run tsbuild",
