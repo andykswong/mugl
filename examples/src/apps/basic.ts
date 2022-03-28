@@ -1,25 +1,22 @@
-import { Buffer, Float, Pipeline, RenderingDevice, RenderPass, ShaderType, VertexFormat } from 'mugl';
-import { BaseExample, createBuffer, toVertices, Triangle } from '../common';
+import { Buffer, Device, Float, RenderPipeline, ShaderStage, VertexFormat, vertexBufferLayouts } from 'mugl';
+import { API, BaseExample, createBuffer, toVertices, Triangle } from '../common';
 
-const vert = `
-uniform float angle;
-attribute vec2 position;
-attribute vec4 color;
-varying lowp vec4 vColor;
+const vert = `#version 300 es
+layout (location=0) in vec3 position;
+layout (location=1) in vec4 color;
+out vec4 vColor;
 void main () {
-  gl_Position = vec4(
-    cos(angle) * position.x - sin(angle) * position.y,
-    sin(angle) * position.x + cos(angle) * position.y,
-    0, 1
-  );
+  gl_Position = vec4(position, 1);
   vColor = color;
 }
 `;
 
-const frag = `
-varying lowp vec4 vColor;
+const frag = `#version 300 es
+precision mediump float;
+in vec4 vColor;
+out vec4 outColor;
 void main () {
-  gl_FragColor = vColor;
+  outColor = vColor;
 }
 `;
 
@@ -27,43 +24,36 @@ const position = toVertices(Triangle);
 
 export class BasicExample extends BaseExample {
   buffer: Buffer | null = null;
-  pass: RenderPass | null = null;
-  pipeline: Pipeline | null = null;
-  angle: Float = 0;
+  pipeline: RenderPipeline | null = null;
 
-  constructor(private readonly device: RenderingDevice) {
+  constructor(private readonly device: Device) {
     super();
   }
 
   init(): void {
-    const vs = this.device.shader({ type: ShaderType.Vertex, source: vert });
-    const fs = this.device.shader({ type: ShaderType.Fragment, source: frag });
+    const vs = API.createShader(this.device, { code: vert, usage: ShaderStage.Vertex });
+    const fs = API.createShader(this.device, { code: frag, usage: ShaderStage.Fragment });
+
     this.buffer = createBuffer(this.device, position);
-    this.pass = this.device.pass();
-    this.pipeline = this.device.pipeline({
-      vert: vs,
-      frag: fs,
-      buffers: [
-        {
-          attrs: [
-            { name: 'position', format: VertexFormat.Float3 },
-            { name: 'color', format: VertexFormat.Float4 }
-          ]
-        }
-      ],
-      uniforms: [ { name: 'angle' } ]
+
+    this.pipeline = API.createRenderPipeline(this.device, {
+      vertex: vs,
+      fragment: fs,
+      buffers: vertexBufferLayouts([
+        { attributes: [/* position */ VertexFormat.F32x3, /* color */ VertexFormat.F32x4] }
+      ]),
     });
 
-    this.register([ this.buffer!, this.pipeline!, this.pass!, vs, fs ]);
+    this.register([this.buffer!, this.pipeline!, vs, fs]);
   }
 
   render(delta: Float): boolean {
-    this.device.render(this.pass!)
-      .pipeline(this.pipeline!)
-      .vertex(0, this.buffer!)
-      .uniforms([{ name: 'angle', value: delta / 30 * Math.PI as Float }])
-      .draw(3)
-      .end();
-    return true;
+    API.beginDefaultPass(this.device, { clearColor: [0.1, 0.2, 0.3, 1.0] });
+    API.setRenderPipeline(this.device, this.pipeline!);
+    API.setVertex(this.device, 0, this.buffer!);
+    API.draw(this.device, 3);
+    API.submitRenderPass(this.device);
+
+    return false;
   }
 }

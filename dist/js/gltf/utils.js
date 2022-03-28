@@ -1,2 +1,0 @@
-export function decodeText(data){return new TextDecoder().decode(data)}export function isDataUri(uri){return /^data:.*,.*$/i.test(uri)||/^blob:.*$/i.test(uri)}export function getBaseUrl(url){if(isDataUri(url)){return""}const parts=url.split(/[?#]/)[0].split("/");parts.pop();return parts.length?parts.join("/")+"/":""}export function resolveRelativeUri(uri,baseUri){if(uri===""){return""}if(/^(https?:)?\/\//i.test(uri)||isDataUri(uri)){return uri}return baseUri+uri}
-//# sourceMappingURL=utils.js.map

@@ -1,15 +1,26 @@
-import { Buffer, BufferType, Float, RenderingDevice, Usage } from 'mugl';
+import { Buffer, BufferUsage, Device, Float, UInt } from 'mugl';
+import { API } from './config';
 
 export function createBuffer(
-  device: RenderingDevice, data: ArrayBufferView, type: BufferType = BufferType.Vertex, usage: Usage = Usage.Static
+  device: Device, data: ArrayBufferView, usage: BufferUsage = BufferUsage.Vertex
 ): Buffer {
-  return device
-    .buffer({ type, usage, size: data.byteLength })
-    .data(data);
+  const buffer = API.createBuffer(device, { usage, size: data.byteLength });
+  API.writeBuffer(device, buffer, data);
+  return buffer;
 }
+
+// Below helpers are for AssemblyScript which does not have constructor to convert array to typed array.
 
 export function createFloat32Array(data: Float[]): Float32Array {
   const out = new Float32Array(data.length);
+  for (let i = 0; i < data.length; ++i) {
+    out[i] = data[i];
+  }
+  return out;
+}
+
+export function createUint16Array(data: UInt[]): Uint16Array {
+  const out = new Uint16Array(data.length);
   for (let i = 0; i < data.length; ++i) {
     out[i] = data[i];
   }

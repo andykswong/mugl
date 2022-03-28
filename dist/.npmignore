@@ -1,5 +1,0 @@
-__tests__
-
-*.wasm
-*.wasm.map
-*.wat

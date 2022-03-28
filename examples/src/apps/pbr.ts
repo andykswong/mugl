@@ -1,8 +1,10 @@
-import { lookAt, mat4, perspective, scale, vec3 } from 'munum';
+import { array, lookAt, mat4, perspective, scale, vec3 } from 'munum';
 import {
-  Buffer, BufferType, CompareFunc, CullMode, VertexFormat, TexType, UniformFormat, UniformType, PipelineDescriptor, RenderingDevice, ShaderType, Float, UniformLayout, UniformBindings, Pipeline, RenderPass, Texture
+  BindGroup, BindingType, Buffer, BufferUsage, CompareFunction, CullMode, Device,
+  FilterMode, Float, RenderPipeline, RenderPipelineDescriptor, Sampler, ShaderStage, Texture,
+  TextureDimension, vertexBufferLayouts, VertexFormat, WebGL
 } from 'mugl';
-import { BaseExample, createBuffer, createFloat32Array, Cube, getImageById, Model, TEX_SIZE, toIndices, toVertices, USE_NGL } from '../common';
+import { API, BaseExample, createBuffer, createFloat32Array, Cube, getImageById, Model, TEX_SIZE, toIndices, toVertices } from '../common';
 
 const texSize = TEX_SIZE;
 
@@ -13,24 +15,18 @@ const cubeVertices = toVertices({
 } as Model);
 const cubeIndices = toIndices(Cube);
 
-function vert(gl2: boolean = false): string {
-  return `${gl2 ? `#version 300 es
-in vec3 position;
-in vec3 normal;
-in vec2 uv;
+const vert = `#version 300 es
+precision mediump float;
+layout(std140) uniform Data {
+  mat4 model, viewProj;
+  vec4 camPos;
+};
+layout (location=0) in vec3 position;
+layout (location=1) in vec2 uv;
+layout (location=2) in vec3 normal;
 out vec3 vPosition;
-out vec3 vNormal;
 out vec2 vUv;
-` : `
-attribute vec3 position;
-attribute vec3 normal;
-attribute vec2 uv;
-varying vec3 vPosition;
-varying vec3 vNormal;
-varying vec2 vUv;
-`}
-
-uniform mat4 model, viewProj;
+out vec3 vNormal;
 
 void main(void) {
   vec4 worldPos = model * vec4(position, 1.0);
@@ -39,41 +35,29 @@ void main(void) {
   vUv = uv;
   gl_Position = viewProj * worldPos;
 }
-`;
-};
+`
 
-function fragCube(gl2: boolean = false): string {
-  return `${gl2 ? `#version 300 es
+const fragCube = `#version 300 es
 precision mediump float;
-in vec3 vPosition;
-in vec2 vUv;
-in vec3 vNormal;
-out vec4 color;
-layout (std140) uniform material {
-  vec4 albedo;
-  float metallic;
-  float roughness;
+uniform sampler2D tex;
+layout(std140) uniform Data {
+  mat4 model, viewProj;
+  vec4 camPos;
 };
-layout (std140) uniform env {
+layout(std140) uniform Material {
+  vec4 albedo;
+  vec2 metallicRoughness;
+};
+layout(std140) uniform Env {
   vec4 ambient;
   vec4 lightDir;
   vec4 lightColor;
 };
-` : `
-precision mediump float;
-varying vec3 vPosition;
-varying vec2 vUv;
-varying vec3 vNormal;
-uniform vec4 albedo;
-uniform float metallic;
-uniform float roughness;
-uniform vec4 ambient;
-uniform vec4 lightDir;
-uniform vec4 lightColor;
-`}
 
-uniform sampler2D tex;
-uniform vec3 camPos;
+in vec3 vPosition;
+in vec2 vUv;
+in vec3 vNormal;
+out vec4 color;
 
 const float PI = 3.14159265359;
 
@@ -106,7 +90,7 @@ float specularG(float aSqr, float nDotL, float nDotV) {
 
 void main () {
   vec3 n = normalize(vNormal);
-  vec3 v = normalize(camPos - vPosition);
+  vec3 v = normalize(camPos.xyz - vPosition);
   vec3 l = normalize(-lightDir.xyz);
   vec3 h = normalize(l + v);
 
@@ -115,18 +99,18 @@ void main () {
   float nDotH = clamp(dot(n, h), 0.0, 1.0);
   float vDotH = clamp(dot(v, h), 0.0, 1.0);
 
-  vec4 baseColor = toLinear(${gl2 ? 'texture' : 'texture2D'}(tex, vUv)) * albedo;
+  vec4 baseColor = toLinear(texture(tex, vUv)) * albedo;
 
   vec3 f0 = vec3(0.04);
-  vec3 diffuseColor = baseColor.rgb * (vec3(1.0) - f0) * (1.0 - metallic);
-  vec3 specularColor = mix(f0, baseColor.rgb, metallic);
+  vec3 diffuseColor = baseColor.rgb * (vec3(1.0) - f0) * (1.0 - metallicRoughness.x);
+  vec3 specularColor = mix(f0, baseColor.rgb, metallicRoughness.x);
 
   float r0 = max(max(specularColor.r, specularColor.g), specularColor.b);
   float r90 = clamp(r0 * 25.0, 0.0, 1.0);
   vec3 specularEnvR0 = specularColor.rgb;
   vec3 specularEnvR90 = vec3(1.0, 1.0, 1.0) * r90;
 
-  float a = clamp(roughness, 0.04, 1.0);
+  float a = clamp(metallicRoughness.y, 0.04, 1.0);
   a *= a;
   float aSqr = a * a;
 
@@ -140,36 +124,42 @@ void main () {
   vec3 specular = F * G * D / (4.0 * nDotL * nDotV);
 
   color0 += nDotL * lightColor.rgb * lightColor.a * (diffuse + specular);
-
   color0 += ambient.rgb * diffuseColor;
 
-  ${gl2 ? 'color' : 'gl_FragColor'} = vec4(toSrgb(color0), baseColor.a);
-}
-`;
-}
+  color = vec4(toSrgb(color0), baseColor.a);
+}`;
 
-const fragSky = `
+const fragSky = `#version 300 es
 precision mediump float;
 uniform samplerCube tex;
-varying vec3 vPosition;
-
+in vec3 vPosition;
+out vec4 color;
 void main () {
-  gl_FragColor = textureCube(tex, normalize(vPosition));
-}
-`;
+  color = texture(tex, normalize(vPosition));
+}`;
 
 export class PbrExample extends BaseExample {
-  pass: RenderPass | null = null;
   vertBuffer: Buffer | null = null;
   indexBuffer: Buffer | null = null;
   matBuffer: Buffer | null = null;
   envBuffer: Buffer | null = null;
-  cubePipeline: Pipeline | null = null;
+  cubeDataBuffer: Buffer | null = null;
+  skyDataBuffer: Buffer | null = null;
+  cubePipeline: RenderPipeline | null = null;
   cubeTex: Texture | null = null;
-  skyPipeline: Pipeline | null = null;
+  skyPipeline: RenderPipeline | null = null;
   skyTex: Texture | null = null;
+  sampler: Sampler | null = null;
+  envBindGroup: BindGroup | null = null;
+  cubeTexBindGroup: BindGroup | null = null;
+  cubeDataBindGroup: BindGroup | null = null;
+  skyTexBindGroup: BindGroup | null = null;
+  skyDataBindGroup: BindGroup | null = null;
 
-  constructor(private readonly device: RenderingDevice, private readonly webgl2: boolean) {
+  cubeData: Float32Array = new Float32Array(36);
+  skyData: Float32Array = new Float32Array(36);
+
+  constructor(private readonly device: Device) {
     super();
   }
 
@@ -180,179 +170,172 @@ export class PbrExample extends BaseExample {
     const sky1 = getImageById('sky1');
     const sky2 = getImageById('sky2');
 
-    const ctx = this.device;
+    // Create shaders
+    const vs = API.createShader(this.device, { code: vert, usage: ShaderStage.Vertex });
+    const cubeFs = API.createShader(this.device, { code: fragCube, usage: ShaderStage.Fragment });
+    const skyFs = API.createShader(this.device, { code: fragSky, usage: ShaderStage.Fragment });
 
-    const vs = this.device.shader({ type: ShaderType.Vertex, source: vert(this.webgl2) });
-    const cubeFs = this.device.shader({ type: ShaderType.Fragment, source: fragCube(this.webgl2) });
-    const skyVs = this.device.shader({ type: ShaderType.Vertex, source: vert(false) });
-    const skyFs = this.device.shader({ type: ShaderType.Fragment, source: fragSky });
+    // Create buffers
+    this.matBuffer = createBuffer(this.device, createFloat32Array([
+      1.0, 1.0, 1.0, 1.0, // albedo
+      0.5, // metallic
+      0.5, // roughness
+      0, 0 // padding
+    ]), BufferUsage.Uniform);
+    this.envBuffer = createBuffer(this.device, createFloat32Array([
+      0xdf / 0xff * .75, 0xf6 / 0xff * .75, 0xf5 / 0xff * .75, 1.0, // ambient
+      1.0, -2.0, 1.0, 0.0, // lightDir
+      0xfc / 0xff, 0xcb / 0xff, 0xcb / 0xff, 5.0, // lightColor / intensity
+    ]), BufferUsage.Uniform);
+    this.vertBuffer = createBuffer(this.device, cubeVertices);
+    this.indexBuffer = createBuffer(this.device, cubeIndices, BufferUsage.Index);
+    this.cubeDataBuffer = createBuffer(this.device, this.cubeData, BufferUsage.Uniform | BufferUsage.Stream);
+    this.skyDataBuffer = createBuffer(this.device, this.skyData, BufferUsage.Uniform | BufferUsage.Stream);
 
-    this.vertBuffer = createBuffer(ctx, cubeVertices);
+    // Create bind groups
+    const textureLayout = API.createBindGroupLayout(this.device, {
+      entries: [
+        { binding: 0, label: 'tex', type: BindingType.Texture },
+        { binding: 1, label: 'tex', type: BindingType.Sampler },
+      ]
+    });
+    const envLayout = API.createBindGroupLayout(this.device, {
+      entries: [
+        { binding: 0, label: 'Material', type: BindingType.Buffer },
+        { binding: 1, label: 'Env', type: BindingType.Buffer },
+      ]
+    });
+    const dataLayout = API.createBindGroupLayout(this.device, {
+      entries: [{ label: 'Data', type: BindingType.Buffer }]
+    });
 
     // Setup the cube
-    this.indexBuffer = createBuffer(ctx, cubeIndices, BufferType.Index);
-    this.cubeTex = ctx.texture({
-      type: TexType.Tex2D,
-      width: texSize,
-      height: texSize
-    });
+    this.cubeTex = API.createTexture(this.device, { size: [texSize, texSize, 1] });
     if (airplane) {
-      this.cubeTex!
-        .data({ image: airplane })
-        .mipmap();
+      API.copyExternalImageToTexture(this.device, { src: airplane }, { texture: this.cubeTex! });
+      WebGL.generateMipmap(this.device, this.cubeTex!);
     }
 
-    if (this.webgl2) {
-      this.matBuffer = createBuffer(ctx, createFloat32Array([
-        1.0, 1.0, 1.0, 1.0, // albedo
-        0.5, // metallic
-        0.5, // roughness
-        0, 0 // padding
-      ]), BufferType.Uniform);
+    this.sampler = API.createSampler(this.device, {
+      magFilter: FilterMode.Linear,
+      minFilter: FilterMode.Linear,
+      mipmapFilter: FilterMode.Linear,
+      maxAnisotropy: 16
+    });
 
-      this.envBuffer = createBuffer(ctx, createFloat32Array([
-        0xdf / 0xff * .75, 0xf6 / 0xff * .75, 0xf5 / 0xff * .75, 1.0, // ambient
-        1.0, -2.0, 1.0, 0.0, // lightDir
-        0xfc / 0xff, 0xcb / 0xff, 0xcb / 0xff, 2.0, // lightColor / intensity
-      ]), BufferType.Uniform);
-    }
+    this.cubeTexBindGroup = API.createBindGroup(this.device, {
+      layout: textureLayout,
+      entries: [{ binding: 0, texture: this.cubeTex }, { binding: 1, sampler: this.sampler }]
+    });
+    this.envBindGroup = API.createBindGroup(this.device, {
+      layout: envLayout,
+      entries: [{ binding: 0, buffer: this.matBuffer }, { binding: 1, buffer: this.envBuffer }]
+    });
+    this.cubeDataBindGroup = API.createBindGroup(this.device, {
+      layout: dataLayout,
+      entries: [{ buffer: this.cubeDataBuffer }]
+    });
 
-    const uniforms: UniformLayout = ([
-      { name: 'model', valueFormat: UniformFormat.Mat4 },
-      { name: 'viewProj', valueFormat: UniformFormat.Mat4 },
-      { name: 'camPos', valueFormat: UniformFormat.Vec3 },
-      { name: 'tex', type: UniformType.Tex, texType: this.cubeTex!.props.type },
-    ] as UniformLayout).concat(this.webgl2 ? [
-      { name: 'material', type: UniformType.Buffer },
-      { name: 'env', type: UniformType.Buffer }
-    ] as UniformLayout : [
-      { name: 'albedo', valueFormat: UniformFormat.Vec4 },
-      { name: 'metallic' },
-      { name: 'roughness' },
-      { name: 'ambient', valueFormat: UniformFormat.Vec4 },
-      { name: 'lightDir', valueFormat: UniformFormat.Vec4 },
-      { name: 'lightColor', valueFormat: UniformFormat.Vec4 },
-    ] as UniformLayout);
-
-    const cubePipelineDesc: PipelineDescriptor = {
-      vert: vs,
-      frag: cubeFs,
-      buffers: [
-        {
-          attrs: [
-            { name: 'position', format: VertexFormat.Float3 },
-            { name: 'uv', format: VertexFormat.Float2 },
-            { name: 'normal', format: VertexFormat.Float3 }
-          ]
-        }
-      ],
-      uniforms,
-      depth: {
-        compare: CompareFunc.LEqual,
-        write: true
+    const cubePipelineDesc: RenderPipelineDescriptor = {
+      vertex: vs,
+      fragment: cubeFs,
+      buffers: vertexBufferLayouts([
+        { attributes: [/* position */ VertexFormat.F32x3, /* uv */ VertexFormat.F32x2, /* normal */ VertexFormat.F32x3] }
+      ]),
+      bindGroups: [textureLayout, envLayout, dataLayout],
+      depthStencil: {
+        depthWrite: true,
+        depthCompare: CompareFunction.LessEqual
       },
-      raster: {
+      primitive: {
         cullMode: CullMode.Back
       }
     };
-    this.cubePipeline = ctx.pipeline(cubePipelineDesc);
+    this.cubePipeline = API.createRenderPipeline(this.device, cubePipelineDesc);
 
-    // Setup the sky box (Cube texture not supported for NGL)
-    if (!USE_NGL) {
-      this.skyTex = ctx.texture({
-        type: TexType.Cube,
-        width: texSize,
-        height: texSize
+    // Setup the sky box
+    {
+      this.skyTex = API.createTexture(this.device, {
+        dimension: TextureDimension.CubeMap,
+        size: [texSize, texSize, 1]
       });
       if (sky0 && sky1 && sky2) {
-        this.skyTex!
-          .data({ images: [sky0, sky0, sky1, sky2, sky0, sky0] })
-          .mipmap();
+        const cubeImages = [sky0, sky0, sky1, sky2, sky0, sky0];
+        for (let z = 0; z < 6; ++z) {
+          API.copyExternalImageToTexture(this.device, { src: cubeImages[z] }, { texture: this.skyTex!, origin: [0, 0, z] });
+        }
+        WebGL.generateMipmap(this.device, this.skyTex!);
       }
 
-      this.skyPipeline = ctx.pipeline({
+      this.skyTexBindGroup = API.createBindGroup(this.device, {
+        layout: textureLayout,
+        entries: [{ binding: 0, texture: this.skyTex }, { binding: 1, sampler: this.sampler }]
+      });
+      this.skyDataBindGroup = API.createBindGroup(this.device, {
+        layout: dataLayout,
+        entries: [{ buffer: this.skyDataBuffer }]
+      });
+  
+      this.skyPipeline = API.createRenderPipeline(this.device, {
+        vertex: vs,
+        fragment: skyFs,
         buffers: cubePipelineDesc.buffers,
-        vert: skyVs,
-        frag: skyFs,
-        uniforms: [
-          { name: 'model', valueFormat: UniformFormat.Mat4 },
-          { name: 'viewProj', valueFormat: UniformFormat.Mat4 },
-          { name: 'tex', type: UniformType.Tex, texType: this.skyTex!.props.type }
-        ],
-        depth: {
-          compare: CompareFunc.LEqual,
-          write: true
-        },
-        raster: {
+        bindGroups: [textureLayout, dataLayout],
+        depthStencil: cubePipelineDesc.depthStencil,
+        primitive: {
           cullMode: CullMode.Front // Render back face for sky box
         }
       });
     }
 
-    this.pass = ctx.pass({
-      clearColor: [0.3, 0.3, 0.3, 1],
-      clearDepth: 1
-    });
-
     this.register([
-      this.pass!, this.vertBuffer!,
-      this.cubePipeline!, this.indexBuffer!, this.cubeTex!,
-      vs, cubeFs, skyVs, skyFs
+      this.vertBuffer!, this.indexBuffer!, this.matBuffer!, this.envBuffer!, this.cubeDataBuffer!, this.skyDataBuffer!,
+      this.cubePipeline!, this.cubeTex!, this.skyPipeline!, this.skyTex!, this.sampler!,
+      this.envBindGroup!, this.cubeDataBindGroup!, this.cubeTexBindGroup!, this.skyDataBindGroup!, this.skyTexBindGroup!,
+      vs, cubeFs, skyFs, textureLayout, envLayout, dataLayout
     ]);
-    if (this.skyPipeline) {
-      this.register([this.skyPipeline!, this.skyTex!]);
-    }
-    if (this.webgl2) {
-      this.register([this.matBuffer!, this.envBuffer!]);
-    }
   }
 
   render(t: Float): boolean {
-    const camPos = vec3.create(10 * Math.cos(t) as Float, 5 * Math.sin(t) as Float, 10 * Math.sin(t) as Float);
-    const model = mat4.create();
-    const proj = perspective((this.device.width as Float) / (this.device.height as Float), Math.PI / 4 as Float, 0.01, 100);
-    const view = lookAt(camPos, [0, 0, 0]);
-    const vp = mat4.mul(proj, view);
+    // Write matrices
+    {
+      const camPos = vec3.create(10 * Math.cos(t) as Float, 5 * Math.sin(t) as Float, 10 * Math.sin(t) as Float);
+      const model = mat4.create();
+      const proj = perspective((this.width as Float) / (this.height as Float), Math.PI / 4 as Float, 0.01, 100);
+      const view = lookAt(camPos, [0, 0, 0]);
+      const vp = mat4.mul(proj, view);
 
-    const ctx = this.device.render(this.pass!);
+      array.copyEx(model, this.cubeData, 0, 0, 16);
+      array.copyEx(vp, this.cubeData, 0, 16, 16);
+      array.copyEx(camPos, this.cubeData, 0, 32, 3);
+      API.writeBuffer(this.device, this.cubeDataBuffer!, this.cubeData);
 
-    const uniforms: UniformBindings = ([
-      { name: 'model', values: model },
-      { name: 'viewProj', values: vp },
-      { name: 'tex', tex: this.cubeTex },
-      { name: 'camPos', values: camPos },
-    ] as UniformBindings).concat(this.webgl2 ? [
-      { name: 'material', buffer: this.matBuffer },
-      { name: 'env', buffer: this.envBuffer },
-    ] as UniformBindings : [
-      { name: 'albedo', values: [1, 1, 1, 1] },
-      { name: 'metallic', value: 0.2 },
-      { name: 'roughness', value: 0.5 },
-      { name: 'ambient', values: [0xdf / 0xff * .75, 0xf6 / 0xff * .75, 0xf5 / 0xff * .75, 1.0] },
-      { name: 'lightDir', values: [1.0, -3.0, 1.0, 0.0] },
-      { name: 'lightColor', values: [0xfc / 0xff, 0xcb / 0xff, 0xcb / 0xff, 2.0] },
-    ] as UniformBindings);
+      array.copyEx(scale([10, 10, 10]), this.skyData, 0, 0, 16);
+      array.copyEx(vp, this.skyData, 0, 16, 16);
+      array.copyEx(camPos, this.skyData, 0, 32, 3);
+      API.writeBuffer(this.device, this.skyDataBuffer!, this.skyData);
+    }
+
+    API.beginDefaultPass(this.device, { clearColor: [0, 0, 0, 1], clearDepth: 1 });
 
     // Draw cube
-    ctx.pipeline(this.cubePipeline!)
-      .vertex(0, this.vertBuffer!)
-      .index(this.indexBuffer!)
-      .uniforms(uniforms)
-      .drawIndexed(cubeIndices.length);
+    API.setRenderPipeline(this.device, this.cubePipeline!);
+    API.setIndex(this.device, this.indexBuffer!);
+    API.setVertex(this.device, 0, this.vertBuffer!);
+    API.setBindGroup(this.device, 0, this.cubeTexBindGroup!);
+    API.setBindGroup(this.device, 1, this.envBindGroup!);
+    API.setBindGroup(this.device, 2, this.cubeDataBindGroup!);
+    API.drawIndexed(this.device, cubeIndices.length);
 
     // Draw skybox
-    if (!USE_NGL) {
-      ctx.pipeline(this.skyPipeline!)
-        .vertex(0, this.vertBuffer!)
-        .index(this.indexBuffer!)
-        .uniforms([
-          { name: 'model', values: scale([10, 10, 10]) },
-          { name: 'viewProj', values: vp },
-          { name: 'tex', tex: this.skyTex }
-        ])
-        .drawIndexed(cubeIndices.length)
-        .end();
-    }
+    API.setRenderPipeline(this.device, this.skyPipeline!);
+    API.setIndex(this.device, this.indexBuffer!);
+    API.setVertex(this.device, 0, this.vertBuffer!);
+    API.setBindGroup(this.device, 0, this.skyTexBindGroup!);
+    API.setBindGroup(this.device, 1, this.skyDataBindGroup!);
+    API.drawIndexed(this.device, cubeIndices.length);
+
+    API.submitRenderPass(this.device);
 
     return true;
   }

@@ -1,4 +1,4 @@
-export const USE_WEBGL2 = true;
-export const USE_NGL = false;
+import { WebGL as API } from 'mugl';
 
+export { API };
 export const TEX_SIZE = 512;

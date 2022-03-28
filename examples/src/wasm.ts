@@ -1,17 +1,26 @@
 
-import loader from '@assemblyscript/loader';
-import { muglBind } from 'mugl';
+import { WebAssemblyGL } from 'mugl';
 
-export function loadExamplesWASM(): Promise<any> {
-  const imports = {};
-  const bind = muglBind(imports);
+export function loadExamplesWASM(): Promise<WebAssembly.Exports> {
+  let memory: WebAssembly.Memory | null = null;
 
-  return loader.instantiate(
+  const imports: WebAssembly.Imports = {
+    env: {
+      abort() {
+        console.error('aborted, memory:', memory);
+      },
+      seed: Date.now,
+    },
+    Date: Date as unknown as WebAssembly.ModuleImports,
+    Math: Math as unknown as WebAssembly.ModuleImports,
+    mugl: WebAssemblyGL(),
+  };
+
+  return WebAssembly.instantiateStreaming(
     fetch('examples.wasm'),
-    imports
-  ).then(({ exports }) => {
-    bind.bindModule(exports);
-    console.log(bind);
-    return exports;
+    imports,
+  ).then((wasm) => {
+    imports.mugl.memory = memory = wasm.instance.exports.memory as WebAssembly.Memory;
+    return wasm.instance.exports;
   });
 }

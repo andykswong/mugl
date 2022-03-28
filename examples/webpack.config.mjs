@@ -1,6 +1,7 @@
 import * as path from 'path';
 import webpack from 'webpack';
 import CopyPlugin from 'copy-webpack-plugin';
+import TerserPlugin from 'terser-webpack-plugin';
 
 const PRODUCTION = 'production';
 
@@ -49,14 +50,27 @@ export default {
     extensions: [ '.js', '.mjs', '.ts' ],
   },
   optimization: {
-    minimize: isProd
+    minimize: isProd,
+    minimizer: [
+      new TerserPlugin({
+        terserOptions: {
+          ecma: 2015,
+          module: true,
+          toplevel: true,
+          compress: {
+            passes: 5,
+            drop_console: !debug
+          },
+          mangle: {
+            properties: false
+          }
+        },
+      }),
+    ],
   },
   plugins: [
     new webpack.DefinePlugin({
       'MUGL_DEBUG': debug,
-      'USE_WEBGL2': true,
-      'USE_NGL': false,
-      'NGL_ENABLE_SCISSOR': false,
     }),
     new CopyPlugin({
       patterns: [
@@ -67,6 +81,6 @@ export default {
   ],
   devtool: isProd ? false : 'source-map',
   devServer: {
-    contentBase: ASSET_DIR
+    static: ASSET_DIR
   }
 };

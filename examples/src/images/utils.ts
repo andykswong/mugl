@@ -8,6 +8,6 @@ export function getImage(uri: string): HTMLImageElement {
 
 export function toImage(ctx: CanvasRenderingContext2D): HTMLImageElement {
   const img = new Image();
-  ctx.canvas.toBlob((blob) => img.src = URL.createObjectURL(blob));
+  ctx.canvas.toBlob((blob) => img.src = URL.createObjectURL(blob!));
   return img;
 }

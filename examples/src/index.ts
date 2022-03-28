@@ -1,5 +1,5 @@
-import { getGLDevice, getNGLDevice } from 'mugl';
-import { ExampleApplication, USE_WEBGL2, USE_NGL, ExampleFactory } from './common';
+import { WebGL, WebGL2Feature } from 'mugl';
+import { ExampleApplication, ExampleFactory } from './common';
 import { AppDefinition, Apps } from './apps';
 import { loadExamplesWASM } from './wasm';
 import { loadImages } from './images';
@@ -8,43 +8,48 @@ declare const window: Window & {
   loadExample: (url?: string) => void;
 };
 
-class Redirect implements ExampleApplication {
+class Redirect extends ExampleApplication {
   constructor(private readonly uri: string) {
+    super();
   }
-  init(): void {
-  }
+
   render(): boolean {
     window.location.replace(this.uri);
     return false;
   }
-  destroy(): void {
-  }
 }
 
-class WASMExample implements ExampleApplication {
+class WASMExample extends ExampleApplication {
+  private wasmModule: any | null = null;
+
   constructor(private readonly id: number) {
+    super();
   }
 
   init(): void {
-    wasmPromise.then(m => m.init(this.id, USE_WEBGL2));
+    wasmPromise.then(m => {
+      this.wasmModule = m;
+      (m.init as CallableFunction)(this.id)
+    });
   }
 
   render(delta: number): boolean {
-    wasmModule?.render(delta);
+    this.wasmModule?.render(delta);
     return true;
   }
 
+  resize(width: number, height: number): void {
+    this.wasmModule?.resize(width, height);
+  }
+
   destroy(): void {
-    wasmModule?.destroy();
+    this.wasmModule?.destroy();
   }
 }
 
 // Load WASM module
 let useWASM: boolean = false;
-let wasmModule: any = null;
-const wasmPromise = loadExamplesWASM().then(m => {
-  return (wasmModule = m);
-});
+const wasmPromise = loadExamplesWASM();
 
 function wasmAwareFactory(id: number, name: string, factory: ExampleFactory): ExampleFactory {
   return (device) => {
@@ -53,7 +58,7 @@ function wasmAwareFactory(id: number, name: string, factory: ExampleFactory): Ex
       return new WASMExample(id);
     }
     console.log(`Rendering ${name} example in JS...`);
-    return factory(device, USE_WEBGL2);
+    return factory(device);
   };
 }
 
@@ -90,17 +95,19 @@ if (dpr > 1) {
   canvas.style.height = `${height}px`;
 }
 
-const getDevice = (USE_NGL ? getNGLDevice : getGLDevice);
-const device = getDevice(canvas, {
-  stencil: true,
-  powerPreference: 'low-power',
-  webgl2: USE_WEBGL2
-})!;
+const device = WebGL.requestWebGL2Device(
+  canvas,
+  { stencil: true, powerPreference: 'low-power' },
+  WebGL2Feature.TextureAnisotropic |
+  WebGL2Feature.TextureHalfFloatLinear |
+  WebGL2Feature.TextureFloatLinear |
+  WebGL2Feature.ColorBufferFloat
+)!;
 
 let example: ExampleApplication;
 let raf = 0;
 
-window.loadExample = function(hash: string = location.hash): void {
+window.loadExample = function (hash: string = location.hash): void {
   const nextExample = appMap[hash.replace('#', '')];
   if (nextExample) {
     document.getElementById('title')!.innerText = nextExample.title;
@@ -108,11 +115,12 @@ window.loadExample = function(hash: string = location.hash): void {
     cancelAnimationFrame(raf);
     if (example) {
       example.destroy();
-      device.reset();
+      WebGL.resetDevice(device);
     }
 
-    example = nextExample.factory(device, device.webgl2);
+    example = nextExample.factory(device);
     example.init();
+    example.resize(canvas.width, canvas.height);
     render();
   }
 }

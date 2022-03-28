@@ -20,18 +20,17 @@
     ],
     "types": [
       "portable",
-      "jest",
-      "types"
+      "jest"
     ],
     "lib": [
       "es2020",
       "dom",
       "webworker"
     ],
-    "rootDir": "src",
+    "rootDir": "js",
     "outDir": "dist"
   },
   "include": [
-    "src"
+    "js/**/*.ts"
   ]
 }

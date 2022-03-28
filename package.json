@@ -1,6 +1,6 @@
 {
   "name": "mugl",
-  "version": "0.0.7",
+  "version": "0.1.0",
   "description": "Micro WebGL Library for JavaScript and WebAssembly",
   "type": "module",
   "sideEffects": false,
@@ -11,14 +11,6 @@
     ".": {
       "import": "./index.js",
       "require": "./dist/mugl.min.js"
-    },
-    "./n": {
-      "import": "./n.js",
-      "require": "./dist/ngl.min.js"
-    },
-    "./tf": {
-      "import": "./tf.js",
-      "require": "./dist/mugltf.min.js"
     }
   },
   "repository": {
@@ -54,44 +46,34 @@
     "/dist",
     "/src",
     "index.js",
-    "index.d.ts",
-    "n.js",
-    "n.d.ts",
-    "tf.js",
-    "tf.d.ts"
+    "index.d.ts"
   ],
   "scripts": {
-    "postinstall": "npm run link-common",
+    "postinstall": "npm run copy-gpu-types",
     "prepublishOnly": "npm run build && npm test",
-    "link-common": "node scripts/lnk.mjs",
-    "clean": "rimraf coverage docs dist **/__tests__/**/*.spec.map **/__tests__/**/*.spec.wat src/common/shaders",
-    "prebuild": "npm run build:shaders && npm run lint",
+    "copy-gpu-types": "copyfiles -u 1 js/gpu/{config,gl-const,gl-util,gpu,type}.ts assembly",
+    "clean": "rimraf coverage docs dist **/__tests__/**/*.spec.map **/__tests__/**/*.spec.wat",
+    "prebuild": "npm run copy-gpu-types && npm run lint",
     "build": "npm run asbuild && npm run tsbuild",
     "postbuild": "npm run webpack",
-    "lint": "eslint src --ext .ts,.tsx",
+    "lint": "eslint js --ext .ts,.tsx",
     "asbuild": "asc assembly/index.ts --target release",
     "asbuild:debug": "asc assembly/index.ts --target debug",
     "tsbuild": "npm run babel && npm run tsc",
-    "babel": "cross-env-shell babel src -d dist --source-maps --extensions '.js,.mjs,.ts' --out-file-extension .js",
+    "babel": "cross-env-shell babel js -d dist --source-maps --extensions '.js,.mjs,.ts' --out-file-extension .js",
     "tsc": "tsc --emitDeclarationOnly",
-    "posttsc": "copyfiles -u 1 src/**/*{.d.ts,.js,.mjs} dist",
+    "posttsc": "copyfiles -u 1 js/**/*{.d.ts,.js,.mjs} dist",
     "webpack": "webpack",
     "test": "npm run asp && npm run jest",
     "asp": "asp -c as-pect.config.cjs",
     "jest": "cross-env NODE_OPTIONS=--experimental-vm-modules npx jest",
     "jest:watch": "npm run jest -- --watch",
-    "build:shaders": "cd shaders && npm install && npm run build",
-    "postbuild:shaders": "copyfiles -u 2 shaders/dist/**/*.ts src/common/shaders",
-    "gltf-spec": "node scripts/gltfschema2ts.mjs src/js/gltf-spec",
-    "doc": "typedoc --out docs src/index.ts src/common/config.ts src/js/nano/index.ts src/js/nano/config.ts",
+    "doc": "typedoc --out docs js/index.ts",
     "build:examples": "cd examples && npm install && npm run build",
     "examples": "cd examples && npm start",
     "start": "npm run examples"
   },
   "dependencies": {
-    "@assemblyscript/loader": "^0.19.12",
-    "lnk": "^1.1.0",
-    "munum": "^0.0.6"
   },
   "devDependencies": {
     "@as-pect/cli": "^6.2.4",
@@ -100,25 +82,22 @@
     "@babel/preset-env": "^7.15.4",
     "@babel/preset-typescript": "^7.15.0",
     "@types/jest": "^27.0.1",
-    "@types/node": "^16.7.11",
+    "@types/node": "^17.0.21",
     "@types/webgl-ext": "0.0.32",
-    "@typescript-eslint/eslint-plugin": "^4.31.0",
-    "@typescript-eslint/parser": "^4.31.0",
+    "@typescript-eslint/eslint-plugin": "^5.15.0",
+    "@typescript-eslint/parser": "^5.15.0",
     "assemblyscript": "^0.19.12",
     "babel-jest": "^27.1.0",
     "babel-loader": "^8.2.2",
     "babel-plugin-add-import-extension": "^1.6.0",
     "copyfiles": "^2.4.1",
     "cross-env": "^7.0.3",
-    "eslint": "^7.31.0",
+    "eslint": "^8.11.0",
     "jest": "^27.1.0",
-    "json-schema-ref-parser": "^9.0.9",
-    "json-schema-to-typescript": "^10.1.4",
     "rimraf": "^3.0.2",
     "source-map-loader": "^3.0.0",
-    "ts-essentials": "^8.1.0",
-    "typedoc": "^0.21.9",
-    "typescript": "^4.4.2",
+    "typedoc": "^0.22.13",
+    "typescript": "^4.6.2",
     "webpack": "^5.52.0",
     "webpack-cli": "^4.8.0",
     "webpack-merge": "^5.7.3"

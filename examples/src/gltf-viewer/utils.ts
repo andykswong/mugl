@@ -1,5 +1,5 @@
 import { array, Mat4, mat4, perspective, targetTo, Vec3, vec3, Vec4, vec4 } from 'munum';
-import { Scene, Accessor, GlTF } from 'mugl/src/js/gltf-spec/glTF2';
+import { Scene, Accessor, GlTF } from '../gltf-spec/glTF2';
 
 const I4 = mat4.create();
 

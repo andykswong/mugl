@@ -1,7 +1,4 @@
-/**
- * mugl - minimalistic WebGL 3D rendering library
- * @packageDocumentation
- * @module mugl
- */
-export * from './js';
+export * from './config';
+export * from './gpu';
+export * from './wasm';
 //# sourceMappingURL=index.d.ts.map

@@ -1,0 +1,621 @@
+// mugl WebAssembly API spec
+// This can be used to generate a binding, by e.g. https://bytecodealliance.github.io/wit-bindgen/
+
+/**
+ * Checks if the future is completed.
+ */
+is-future-done: function(f: future) -> bool
+
+/**
+ * Loads an image from URI.
+ */
+create-image: function(uri: string) -> image
+
+/**
+ * Deletes an image handle.
+ */
+delete-image: function(img: image)
+
+/**
+ * Gets a canvas handle by ID.
+ */
+get-canvas-by-id: function(id: string) -> canvas
+
+/**
+ * Gets the width of the given canvas.
+ */
+get-canvas-width: function(c: canvas) -> u32
+
+/**
+ * Gets the height of the given canvas.
+ */
+get-canvas-height: function(c: canvas) -> u32
+
+/**
+ * Requests a WebGL2 GPU device.
+ */
+webgl-request-device: function(c: canvas, options: webgl-context-attributes, features: u32) -> device
+
+/**
+ * Generates mipmap for a WebGL texture.
+ */
+webgl-generate-mipmap: function(d: device, t: texture, hint: u32)
+
+/**
+ * Resets the state of a GPU device.
+ */
+reset-device: function(d: device)
+
+/**
+ * Deletes a GPU device.
+ */
+delete-device: function(d: device)
+
+/**
+ * Gets if device context is lost.
+ */
+is-device-lost: function(d: device) -> bool
+
+/**
+ * Gets the enabled features of the device.
+ */
+get-device-features: function(d: device) -> u32
+
+/**
+ * Creates a GPU buffer.
+ */
+create-buffer: function(d: device, desc: buffer-descriptor) -> buffer
+
+/**
+ * Deletes a GPU buffer.
+ */
+delete-buffer: function(b: buffer)
+
+/**
+ * Creates a GPU texture.
+ */
+create-texture: function(d: device, desc: texture-descriptor) -> texture
+
+/**
+ * Deletes a GPU texture.
+ */
+delete-texture: function(o: texture)
+
+/**
+ * Creates a GPU texture sampler.
+ */
+create-sampler: function(t: device, desc: sampler-descriptor) -> sampler
+
+/**
+ * Deletes a GPU texture sampler.
+ */
+delete-sampler: function(s: sampler)
+
+/**
+ * Creates a GPU shader module.
+ */
+create-shader: function(d: device, desc: shader-descriptor) -> shader
+
+/**
+ * Deletes a GPU shader module.
+ */
+delete-shader: function(s: shader)
+
+/**
+ * Creates a GPU bind group layout object.
+ */
+create-bind-group-layout: function(d: device, desc: bind-group-layout-descriptor) -> bind-group-layout
+
+/**
+ * Deletes a GPU bind group layout.
+ */
+delete-bind-group-layout: function(b: bind-group-layout)
+
+/**
+ * Creates a GPU bind group.
+ */
+create-bind-group: function(d: device, desc: bind-group-descriptor) -> bind-group
+
+/**
+ * Deletes a GPU bind group.
+ */
+delete-bind-group: function(b: bind-group)
+
+/**
+ * Creates a GPU render pipeline.
+ */
+create-render-pipeline: function(d: device, desc: render-pipeline-descriptor) -> render-pipeline
+
+/**
+ * Deletes a GPU render pipeline.
+ */
+delete-render-pipeline: function(p: render-pipeline)
+
+/**
+ * Creates a GPU render pass.
+ */
+create-render-pass: function(d: device, desc: render-pass-descriptor) -> render-pass
+
+/**
+ * Deletes a GPU render pass.
+ */
+delete-render-pass: function(p: render-pass)
+
+/**
+ * Reads data from a GPU buffer.
+ */
+read-buffer: function(d: device, buf: buffer, offset: u32, out: list<u8>) -> future
+
+/**
+ * Writes data to a GPU buffer.
+ */
+write-buffer: function(d: device, buf: buffer, data: list<u8>, offset: u32)
+
+/**
+ * Copies data from a GPU buffer to another buffer.
+ */
+copy-buffer: function(d: device, src: buffer, dst: buffer, size: u32, src-offset: u32, dst-offset: u32)
+
+/**
+ * Writes subregion of data array to a GPU texture.
+ */
+write-texture: function(d: device, texture: image-copy-texture, data: list<u8>, layout: image-data-layout, size: extent3d)
+
+/**
+ * Uploads an image subregion to a GPU texture.
+ */
+copy-external-image-to-texture: function(d: device, src: image-copy-external-image, dst: image-copy-texture, size: extent2d)
+
+/**
+ * Copies subregion of a GPU texture to another texture.
+ */
+copy-texture: function(d: device, src: image-copy-texture, dst: image-copy-texture, size: extent3d)
+
+/**
+ * Copies subregion of a GPU texture to a GPU buffer.
+ */
+copy-texture-to-buffer: function(d: device, src: image-copy-texture, dst: buffer, layout: image-data-layout, size: extent3d)
+
+/**
+ * Begins a render pass.
+ */
+begin-render-pass: function(d: device, pass: render-pass)
+
+/**
+ * Convenient method to begin a default render pass.
+ */
+begin-default-pass: function(d: device, desc: render-pass-operation)
+
+/**
+ * Submits the current render pass.
+ */
+submit-render-pass: function(d: device)
+
+/**
+ * Binds a render pipeline to the current render pass.
+ */
+set-render-pipeline: function(d: device, pipeline: render-pipeline)
+
+/**
+ * Binds an index buffer to the current render pass.
+ */
+set-index: function(d: device, buf: buffer)
+
+/**
+ * Binds a vertex buffer to a slot in the current render pass.
+ */
+set-vertex: function(d: device, slot: u32, buf: buffer, offset: u32)
+
+/**
+ * Binds a bind group to the current render pass.
+ */
+set-bind-group: function(d: device, slot: u32, bindings: bind-group, offsets: list<u32>)
+
+/**
+ * Submits a draw call in the current render pass.
+ */
+draw: function(d: device, vertex-count: u32, instance-count: u32, first-vertex: u32, first-instance: u32)
+
+/**
+ * Submits an indexed draw call in the current render pass.
+ */
+draw-indexed: function(d: device, index-count: u32, instance-count: u32, first-index: u32, first-instance: u32)
+
+/**
+ * Sets the 3D viewport area for the current render pass.
+ */
+set-viewport: function(d: device, x: u32, y: u32, width: u32, height: u32, min-depth: u32, max-depth: u32)
+
+/**
+ * Sets the scissor rectangle for the current render pass.
+ */
+set-scissor-rect: function(d: device, x: u32, y: u32, width: u32, height: u32)
+
+/**
+ * Sets the blend-constant color for the current render pass.
+ */
+set-blend-const: function(d: device, c: color)
+
+/**
+ * Sets the stencil reference value for the current render pass.
+ */
+set-stencil-ref: function(d: device, ref: u32)
+
+/**
+ * A 2D extent.
+ */
+type extent2d = tuple<u32, u32>
+
+/**
+ * A 3D extent.
+ */
+type extent3d = tuple<u32, u32, u32>
+
+/**
+ * A 2D origin.
+ */
+type origin2d = tuple<u32, u32>
+
+/**
+ * A 3D origin.
+ */
+type origin3d = tuple<u32, u32, u32>
+
+/**
+ * A RGBA color.
+ */
+type color = tuple<f32, f32, f32, f32>
+
+/**
+ * WebGL context attribute flags.
+ */
+flags webgl-context-attributes {
+    alpha,
+    antialias,
+    depth,
+    desynchronized,
+    fail-if-major-performance-caveat,
+    high-performance,
+    premultiplied-alpha,
+    preserve-drawing-buffer,
+    stencil,
+}
+
+/**
+ * A resolvable future object.
+ */
+resource future
+
+/**
+ * Handle to an external image.
+ */
+resource image
+
+/**
+ * Handle to a canvas.
+ */
+resource canvas
+
+/**
+ * Handle to a GPU device.
+ */
+resource device
+
+/**
+ * Handle to a GPU buffer.
+ */
+resource buffer
+
+/**
+ * Handle to a GPU texture.
+ */
+resource texture
+
+/**
+ * Handle to a GPU sampler.
+ */
+resource sampler
+
+/**
+ * Handle to a GPU shader.
+ */
+resource shader
+
+/**
+ * Handle to a GPU bind group layout.
+ */
+resource bind-group-layout
+
+/**
+ * Handle to a GPU bind group.
+ */
+resource bind-group
+
+/**
+ * Handle to a GPU render pipeline.
+ */
+resource render-pipeline
+
+/**
+ * Handle to a GPU render pass.
+ */
+resource render-pass
+
+/**
+ * Descriptor of a buffer.
+ */
+record buffer-descriptor {
+    size: u32,
+    usage: u32,
+}
+
+/**
+ * Descriptor of a texture.
+ */
+record texture-descriptor {
+    size: extent3d,
+    mip-level-count: u32,
+    sample-count: u32,
+    dimension: u32,
+    format: u32,
+    usage: u32,
+}
+
+/**
+ * Defines a texture subview.
+ */
+record texture-view {
+    tex: texture,
+    mip-level: u32,
+    slice: u32,
+}
+
+/**
+ * Defines the texture with origin offset for a texture write operation.
+ */
+record image-copy-texture {
+    tex: texture,
+    mip-level: u32,
+    origin: origin3d,
+}
+
+/**
+ * Defines the source image with origin offset to be copied into a texture.
+ */
+record image-copy-external-image {
+    img: image,
+    origin: origin2d,
+}
+
+/**
+ * Defines the layout of a texture image buffer data for a texture write.
+ */
+record image-data-layout {
+    offset: u32,
+    bytes-per-row: u32,
+    rows-per-image: u32,
+}
+
+/**
+ * Descriptor of a sampler.
+ */
+record sampler-descriptor {
+    address-mode-u: u32,
+    address-mode-v: u32,
+    address-mode-w: u32,
+    mag-filter: u32,
+    min-filter: u32,
+    mipmap-filter: u32,
+    lod-min-clamp: f32,
+    lod-max-clamp: f32,
+    compare: u32,
+    max-anisotropy: u32
+}
+
+/**
+ * Descriptor of a shader.
+ */
+record shader-descriptor {
+    code: string,
+    usage: u32,
+}
+
+/**
+ * Descriptor of a bind group layout.
+ */
+record bind-group-layout-descriptor {
+    entries: list<bind-group-layout-entry>,
+}
+
+/**
+ * Descriptor of a bind group layout entry.
+ */
+record bind-group-layout-entry {
+    label: string,
+    binding: u32,
+    visibility: u32,
+    ty: binding-type,
+}
+
+/**
+ * Type of binding.
+ */
+variant binding-type {
+    /// Buffer binding with optional dynamic offset
+    buffer(bool),
+
+    /// A type of sampler binding
+    sampler(u32),
+
+    /// texture binding type, dimension and multisampling
+    texture(tuple<u32, u32, bool>),
+}
+
+/**
+ * Descriptor of a bind group.
+ */
+record bind-group-descriptor {
+    layout: bind-group-layout,
+    entries: list<bind-group-entry>,
+}
+
+/**
+ * Descriptor of a bind group entry.
+ */
+record bind-group-entry {
+    binding: u32,
+    res: binding-resource,
+}
+
+/**
+ * A binding resource.
+ */
+variant binding-resource {
+    /// Buffer binding with offset and size
+    buffer(tuple<buffer, u32, u32>),
+
+    /// Sampler binding
+    sampler(sampler),
+
+    /// Texture binding
+    texture(texture),
+}
+
+/**
+ * Descriptor of a render pass.
+ */
+record render-pass-descriptor {
+    clear: render-pass-operation,
+    depth-stencil: option<texture-view>,
+    colors: list<color-attachment>,
+}
+
+/**
+ * Descriptor of the clear operations of a default render pass.
+ */
+record render-pass-operation {
+    clear-depth: f32,
+    clear-stencil: f32,
+    clear-color: color,
+}
+
+/**
+ * Descriptor of a render pass color attachment.
+ */
+record color-attachment {
+    view: texture-view,
+    clear: color,
+}
+
+/**
+ * Descriptor of a render pipeline.
+ */
+record render-pipeline-descriptor {
+    vertex: shader,
+    fragment: shader,
+    attributes: list<vertex-attribute>,
+    buffers: list<vertex-buffer-layout>,
+    bind-groups: list<bind-group-layout>,
+    primitive: primitive-state,
+    multisample: multisample-state,
+    depth-stencil: option<depth-stencil-state>,
+    targets: color-target-states,
+}
+
+/**
+ * Descriptor of vertex buffer layout.
+ */
+record vertex-buffer-layout {
+    /// Specifies the slice (start index and length) of attributes list to use for this buffer.
+    attributes: tuple<u32, u32>,
+    stride: u32,
+    step-mode: u32,
+}
+
+/**
+ * Descriptor of vertex attribute.
+ */
+record vertex-attribute {
+    format: u32,
+    offset: u32,
+    shader-location: u32,
+}
+
+/**
+ * Descriptor of the states of color targets.
+ */
+record color-target-states {
+    targets: list<color-target-state>,
+    write-mask: u32,
+    blend: blend-state,
+}
+
+/**
+ * Descriptor of the state of a color target.
+ */
+record color-target-state {
+    format: u32,
+    write-mask: u32,
+    blend: blend-state,
+}
+
+/**
+ * Descriptor of the blend state of a color target.
+ */
+record blend-state {
+    color: blend-component,
+    alpha: blend-component,
+}
+
+/**
+ * Descriptor of the blend component state of a color target.
+ */
+record blend-component {
+    operation: u32,
+    src-factor: u32,
+    dst-factor: u32,
+}
+
+/**
+ * Descriptor of the primitive state.
+ */
+record primitive-state {
+    topology: u32,
+    index-format: u32,
+    front-face: u32,
+    cull-mode: u32,
+}
+
+/**
+ * Descriptor of the depth stencil state.
+ */
+record depth-stencil-state {
+    format: u32,
+    depth-write: bool,
+    depth-compare: u32,
+    stencil-front: stencl-face-state,
+    stencil-back: stencl-face-state,
+    stencil-read-mask: u32,
+    stencil-write-mask: u32,
+    depth-bias: f32,
+    depth-bias-slope-scale: f32,
+    depth-bias-clamp: f32,
+}
+
+/**
+ * Descriptor of the stencil face state.
+ */
+record stencl-face-state {
+    compare: u32,
+    fail-op: u32,
+    depth-fail-op: u32,
+    pass-op: u32,
+}
+
+/**
+ * Descriptor of render pipeline mutlisample state.
+ */
+record multisample-state {
+    sample-count: u32,
+    alpha-to-coverage: bool,
+}

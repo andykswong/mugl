@@ -1,26 +1,27 @@
-import { Float, RenderingDevice, Resource } from 'mugl';
+import { Device, Float, Resource, UInt } from 'mugl';
 
 export abstract class ExampleApplication {
-  abstract init(): void;
+  public init(): void {}
 
-  abstract render(delta: Float): boolean;
+  public render(delta: Float): boolean {
+    return false;
+  }
 
-  abstract destroy(): void;
+  public resize(width: UInt, height: UInt): void {}
+
+  public destroy(): void {}
 }
 
-export type ExampleFactory = (device: RenderingDevice, webgl2: boolean) => ExampleApplication;
+export type ExampleFactory = (device: Device) => ExampleApplication;
 
 export abstract class BaseExample extends ExampleApplication {
   protected resources: Resource[] = [];
+  protected width: UInt = 1;
+  protected height: UInt = 1;
 
-  public abstract init(): void;
-
-  public abstract render(delta: Float): boolean;
-
-  public register(resources: Resource[]): void {
-    for (let i = 0; i < resources.length; ++i) {
-      this.resources.push(resources[i]);
-    }
+  public resize(width: UInt, height: UInt): void {
+    this.width = width;
+    this.height = height;
   }
 
   public destroy(): void {
@@ -28,5 +29,11 @@ export abstract class BaseExample extends ExampleApplication {
       this.resources[i].destroy();
     }
     this.resources.length = 0;
+  }
+
+  protected register(resources: Resource[]): void {
+    for (let i = 0; i < resources.length; ++i) {
+      this.resources.push(resources[i]);
+    }
   }
 }

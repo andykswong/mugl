@@ -1,79 +1,100 @@
-import { lookAt, mat4, perspective, ReadonlyMat3 } from 'munum';
-import { Buffer, BufferType, CompareFunc, CullMode, Float, Int, Pipeline, PixelFormat, RenderPass, Texture, VertexFormat, UniformType, UniformFormat, ShaderType, RenderingDevice } from 'mugl';
-import { BaseExample, createBuffer, Cube, Model, Quad, toIndices, toVertices } from '../common';
+import { array, lookAt, mat4, perspective, ReadonlyMat4 } from 'munum';
+import {
+  BindGroup, BindingType, Buffer, BufferUsage, CompareFunction, CullMode, Device,
+  FilterMode, Float, Int, RenderPipeline, RenderPass, Sampler, ShaderStage, Texture,
+  TextureFormat, TextureUsage, vertexBufferLayouts, VertexFormat
+} from 'mugl';
+import { API, BaseExample, createBuffer, Cube, Model, Quad, toIndices, toVertices } from '../common';
 
-const texSize = 1024;
+const sampleCount = 1;
+const texSize = 512;
 
-const kernels: ReadonlyMat3[] = [
+// 3x3 kernels with padding
+// See: https://en.wikipedia.org/wiki/Kernel_(image_processing)
+const kernels: ReadonlyMat4[] = [
   // edge detection
   [
-    -1, -1, -1,
-    -1, 8, -1,
-    -1, -1, -1
+    -1, -1, -1, 0,
+    -1, 8, -1, 0,
+    -1, -1, -1, 0,
+    0, 0, 0, 0,
   ],
   // emboss
   [
-    -2, -1, 0,
-    -1, 1, 1,
-    0, 1, 2
+    -2, -1, 0, 0,
+    -1, 1, 1, 0,
+    0, 1, 2, 0,
+    0, 0, 0, 0,
   ],
-  // normal
+  // edge detection 2
   [
-    0, 0, 0,
-    0, 1, 0,
-    0, 0, 0
+    0, -1, 0, 0,
+    -1, 4, -1, 0,
+    0, -1, 0, 0,
+    0, 0, 0, 0,
+  ],
+  // identity
+  [
+    0, 0, 0, 0,
+    0, 1, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
   ],
 ];
 
-const vertCube = `
-uniform mat4 mvp;
-attribute vec4 position;
-attribute vec4 color;
-varying vec4 vColor;
+const vertCube = `#version 300 es
+layout(std140) uniform Data {
+  mat4 mvp;
+};
+layout (location=0) in vec4 position;
+layout (location=1) in vec4 color;
+out vec4 vColor;
 void main(void) {
   gl_Position = mvp * position;
   vColor = color;
 }`;
 
-const fragCube = `
+const fragCube = `#version 300 es
 precision mediump float;
-varying vec4 vColor;
+in vec4 vColor;
+out vec4 outColor;
 void main(void) {
-  gl_FragColor = vColor;
+  outColor = vColor;
 }`;
 
-const vertQuad = `
-attribute vec4 position;
-attribute vec2 uv;
-varying vec2 vUv;
+const vertQuad = `#version 300 es
+layout (location=0) in vec4 position;
+layout (location=1) in vec2 uv;
+out vec2 vUv;
 void main(void) {
   gl_Position = position;
   vUv = uv;
-}
-`;
+}`;
 
-const fragQuad = `
-precision mediump float; 
+const fragQuad = `#version 300 es
+precision mediump float;
 uniform sampler2D tex;
-uniform vec2 texSize;
-uniform mat3 kernel;
-uniform float kernelWeight;
-varying vec2 vUv;
+layout(std140) uniform Data {
+  mat4 kernel;
+  vec2 texSize;
+  float kernelWeight;
+};
+in vec2 vUv;
+out vec4 outColor;
 void main(void) {
   vec2 onePixel = vec2(1.0, 1.0) / texSize;
   vec4 colorSum =
-    texture2D(tex, vUv + onePixel * vec2(-1, -1)) * kernel[0][0] +
-    texture2D(tex, vUv + onePixel * vec2( 0, -1)) * kernel[0][1] +
-    texture2D(tex, vUv + onePixel * vec2( 1, -1)) * kernel[0][2] +
-    texture2D(tex, vUv + onePixel * vec2(-1,  0)) * kernel[1][0] +
-    texture2D(tex, vUv + onePixel * vec2( 0,  0)) * kernel[1][1] +
-    texture2D(tex, vUv + onePixel * vec2( 1,  0)) * kernel[1][2] +
-    texture2D(tex, vUv + onePixel * vec2(-1,  1)) * kernel[2][0] +
-    texture2D(tex, vUv + onePixel * vec2( 0,  1)) * kernel[2][1] +
-    texture2D(tex, vUv + onePixel * vec2( 1,  1)) * kernel[2][2] ;
-  gl_FragColor = vec4((colorSum / kernelWeight).rgb, 1);
-}
-`;
+    texture(tex, vUv + onePixel * vec2(-1, -1)) * kernel[0][0] +
+    texture(tex, vUv + onePixel * vec2( 0, -1)) * kernel[0][1] +
+    texture(tex, vUv + onePixel * vec2( 1, -1)) * kernel[0][2] +
+    texture(tex, vUv + onePixel * vec2(-1,  0)) * kernel[1][0] +
+    texture(tex, vUv + onePixel * vec2( 0,  0)) * kernel[1][1] +
+    texture(tex, vUv + onePixel * vec2( 1,  0)) * kernel[1][2] +
+    texture(tex, vUv + onePixel * vec2(-1,  1)) * kernel[2][0] +
+    texture(tex, vUv + onePixel * vec2( 0,  1)) * kernel[2][1] +
+    texture(tex, vUv + onePixel * vec2( 1,  1)) * kernel[2][2] ;
+    outColor = vec4((colorSum / kernelWeight).rgb, 1);
+}`;
 
 const cubeVertices = toVertices({
   positions: Cube.positions,
@@ -85,139 +106,183 @@ const quadVertices = toVertices(Quad);
 
 export class PostprocessExample extends BaseExample {
   offscreenPass: RenderPass | null = null;
-  defaultPass: RenderPass | null = null;
   vertBuffer: Buffer | null = null;
   indexBuffer: Buffer | null = null;
-  cubePipeline: Pipeline | null = null;
   quadVertBuffer: Buffer | null = null;
-  quadPipeline: Pipeline | null = null;
+  cubeDataBuffer: Buffer | null = null;
+  kernelDataBuffer: Buffer | null = null;
+  cubePipeline: RenderPipeline | null = null;
+  quadPipeline: RenderPipeline | null = null;
   offscreenTex: Texture | null = null;
+  offscreenTexSampler: Sampler | null = null;
   depthTex: Texture | null = null;
+  offscreenTexBindGroup: BindGroup | null = null;
+  cubeBindGroup: BindGroup | null = null;
+  kernelBindGroup: BindGroup | null = null;
 
-  constructor(private readonly device: RenderingDevice) {
+  cubeData: Float32Array = new Float32Array(16);
+  kernelData: Float32Array = new Float32Array(20);
+
+  constructor(private readonly device: Device) {
     super();
   }
 
   init(): void {
-    const ctx = this.device;
+    // Create shaders
+    const cubeVs = API.createShader(this.device, { code: vertCube, usage: ShaderStage.Vertex });
+    const cubeFs = API.createShader(this.device, { code: fragCube, usage: ShaderStage.Fragment });
+    const quadVs = API.createShader(this.device, { code: vertQuad, usage: ShaderStage.Vertex });
+    const quadFs = API.createShader(this.device, { code: fragQuad, usage: ShaderStage.Fragment });
 
-    const cubeVs = this.device.shader({ type: ShaderType.Vertex, source: vertCube });
-    const cubeFs = this.device.shader({ type: ShaderType.Fragment, source: fragCube });
-    const quadVs = this.device.shader({ type: ShaderType.Vertex, source: vertQuad });
-    const quadFs = this.device.shader({ type: ShaderType.Fragment, source: fragQuad });
+    const dataLayout = API.createBindGroupLayout(this.device, {
+      entries: [{ label: 'Data', type: BindingType.Buffer }]
+    });
 
     // Setup the cube
-    this.vertBuffer = createBuffer(ctx, cubeVertices);
-    this.indexBuffer = createBuffer(ctx, cubeIndices, BufferType.Index);
-    this.cubePipeline = ctx.pipeline({
-      vert: cubeVs,
-      frag: cubeFs,
-      buffers: [
-        {
-          attrs: [
-            { name: 'position', format: VertexFormat.Float3 },
-            { name: 'color', format: VertexFormat.Float4 }
-          ]
+    {
+      this.vertBuffer = createBuffer(this.device, cubeVertices);
+      this.indexBuffer = createBuffer(this.device, cubeIndices, BufferUsage.Index);
+      this.cubeDataBuffer = createBuffer(this.device, this.cubeData, BufferUsage.Uniform | BufferUsage.Stream);
+
+      this.cubeBindGroup = API.createBindGroup(this.device, {
+        layout: dataLayout,
+        entries: [{ buffer: this.cubeDataBuffer }]
+      });
+
+      this.cubePipeline = API.createRenderPipeline(this.device, {
+        vertex: cubeVs,
+        fragment: cubeFs,
+        buffers: vertexBufferLayouts([
+          { attributes: [/* position */ VertexFormat.F32x3, /* color */ VertexFormat.F32x4] }
+        ]),
+        bindGroups: [dataLayout],
+        depthStencil: {
+          depthCompare: CompareFunction.LessEqual,
+          depthWrite: true
+        },
+        primitive: {
+          cullMode: CullMode.Back
         }
-      ],
-      uniforms: [
-        { name: 'mvp', valueFormat: UniformFormat.Mat4 },
-      ],
-      depth: {
-        compare: CompareFunc.LEqual,
-        write: true
-      },
-      raster: {
-        cullMode: CullMode.Back
-      }
-    });
+      });
+    }
 
     // Setup the fullscreen quad
-    this.offscreenTex = ctx.texture({
-      width: texSize,
-      height: texSize
-    });
-
-    this.quadVertBuffer = createBuffer(ctx, quadVertices);
-    this.quadPipeline = ctx.pipeline({
-      vert: quadVs,
-      frag: quadFs,
-      buffers: [
-        {
-          attrs: [
-            { name: 'position', format: VertexFormat.Float3 },
-            { name: 'uv', format: VertexFormat.Float2 }
-          ]
-        }
-      ],
-      uniforms: [
-        { name: 'tex', type: UniformType.Tex, texType: this.offscreenTex!.props.type },
-        { name: 'texSize', valueFormat: UniformFormat.Vec2 },
-        { name: 'kernel', valueFormat: UniformFormat.Mat3 },
-        { name: 'kernelWeight' },
+    const offscreenTexLayout = API.createBindGroupLayout(this.device, {
+      entries: [
+        { binding: 0, label: 'tex', type: BindingType.Texture },
+        { binding: 1, label: 'tex', type: BindingType.Sampler },
       ]
     });
+    {
+      this.quadVertBuffer = createBuffer(this.device, quadVertices);
+      this.kernelDataBuffer = createBuffer(this.device, this.kernelData, BufferUsage.Uniform | BufferUsage.Stream);
 
-    this.depthTex = ctx.texture({
-      format: PixelFormat.Depth,
-      width: texSize,
-      height: texSize,
-      renderTarget: true
-    });
+      this.offscreenTex = API.createTexture(this.device, { size: [texSize, texSize, 1], sampleCount });
+      this.offscreenTexSampler = API.createSampler(this.device, {
+        magFilter: FilterMode.Linear,
+        minFilter: FilterMode.Linear,
+      });
 
-    this.defaultPass = ctx.pass({
-      clearColor: [0, 0, 0, 1],
-      clearDepth: 1
-    });
+      this.offscreenTexBindGroup = API.createBindGroup(this.device, {
+        layout: offscreenTexLayout,
+        entries: [
+          { binding: 0, texture: this.offscreenTex },
+          { binding: 1, sampler: this.offscreenTexSampler }
+        ]
+      });
 
-    this.offscreenPass = ctx.pass({
-      color: [{ tex: this.offscreenTex }],
-      depth: { tex: this.depthTex },
-      clearColor: [0.25, 0.25, 0.25, 1],
-      clearDepth: 1
-    });
+      this.kernelBindGroup = API.createBindGroup(this.device, {
+        layout: dataLayout,
+        entries: [{ buffer: this.kernelDataBuffer }]
+      });
+
+      this.quadPipeline = API.createRenderPipeline(this.device, {
+        vertex: quadVs,
+        fragment: quadFs,
+        bindGroups: [offscreenTexLayout, dataLayout],
+        buffers: vertexBufferLayouts([
+          { attributes: [/* position */ VertexFormat.F32x3, /* uv */ VertexFormat.F32x2] }
+        ]),
+      });
+    }
+
+    // Setup the offscreen pass
+    {
+      this.depthTex = API.createTexture(this.device, {
+        format: TextureFormat.Depth16,
+        size: [texSize, texSize, 1],
+        usage: TextureUsage.RenderAttachment,
+        sampleCount
+      });
+
+      this.offscreenPass = API.createRenderPass(this.device, {
+        colors: [{
+          view: { texture: this.offscreenTex! },
+          clear: [0.25, 0.25, 0.25, 1],
+        }],
+        depthStencil: { texture: this.depthTex! },
+        clearDepth: 1
+      });
+    }
 
     this.register([
-      this.defaultPass!, this.offscreenPass!,
-      this.cubePipeline!, this.vertBuffer!, this.indexBuffer!,
-      this.quadPipeline!, this.quadVertBuffer!, this.offscreenTex!, this.depthTex!,
-      cubeFs, cubeVs, quadFs, quadVs
+      this.cubePipeline!, this.vertBuffer!, this.indexBuffer!, this.cubeDataBuffer!, this.kernelDataBuffer!,
+      this.quadPipeline!, this.quadVertBuffer!, this.offscreenTex!, this.offscreenTexSampler!, this.depthTex!,
+      this.offscreenPass!, this.cubeBindGroup!, this.offscreenTexBindGroup!, this.kernelBindGroup!,
+      cubeFs, cubeVs, quadFs, quadVs, offscreenTexLayout, dataLayout,
     ]);
   }
 
   render(t: Float): boolean {
-    const proj = perspective((this.device.width as Float) / (this.device.height as Float), Math.PI / 4 as Float, 0.01, 100);
-    const view = lookAt([10 * Math.cos(t) as Float, 5 * Math.sin(t) as Float, 10 * Math.sin(t) as Float], [0, 0, 0]);
-    const mvp = mat4.mul(proj, view);
+    // Update cube mvp
+    {
+      const proj = perspective((this.width as Float) / (this.height as Float), Math.PI / 4 as Float, 0.01, 100);
+      const view = lookAt([10 * Math.cos(t) as Float, 5 * Math.sin(t) as Float, 10 * Math.sin(t) as Float], [0, 0, 0]);
+      const mvp = mat4.mul(proj, view);
+      array.copyEx(mvp, this.cubeData, 0, 0, 16);
+      API.writeBuffer(this.device, this.cubeDataBuffer!, this.cubeData);
+    }
+
+    // Update kernel
+    {
+      const kernel = kernels[Math.floor(t / 2) as Int % kernels.length];
+      let kernelWeight: Float = 0;
+      for (let i = 0; i < kernel.length; ++i) {
+        kernelWeight += kernel[i];
+      }
+      kernelWeight = kernelWeight <= 0 ? 1 : kernelWeight;
+
+      array.copyEx(kernel, this.kernelData, 0, 0, 16);
+      this.kernelData[16] = texSize as Float;
+      this.kernelData[17] = texSize as Float;
+      this.kernelData[18] = kernelWeight;
+      API.writeBuffer(this.device, this.kernelDataBuffer!, this.kernelData);
+    }
 
     // Draw cube to texture
-    this.device.render(this.offscreenPass!)
-      .pipeline(this.cubePipeline!)
-      .vertex(0, this.vertBuffer!)
-      .index(this.indexBuffer!)
-      .uniforms([{ name: 'mvp', values: mvp }])
-      .drawIndexed(cubeIndices.length)
-      .end();
-
-    const kernel = kernels[Math.floor(t / 2) as Int % kernels.length];
-    let kernelWeight: Float = 0;
-    for (let i = 0; i < kernel.length; ++i) {
-      kernelWeight += kernel[i];
+    API.beginRenderPass(this.device, this.offscreenPass!);
+    {
+      API.setRenderPipeline(this.device, this.cubePipeline!);
+      API.setIndex(this.device, this.indexBuffer!);
+      API.setVertex(this.device, 0, this.vertBuffer!);
+      API.setBindGroup(this.device, 0, this.cubeBindGroup!);
+      API.drawIndexed(this.device, cubeIndices.length);
     }
-    kernelWeight = kernelWeight <= 0 ? 1 : kernelWeight;
+    API.submitRenderPass(this.device);
 
     // Draw to screen
-    this.device.render(this.defaultPass!)
-      .pipeline(this.quadPipeline!)
-      .vertex(0, this.quadVertBuffer!)
-      .uniforms([
-        { name: 'tex', tex: this.offscreenTex },
-        { name: 'texSize', values: [this.offscreenTex!.props.width as Float, this.offscreenTex!.props.height as Float] },
-        { name: 'kernel', values: kernel },
-        { name: 'kernelWeight', value: kernelWeight },
-      ])
-      .draw(6)
-      .end();
+    API.beginDefaultPass(this.device, {
+      clearColor: [0, 0, 0, 1],
+      clearDepth: 1
+    });
+    {
+      API.setRenderPipeline(this.device, this.quadPipeline!);
+      API.setVertex(this.device, 0, this.quadVertBuffer!);
+      API.setBindGroup(this.device, 0, this.offscreenTexBindGroup!);
+      API.setBindGroup(this.device, 1, this.kernelBindGroup!);
+      API.draw(this.device, 6);
+    }
+    API.submitRenderPass(this.device);
 
     return true;
   }

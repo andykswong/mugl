@@ -1,4 +1,4 @@
-import { Float, Uint } from 'mugl';
+import { Float, UInt } from 'mugl';
 
 export class Model {
   public readonly indices: Float[][] | null = null;
@@ -64,9 +64,9 @@ export function toIndices(model: Model): Uint16Array {
   }
   const out = new Uint16Array(indices.length * 3);
   for (let i = 0; i < indices.length; ++i) {
-    out[i * 3] = indices[i][0] as Uint;
-    out[i * 3 + 1] = indices[i][1] as Uint;
-    out[i * 3 + 2] = indices[i][2] as Uint;
+    out[i * 3] = indices[i][0] as UInt;
+    out[i * 3 + 1] = indices[i][1] as UInt;
+    out[i * 3 + 2] = indices[i][2] as UInt;
   }
   return out;
 }

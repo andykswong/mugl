@@ -1,6 +1,6 @@
 import { vec3 } from 'munum';
-import { getNGLDevice } from 'mugl/n';
-import { ResolvedGlTF, renderGlTF, resolveGlTF, updateGlTFAnimation } from 'mugl/tf';
+import { WebGL } from 'mugl';
+import { ResolvedGlTF, renderGlTF, resolveGlTF, updateGlTFAnimation } from '../gltf';
 import { getDefaultCamera } from './utils';
 
 const camDir = vec3.create(-1, -2, -2);
@@ -12,15 +12,7 @@ let glTF: ResolvedGlTF | null = null;
 let startTime = 0;
 let curAnimation = 0;
 
-const device = 
-  getNGLDevice(canvas, {
-    powerPreference: 'low-power',
-    webgl2: false
-  })!;
-
-// Features required by PBR shader
-device.feature('OES_standard_derivatives');
-device.feature('OES_element_index_uint');
+const device =  WebGL.requestWebGL2Device(canvas, { powerPreference: 'low-power' })!;
 
 const GLTF_SAMPLE_PATH = 'https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/63f026b2aa957d3e8207f6dd798608993e33fb0d/2.0';
 
@@ -70,11 +62,11 @@ function render(timestamp = 0): void {
     }
   }
 
-  renderGlTF(device, glTF, {
+  renderGlTF(canvas, device, glTF, {
     scene,
     camera: glTF.cameras ? {
       index: parseInt(cameraParam!) || 0
-    } : getDefaultCamera(glTF, scene, camDir, device.canvas.width / device.canvas.height)
+    } : getDefaultCamera(glTF, scene, camDir, canvas.width / canvas.height)
   });
 }
 

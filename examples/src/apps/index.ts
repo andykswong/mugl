@@ -18,10 +18,10 @@ export class AppDefinition {
 
 export const Apps = [
   new AppDefinition('basic', 'Hello World', (device) => new BasicExample(device)),
-  new AppDefinition('instancing', 'Instancing', (device) => new InstancingExample(device)),
-  new AppDefinition('texture', 'Textures', (device) => new TextureExample(device)),
-  new AppDefinition('stencil', 'Stencil', (device) => new StencilExample(device)),
+  new AppDefinition('instancing', 'Buffers & Instancing', (device) => new InstancingExample(device)),
+  new AppDefinition('texture', 'Texture & Sampler', (device) => new TextureExample(device)),
+  new AppDefinition('stencil', 'Depth Stencil', (device) => new StencilExample(device)),
   new AppDefinition('postprocess', 'Post-processing', (device) => new PostprocessExample(device)),
-  new AppDefinition('mrt', 'Multi Render Targets', (device, webgl2) => new MRTExample(device, webgl2)),
-  new AppDefinition('pbr', 'Physically Based Rendering', (device, webgl2) => new PbrExample(device, webgl2)),
+  new AppDefinition('mrt', 'Multi Render Targets', (device) => new MRTExample(device)),
+  new AppDefinition('pbr', 'Physically Based Rendering', (device) => new PbrExample(device)),
 ];
