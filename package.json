@@ -69,6 +69,7 @@
     "jest": "cross-env NODE_OPTIONS=--experimental-vm-modules npx jest",
     "jest:watch": "npm run jest -- --watch",
     "doc": "typedoc --out docs js/index.ts",
+    "postdoc": "copyfiles screenshots/* docs/",
     "build:examples": "cd examples && npm install && npm run build",
     "examples": "cd examples && npm start",
     "start": "npm run examples"

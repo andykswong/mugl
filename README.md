@@ -21,17 +21,18 @@ For JavaScript / AssemblyScript interface, see TSDoc: http://andykswong.github.i
 For raw WebAssembly interface, see the API spec: [API.wit](./API.wit) \
 or the AssemblyScript imports: [mugl.ts](./assembly/mugl.ts)
 
-## [Examples](http://andykswong.github.io/mugl/examples)
-Check out the live examples: http://andykswong.github.io/mugl/examples
+## [Examples](https://andykswong.github.io/mugl/latest/examples)
+Check out the live examples: https://andykswong.github.io/mugl/latest/examples
 
-The source code of all examples can be found [here](./examples).
+The source code of all examples can be found [here](./examples/src/apps/).
 
 All examples run on **both JavaScript and WebAssembly, using the exact same code base**! Click the toggle in the examples menu to seamlessly switch between the two environments.
 
-## [glTF 2.0 Model Viewer](http://andykswong.github.io/mugl/examples/gltf.html)
-A small (~17KB) but full-featured glTF model viewer built on `mugl` is available as an [example](http://andykswong.github.io/mugl/examples/gltf.html) usage of this library. The source code can be found [here](./examples/src/gltf-viewer).
+## [glTF 2.0 Model Viewer](https://andykswong.github.io/mugl/latest/examples/gltf.html)
+A small (~17KB) but full-featured glTF model viewer built on `mugl` is available as an example usage of this library: https://andykswong.github.io/mugl/latest/examples/gltf.html \
+The source code can be found [here](./examples/src/gltf-viewer).
 
-Any model from [glTF-Sample-Models](https://github.com/KhronosGroup/glTF-Sample-Models) can be loaded using the `model` and `variant` URL parameter, e.g.: [?model=Buggy&variant=glTF-Binary](http://andykswong.github.io/mugl/examples/gltf.html?model=Buggy&variant=glTF-Binary&camera=0&scene=0) to load the [Buggy](https://github.com/KhronosGroup/glTF-Sample-Models/tree/master/2.0/Buggy) model. You can also use the `url` URL parameter to load a model from any source ([example](http://andykswong.github.io/mugl/examples/gltf.html?url=https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Avocado/glTF/Avocado.gltf)).
+Any model from [glTF-Sample-Models](https://github.com/KhronosGroup/glTF-Sample-Models) can be loaded using the `model` and `variant` URL parameter, e.g.: [?model=Buggy&variant=glTF-Binary](https://andykswong.github.io/mugl/latest/examples/gltf.html?model=Buggy&variant=glTF-Binary&camera=0&scene=0) to load the [Buggy](https://github.com/KhronosGroup/glTF-Sample-Models/tree/master/2.0/Buggy) model. You can also use the `url` URL parameter to load a model from any source ([example](https://andykswong.github.io/mugl/latest/examples/gltf.html?url=https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Avocado/glTF/Avocado.gltf)).
 
 ![alt text](./screenshots/DamagedHelmet.png)
 
@@ -43,7 +44,7 @@ npm install --save mugl
 ```
 
 ### 1. Basic Rendering
-Below is the minimal `mugl` program to draw a triangle (See this example live [here](https://andykswong.github.io/mugl/examples/#basic)):
+Below is the minimal `mugl` program to draw a triangle (See this example live [here](https://andykswong.github.io/mugl/latest/examples/#basic)):
 ```javascript
 import { ShaderStage, VertexFormat, vertexBufferLayouts, WebGL } from 'mugl';
 
@@ -97,7 +98,7 @@ const pipeline = WebGL.createRenderPipeline(device, {
 });
 
 // 5. Submit draw call in a render pass
-WebGL.beginDefaultPass(device, { clearColor: [0, 0, 0, 1.0] }); // clear background to black
+WebGL.beginDefaultPass(device, { clearColor: [0.1, 0.2, 0.3, 1.0] }); // clear background to dark blue
   WebGL.setRenderPipeline(device, pipeline);
   WebGL.setVertex(device, 0, buffer);
   WebGL.draw(device, 3); // 3 vertices to draw
