@@ -1,5 +1,5 @@
 import { getCanvasById, WebGL, WebGL2Device } from 'mugl';
-import { ExampleApplication } from '../src/common';
+import { APP_CONTEXT_ID, ExampleApplication } from '../src/common';
 import { Apps } from '../src/apps';
 
 let activeApp: ExampleApplication | null = null;
@@ -7,7 +7,7 @@ let device: WebGL2Device | null = null;
 
 export function init(id: u32): void {
   if (!device) {
-    device = WebGL.requestWebGL2Device(getCanvasById('canvas'), {
+    device = WebGL.requestWebGL2Device(getCanvasById(APP_CONTEXT_ID, 'canvas'), {
       stencil: true,
     });
   }

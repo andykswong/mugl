@@ -150,31 +150,33 @@ async function onContextCreate(gl) {
 ```
 
 ### 3. Running on WebAssembly
-Import `WebAssemblyGL` to a WASM module:
+Import `mugl/wasm` to your WASM module:
 
 ```javascript
-import { WebAssemblyGL } from 'mugl';
+import * as muglWasm from 'mugl/wasm';
 
-// 1. Import WebAssemblyGL when instantiating a WASM module
+// 1. Import mugl/wasm when instantiating a WASM module
 const imports = {
-  mugl: WebAssemblyGL(), // Imports mugl binding
-  env: {
-    abort() { ... }
-  },
+  'mugl/wasm': muglWasm, // Imports mugl binding
+  ...
 };
-const { instance, module } = await WebAssembly.instantiateStreaming(
+const exports = (await WebAssembly.instantiateStreaming(
   fetch('module.wasm'), imports
-);
+)).instance.exports;
 
-// 2. Expose WASM module memory to mugl
-imports.mugl.memory = instance.exports.memory;
+// 1b. Alternatively, if you use Webpack with experiments.asyncWebAssembly = true, you can import your WASM as ESM:
+import * as exports from './module.wasm';
+
+// 2. Expose WASM module memory to mugl. This must be done before your WASM module calls any mugl method.
+const CONTEXT_ID = 123; // Define a unique numeric ID for your WASM module
+muglWasm.set_context_memory(CONTEXT_ID, exports.memory);
 ```
 
 In the AssemblyScript WASM module, you can then use `getCanvasById` to get a canvas handle for creating a device:
 ```javascript
 import { getCanvasById, WebGL } from 'mugl';
-
-const device = WebGL.requestWebGL2Device(getCanvasById('canvasId'));
+const CONTEXT_ID = 123; // This must be the same ID as above
+const device = WebGL.requestWebGL2Device(getCanvasById(CONTEXT_ID, 'canvasId'));
 ```
 
 See the [examples source code](./examples) on how to build an AssemblyScript mugl app.

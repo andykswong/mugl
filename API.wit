@@ -2,6 +2,11 @@
 // This can be used to generate a binding, by e.g. https://bytecodealliance.github.io/wit-bindgen/
 
 /**
+ * Frees context memory.
+ */
+free-context: function(c: context)
+
+/**
  * Checks if the future is completed.
  */
 is-future-done: function(f: future) -> bool
@@ -9,7 +14,12 @@ is-future-done: function(f: future) -> bool
 /**
  * Loads an image from URI.
  */
-create-image: function(uri: string) -> image
+create-image: function(c: context, uri: string) -> image
+
+/**
+ * Gets an image handle by ID.
+ */
+get-image-by-id: function(c: context, id: string) -> image
 
 /**
  * Deletes an image handle.
@@ -19,7 +29,7 @@ delete-image: function(img: image)
 /**
  * Gets a canvas handle by ID.
  */
-get-canvas-by-id: function(id: string) -> canvas
+get-canvas-by-id: function(c: context, id: string) -> canvas
 
 /**
  * Gets the width of the given canvas.
@@ -280,6 +290,11 @@ flags webgl-context-attributes {
     preserve-drawing-buffer,
     stencil,
 }
+
+/**
+ * A context ID.
+ */
+type context = f64
 
 /**
  * A resolvable future object.

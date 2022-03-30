@@ -5,7 +5,7 @@
     "assembly/**/*.ts",
     "*.cjs",
     "*.mjs",
-    "index.js",
-    "index.d.ts"
+    "*.js",
+    "*.d.ts"
   ]
 }

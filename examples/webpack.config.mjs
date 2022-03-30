@@ -48,6 +48,10 @@ export default {
   },
   resolve: {
     extensions: [ '.js', '.mjs', '.ts' ],
+    alias: {
+      env: path.resolve('./src/wasm/env'),
+      'examples.wasm': path.resolve(OUTPUT_DIR, 'examples.wasm'),
+    },
   },
   optimization: {
     minimize: isProd,
@@ -79,6 +83,10 @@ export default {
       ],
     })
   ],
+  experiments: {
+    asyncWebAssembly: true,
+    topLevelAwait: true,
+  },
   devtool: isProd ? false : 'source-map',
   devServer: {
     static: ASSET_DIR

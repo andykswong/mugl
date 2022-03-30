@@ -1,8 +1,8 @@
 import { WebGL, WebGL2Feature } from 'mugl';
 import { ExampleApplication, ExampleFactory } from './common';
 import { AppDefinition, Apps } from './apps';
-import { loadExamplesWASM } from './wasm';
 import { loadImages } from './images';
+import { initExamplesWASM } from './wasm';
 
 declare const window: Window & {
   loadExample: (url?: string) => void;
@@ -19,6 +19,10 @@ class Redirect extends ExampleApplication {
   }
 }
 
+// Load WASM module
+let useWASM: boolean = false;
+const wasmModule = await initExamplesWASM();
+
 class WASMExample extends ExampleApplication {
   private wasmModule: any | null = null;
 
@@ -27,29 +31,21 @@ class WASMExample extends ExampleApplication {
   }
 
   init(): void {
-    wasmPromise.then(m => {
-      this.wasmModule = m;
-      (m.init as CallableFunction)(this.id)
-    });
+    (wasmModule.init as CallableFunction)(this.id);
   }
 
   render(delta: number): boolean {
-    this.wasmModule?.render(delta);
-    return true;
+    return (wasmModule.render as CallableFunction)(delta);
   }
 
   resize(width: number, height: number): void {
-    this.wasmModule?.resize(width, height);
+    (wasmModule.resize as CallableFunction)(width, height);
   }
 
   destroy(): void {
-    this.wasmModule?.destroy();
+    (wasmModule.destroy as CallableFunction)();
   }
 }
-
-// Load WASM module
-let useWASM: boolean = false;
-const wasmPromise = loadExamplesWASM();
 
 function wasmAwareFactory(id: number, name: string, factory: ExampleFactory): ExampleFactory {
   return (device) => {

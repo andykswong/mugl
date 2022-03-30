@@ -1,5 +1,5 @@
 /**
- * Minimal WebGPU-like rendering interface.
+ * Minimal WebGPU_like rendering interface.
  * @packageDocumentation
  */
 
@@ -9,6 +9,7 @@ import {
 } from './gpu';
 
 /* Resource pointer */
+export type ContextId = f64;
 export type FutureId = f64;
 export type CanvasId = f64;
 export type ImageSourceId = f64;
@@ -29,32 +30,34 @@ export type RenderPassId = f64;
  * @param id future pointer
  * @returns if future is completed
  */
-@external("mugl", "is-future-done")
+@external("mugl/wasm", "is_future_done")
 export declare function isFutureDone(id: FutureId): boolean;
 
 /**
  * Creates image from URI.
+ * @param context unique context ID for the app
  * @param uriPtr the image URI string pointer
  * @param uriLen the image URI string length
  * @returns image pointer
  */
-@external("mugl", "create-image")
-export declare function createImage(uriPtr: usize, uriLen: usize): ImageSourceId;
+@external("mugl/wasm", "create_image")
+export declare function createImage(context: ContextId, uriPtr: usize, uriLen: usize): ImageSourceId;
 
 /**
  * Gets an image handle by ID.
+ * @param context unique context ID for the app
  * @param idPtr the image ID string pointer
  * @param idLen the image ID string length
  * @returns image pointer
  */
-@external("mugl", "get-image-by-id")
-export declare function getImageById(idPtr: usize, idLen: usize): ImageSourceId;
+@external("mugl/wasm", "get_image_by_id")
+export declare function getImageById(context: ContextId, idPtr: usize, idLen: usize): ImageSourceId;
 
 /**
  * Deletes an image.
  * @param image image pointer
  */
-@external("mugl", "delete-image")
+@external("mugl/wasm", "delete_image")
 export declare function deleteImage(image: ImageSourceId): void;
 
 /**
@@ -62,32 +65,33 @@ export declare function deleteImage(image: ImageSourceId): void;
  * @param canvas image pointer
  * @returns image width
  */
- @external("mugl", "get-image-width")
- export declare function getImageWidth(image: ImageSourceId): UInt;
- 
- /**
-  * Get the height of the given image.
-  * @param canvas image pointer
-  * @returns image height
-  */
- @external("mugl", "get-image-height")
- export declare function getImageHeight(image: ImageSourceId): UInt;
- 
+@external("mugl/wasm", "get_image_width")
+export declare function getImageWidth(image: ImageSourceId): UInt;
+
+/**
+ * Get the height of the given image.
+ * @param canvas image pointer
+ * @returns image height
+ */
+@external("mugl/wasm", "get_image_height")
+export declare function getImageHeight(image: ImageSourceId): UInt;
+
 /**
  * Get canvas by string ID.
+ * @param context unique context ID for the app
  * @param idPtr the image ID string pointer
  * @param idLen the image URI ID length
  * @returns canvas pointer
  */
-@external("mugl", "get-canvas-by-id")
-export declare function getCanvasById(idPtr: usize, idLen: usize): CanvasId;
+@external("mugl/wasm", "get_canvas_by_id")
+export declare function getCanvasById(context: ContextId, idPtr: usize, idLen: usize): CanvasId;
 
 /**
  * Get the width of given canvas.
  * @param canvas canvas pointer
  * @returns canvas width
  */
-@external("mugl", "get-canvas-width")
+@external("mugl/wasm", "get_canvas_width")
 export declare function getCanvasWidth(canvas: CanvasId): UInt;
 
 /**
@@ -95,7 +99,7 @@ export declare function getCanvasWidth(canvas: CanvasId): UInt;
  * @param canvas canvas pointer
  * @returns canvas height
  */
-@external("mugl", "get-canvas-height")
+@external("mugl/wasm", "get_canvas_height")
 export declare function getCanvasHeight(canvas: CanvasId): UInt;
 
 /**
@@ -105,7 +109,7 @@ export declare function getCanvasHeight(canvas: CanvasId): UInt;
  * @param features WebGL2Feature flags
  * @returns the device pointer, or 0 if WebGL2 is unsupported
  */
-@external("mugl", "webgl-request-device")
+@external("mugl/wasm", "webgl_request_device")
 export declare function requestWebGL2Device(
   canvas: CanvasId, desc: WebGLContextAttributeFlag, features: UInt
 ): DeviceId;
@@ -116,35 +120,35 @@ export declare function requestWebGL2Device(
  * @param texture 
  * @param hint 
  */
-@external("mugl", "webgl-generate-mipmap")
+@external("mugl/wasm", "webgl_generate_mipmap")
 export declare function generateMipmap(device: DeviceId, texture: TextureId, hint: MipmapHint): void
 
 /**
  * Resets the state of a GPU device.
  * @param device the device
  */
-@external("mugl", "reset-device")
+@external("mugl/wasm", "reset_device")
 export declare function resetDevice(device: DeviceId): void;
 
 /**
  * Deletes a device.
  * @param device the device
  */
-@external("mugl", "delete-device")
+@external("mugl/wasm", "delete_device")
 export declare function deleteDevice(device: DeviceId): void;
 
 /**
  * Checks if the device is lost.
  * @param device the device
  */
-@external("mugl", "is-device-lost")
+@external("mugl/wasm", "is_device_lost")
 export declare function isDeviceLost(device: DeviceId): boolean;
 
 /**
  * Get supported and enabled features of a device.
  * @param device the device
  */
-@external("mugl", "get-device-features")
+@external("mugl/wasm", "get_device_features")
 export declare function getFeatures(device: DeviceId): u32;
 
 /**
@@ -153,7 +157,7 @@ export declare function getFeatures(device: DeviceId): u32;
  * @param size buffer byte size
  * @param usage buffer usage flags
  */
-@external("mugl", "create-buffer")
+@external("mugl/wasm", "create_buffer")
 export declare function createBuffer(device: DeviceId, size: UInt, usage: UInt): BufferId;
 
 /**
@@ -161,7 +165,7 @@ export declare function createBuffer(device: DeviceId, size: UInt, usage: UInt):
  * @param device the device
  * @param buffer the buffer
  */
-@external("mugl", "delete-buffer")
+@external("mugl/wasm", "delete_buffer")
 export declare function deleteBuffer(buffer: BufferId): void;
 
 /**
@@ -176,7 +180,7 @@ export declare function deleteBuffer(buffer: BufferId): void;
  * @param format 
  * @param usage 
  */
-@external("mugl", "create-texture")
+@external("mugl/wasm", "create_texture")
 export declare function createTexture(
   device: DeviceId,
   width: UInt, height: UInt, depth: UInt,
@@ -192,7 +196,7 @@ export declare function createTexture(
  * @param device the device
  * @param texture the texture
  */
-@external("mugl", "delete-texture")
+@external("mugl/wasm", "delete_texture")
 export declare function deleteTexture(texture: TextureId): void;
 
 /**
@@ -209,7 +213,7 @@ export declare function deleteTexture(texture: TextureId): void;
  * @param compare 
  * @param maxAnisotropy 
  */
-@external("mugl", "create-sampler")
+@external("mugl/wasm", "create_sampler")
 export declare function createSampler(
   device: DeviceId,
   addressModeU: AddressMode, addressModeV: AddressMode, addressModeW: AddressMode,
@@ -224,7 +228,7 @@ export declare function createSampler(
  * @param device
  * @param sampler
  */
-@external("mugl", "delete-sampler")
+@external("mugl/wasm", "delete_sampler")
 export declare function deleteSampler(sampler: SamplerId): void;
 
 /**
@@ -234,7 +238,7 @@ export declare function deleteSampler(sampler: SamplerId): void;
  * @param codeLen shader code string length
  * @param usage 
  */
-@external("mugl", "create-shader")
+@external("mugl/wasm", "create_shader")
 export declare function createShader(device: DeviceId, codePtr: usize, codeLen: UInt, usage: ShaderStage): ShaderId;
 
 /**
@@ -242,7 +246,7 @@ export declare function createShader(device: DeviceId, codePtr: usize, codeLen: 
  * @param device
  * @param shader
  */
-@external("mugl", "delete-shader")
+@external("mugl/wasm", "delete_shader")
 export declare function deleteShader(shader: ShaderId): void;
 
 /**
@@ -251,7 +255,7 @@ export declare function deleteShader(shader: ShaderId): void;
  * @param entriesPtr pointer to BindGroupLayoutEntry array
  * @param entriesLen length of BindGroupLayoutEntry array
  */
-@external("mugl", "create-bind-group-layout")
+@external("mugl/wasm", "create_bind_group_layout")
 export declare function createBindGroupLayout(
   device: DeviceId, entriesPtr: usize, entriesLen: UInt
 ): BindGroupLayoutId;
@@ -261,7 +265,7 @@ export declare function createBindGroupLayout(
  * @param device
  * @param bindGroupLayout
  */
-@external("mugl", "delete-bind-group-layout")
+@external("mugl/wasm", "delete_bind_group_layout")
 export declare function deleteBindGroupLayout(bindGroupLayout: BindGroupLayoutId): void;
 
 /**
@@ -271,7 +275,7 @@ export declare function deleteBindGroupLayout(bindGroupLayout: BindGroupLayoutId
  * @param entriesPtr pointer to BindGroupEntry array
  * @param entriesLen length of BindGroupEntry array
  */
-@external("mugl", "create-bind-group")
+@external("mugl/wasm", "create_bind_group")
 export declare function createBindGroup(
   device: DeviceId, layout: BindGroupLayoutId, entriesPtr: usize, entriesLen: UInt
 ): BindGroupId;
@@ -281,7 +285,7 @@ export declare function createBindGroup(
  * @param device
  * @param bindGroup
  */
-@external("mugl", "delete-bind-group")
+@external("mugl/wasm", "delete_bind_group")
 export declare function deleteBindGroup(bindGroup: BindGroupId): void;
 
 /**
@@ -328,7 +332,7 @@ export declare function deleteBindGroup(bindGroup: BindGroupId): void;
  * @param blendAlphaSrcFactor 
  * @param blendAlphaDstFactor 
  */
-@external("mugl", "create-render-pipeline")
+@external("mugl/wasm", "create_render_pipeline")
 export declare function createRenderPipeline(
   device: DeviceId,
   vertex: ShaderId,
@@ -353,7 +357,7 @@ export declare function createRenderPipeline(
  * @param device
  * @param renderPipeline
  */
-@external("mugl", "delete-render-pipeline")
+@external("mugl/wasm", "delete_render_pipeline")
 export declare function deleteRenderPipeline(renderPipeline: RenderPipelineId): void;
 
 /**
@@ -372,7 +376,7 @@ export declare function deleteRenderPipeline(renderPipeline: RenderPipelineId): 
  * @param colorsPtr pointer to ColorAttachment array 
  * @param colorsLen ength of ColorAttachment array 
  */
-@external("mugl", "create-render-pass")
+@external("mugl/wasm", "create_render_pass")
 export declare function createRenderPass(
   device: DeviceId,
   clearDepth: Float, clearStencil: Float,
@@ -387,7 +391,7 @@ export declare function createRenderPass(
  * @param device
  * @param renderPipeline
  */
-@external("mugl", "delete-render-pass")
+@external("mugl/wasm", "delete_render_pass")
 export declare function deleteRenderPass(renderPass: RenderPassId): void;
 
 /**
@@ -398,7 +402,7 @@ export declare function deleteRenderPass(renderPass: RenderPassId): void;
  * @param outPtr pointer to the output buffer
  * @param size byte size of the output
  */
-@external("mugl", "read-buffer")
+@external("mugl/wasm", "read_buffer")
 export declare function readBuffer(
   device: DeviceId, buffer: BufferId, offset: UInt, outPtr: usize, size: UInt
 ): FutureId;
@@ -411,7 +415,7 @@ export declare function readBuffer(
  * @param size byte size of the data
  * @param offset offset into the GPU buffer to write to
  */
-@external("mugl", "write-buffer")
+@external("mugl/wasm", "write_buffer")
 export declare function writeBuffer(
   device: DeviceId, buffer: BufferId, dataPtr: usize, size: UInt, offset: UInt
 ): void;
@@ -425,7 +429,7 @@ export declare function writeBuffer(
  * @param srcOffset 
  * @param dstOffset 
  */
-@external("mugl", "copy-buffer")
+@external("mugl/wasm", "copy_buffer")
 export declare function copyBuffer(
   device: DeviceId, src: BufferId, dst: BufferId, size: UInt, srcOffset: UInt, dstOffset: UInt
 ): void;
@@ -447,7 +451,7 @@ export declare function copyBuffer(
  * @param height 
  * @param depth 
  */
-@external("mugl", "write-texture")
+@external("mugl/wasm", "write_texture")
 export declare function writeTexture(
   device: DeviceId,
   texture: TextureId, mipLevel: UInt, x: UInt, y: UInt, z: UInt,
@@ -470,7 +474,7 @@ export declare function writeTexture(
  * @param width 
  * @param height 
  */
-@external("mugl", "copy-external-image-to-texture")
+@external("mugl/wasm", "copy_external_image_to_texture")
 export declare function copyExternalImageToTexture(
   device: DeviceId,
   src: ImageSourceId, srcX: UInt, srcY: UInt,
@@ -495,7 +499,7 @@ export declare function copyExternalImageToTexture(
  * @param height 
  * @param depth 
  */
-@external("mugl", "copy-texture")
+@external("mugl/wasm", "copy_texture")
 export declare function copyTexture(
   device: DeviceId,
   src: TextureId, srcMipLevel: UInt, srcX: UInt, srcY: UInt, srcZ: UInt,
@@ -519,7 +523,7 @@ export declare function copyTexture(
  * @param height 
  * @param depth 
  */
-@external("mugl", "copy-texture-to-buffer")
+@external("mugl/wasm", "copy_texture_to_buffer")
 export declare function copyTextureToBuffer(
   device: DeviceId,
   src: TextureId, srcMipLevel: UInt, srcX: UInt, srcY: UInt, srcZ: UInt,
@@ -533,7 +537,7 @@ export declare function copyTextureToBuffer(
  * @param device 
  * @param pass 
  */
-@external("mugl", "begin-render-pass")
+@external("mugl/wasm", "begin_render_pass")
 export declare function beginRenderPass(device: DeviceId, pass: RenderPassId): void;
 
 /**
@@ -546,7 +550,7 @@ export declare function beginRenderPass(device: DeviceId, pass: RenderPassId): v
  * @param clearColorBlue 
  * @param clearColorAlpha 
  */
-@external("mugl", "begin-default-pass")
+@external("mugl/wasm", "begin_default_pass")
 export declare function beginDefaultPass(
   device: DeviceId,
   clearDepth: Float, clearStencil: Float,
@@ -557,7 +561,7 @@ export declare function beginDefaultPass(
  * Submits the current render pass.
  * @param device 
  */
-@external("mugl", "submit-render-pass")
+@external("mugl/wasm", "submit_render_pass")
 export declare function submitRenderPass(device: DeviceId): void;
 
 /**
@@ -565,7 +569,7 @@ export declare function submitRenderPass(device: DeviceId): void;
  * @param device 
  * @param pipeline 
  */
-@external("mugl", "set-render-pipeline")
+@external("mugl/wasm", "set_render_pipeline")
 export declare function setRenderPipeline(device: DeviceId, pipeline: RenderPipelineId): void;
 
 /**
@@ -573,7 +577,7 @@ export declare function setRenderPipeline(device: DeviceId, pipeline: RenderPipe
  * @param device 
  * @param buffer 
  */
-@external("mugl", "set-index")
+@external("mugl/wasm", "set_index")
 export declare function setIndex(device: DeviceId, buffer: BufferId): void;
 
 /**
@@ -583,7 +587,7 @@ export declare function setIndex(device: DeviceId, buffer: BufferId): void;
  * @param buffer 
  * @param offset 
  */
-@external("mugl", "set-vertex")
+@external("mugl/wasm", "set_vertex")
 export declare function setVertex(device: DeviceId, slot: UInt, buffer: BufferId, offset: UInt): void;
 
 /**
@@ -594,7 +598,7 @@ export declare function setVertex(device: DeviceId, slot: UInt, buffer: BufferId
  * @param offsetsPtr pointer to the dynamic offset array
  * @param offsetsLen length of the dynamic offset array
  */
-@external("mugl", "set-bind-group")
+@external("mugl/wasm", "set_bind_group")
 export declare function setBindGroup(
   device: DeviceId, slot: UInt, bindGroup: BindGroupId, offsetsPtr: usize, offsetsLen: UInt
 ): void;
@@ -607,7 +611,7 @@ export declare function setBindGroup(
  * @param firstVertex 
  * @param firstInstance 
  */
-@external("mugl", "draw")
+@external("mugl/wasm", "draw")
 export declare function draw(
   device: DeviceId, vertexCount: UInt, instanceCount: UInt, firstVertex: UInt, firstInstance: UInt
 ): void;
@@ -620,7 +624,7 @@ export declare function draw(
  * @param firstIndex 
  * @param firstInstance 
  */
-@external("mugl", "draw-indexed")
+@external("mugl/wasm", "draw_indexed")
 export declare function drawIndexed(
   device: DeviceId, indexCount: UInt, instanceCount: UInt, firstIndex: UInt, firstInstance: UInt
 ): void;
@@ -635,7 +639,7 @@ export declare function drawIndexed(
  * @param minDepth 
  * @param maxDepth 
  */
-@external("mugl", "set-viewport")
+@external("mugl/wasm", "set_viewport")
 export declare function setViewport(
   device: DeviceId, x: UInt, y: UInt, width: UInt, height: UInt, minDepth: UInt, maxDepth: UInt
 ): void;
@@ -648,18 +652,18 @@ export declare function setViewport(
  * @param width 
  * @param height 
  */
-@external("mugl", "set-scissor-rect")
+@external("mugl/wasm", "set_scissor_rect")
 export declare function setScissorRect(device: DeviceId, x: UInt, y: UInt, width: UInt, height: UInt): void;
 
 /**
- * Sets the blend-constant color for the current render pass.
+ * Sets the blend_constant color for the current render pass.
  * @param device 
  * @param red 
  * @param green 
  * @param blue 
  * @param alpha 
  */
-@external("mugl", "set-blend-const")
+@external("mugl/wasm", "set_blend_const")
 export declare function setBlendConst(device: DeviceId, red: Float, green: Float, blue: Float, alpha: Float): void;
 
 /**
@@ -667,5 +671,5 @@ export declare function setBlendConst(device: DeviceId, red: Float, green: Float
  * @param device 
  * @param ref 
  */
-@external("mugl", "set-stencil-ref")
+@external("mugl/wasm", "set_stencil_ref")
 export declare function setStencilRef(device: DeviceId, ref: UInt): void;

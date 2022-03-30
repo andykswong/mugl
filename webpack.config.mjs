@@ -4,7 +4,8 @@ import common from './webpack.common.mjs';
 export default [
   merge(common, {
     entry: {
-      mugl: './js'
+      mugl: './js',
+      wasm: './js/wasm',
     },
     output: {
       library: {

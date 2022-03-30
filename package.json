@@ -1,6 +1,6 @@
 {
   "name": "mugl",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Micro WebGL Library for JavaScript and WebAssembly",
   "type": "module",
   "sideEffects": false,
@@ -11,6 +11,10 @@
     ".": {
       "import": "./index.js",
       "require": "./dist/mugl.min.js"
+    },
+    "./wasm": {
+      "import": "./wasm.js",
+      "require": "./dist/wasm.min.js"
     }
   },
   "repository": {
@@ -46,7 +50,9 @@
     "/dist",
     "/src",
     "index.js",
-    "index.d.ts"
+    "index.d.ts",
+    "wasm.js",
+    "wasm.d.ts"
   ],
   "scripts": {
     "postinstall": "npm run copy-gpu-types",
@@ -74,8 +80,7 @@
     "examples": "cd examples && npm start",
     "start": "npm run examples"
   },
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
     "@as-pect/cli": "^6.2.4",
     "@babel/cli": "^7.15.4",
