@@ -1,6 +1,6 @@
 {
   "name": "mugl",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Micro WebGL Library for JavaScript and WebAssembly",
   "type": "module",
   "sideEffects": false,
@@ -55,7 +55,6 @@
     "wasm.d.ts"
   ],
   "scripts": {
-    "postinstall": "npm run copy-gpu-types",
     "prepublishOnly": "npm run build && npm test",
     "copy-gpu-types": "copyfiles -u 1 js/gpu/{gl-const,gl-util,gpu,type}.ts assembly",
     "clean": "rimraf coverage docs dist **/__tests__/**/*.spec.map **/__tests__/**/*.spec.wat",
