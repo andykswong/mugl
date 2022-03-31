@@ -234,7 +234,7 @@ draw-indexed: function(d: device, index-count: u32, instance-count: u32, first-i
 /**
  * Sets the 3D viewport area for the current render pass.
  */
-set-viewport: function(d: device, x: u32, y: u32, width: u32, height: u32, min-depth: u32, max-depth: u32)
+set-viewport: function(d: device, x: u32, y: u32, width: u32, height: u32, min-depth: f32, max-depth: f32)
 
 /**
  * Sets the scissor rectangle for the current render pass.

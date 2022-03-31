@@ -6,7 +6,7 @@ import {
 import {
   BindGroup, BindGroupLayout, Device, Buffer, RenderPass, RenderPipeline, Sampler, Shader, Texture
 } from './resource';
-import { Color, Extent2D, Extent3D, Future, UInt, UIntArray } from './primitive';
+import { Color, Extent2D, Extent3D, Float, Future, UInt, UIntArray } from './primitive';
 
 /**
  * Minimal WebGPU-like rendering interface.
@@ -245,7 +245,7 @@ export interface GPU {
    * @param minDepth min depth. Defaults to 0
    * @param maxDepth max depth. Defaults to 1
    */
-  setViewport(device: Device, x: UInt, y: UInt, width: UInt, height: UInt, minDepth?: UInt, maxDepth?: UInt): void;
+  setViewport(device: Device, x: UInt, y: UInt, width: UInt, height: UInt, minDepth?: Float, maxDepth?: Float): void;
 
   /**
    * Sets the scissor rectangle for the current render pass.

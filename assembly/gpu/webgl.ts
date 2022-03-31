@@ -5,7 +5,7 @@ import {
 } from './descriptor';
 import { GPU } from './gpu';
 import { Canvas, WebGLContextAttributes, WebGL2Feature } from './gl2-type';
-import { Color, Extent3D, Extent2D, Future, UInt, UIntArray } from './primitive';
+import { Color, Extent3D, Extent2D, Float, Future, UInt, UIntArray } from './primitive';
 import {
   Device, Buffer, Texture, Sampler, Shader, BindGroupLayout, BindGroup, RenderPipeline, RenderPass, WebGL2Device
 } from './resource';
@@ -181,7 +181,7 @@ class WebGLGPU implements GPU {
   public drawIndexed(device: Device, indexCount: UInt, instanceCount: UInt = 1, firstIndex: UInt = 0, firstInstance: UInt = 0): void {
     drawIndexed(device.id, indexCount, instanceCount, firstIndex, firstInstance);
   }
-  public setViewport(device: Device, x: UInt, y: UInt, width: UInt, height: UInt, minDepth: UInt = 0, maxDepth: UInt = 1): void {
+  public setViewport(device: Device, x: UInt, y: UInt, width: UInt, height: UInt, minDepth: Float = 0, maxDepth: Float = 1): void {
     setViewport(device.id, x, y, width, height, minDepth, maxDepth);
   }
   public setScissorRect(device: Device, x: UInt, y: UInt, width: UInt, height: UInt): void {

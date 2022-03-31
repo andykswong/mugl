@@ -527,7 +527,7 @@ export declare function copyTexture(
 export declare function copyTextureToBuffer(
   device: DeviceId,
   src: TextureId, srcMipLevel: UInt, srcX: UInt, srcY: UInt, srcZ: UInt,
-  dst: TextureId,
+  dst: BufferId,
   offset: UInt, bytesPerRow: UInt, rowsPerImage: UInt,
   width: UInt, height: UInt, depth: UInt
 ): void;
@@ -641,7 +641,7 @@ export declare function drawIndexed(
  */
 @external("mugl/wasm", "set_viewport")
 export declare function setViewport(
-  device: DeviceId, x: UInt, y: UInt, width: UInt, height: UInt, minDepth: UInt, maxDepth: UInt
+  device: DeviceId, x: UInt, y: UInt, width: UInt, height: UInt, minDepth: Float, maxDepth: Float
 ): void;
 
 /**
