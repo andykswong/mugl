@@ -1309,8 +1309,6 @@ function compileShaderProgram(device: Device, vertex: WebGLShader, fragment: Web
   (device as WebGL2Device).gl.attachShader(glp, vertex);
   (device as WebGL2Device).gl.attachShader(glp, fragment);
   (device as WebGL2Device).gl.linkProgram(glp);
-  (device as WebGL2Device).gl.deleteShader(vertex);
-  (device as WebGL2Device).gl.deleteShader(fragment);
 
   if (MUGL_DEBUG) {
     console.assert(
