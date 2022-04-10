@@ -5,23 +5,23 @@ import {
   Sampler, SamplerBindingType, Shader, ShaderStage, StencilOperation, Texture, TextureDimension, TextureFormat,
   TextureSampleType, TextureUsage, UInt, VertexAttribute, VertexBufferLayout, WebGL
 } from '../gpu';
-import { Id, IdArena } from './id';
+import { Arena } from '../store';
 import { dataView, decodeStr, toWebGLContextAttributes } from './deserialize';
 
-export type ContextId = Id<'Context'>;
-export type FutureId = Id<'Future'>;
-export type ImageSourceId = Id<'Image'>;
-export type CanvasId = Id<'Canvas'>;
-export type ResourceId = Id<'GPUResource'>;
+export type ContextId = number;
+export type FutureId = number;
+export type ImageSourceId = number;
+export type CanvasId = number;
+export type ResourceId = number;
 
 const contexts: Record<ContextId, { memory: WebAssembly.Memory | null }> = {};
-const futures = new IdArena<'Future', Future>();
-const images = new IdArena<'Image', ImageSource>();
+const futures = new Arena<Future>();
+const images = new Arena<ImageSource>();
 const imageMap: Record<string, ImageSourceId> = {};
-const canvases = new IdArena<'Canvas', Canvas>();
+const canvases = new Arena<Canvas>();
 const canvasMap: Record<string, CanvasId> = {};
 const canvasContextMap: Record<CanvasId, ContextId> = {};
-const resources = new IdArena<'GPUResource', Resource>();
+const resources = new Arena<Resource>();
 const deviceContextMap: Record<ResourceId, ContextId> = {};
 
 const API: GPU = WebGL;

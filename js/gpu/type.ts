@@ -446,7 +446,7 @@ export enum TextureSampleType {
 
   Int = 0x2,
 
-  Uint = 0x3,
+  UInt = 0x3,
 }
 
 /**
