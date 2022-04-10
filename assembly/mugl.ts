@@ -4,8 +4,9 @@
  */
 
 import {
-  AddressMode, CompareFunction, CullMode, FilterMode, Float, FrontFace, IndexFormat, MipmapHint, PrimitiveTopology,
-  ShaderStage, StencilOperation, TextureDimension, TextureFormat, TextureUsage, UInt, WebGLContextAttributeFlag
+  AddressMode, CompareFunction, CullMode, FilterMode, Float, FrontFace, FutureStatus, IndexFormat, MipmapHint,
+  PrimitiveTopology, ShaderStage, StencilOperation, TextureDimension, TextureFormat, TextureUsage, UInt,
+  WebGLContextAttributeFlag
 } from './gpu';
 
 /* Resource pointer */
@@ -26,12 +27,12 @@ export type RenderPassId = f64;
 /* DOM functions */
 
 /**
- * Checks if the future is completed
+ * Returns current status of the future.
  * @param id future pointer
- * @returns if future is completed
+ * @returns future status
  */
-@external("mugl/wasm", "is_future_done")
-export declare function isFutureDone(id: FutureId): boolean;
+@external("mugl/wasm", "get_future_status")
+export declare function getFutureStatus(id: FutureId): FutureStatus;
 
 /**
  * Creates image from URI.

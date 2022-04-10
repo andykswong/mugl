@@ -1,5 +1,5 @@
 <h1 align="center">█▓▒­░⡷⠂μ ＧＬ⠐⢾░▒▓█</h1>
-<h2 align="center">muGL - Micro WebGL 2.0 Library for JavaScript and WebAssembly</h2>
+<h2 align="center">Micro WebGL 2.0 3D Graphics Library for JavaScript and WebAssembly</h2>
 <br />
 <p align="center">
   <a href="./LICENSE"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT" /></a> 
@@ -9,11 +9,9 @@
 
 ## Overview
 
-`mugl` is a minimal, modern WebGL 2.0 3D graphics abstraction layer that removes the verbosity and state management aspect of WebGL. It is designed to be forward compatible with [WebGPU](https://gpuweb.github.io/gpuweb/).
+`mugl` is a minimal, modern WebGL 2.0 3D graphics abstraction layer that removes the verbosity and state management aspect of WebGL. It is designed toclosely match the [WebGPU](https://gpuweb.github.io/gpuweb/) API, the future web standard for modern 3D graphics. If you want to write low-level 3D graaphics code in WebGPU-style today, `mugl` is for you.
 
-`mugl` supports WebAssembly (WASM) in addition to JavaScript. With its [AssemblyScript](https://www.assemblyscript.org/) binding, you can even run the same JavaScript 3D app code on WASM (see [examples](#examples)). It runs on any modern web browser and mobile via React Native.
-
-Additional WASM language bindings (e.g. Rust) and platform supports (e.g. native Desktop) are planned.
+Moreover, `mugl` provides WebAssembly (WASM) bindings in addition to JavaScript. With its [AssemblyScript](https://www.assemblyscript.org/) binding, you can run the same JavaScript 3D app code on WASM (see [examples](#examples)). It runs on any modern web browser and mobile via React Native. Additional WASM language bindings (e.g. Rust) and platform supports (e.g. native Desktop) are planned.
 
 ## API Documentation
 For JavaScript / AssemblyScript interface, see TSDoc: http://andykswong.github.io/mugl/latest/docs
@@ -90,7 +88,7 @@ const fragment = WebGL.createShader(device, {
 // 4. Create the pipeline object
 const pipeline = WebGL.createRenderPipeline(device, {
   vertex, fragment,
-  // vertexBufferLayouts auto-calculates the stride and offsets of vertex attributes for you
+  // vertexBufferLayouts(...) auto-calculates the stride and offsets of vertex attributes for you
   // Attribute indices / ordering must match the attribute locations specified in vertex shader
   buffers: vertexBufferLayouts([
     { attributes: [/* position */ VertexFormat.F32x2, /* color */ VertexFormat.F32x4] }
@@ -153,21 +151,19 @@ async function onContextCreate(gl) {
 Import `mugl/wasm` to your WASM module:
 
 ```javascript
+// 1. Import mugl/wasm
 import * as muglWasm from 'mugl/wasm';
 
-// 1. Import mugl/wasm when instantiating a WASM module
-const imports = {
-  'mugl/wasm': muglWasm, // Imports mugl binding
-  ...
-};
+// 2. Import your WASM module as ESM (require Webpack with experiments.asyncWebAssembly = true):
+import * as exports from './your_module.wasm';
+
+// 2b. Alternatively, using the WASM API, add mugl/wasm to your module imports
+const imports = { 'mugl/wasm': muglWasm, ... };
 const exports = (await WebAssembly.instantiateStreaming(
-  fetch('module.wasm'), imports
+  fetch('your_module.wasm'), imports
 )).instance.exports;
 
-// 1b. Alternatively, if you use Webpack with experiments.asyncWebAssembly = true, you can import your WASM as ESM:
-import * as exports from './module.wasm';
-
-// 2. Expose WASM module memory to mugl. This must be done before your WASM module calls any mugl method.
+// 3. Expose WASM module memory to mugl. This must be done before your WASM module calls any mugl method.
 const CONTEXT_ID = 123; // Define a unique numeric ID for your WASM module
 muglWasm.set_context_memory(CONTEXT_ID, exports.memory);
 ```

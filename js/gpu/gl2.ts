@@ -1,6 +1,6 @@
 import { MUGL_DEBUG } from '../config';
 import * as GLenum from './gl-const';
-import { Color, Extent2D, Extent3D, Float, Future, UInt, UIntArray } from './primitive';
+import { Color, Extent2D, Extent3D, Float, Future, FutureStatus, UInt, UIntArray } from './primitive';
 import {
   BindingType, BufferUsage, ColorWrite, MipmapHint, ShaderStage, TextureUsage
 } from './type';
@@ -526,11 +526,16 @@ export function createRenderPipeline(device: Device, desc: RenderPipelineDescrip
  * @returns a future
  */
 export function readBuffer(device: Device, buffer: Buffer, out: Uint8Array, offset: UInt = 0): Future {
-  const future = { done: false };
+  const future = { status: FutureStatus.Pending };
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   getBufferSubData((device as WebGL2Device).gl, (buffer as WebGL2Buffer).type, (buffer as WebGL2Buffer).glb!, offset, out.byteLength)
-    .then(data => out.set(data))
-    .finally(() => future.done = true);
+    .then(
+      data => {
+        out.set(data);
+        future.status = FutureStatus.Done;
+      },
+      () => (future.status = FutureStatus.Error)
+    );
   return future;
 }
 

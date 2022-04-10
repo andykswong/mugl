@@ -1,2 +1,2 @@
-export*from"./wasm.js";export{};
+export*from"./wasm.js";
 //# sourceMappingURL=index.js.map

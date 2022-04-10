@@ -1,4 +1,4 @@
-import { FutureId, isFutureDone } from '../mugl';
+import { FutureId, getFutureStatus } from '../mugl';
 import { ImageSource } from './dom-resource';
 
 export { ImageSource };
@@ -57,15 +57,27 @@ export type Origin3D = StaticArray<UInt>;
  * Future type.
  */
 export class Future {
-  private _done: boolean = false;
+  private _status: FutureStatus = FutureStatus.Pending;
 
   public constructor(
     public readonly id: FutureId
   ) {
   }
 
-  /** Returns if the future is resolved. */
-  public get done(): boolean {
-    return this._done || (this._done = isFutureDone(this.id));
+  /** Returns current status of the future. */
+  public get status(): FutureStatus {
+    return this._status || (this._status = getFutureStatus(this.id));
   }
+}
+
+/**
+ * Status of a future.
+ */
+ export enum FutureStatus {
+  /** The future is still pending. */
+  Pending = 0,
+  /** The future is resolved. */
+  Done = 1,
+  /** An error occurred while resolving the future. */
+  Error = 2,
 }

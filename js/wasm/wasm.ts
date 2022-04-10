@@ -1,6 +1,6 @@
 import {
   AddressMode, BindGroup, BindGroupLayout, BindGroupLayoutEntry, BindingType, Buffer, BufferUsage, Canvas, Color,
-  ColorAttachment, ColorTargetState, CompareFunction, CullMode, Device, FilterMode, Float, FrontFace, Future, GPU,
+  ColorAttachment, ColorTargetState, CompareFunction, CullMode, Device, FilterMode, Float, FrontFace, Future, FutureStatus, GPU,
   ImageSource, IndexFormat, MipmapHint, PrimitiveTopology, RenderPass, RenderPassDescriptor, RenderPipeline, Resource,
   Sampler, SamplerBindingType, Shader, ShaderStage, StencilOperation, Texture, TextureDimension, TextureFormat,
   TextureSampleType, TextureUsage, UInt, VertexAttribute, VertexBufferLayout, WebGL
@@ -51,16 +51,15 @@ export function free_context(context: ContextId): void {
   delete contexts[context];
 }
 
-export function is_future_done(future: FutureId): boolean {
+export function get_future_status(future: FutureId): FutureStatus {
   const f = futures.get(future);
   if (f) {
-    if (!f.done) {
-      return false;
-    } else {
+    if (f.status !== FutureStatus.Pending) {
       futures.delete(future);
     }
+    return f.status;
   }
-  return true;
+  return FutureStatus.Done;
 }
 
 export function create_image(context: ContextId, ptr: UInt, len: UInt): ImageSourceId {

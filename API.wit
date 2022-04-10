@@ -7,9 +7,9 @@
 free-context: function(c: context)
 
 /**
- * Checks if the future is completed.
+ * Gets the status of a future.
  */
-is-future-done: function(f: future) -> bool
+get-future-status: function(f: future) -> future-status
 
 /**
  * Loads an image from URI.
@@ -289,6 +289,15 @@ flags webgl-context-attributes {
     premultiplied-alpha,
     preserve-drawing-buffer,
     stencil,
+}
+
+/**
+ * Status of a future.
+ */
+enum future-status {
+  pending,
+  done,
+  error
 }
 
 /**

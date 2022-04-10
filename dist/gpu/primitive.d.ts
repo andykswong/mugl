@@ -48,7 +48,18 @@ export declare type Origin3D = [x: number, y: number, z: number];
  * i.e. AssemblyScript / WebAssembly.
  */
 export interface Future {
-    /** Returns if the future is resolved. */
-    get done(): boolean;
+    /** Returns current status of the future. */
+    get status(): FutureStatus;
+}
+/**
+ * Status of a future.
+ */
+export declare enum FutureStatus {
+    /** The future is still pending. */
+    Pending = 0,
+    /** The future is resolved. */
+    Done = 1,
+    /** An error occurred while resolving the future. */
+    Error = 2
 }
 //# sourceMappingURL=primitive.d.ts.map

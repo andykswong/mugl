@@ -346,7 +346,7 @@ export declare enum TextureSampleType {
     Float = 0,
     Depth = 1,
     Int = 2,
-    Uint = 3
+    UInt = 3
 }
 /**
  * Cube map face.
