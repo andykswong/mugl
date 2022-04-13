@@ -1,10 +1,11 @@
 import {
   AddressMode, BindGroup, BindGroupLayout, BindGroupLayoutEntry, BindingType, Buffer, BufferUsage, Canvas, Color,
-  ColorAttachment, ColorTargetState, CompareFunction, CullMode, Device, FilterMode, Float, FrontFace, Future, FutureStatus, GPU,
-  ImageSource, IndexFormat, MipmapHint, PrimitiveTopology, RenderPass, RenderPassDescriptor, RenderPipeline, Resource,
-  Sampler, SamplerBindingType, Shader, ShaderStage, StencilOperation, Texture, TextureDimension, TextureFormat,
-  TextureSampleType, TextureUsage, UInt, VertexAttribute, VertexBufferLayout, WebGL
+  ColorAttachment, ColorTargetState, CompareFunction, CullMode, Device, FilterMode, Float, FrontFace, Future,
+  FutureStatus, ImageSource, IndexFormat, MipmapHint, PrimitiveTopology, RenderPass, RenderPassDescriptor,
+  RenderPipeline, Resource, Sampler, SamplerBindingType, Shader, ShaderStage, StencilOperation, Texture,
+  TextureDimension, TextureFormat, TextureSampleType, TextureUsage, UInt, VertexAttribute, VertexBufferLayout
 } from '../gpu';
+import * as WebGL from '../gpu/gl2';
 import { Arena } from '../store';
 import { dataView, decodeStr, toWebGLContextAttributes } from './deserialize';
 
@@ -23,8 +24,6 @@ const canvasMap: Record<string, CanvasId> = {};
 const canvasContextMap: Record<CanvasId, ContextId> = {};
 const resources = new Arena<Resource>();
 const deviceContextMap: Record<ResourceId, ContextId> = {};
-
-const API: GPU = WebGL;
 
 function getMemory(context: ContextId): WebAssembly.Memory {
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -133,7 +132,7 @@ export function webgl_generate_mipmap(device: ResourceId, tex: ResourceId, hint:
 }
 
 export function reset_device(device: ResourceId): void {
-  API.resetDevice(resources.get(device) as Device);
+  WebGL.resetDevice(resources.get(device) as Device);
 }
 
 export function delete_device(device: ResourceId): void {
@@ -142,15 +141,15 @@ export function delete_device(device: ResourceId): void {
 }
 
 export function is_device_lost(device: ResourceId): boolean {
-  return API.isDeviceLost(resources.get(device) as Device);
+  return WebGL.isDeviceLost(resources.get(device) as Device);
 }
 
 export function get_device_features(device: ResourceId): UInt {
-  return API.getDeviceFeatures(resources.get(device) as Device);
+  return WebGL.getDeviceFeatures(resources.get(device) as Device);
 }
 
 export function create_buffer(device: ResourceId, size: UInt, usage: BufferUsage): ResourceId {
-  const ret = API.createBuffer(resources.get(device) as Device, {
+  const ret = WebGL.createBuffer(resources.get(device) as Device, {
     size: size >>> 0,
     usage: usage >>> 0,
   });
@@ -168,7 +167,7 @@ export function create_texture(
   format: TextureFormat,
   usage: TextureUsage
 ): ResourceId {
-  const ret = API.createTexture(resources.get(device) as Device, {
+  const ret = WebGL.createTexture(resources.get(device) as Device, {
     size: [width >>> 0, height >>> 0, depth >>> 0],
     mipLevelCount: mipLevelCount >>> 0,
     sampleCount: sampleCount >>> 0,
@@ -189,7 +188,7 @@ export function create_sampler(
   compare: CompareFunction,
   maxAnisotropy: UInt
 ): ResourceId {
-  const ret = API.createSampler(resources.get(device) as Device, {
+  const ret = WebGL.createSampler(resources.get(device) as Device, {
     addressModeU: addressModeU >>> 0,
     addressModeV: addressModeV >>> 0,
     addressModeW: addressModeW >>> 0,
@@ -207,7 +206,7 @@ export function create_sampler(
 export { deleteResource as delete_sampler };
 
 export function create_shader(device: ResourceId, codePtr: UInt, codeLen: UInt, usage: ShaderStage): ResourceId {
-  const ret = API.createShader(resources.get(device) as Device, {
+  const ret = WebGL.createShader(resources.get(device) as Device, {
     code: decodeStr(getDeviceMemory(device), codePtr, codeLen),
     usage: usage >>> 0,
   });
@@ -257,7 +256,7 @@ export function create_bind_group_layout(device: ResourceId, entriesPtr: UInt, e
       textureMultisampled,
     });
   }
-  const ret = API.createBindGroupLayout(resources.get(device) as Device, { entries });
+  const ret = WebGL.createBindGroupLayout(resources.get(device) as Device, { entries });
   return resources.add(ret);
 }
 
@@ -299,7 +298,7 @@ export function create_bind_group(device: ResourceId, layout: ResourceId, entrie
       texture
     });
   }
-  const ret = API.createBindGroup(resources.get(device) as Device, {
+  const ret = WebGL.createBindGroup(resources.get(device) as Device, {
     layout: resources.get(layout) as BindGroupLayout,
     entries,
   });
@@ -372,7 +371,7 @@ export function create_render_pipeline(
     });
   }
 
-  const ret = API.createRenderPipeline(resources.get(device) as Device, {
+  const ret = WebGL.createRenderPipeline(resources.get(device) as Device, {
     vertex: resources.get(vertex) as Shader,
     fragment: resources.get(fragment) as Shader,
     buffers,
@@ -484,14 +483,14 @@ export function create_render_pass(
     default:
       throw new RangeError('invalid variant discriminant for RenderPassDescriptor');
   }
-  const ret = API.createRenderPass(resources.get(device) as Device, desc);
+  const ret = WebGL.createRenderPass(resources.get(device) as Device, desc);
   return resources.add(ret);
 }
 
 export { deleteResource as delete_render_pass };
 
 export function read_buffer(device: ResourceId, buffer: ResourceId, offset: UInt, outPtr: UInt, size: UInt): FutureId {
-  const ret = API.readBuffer(
+  const ret = WebGL.readBuffer(
     resources.get(device) as Device,
     resources.get(buffer) as Buffer,
     new Uint8Array(getDeviceMemory(device).buffer.slice(outPtr, outPtr + size * 1),
@@ -501,11 +500,11 @@ export function read_buffer(device: ResourceId, buffer: ResourceId, offset: UInt
 }
 
 export function write_buffer(device: ResourceId, buffer: ResourceId, dataPtr: UInt, size: UInt, offset: UInt): void {
-  API.writeBuffer(resources.get(device) as Device, resources.get(buffer) as Buffer, new Uint8Array(getDeviceMemory(device).buffer.slice(dataPtr, dataPtr + size * 1)), offset >>> 0);
+  WebGL.writeBuffer(resources.get(device) as Device, resources.get(buffer) as Buffer, new Uint8Array(getDeviceMemory(device).buffer.slice(dataPtr, dataPtr + size * 1)), offset >>> 0);
 }
 
 export function copy_buffer(device: ResourceId, src: ResourceId, dst: ResourceId, size: UInt, srcOffset: UInt, dstOffset: UInt): void {
-  API.copyBuffer(resources.get(device) as Device, resources.get(src) as Buffer, resources.get(dst) as Buffer, size >>> 0, srcOffset >>> 0, dstOffset >>> 0);
+  WebGL.copyBuffer(resources.get(device) as Device, resources.get(src) as Buffer, resources.get(dst) as Buffer, size >>> 0, srcOffset >>> 0, dstOffset >>> 0);
 }
 
 export function write_texture(
@@ -515,7 +514,7 @@ export function write_texture(
   offset: UInt, bytesPerRow: UInt, rowsPerImage: UInt,
   width: UInt, height: UInt, depth: UInt
 ) {
-  API.writeTexture(resources.get(device) as Device, {
+  WebGL.writeTexture(resources.get(device) as Device, {
     texture: resources.get(texture) as Texture,
     mipLevel: mipLevel >>> 0,
     origin: [x >>> 0, y >>> 0, z >>> 0],
@@ -534,7 +533,7 @@ export function copy_external_image_to_texture(
   dst: ResourceId, mipLevel: UInt, dstX: UInt, dstY: UInt, dstZ: UInt,
   width: UInt, height: UInt
 ): void {
-  API.copyExternalImageToTexture(resources.get(device) as Device,
+  WebGL.copyExternalImageToTexture(resources.get(device) as Device,
     {
       src: images.get(src) as TexImageSource,
       origin: [srcX >>> 0, srcY >>> 0],
@@ -553,7 +552,7 @@ export function copy_texture(
   dst: ResourceId, dstMipLevel: UInt, dstX: UInt, dstY: UInt, dstZ: UInt,
   width: UInt, height: UInt, depth: UInt
 ) {
-  API.copyTexture(resources.get(device) as Device,
+  WebGL.copyTexture(resources.get(device) as Device,
     {
       texture: resources.get(src) as Texture,
       mipLevel: srcMipLevel >>> 0,
@@ -574,7 +573,7 @@ export function copy_texture_to_buffer(
   offset: UInt, bytesPerRow: UInt, rowsPerImage: UInt,
   width: UInt, height: UInt, depth: UInt
 ): void {
-  API.copyTextureToBuffer(resources.get(device) as Device,
+  WebGL.copyTextureToBuffer(resources.get(device) as Device,
     {
       texture: resources.get(src) as Texture,
       mipLevel: srcMipLevel >>> 0,
@@ -591,7 +590,7 @@ export function copy_texture_to_buffer(
 
 
 export function begin_render_pass(device: ResourceId, pass: ResourceId): void {
-  API.beginRenderPass(resources.get(device) as Device, resources.get(pass) as RenderPass);
+  WebGL.beginRenderPass(resources.get(device) as Device, resources.get(pass) as RenderPass);
 }
 
 export function begin_default_pass(
@@ -599,7 +598,7 @@ export function begin_default_pass(
   clearDepth: Float, clearStencil: Float,
   clearColorRed: Float, clearColorGreen: Float, clearColorBlue: Float, clearColorAlpha: Float,
 ): void {
-  API.beginDefaultPass(resources.get(device) as Device, {
+  WebGL.beginDefaultPass(resources.get(device) as Device, {
     clearColor: isNaN(clearColorRed) ? null : [clearColorRed, clearColorGreen, clearColorBlue, clearColorAlpha],
     clearDepth,
     clearStencil,
@@ -607,23 +606,23 @@ export function begin_default_pass(
 }
 
 export function submit_render_pass(device: ResourceId): void {
-  API.submitRenderPass(resources.get(device) as Device);
+  WebGL.submitRenderPass(resources.get(device) as Device);
 }
 
 export function set_render_pipeline(device: ResourceId, pipeline: ResourceId): void {
-  API.setRenderPipeline(resources.get(device) as Device, resources.get(pipeline) as RenderPipeline);
+  WebGL.setRenderPipeline(resources.get(device) as Device, resources.get(pipeline) as RenderPipeline);
 }
 
 export function set_index(device: ResourceId, index: ResourceId): void {
-  API.setIndex(resources.get(device) as Device, resources.get(index) as Buffer);
+  WebGL.setIndex(resources.get(device) as Device, resources.get(index) as Buffer);
 }
 
 export function set_vertex(device: ResourceId, slot: UInt, vertex: ResourceId, offset: UInt): void {
-  API.setVertex(resources.get(device) as Device, slot >>> 0, resources.get(vertex) as Buffer, offset >>> 0);
+  WebGL.setVertex(resources.get(device) as Device, slot >>> 0, resources.get(vertex) as Buffer, offset >>> 0);
 }
 
 export function set_bind_group(device: ResourceId, slot: UInt, bindGroup: ResourceId, offsetsPtr: UInt, offsetsLen: UInt): void {
-  API.setBindGroup(
+  WebGL.setBindGroup(
     resources.get(device) as Device, slot >>> 0,
     resources.get(bindGroup) as BindGroup,
     new Uint32Array(getDeviceMemory(device).buffer.slice(offsetsPtr, offsetsPtr + offsetsLen * 4)) as unknown as UInt[]
@@ -631,25 +630,25 @@ export function set_bind_group(device: ResourceId, slot: UInt, bindGroup: Resour
 }
 
 export function draw(device: ResourceId, vertexCount: UInt, instanceCount: UInt, firstVertex: UInt, firstInstance: UInt): void {
-  API.draw(resources.get(device) as Device, vertexCount >>> 0, instanceCount >>> 0, firstVertex >>> 0, firstInstance >>> 0);
+  WebGL.draw(resources.get(device) as Device, vertexCount >>> 0, instanceCount >>> 0, firstVertex >>> 0, firstInstance >>> 0);
 }
 
 export function draw_indexed(device: ResourceId, indexCount: UInt, instanceCount: UInt, firstIndex: UInt, firstInstance: UInt): void {
-  API.drawIndexed(resources.get(device) as Device, indexCount >>> 0, instanceCount >>> 0, firstIndex >>> 0, firstInstance >>> 0);
+  WebGL.drawIndexed(resources.get(device) as Device, indexCount >>> 0, instanceCount >>> 0, firstIndex >>> 0, firstInstance >>> 0);
 }
 
 export function set_viewport(device: ResourceId, x: UInt, y: UInt, width: UInt, height: UInt, minDepth: UInt, maxDepth: UInt): void {
-  API.setViewport(resources.get(device) as Device, x >>> 0, y >>> 0, width >>> 0, height >>> 0, minDepth >>> 0, maxDepth >>> 0);
+  WebGL.setViewport(resources.get(device) as Device, x >>> 0, y >>> 0, width >>> 0, height >>> 0, minDepth >>> 0, maxDepth >>> 0);
 }
 
 export function set_scissor_rect(device: ResourceId, x: UInt, y: UInt, width: UInt, height: UInt): void {
-  API.setScissorRect(resources.get(device) as Device, x >>> 0, y >>> 0, width >>> 0, height >>> 0);
+  WebGL.setScissorRect(resources.get(device) as Device, x >>> 0, y >>> 0, width >>> 0, height >>> 0);
 }
 
 export function set_blend_const(device: ResourceId, red: Float, green: Float, blue: Float, alpha: Float): void {
-  API.setBlendConst(resources.get(device) as Device, [red, green, blue, alpha]);
+  WebGL.setBlendConst(resources.get(device) as Device, [red, green, blue, alpha]);
 }
 
 export function set_stencil_ref(device: ResourceId, ref: UInt): void {
-  API.setStencilRef(resources.get(device) as Device, ref >>> 0);
+  WebGL.setStencilRef(resources.get(device) as Device, ref >>> 0);
 }

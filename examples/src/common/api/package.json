@@ -1,0 +1,4 @@
+{
+  "main": "api.ts",
+  "types": "api.ts"
+}

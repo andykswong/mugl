@@ -1,6 +1,6 @@
 {
   "name": "mugl",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Micro WebGL Library for JavaScript and WebAssembly",
   "type": "module",
   "sideEffects": false,
