@@ -11,20 +11,19 @@
 
 `mugl` is a minimal, modern WebGL 2.0 3D graphics abstraction layer that removes the verbosity and state management aspect of WebGL. It is designed toclosely match the [WebGPU](https://gpuweb.github.io/gpuweb/) API, the future web standard for modern 3D graphics. If you want to write low-level 3D graaphics code in WebGPU-style today, `mugl` is for you.
 
-Moreover, `mugl` provides WebAssembly (WASM) bindings in addition to JavaScript. With its [AssemblyScript](https://www.assemblyscript.org/) binding, you can run the same JavaScript 3D app code on WASM (see [examples](#examples)). It runs on any modern web browser and mobile via React Native. Additional WASM language bindings (e.g. Rust) and platform supports (e.g. native Desktop) are planned.
+`mugl` provides WebAssembly (WASM) bindings in addition to JavaScript. With its [AssemblyScript](https://www.assemblyscript.org/) binding, you can run the same JavaScript 3D app code on WASM (see [examples](#examples)). There is also a [Rust binding](https://github.com/andykswong/muge/tree/main/crates/mugl).
 
-## API Documentation
-For JavaScript / AssemblyScript interface, see TSDoc: http://andykswong.github.io/mugl/latest/docs
-
-For raw WebAssembly interface, see the API spec: [API.wit](./API.wit) \
-or the AssemblyScript imports: [mugl.ts](./assembly/mugl.ts)
+`mugl` runs on any modern web browser and mobile via React Native. Additional WASM language bindings (e.g. Rust) and platform supports (e.g. native Desktop) are planned.
 
 ## [Examples](https://andykswong.github.io/mugl/latest/examples)
 Check out the live examples: https://andykswong.github.io/mugl/latest/examples
 
-The source code of all examples can be found [here](./examples/src/apps/).
+The source code of all examples can be found [here](./examples/src/apps/). All examples run on **both JavaScript and WebAssembly, using the exact same code base**! Click the toggle in the examples menu to seamlessly switch between the two environments.
 
-All examples run on **both JavaScript and WebAssembly, using the exact same code base**! Click the toggle in the examples menu to seamlessly switch between the two environments.
+|   |   |   |
+|---|---|---|
+|[![basic](./screenshots/basic.png)](https://andykswong.github.io/mugl/latest/examples/#basic)|[![instancing](./screenshots/instancing.png)](https://andykswong.github.io/mugl/latest/examples/#instancing)|[![postprocess](./screenshots/postprocess.png)](https://andykswong.github.io/mugl/latest/examples/#postprocess)|
+|[![mrt](./screenshots/mrt.png)](https://andykswong.github.io/mugl/latest/examples/#mrt)|[![stencil](./screenshots/stencil.png)](https://andykswong.github.io/mugl/latest/examples/#stencil)|[![pbr](./screenshots/pbr.png)](https://andykswong.github.io/mugl/latest/examples/#pbr)|
 
 ## [glTF 2.0 Model Viewer](https://andykswong.github.io/mugl/latest/examples/gltf.html)
 A small (~17KB) but full-featured glTF model viewer built on `mugl` is available as an example usage of this library: https://andykswong.github.io/mugl/latest/examples/gltf.html \
@@ -32,7 +31,12 @@ The source code can be found [here](./examples/src/gltf-viewer).
 
 Any model from [glTF-Sample-Models](https://github.com/KhronosGroup/glTF-Sample-Models) can be loaded using the `model` and `variant` URL parameter, e.g.: [?model=Buggy&variant=glTF-Binary](https://andykswong.github.io/mugl/latest/examples/gltf.html?model=Buggy&variant=glTF-Binary&camera=0&scene=0) to load the [Buggy](https://github.com/KhronosGroup/glTF-Sample-Models/tree/master/2.0/Buggy) model. You can also use the `url` URL parameter to load a model from any source ([example](https://andykswong.github.io/mugl/latest/examples/gltf.html?url=https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Avocado/glTF/Avocado.gltf)).
 
-![alt text](./screenshots/DamagedHelmet.png)
+![glTF 2.0 Model Viewer](./screenshots/DamagedHelmet.png)
+
+## API Documentation
+For JavaScript / AssemblyScript interface, see TSDoc: http://andykswong.github.io/mugl/latest/docs
+
+For raw WebAssembly interface, see the API spec: [API.wit](./API.wit) or the AssemblyScript imports: [mugl.ts](./assembly/mugl.ts)
 
 ## Usage
 
