@@ -12,27 +12,46 @@
   <h2>Overview</h2>
 </a>
 <p><code>mugl</code> is a minimal, modern WebGL 2.0 3D graphics abstraction layer that removes the verbosity and state management aspect of WebGL. It is designed toclosely match the <a href="https://gpuweb.github.io/gpuweb/">WebGPU</a> API, the future web standard for modern 3D graphics. If you want to write low-level 3D graaphics code in WebGPU-style today, <code>mugl</code> is for you.</p>
-<p>Moreover, <code>mugl</code> provides WebAssembly (WASM) bindings in addition to JavaScript. With its <a href="https://www.assemblyscript.org/">AssemblyScript</a> binding, you can run the same JavaScript 3D app code on WASM (see <a href="#examples">examples</a>). It runs on any modern web browser and mobile via React Native. Additional WASM language bindings (e.g. Rust) and platform supports (e.g. native Desktop) are planned.</p>
-
-<a href="#api-documentation" id="api-documentation" style="color: inherit; text-decoration: none;">
-  <h2>API Documentation</h2>
-</a>
-<p>For JavaScript / AssemblyScript interface, see TSDoc: <a href="http://andykswong.github.io/mugl/latest/docs">http://andykswong.github.io/mugl/latest/docs</a></p>
-<p>For raw WebAssembly interface, see the API spec: <a href="./API.wit">API.wit</a> <br>or the AssemblyScript imports: <a href="./assembly/mugl.ts">mugl.ts</a></p>
+<p><code>mugl</code> provides WebAssembly (WASM) bindings in addition to JavaScript. With its <a href="https://www.assemblyscript.org/">AssemblyScript</a> binding, you can run the same JavaScript 3D app code on WASM (see <a href="#examples">examples</a>). There is also a <a href="https://github.com/andykswong/muge/tree/main/crates/mugl">Rust binding</a>.</p>
+<p><code>mugl</code> runs on any modern web browser and mobile via React Native. Additional WASM language bindings (e.g. Rust) and platform supports (e.g. native Desktop) are planned.</p>
 
 <a href="#examples" id="examples" style="color: inherit; text-decoration: none;">
   <h2><a href="https://andykswong.github.io/mugl/latest/examples">Examples</a></h2>
 </a>
 <p>Check out the live examples: <a href="https://andykswong.github.io/mugl/latest/examples">https://andykswong.github.io/mugl/latest/examples</a></p>
-<p>The source code of all examples can be found <a href="./examples/src/apps/">here</a>.</p>
-<p>All examples run on <strong>both JavaScript and WebAssembly, using the exact same code base</strong>! Click the toggle in the examples menu to seamlessly switch between the two environments.</p>
+<p>The source code of all examples can be found <a href="./examples/src/apps/">here</a>. All examples run on <strong>both JavaScript and WebAssembly, using the exact same code base</strong>! Click the toggle in the examples menu to seamlessly switch between the two environments.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a href="https://andykswong.github.io/mugl/latest/examples/#basic"><img src="./screenshots/basic.png" alt="basic"></a></td>
+<td><a href="https://andykswong.github.io/mugl/latest/examples/#instancing"><img src="./screenshots/instancing.png" alt="instancing"></a></td>
+<td><a href="https://andykswong.github.io/mugl/latest/examples/#postprocess"><img src="./screenshots/postprocess.png" alt="postprocess"></a></td>
+</tr>
+<tr>
+<td><a href="https://andykswong.github.io/mugl/latest/examples/#mrt"><img src="./screenshots/mrt.png" alt="mrt"></a></td>
+<td><a href="https://andykswong.github.io/mugl/latest/examples/#stencil"><img src="./screenshots/stencil.png" alt="stencil"></a></td>
+<td><a href="https://andykswong.github.io/mugl/latest/examples/#pbr"><img src="./screenshots/pbr.png" alt="pbr"></a></td>
+</tr>
+</tbody></table>
 
 <a href="#gltf-20-model-viewer" id="gltf-20-model-viewer" style="color: inherit; text-decoration: none;">
   <h2><a href="https://andykswong.github.io/mugl/latest/examples/gltf.html">glTF 2.0 Model Viewer</a></h2>
 </a>
 <p>A small (~17KB) but full-featured glTF model viewer built on <code>mugl</code> is available as an example usage of this library: <a href="https://andykswong.github.io/mugl/latest/examples/gltf.html">https://andykswong.github.io/mugl/latest/examples/gltf.html</a> <br>The source code can be found <a href="./examples/src/gltf-viewer">here</a>.</p>
 <p>Any model from <a href="https://github.com/KhronosGroup/glTF-Sample-Models">glTF-Sample-Models</a> can be loaded using the <code>model</code> and <code>variant</code> URL parameter, e.g.: <a href="https://andykswong.github.io/mugl/latest/examples/gltf.html?model=Buggy&amp;variant=glTF-Binary&amp;camera=0&amp;scene=0">?model=Buggy&amp;variant=glTF-Binary</a> to load the <a href="https://github.com/KhronosGroup/glTF-Sample-Models/tree/master/2.0/Buggy">Buggy</a> model. You can also use the <code>url</code> URL parameter to load a model from any source (<a href="https://andykswong.github.io/mugl/latest/examples/gltf.html?url=https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Avocado/glTF/Avocado.gltf">example</a>).</p>
-<p><img src="./screenshots/DamagedHelmet.png" alt="alt text"></p>
+<p><img src="./screenshots/DamagedHelmet.png" alt="glTF 2.0 Model Viewer"></p>
+
+<a href="#api-documentation" id="api-documentation" style="color: inherit; text-decoration: none;">
+  <h2>API Documentation</h2>
+</a>
+<p>For JavaScript / AssemblyScript interface, see TSDoc: <a href="http://andykswong.github.io/mugl/latest/docs">http://andykswong.github.io/mugl/latest/docs</a></p>
+<p>For raw WebAssembly interface, see the API spec: <a href="./API.wit">API.wit</a> or the AssemblyScript imports: <a href="./assembly/mugl.ts">mugl.ts</a></p>
 
 <a href="#usage" id="usage" style="color: inherit; text-decoration: none;">
   <h2>Usage</h2>
