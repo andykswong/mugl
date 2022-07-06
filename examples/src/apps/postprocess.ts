@@ -1,9 +1,9 @@
-import { array, lookAt, mat4, perspective, ReadonlyMat4 } from 'munum';
+import { lookAt, mat, mat4, perspective, ReadonlyMat4 } from 'munum/assembly';
 import {
   BindGroup, BindingType, Buffer, BufferUsage, CompareFunction, CullMode, Device,
   FilterMode, Float, Int, RenderPipeline, RenderPass, Sampler, ShaderStage, Texture,
   TextureFormat, TextureUsage, vertexBufferLayouts, VertexFormat
-} from 'mugl';
+} from 'mugl/assembly';
 import { API, BaseExample, createBuffer, Cube, Model, Quad, toIndices, toVertices } from '../common';
 
 const sampleCount = 1;
@@ -239,7 +239,7 @@ export class PostprocessExample extends BaseExample {
       const proj = perspective((this.width as Float) / (this.height as Float), Math.PI / 4 as Float, 0.01, 100);
       const view = lookAt([10 * Math.cos(t) as Float, 5 * Math.sin(t) as Float, 10 * Math.sin(t) as Float], [0, 0, 0]);
       const mvp = mat4.mul(proj, view);
-      array.copyEx(mvp, this.cubeData, 0, 0, 16);
+      mat.copy(mvp, this.cubeData, 0, 0, 16);
       API.writeBuffer(this.device, this.cubeDataBuffer!, this.cubeData);
     }
 
@@ -252,7 +252,7 @@ export class PostprocessExample extends BaseExample {
       }
       kernelWeight = kernelWeight <= 0 ? 1 : kernelWeight;
 
-      array.copyEx(kernel, this.kernelData, 0, 0, 16);
+      mat.copy(kernel, this.kernelData, 0, 0, 16);
       this.kernelData[16] = texSize as Float;
       this.kernelData[17] = texSize as Float;
       this.kernelData[18] = kernelWeight;

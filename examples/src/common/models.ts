@@ -1,4 +1,4 @@
-import { Float, UInt } from 'mugl';
+import { Float, UInt } from 'mugl/assembly';
 
 export class Model {
   public readonly indices: Float[][] | null = null;

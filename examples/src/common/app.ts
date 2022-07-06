@@ -1,4 +1,4 @@
-import { Device, Float, Resource, UInt } from 'mugl';
+import { Device, Float, Resource, UInt } from 'mugl/assembly';
 
 export abstract class ExampleApplication {
   public init(): void {}

@@ -361,7 +361,7 @@ export function createShader(device: Device, desc: ShaderDescriptor): Shader {
   if (MUGL_DEBUG) {
     console.assert(
       (device as WebGL2Device).gl.getShaderParameter(gls, GLenum.COMPILE_STATUS) || isDeviceLost(device),
-      `Failed to compile shader: ${(device as WebGL2Device).gl.getShaderInfoLog(gls)}`
+      `Failed to compile ${desc.usage === ShaderStage.Vertex ? 'vertex' : 'fragment'} shader: ${(device as WebGL2Device).gl.getShaderInfoLog(gls)}`
     );
   }
 

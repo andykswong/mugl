@@ -14,7 +14,7 @@ const nomangle = [
   'texture',
   'texelFetch',
   'ng',
-  'n',
+  'nn',
   't',
   'b'
 ].join(' ');

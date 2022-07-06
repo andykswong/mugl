@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 
-import { array, Mat4, mat4, Quat, quat, transform, Vec3, vec3 } from 'munum';
+import { Mat4, mat, mat4, Quat, quat, transform, Vec3, vec3 } from 'munum';
 import { getAnimationDuration, getAnimationSamplerInput, getAnimationSamplerOutput, getExtras, getInverseBindMatrices } from './gltf-utils';
 import { Animation, Node } from '../gltf-spec/glTF2';
 import { ResolvedGlTF } from './types';
@@ -127,7 +127,7 @@ export function updateGlTFAnimation(glTF: ResolvedGlTF, animation: Animation, ti
     const tmp = new Array(componentSize);
     switch (interpolation) {
       case 'STEP':
-        array.copy(output, value, currentKeyframe * componentSize, 0, componentSize);
+        mat.copy(output, value, currentKeyframe * componentSize, 0, componentSize);
         break;
       case 'CUBICSPLINE': {
         const deltaTime = nextTime - previousTime;
@@ -142,8 +142,8 @@ export function updateGlTFAnimation(glTF: ResolvedGlTF, animation: Animation, ti
       }
       default: { // LINEAR
         if (path === 'rotation') {
-          array.copy(output, value, currentKeyframe * componentSize, 0, componentSize);
-          array.copy(output, tmp, nextKeyframe * componentSize, 0, componentSize);
+          mat.copy(output, value, currentKeyframe * componentSize, 0, componentSize);
+          mat.copy(output, tmp, nextKeyframe * componentSize, 0, componentSize);
           quat.slerp(value as Quat, tmp as Quat, t, value as Quat);
         } else {
           for (let i = 0; i < componentSize; ++i) {

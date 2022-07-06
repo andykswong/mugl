@@ -1,9 +1,9 @@
-import { array, lookAt, mat4, perspective, scale, translate, vec3 } from 'munum';
+import { lookAt, mat, mat4, perspective, scale, translate, vec3 } from 'munum/assembly';
 import {
   BindGroup, BindingType, Buffer, BufferUsage, CompareFunction, CullMode, Device,
   FilterMode, Float, RenderPipeline, RenderPass, Sampler, ShaderStage, Texture,
   TextureFormat, TextureUsage, vertexBufferLayouts, VertexFormat
-} from 'mugl';
+} from 'mugl/assembly';
 import { API, BaseExample, createBuffer, Cube, Model, Quad, toIndices, toVertices } from '../common';
 
 const sampleCount = 4;
@@ -214,9 +214,9 @@ export class MRTExample extends BaseExample {
       let model = translate(pos);
       model = mat4.mul(model, scale([.5, .5, .5]), model);
 
-      array.copyEx(model, this.cubeData, 0, 0, 16);
-      array.copyEx(vp, this.cubeData, 0, 16, 16);
-      array.copyEx([1 as Float, 1, 1], this.cubeData, 0, 32, 3);
+      mat.copy(model, this.cubeData, 0, 0, 16);
+      mat.copy(vp, this.cubeData, 0, 16, 16);
+      mat.copy([1 as Float, 1, 1], this.cubeData, 0, 32, 3);
       API.writeBuffer(this.device, this.cubeDataBuffer!, this.cubeData);
     }
 

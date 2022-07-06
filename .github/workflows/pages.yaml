@@ -1,0 +1,25 @@
+name: pages
+on:
+  push:
+    branches: [ main ]
+jobs:
+  build_gh_pages:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-node@v2
+      with:
+        node-version: '16'
+    - run: npm ci
+    - run: npm run doc -- --excludeInternal
+    - name: Copy files to public
+      run: |
+        mkdir ./public
+        cp -r ./docs ./public/docs
+        cp -r ./examples/dist ./public/examples
+    - name: Deploy public
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        destination_dir: latest
+        publish_dir: ./public

@@ -1,4 +1,4 @@
-import { array, Mat4, mat4, perspective, targetTo, Vec3, vec3, Vec4, vec4 } from 'munum';
+import { Mat4, mat, mat4, perspective, targetTo, Vec3, vec3, Vec4, vec4 } from 'munum';
 import { Scene, Accessor, GlTF } from '../gltf-spec/glTF2';
 
 const I4 = mat4.create();
@@ -78,8 +78,8 @@ function getAccessorExtents(outMin: Vec3, outMax: Vec3, accessor: Accessor, mode
   const max: Vec4 = [...(accessor.max as Vec3), 1];
   vec4.mmul(model, min, min);
   vec4.mmul(model, max, max);
-  array.copy(min, boxMin, 0, 0, 3);
-  array.copy(max, boxMax, 0, 0, 3);
+  mat.copy(min, boxMin, 0, 0, 3);
+  mat.copy(max, boxMax, 0, 0, 3);
 
   vec3.add(boxMax, boxMin, center);
   vec3.scale(center, 0.5, center);

@@ -1,1 +1,1 @@
-{"version":3,"sources":["../../js/store/index.ts"],"names":["GenId"],"mappings":"mGAEYA,CAAAA,K","sourcesContent":["export * from \"./allocator\";\nexport * from \"./arena\";\nexport * as GenId from \"./id\";\nexport * from \"./maps\";\n"],"file":"index.js"}
+{"version":3,"file":"index.js","names":["GenId"],"sources":["../../js/store/index.ts"],"sourcesContent":["export * from \"./allocator\";\nexport * from \"./arena\";\nexport * as GenId from \"./id\";\nexport * from \"./maps\";\n"],"mappings":"mGAEYA,M"}

@@ -1,7 +1,7 @@
 import {
   BindGroup, BindingType, Buffer, BufferUsage, Device, Float, RenderPipeline, ShaderStage, VertexFormat,
   vertexBufferLayouts
-} from 'mugl';
+} from 'mugl/assembly';
 import { API, BaseExample, createBuffer, createFloat32Array, createUint16Array } from '../common';
 
 const vert = `#version 300 es

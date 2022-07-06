@@ -1,4 +1,7 @@
 {
+  "entries": [
+    "./assembly/index.ts"
+  ],
   "options": {
     "sourceMap": true,
     "exportRuntime": true,
@@ -6,14 +9,14 @@
   },
   "targets": {
     "debug": {
-      "binaryFile": "dist/mugl.wasm",
+      "outFile": "dist/mugl.wasm",
       "textFile": "dist/mugl.wat",
       "debug": true
     },
     "release": {
-      "binaryFile": "dist/mugl.wasm",
+      "outFile": "dist/mugl.wasm",
       "optimizeLevel": 3,
-      "shrinkLevel": 0,
+      "shrinkLevel": 2,
       "converge": false,
       "noAssert": true
     }

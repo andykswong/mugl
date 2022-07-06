@@ -1,4 +1,4 @@
-import { Buffer, Device, Float, RenderPipeline, ShaderStage, VertexFormat, vertexBufferLayouts } from 'mugl';
+import { Buffer, Device, Float, RenderPipeline, ShaderStage, VertexFormat, vertexBufferLayouts } from 'mugl/assembly';
 import { API, BaseExample, createBuffer, toVertices, Triangle } from '../common';
 
 const vert = `#version 300 es

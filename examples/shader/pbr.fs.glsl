@@ -6,6 +6,11 @@ layout(std140) uniform Model {
   vec4 cameraPosition;
 };
 
+layout(std140) uniform Morph {
+  // 8 weights packed as 2 vec4
+  vec4 targetWeights[2];
+};
+
 layout(std140) uniform Material {
   vec4 baseColorFactor;
   float metallicFactor, roughnessFactor;
@@ -62,7 +67,7 @@ void main () {
 
   vec3 v = normalize(cameraPosition.xyz - vPosition);
   NormalInfo normalInfo = getNormalInfo(vPosition);
-  vec3 n = normalInfo.n;
+  vec3 n = normalInfo.nn;
 
   vec3 reflection = -normalize(reflect(v, n));
   float nDotV = clamp(abs(dot(n, v)), 0.001, 1.);

@@ -1,9 +1,9 @@
-import { array, lookAt, mat4, perspective, scale, vec3 } from 'munum';
+import { lookAt, mat, mat4, perspective, scale, vec3 } from 'munum/assembly';
 import {
   BindGroup, BindingType, Buffer, BufferUsage, CompareFunction, CullMode, Device,
   FilterMode, Float, RenderPipeline, RenderPipelineDescriptor, Sampler, ShaderStage, Texture,
   TextureDimension, vertexBufferLayouts, VertexFormat, WebGL
-} from 'mugl';
+} from 'mugl/assembly';
 import { API, BaseExample, createBuffer, createFloat32Array, Cube, getImageById, Model, TEX_SIZE, toIndices, toVertices } from '../common';
 
 const texSize = TEX_SIZE;
@@ -305,14 +305,14 @@ export class PbrExample extends BaseExample {
       const view = lookAt(camPos, [0, 0, 0]);
       const vp = mat4.mul(proj, view);
 
-      array.copyEx(model, this.cubeData, 0, 0, 16);
-      array.copyEx(vp, this.cubeData, 0, 16, 16);
-      array.copyEx(camPos, this.cubeData, 0, 32, 3);
+      mat.copy(model, this.cubeData, 0, 0, 16);
+      mat.copy(vp, this.cubeData, 0, 16, 16);
+      mat.copy(camPos, this.cubeData, 0, 32, 3);
       API.writeBuffer(this.device, this.cubeDataBuffer!, this.cubeData);
 
-      array.copyEx(scale([10, 10, 10]), this.skyData, 0, 0, 16);
-      array.copyEx(vp, this.skyData, 0, 16, 16);
-      array.copyEx(camPos, this.skyData, 0, 32, 3);
+      mat.copy(scale([10, 10, 10]), this.skyData, 0, 0, 16);
+      mat.copy(vp, this.skyData, 0, 16, 16);
+      mat.copy(camPos, this.skyData, 0, 32, 3);
       API.writeBuffer(this.device, this.skyDataBuffer!, this.skyData);
     }
 

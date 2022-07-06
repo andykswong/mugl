@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 
-import { array, mat3, Mat4, mat4, Vec3, vec3 } from 'munum';
+import { mat, Mat4, mat4, Vec3, vec3 } from 'munum';
 import {
   AddressMode, BindGroup, BindGroupEntry, BindGroupLayout, BindingType, BlendFactor, Buffer, BufferUsage, Canvas,
   CompareFunction, CullMode, FilterMode, IndexFormat, RenderPipeline, PrimitiveTopology, Device, Sampler,
@@ -97,8 +97,8 @@ export function renderGlTF(canvas: Canvas, device: Device, glTF: ResolvedGlTF, o
   //   vec4 cameraPosition;
   // }
   const model = new Float32Array(MODEL_BUFFER_LENGTH);
-  array.copyEx(viewProj, model, 0, 32, 16);
-  array.copyEx(cameraPosition, model, 0, 48, 3);
+  mat.copy(viewProj, model, 0, 32, 16);
+  mat.copy(cameraPosition, model, 0, 48, 3);
 
   // Render all active nodes
   WebGL.beginDefaultPass(device, { clearDepth: 1 });
@@ -591,7 +591,7 @@ function loadMaterialBindGroup(device: Device, glTF: ResolvedGlTF, materialId: n
     if (material.pbrMetallicRoughness) {
       const pbr = material.pbrMetallicRoughness;
       if (pbr.baseColorFactor) {
-        array.copyEx(pbr.baseColorFactor, materialData, 0, 0, 4);
+        mat.copy(pbr.baseColorFactor, materialData, 0, 0, 4);
       }
       if (pbr.metallicFactor || pbr.metallicFactor === 0) {
         materialData[4] = pbr.metallicFactor;
@@ -623,7 +623,7 @@ function loadMaterialBindGroup(device: Device, glTF: ResolvedGlTF, materialId: n
       materialData[11] = material.occlusionTexture.texCoord || 0;
     }
     if (material.emissiveFactor) {
-      array.copyEx(material.emissiveFactor, materialData, 0, 12, 3);
+      mat.copy(material.emissiveFactor, materialData, 0, 12, 3);
     }
     if (material.emissiveTexture) {
       entries[9].texture = loadGPUTexture(device, glTF, material.emissiveTexture.index, TextureFormat.SRGBA8);
@@ -684,14 +684,14 @@ function loadModelGPUBuffer(
 
   if (data) {
     const model = new Float32Array(data.buffer, 0, 16) as unknown as Mat4;
-    array.copyEx((getExtras(node).model as Mat4) || I4, model, 0, 0, 16);
+    mat.copy((getExtras(node).model as Mat4) || I4, model, 0, 0, 16);
     const normalMatrix = new Float32Array(data.buffer, 16 * 4, 16) as unknown as Mat4;
     const normalMat3 = mat4.nmat3(model);
 
     if (normalMat3) {
       mat4.fromMat3(normalMat3, normalMatrix);
     } else {
-      array.copyEx(model, normalMatrix, 0, 0, 16);
+      mat.copy(model, normalMatrix, 0, 0, 16);
     }
     WebGL.writeBuffer(device, buffer, data);
   }
@@ -727,7 +727,7 @@ function loadMorphGPUBuffer(
   }
   if (update) {
     const data = new Float32Array(MAX_TARGET_ATTRIBUTES);
-    array.copyEx(targetWeights, data, 0, 0, MAX_TARGET_ATTRIBUTES);
+    mat.copy(targetWeights, data, 0, 0, MAX_TARGET_ATTRIBUTES);
     WebGL.writeBuffer(device, buffer, data);
   }
 

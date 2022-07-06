@@ -3,18 +3,16 @@
   "version": "1.0.0",
   "description": "mugl examples",
   "private": "true",
-  "ascMain": "assembly/index.ts",
-  "main": "index.js",
   "dependencies": {
     "mugl": "file:..",
-    "munum": "^0.0.6"
+    "munum": "^0.1.0"
   },
   "scripts": {
     "copy-gl-const": "cd .. && copyfiles -u 2 js/gpu/gl-const.ts examples/src/gltf/",
     "prebuild": "npm run copy-gl-const",
     "build": "npm run asbuild && npm run webpack",
-    "asbuild": "asc assembly/index.ts --target release",
-    "asbuild:debug": "asc assembly/index.ts --target debug",
+    "asbuild": "asc --target release",
+    "asbuild:debug": "asc --target debug",
     "webpack": "webpack",
     "build:shaders": "node scripts/shader.mjs",
     "build:gltf-spec": "node script/gltfschema2ts.mjs src/gltf-spec",
@@ -22,23 +20,23 @@
     "start": "npm run examples"
   },
   "devDependencies": {
-    "@babel/preset-env": "^7.14.8",
-    "@babel/preset-typescript": "^7.14.5",
-    "assemblyscript": "^0.19.9",
-    "babel-loader": "^8.2.2",
-    "copy-webpack-plugin": "^10.2.4",
-    "copyfiles": "^2.4.1",
-    "cross-env": "^7.0.3",
-    "glslify": "^7.1.1",
-    "glslify-import": "^3.1.0",
-    "json-schema-ref-parser": "^9.0.9",
-    "json-schema-to-typescript": "^10.1.4",
-    "rimraf": "^3.0.2",
-    "source-map-loader": "^3.0.0",
-    "webpack": "^5.47.1",
-    "webpack-cli": "^4.7.2",
-    "webpack-dev-server": "^4.7.4",
-    "webpack-glsl-minify": "^1.5.0"
+    "@babel/preset-env": "^7.18",
+    "@babel/preset-typescript": "^7.18",
+    "assemblyscript": "^0.20",
+    "babel-loader": "^8.2",
+    "copy-webpack-plugin": "^11.0",
+    "copyfiles": "^2.4",
+    "cross-env": "^7.0",
+    "glslify": "^7.1",
+    "glslify-import": "^3.1",
+    "json-schema-ref-parser": "^9.0",
+    "json-schema-to-typescript": "^11.0",
+    "rimraf": "^3.0",
+    "source-map-loader": "^4.0",
+    "webpack": "^5.73",
+    "webpack-cli": "^4.10",
+    "webpack-dev-server": "^4.9",
+    "webpack-glsl-minify": "^1.5"
   },
   "glslify": {
     "transform": [

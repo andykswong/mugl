@@ -1,9 +1,9 @@
-import { array, lookAt, mat4, perspective, scale } from 'munum';
+import { lookAt, mat, mat4, perspective, scale } from 'munum/assembly';
 import {
   BindGroup, BindingType, Buffer, BufferUsage, CompareFunction, CullMode, Device,
   Float, RenderPipeline, RenderPipelineDescriptor, Sampler, ShaderStage, StencilOperation,
   Texture, vertexBufferLayouts, VertexFormat
-} from 'mugl';
+} from 'mugl/assembly';
 import { API, BaseExample, createBuffer, Cube, getImageById, Model, TEX_SIZE, toIndices, toVertices } from '../common';
 
 const cubeVertices = toVertices({
@@ -186,14 +186,14 @@ export class StencilExample extends BaseExample {
       const vp = mat4.mul(proj, view);
     
       let mvp = vp; // Cube at (0, 0, 0)
-      array.copyEx(mvp, this.data, 0, 0, 16);
+      mat.copy(mvp, this.data, 0, 0, 16);
     
       mvp = mat4.mul(vp, scale([1.1, 1.1, 1.1])); // Scale up for outline
-      array.copyEx(mvp, this.data, 0, dataBufferSize, 16);
-      array.copyEx([0.1 as Float, 0.3, 0.2, 1.0], this.data, 0, dataBufferSize + 16, 4); // Set outline color
+      mat.copy(mvp, this.data, 0, dataBufferSize, 16);
+      mat.copy([0.1 as Float, 0.3, 0.2, 1.0], this.data, 0, dataBufferSize + 16, 4); // Set outline color
 
       mvp = mat4.mul(vp, scale([10, 10, 10])); // Scale up even more for skybox
-      array.copyEx(mvp, this.data, 0, dataBufferSize * 2, 16);
+      mat.copy(mvp, this.data, 0, dataBufferSize * 2, 16);
     }
     API.writeBuffer(this.device, this.dataBuffer!, this.data);
 

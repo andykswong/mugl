@@ -33,7 +33,7 @@ vec3 getEmissiveFactor() {
 
 struct NormalInfo {
   vec3 ng;
-  vec3 n;
+  vec3 nn;
   vec3 t;
   vec3 b;
 };
@@ -77,6 +77,6 @@ NormalInfo getNormalInfo(vec3 v) {
   ni.ng = ng;
   ni.t = t;
   ni.b = b;
-  ni.n = n;
+  ni.nn = n;
   return ni;
 }

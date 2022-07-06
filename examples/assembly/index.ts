@@ -1,4 +1,4 @@
-import { getCanvasById, WebGL, WebGL2Device } from 'mugl';
+import { getCanvasById, WebGL, WebGL2Device, WebGLContextAttributes } from 'mugl/assembly';
 import { APP_CONTEXT_ID, ExampleApplication } from '../src/common';
 import { Apps } from '../src/apps';
 
@@ -9,7 +9,7 @@ export function init(id: u32): void {
   if (!device) {
     device = WebGL.requestWebGL2Device(getCanvasById(APP_CONTEXT_ID, 'canvas'), {
       stencil: true,
-    });
+    } as WebGLContextAttributes);
   }
 
   if (device) {

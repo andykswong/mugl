@@ -1,9 +1,9 @@
-import { array, lookAt, mat4, Mat4, perspective, scale } from 'munum';
+import { lookAt, mat, mat4, Mat4, perspective, scale } from 'munum/assembly';
 import {
   AddressMode, BindGroup, BindingType, Buffer, BufferUsage, CompareFunction, CullMode, Device,
-  FilterMode, Float, RenderPipeline, RenderPipelineDescriptor, Resource, Sampler, ShaderStage, Texture,
+  FilterMode, Float, RenderPipeline, RenderPipelineDescriptor, Sampler, ShaderStage, Texture,
   TextureDimension, UInt, vertexBufferLayouts, VertexFormat, WebGL
-} from 'mugl';
+} from 'mugl/assembly';
 import { API, BaseExample, createBuffer, Cube, getImageById, Model, TEX_SIZE, toIndices, toVertices } from '../common';
 
 const texSize = TEX_SIZE;
@@ -113,7 +113,7 @@ class TextureRenderBundle {
   }
 
   public updateCamera(mvp: Mat4): void {
-    array.copyEx(mvp, this.cameraData, 0, 0, 16);
+    mat.copy(mvp, this.cameraData, 0, 0, 16);
     API.writeBuffer(this.device, this.cameraBuffer, this.cameraData);
   }
 
