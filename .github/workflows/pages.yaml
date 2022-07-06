@@ -11,6 +11,8 @@ jobs:
       with:
         node-version: '16'
     - run: npm ci
+    - run: npm run build
+    - run: npm run build:examples
     - run: npm run doc -- --excludeInternal
     - name: Copy files to public
       run: |
