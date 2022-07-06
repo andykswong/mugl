@@ -9,11 +9,11 @@
 
 ## Overview
 
-`mugl` is a minimal, modern WebGL 2.0 3D graphics abstraction layer that removes the verbosity and state management aspect of WebGL. It is designed toclosely match the [WebGPU](https://gpuweb.github.io/gpuweb/) API, the future web standard for modern 3D graphics. If you want to write low-level 3D graaphics code in WebGPU-style today, `mugl` is for you.
+`mugl` is a minimal, modern WebGL 2.0 3D graphics abstraction layer that removes the verbosity and state management aspect of WebGL. It is designed to be a simplified version of the [WebGPU](https://gpuweb.github.io/gpuweb/) API. If you want to write simple, low-level 3D graaphics code in WebGPU style today, `mugl` is for you.
 
-`mugl` provides WebAssembly (WASM) bindings in addition to JavaScript. With its [AssemblyScript](https://www.assemblyscript.org/) binding, you can run the same JavaScript 3D app code on WASM (see [examples](#examples)). There is also a [Rust binding](https://github.com/andykswong/muge/tree/main/crates/mugl).
+`mugl` provides WebAssembly (WASM) bindings in addition to JavaScript. With its [AssemblyScript](https://www.assemblyscript.org/) binding, you can run the same JavaScript 3D app code on WASM (see [examples](#examples)).
 
-`mugl` runs on any modern web browser and mobile via React Native. Additional WASM language bindings (e.g. Rust) and platform supports (e.g. native Desktop) are planned.
+`mugl` runs on any modern web browser and mobile via React Native. Additional WASM language bindings (e.g. [Rust]((https://github.com/andykswong/muge/tree/main/crates/mugl))) and platform supports (e.g. native Desktop) are planned.
 
 ## [Examples](https://andykswong.github.io/mugl/latest/examples)
 Check out the live examples: https://andykswong.github.io/mugl/latest/examples
@@ -105,6 +105,14 @@ WebGL.beginDefaultPass(device, { clearColor: [0.1, 0.2, 0.3, 1.0] }); // clear b
   WebGL.setVertex(device, 0, buffer);
   WebGL.draw(device, 3); // 3 vertices to draw
 WebGL.submitRenderPass(device);
+
+// 6. GPU resources are freed automatically when unused, but you can also explicitly destroy them to free up GPU memory
+vertex.destroy();
+fragment.destroy();
+pipeline.destroy();
+buffer.destroy();
+device.destroy();
+
 ```
 
 ### 2. Running on React Native Mobile Apps via expo-gl

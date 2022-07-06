@@ -9,4 +9,8 @@
  * True to enable debug mode. Defaults to false.
  */
 export declare const MUGL_DEBUG = false;
+/**
+ * True to enable finalization registry for GPU resources. Defaults to true.
+ */
+export declare const MUGL_FINALIZER = true;
 //# sourceMappingURL=config.d.ts.map

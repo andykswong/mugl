@@ -1,4 +1,4 @@
-import { MUGL_DEBUG } from '../config';
+import { MUGL_DEBUG, MUGL_FINALIZER } from '../config';
 import * as GLenum from './gl-const';
 import { Color, Extent2D, Extent3D, Float, Future, FutureStatus, UInt, UIntArray } from './primitive';
 import {
@@ -99,6 +99,19 @@ interface WebGL2RenderPipeline extends RenderPipeline {
 
 //#region Device
 
+type GPUFinalizer = FinalizationRegistry<{
+  finalizer: (gl: WebGL2RenderingContext) => void,
+  gl: WebGL2RenderingContext,
+}>;
+
+let gpuFinalizer: GPUFinalizer | null = null;
+
+if (MUGL_FINALIZER) {
+  gpuFinalizer = new FinalizationRegistry(({ finalizer, gl }) => {
+    finalizer(gl);
+  });
+}
+
 /**
  * Requests a WebGL2 {@link Device}.
  * @param canvas the canvas to be used
@@ -117,14 +130,24 @@ export function requestWebGL2Device(
         enabledFeatures = enabledFeatures | +feature;
       }
     }
-    return {
-      canvas, gl, features: enabledFeatures,
+    const state = initWebGL2State(gl);
+    const finalizer = (gl: WebGL2RenderingContext) => {
+      gl.deleteFramebuffer(state.copyFrameBuffer);
+    };
+
+    const device = {
+      canvas, gl, state, features: enabledFeatures,
       pass: null,
-      state: initWebGL2State(gl),
       destroy() {
-        this.gl.deleteFramebuffer(this.state.copyFrameBuffer);
+        finalizer(this.gl);
       }
     } as WebGL2Device;
+
+    if (MUGL_FINALIZER) {
+      (gpuFinalizer as GPUFinalizer).register(device, { finalizer, gl });
+    }
+
+    return device;
   }
   return null;
 }
@@ -135,7 +158,7 @@ export function requestWebGL2Device(
  */
 export function resetDevice(device: Device): void {
   (device as WebGL2Device).destroy();
-  (device as WebGL2Device).state = initWebGL2State((device as WebGL2Device).gl);
+  Object.assign((device as WebGL2Device).state, initWebGL2State((device as WebGL2Device).gl));
 }
 
 /**
@@ -176,12 +199,22 @@ export function createBuffer(device: Device, desc: BufferDescriptor): Buffer {
   (device as WebGL2Device).gl.bindBuffer(type, glb);
   (device as WebGL2Device).gl.bufferData(type, desc.size, usage);
 
-  return {
+  const finalizer = (gl: WebGL2RenderingContext) => {
+    gl.deleteBuffer(glb);
+  };
+
+  const buffer = {
     gl: (device as WebGL2Device).gl, glb, type, size: desc.size,
     destroy(): void {
-      this.gl.deleteBuffer(this.glb);
+      finalizer(this.gl);
     }
   } as WebGL2Buffer;
+
+  if (MUGL_FINALIZER) {
+    (gpuFinalizer as GPUFinalizer).register(buffer, { finalizer, gl: (device as WebGL2Device).gl });
+  }
+
+  return buffer;
 }
 
 //#endregion Buffer
@@ -203,8 +236,8 @@ export function createTexture(device: Device, desc: TextureDescriptor): Texture 
   const depth = type === GLenum.TEXTURE_CUBE_MAP ? 6 :
     type === GLenum.TEXTURE_2D ? 1 : _depth;
 
-  let glt = null;
-  let glrb = null;
+  let glt: WebGLTexture | null = null;
+  let glrb: WebGLRenderbuffer | null = null;
 
   if (samples > 1 || !needTexture) { // MSAA / Depth-stencil renderbuffer
     // WebGL does not have multisample texture, so renderbuffer is needed to resolve MSAA
@@ -229,13 +262,23 @@ export function createTexture(device: Device, desc: TextureDescriptor): Texture 
     }
   }
 
-  return {
+  const finalizer = (gl: WebGL2RenderingContext) => {
+    gl.deleteTexture(glt);
+    gl.deleteRenderbuffer(glrb);
+  };
+
+  const texture = {
     gl: (device as WebGL2Device).gl, glt, glrb, type, format, width, height, depth, samples,
     destroy(): void {
-      this.gl.deleteTexture(this.glt);
-      this.gl.deleteRenderbuffer(this.glrb);
+      finalizer(this.gl);
     }
   } as WebGL2Texture;
+
+  if (MUGL_FINALIZER) {
+    (gpuFinalizer as GPUFinalizer).register(texture, { finalizer, gl: (device as WebGL2Device).gl });
+  }
+
+  return texture;
 }
 
 //#endregion Texture
@@ -279,13 +322,23 @@ export function createSampler(device: Device, desc: SamplerDescriptor = {}): Sam
     );
   }
 
-  return {
+  const finalizer = (gl: WebGL2RenderingContext) => {
+    gl.deleteSampler(gls);
+  };
+
+  const sampler = {
     gls,
     gl: (device as WebGL2Device).gl,
     destroy(): void {
-      this.gl.deleteSampler(this.gls);
+      finalizer(this.gl);
     }
   } as WebGL2Sampler;
+
+  if (MUGL_FINALIZER) {
+    (gpuFinalizer as GPUFinalizer).register(sampler, { finalizer, gl: (device as WebGL2Device).gl });
+  }
+
+  return sampler;
 }
 
 //#endregion Sampler
@@ -312,13 +365,23 @@ export function createShader(device: Device, desc: ShaderDescriptor): Shader {
     );
   }
 
-  return {
+  const finalizer = (gl: WebGL2RenderingContext) => {
+    gl.deleteShader(gls);
+  };
+
+  const shader = {
     gl: (device as WebGL2Device).gl,
     gls,
     destroy(): void {
-      this.gl.deleteShader(this.gls);
+      finalizer(this.gl);
     }
   } as WebGL2Shader;
+
+  if (MUGL_FINALIZER) {
+    (gpuFinalizer as GPUFinalizer).register(shader, { finalizer, gl: (device as WebGL2Device).gl });
+  }
+
+  return shader;
 }
 
 //#endregion Buffer
@@ -390,7 +453,14 @@ export function createRenderPass(device: Device, desc: RenderPassDescriptor = {}
         GLenum.DEPTH_STENCIL_ATTACHMENT : GLenum.DEPTH_ATTACHMENT, desc.depthStencil!) : null);
   }
 
-  return {
+  const finalizer = (gl: WebGL2RenderingContext) => {
+    gl.deleteFramebuffer(glfb);
+    for (const fb of glrfb) {
+      gl.deleteFramebuffer(fb);
+    }
+  };
+
+  const pass = {
     gl: (device as WebGL2Device).gl,
     glfb, glrfb, depth,
     color: desc.colors ? desc.colors.map((c) => c.view.texture as WebGL2Texture) : [],
@@ -399,12 +469,15 @@ export function createRenderPass(device: Device, desc: RenderPassDescriptor = {}
     clearDepth: desc.clearDepth,
     clearStencil: desc.clearStencil,
     destroy(): void {
-      this.gl.deleteFramebuffer(this.glfb);
-      for (const glrfb of this.glrfb) {
-        this.gl.deleteFramebuffer(glrfb);
-      }
+      finalizer(this.gl);
     }
   } as WebGL2RenderPass;
+
+  if (MUGL_FINALIZER) {
+    (gpuFinalizer as GPUFinalizer).register(pass, { finalizer, gl: (device as WebGL2Device).gl });
+  }
+
+  return pass;
 }
 
 //#endregion RenderPass
@@ -501,16 +574,27 @@ export function createRenderPipeline(device: Device, desc: RenderPipelineDescrip
     }
   }
 
-  return {
+  const finalizer = (gl: WebGL2RenderingContext) => {
+    gl.deleteProgram(glp);
+  };
+
+  const pipeline = {
     gl: (device as WebGL2Device).gl,
     glp,
     buffers: desc.buffers,
     cache,
     state: createPipelineState(desc),
     destroy(): void {
-      this.gl.deleteProgram(this.glp);
+      finalizer(this.gl);
     }
   } as WebGL2RenderPipeline;
+
+
+  if (MUGL_FINALIZER) {
+    (gpuFinalizer as GPUFinalizer).register(pipeline, { finalizer, gl: (device as WebGL2Device).gl });
+  }
+
+  return pipeline;
 }
 
 //#endregion RenderPipeline
