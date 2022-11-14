@@ -1,0 +1,42 @@
+{
+  "name": "examples",
+  "version": "1.0.0",
+  "description": "mugl examples",
+  "private": "true",
+  "dependencies": {
+    "mugl": "^0.2",
+    "munum": "^0.1"
+  },
+  "scripts": {
+    "build": "npm run asbuild && npm run webpack",
+    "asbuild": "asc --target release",
+    "asbuild:debug": "asc --target debug",
+    "webpack": "webpack",
+    "examples": "cross-env NODE_ENV=development webpack serve",
+    "start": "npm run examples"
+  },
+  "devDependencies": {
+    "@babel/preset-env": "^7.20",
+    "@babel/preset-typescript": "^7.18",
+    "assemblyscript": "^0.23",
+    "babel-loader": "^9.1",
+    "copy-webpack-plugin": "^11.0",
+    "copyfiles": "^2.4",
+    "cross-env": "^7.0",
+    "glslify": "^7.1",
+    "glslify-import": "^3.1",
+    "json-schema-ref-parser": "^9.0",
+    "json-schema-to-typescript": "^11.0",
+    "rimraf": "^3.0",
+    "source-map-loader": "^4.0",
+    "webpack": "^5.74",
+    "webpack-cli": "^4.10",
+    "webpack-dev-server": "^4.9",
+    "webpack-glsl-minify": "^1.5"
+  },
+  "glslify": {
+    "transform": [
+      "glslify-import"
+    ]
+  }
+}

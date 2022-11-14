@@ -1,0 +1,8 @@
+{
+  "editor.tabSize": 2,
+  "eslint.workingDirectories": [
+    "./",
+    "./packages/examples",
+    "./packages/gltf-viewer"
+  ]
+}

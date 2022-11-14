@@ -1,3 +1,4 @@
+import { Arena, GenerationalArena } from '@muds/store';
 import {
   AddressMode, BindGroup, BindGroupLayout, BindGroupLayoutEntry, BindingType, Buffer, BufferUsage, Canvas, Color,
   ColorAttachment, ColorTargetState, CompareFunction, CullMode, Device, FilterMode, Float, FrontFace, Future,
@@ -6,23 +7,22 @@ import {
   TextureDimension, TextureFormat, TextureSampleType, TextureUsage, UInt, VertexAttribute, VertexBufferLayout
 } from '../gpu';
 import * as WebGL from '../gpu/gl2';
-import { Arena } from '../store';
 import { dataView, decodeStr, toWebGLContextAttributes } from './deserialize';
 
-export type ContextId = number;
-export type FutureId = number;
-export type ImageSourceId = number;
-export type CanvasId = number;
-export type ResourceId = number;
+export type ContextId = number & { readonly __tag: unique symbol };
+export type FutureId = number & { readonly __tag: unique symbol };
+export type ImageSourceId = number & { readonly __tag: unique symbol };
+export type CanvasId = number & { readonly __tag: unique symbol };
+export type ResourceId = number & { readonly __tag: unique symbol };
 
 const contexts: Record<ContextId, { memory: WebAssembly.Memory | null }> = {};
-const futures = new Arena<Future>();
-const images = new Arena<ImageSource>();
+const futures: Arena<Future, FutureId> = new GenerationalArena<Future, FutureId>();
+const images: Arena<ImageSource, ImageSourceId> = new GenerationalArena<ImageSource, ImageSourceId>();
 const imageMap: Record<string, ImageSourceId> = {};
-const canvases = new Arena<Canvas>();
+const canvases: Arena<Canvas, CanvasId> = new GenerationalArena<Canvas, CanvasId>();
 const canvasMap: Record<string, CanvasId> = {};
 const canvasContextMap: Record<CanvasId, ContextId> = {};
-const resources = new Arena<Resource>();
+const resources: Arena<Resource, ResourceId> = new GenerationalArena<Resource, ResourceId>();
 const deviceContextMap: Record<ResourceId, ContextId> = {};
 
 function getMemory(context: ContextId): WebAssembly.Memory {

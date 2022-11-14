@@ -1,9 +1,19 @@
 import { AddressMode, BufferUsage, CompareFunction, CullMode, FilterMode, Float, FrontFace, FutureStatus, IndexFormat, MipmapHint, PrimitiveTopology, ShaderStage, StencilOperation, TextureDimension, TextureFormat, TextureUsage, UInt } from '../gpu';
-export declare type ContextId = number;
-export declare type FutureId = number;
-export declare type ImageSourceId = number;
-export declare type CanvasId = number;
-export declare type ResourceId = number;
+export declare type ContextId = number & {
+    readonly __tag: unique symbol;
+};
+export declare type FutureId = number & {
+    readonly __tag: unique symbol;
+};
+export declare type ImageSourceId = number & {
+    readonly __tag: unique symbol;
+};
+export declare type CanvasId = number & {
+    readonly __tag: unique symbol;
+};
+export declare type ResourceId = number & {
+    readonly __tag: unique symbol;
+};
 declare function deleteResource(id: ResourceId): void;
 export declare function set_context_memory(context: ContextId, memory: WebAssembly.Memory): void;
 export declare function free_context(context: ContextId): void;

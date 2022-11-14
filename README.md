@@ -18,18 +18,18 @@
 ## [Examples](https://andykswong.github.io/mugl/latest/examples)
 Check out the live examples: https://andykswong.github.io/mugl/latest/examples
 
-The source code of all examples can be found [here](./examples/src/apps/). All examples run on **both JavaScript and WebAssembly, using the exact same code base**! Click the toggle in the examples menu to seamlessly switch between the two environments.
+The source code of all examples can be found [here](./packages/examples/src/apps/). All examples run on **both JavaScript and WebAssembly, using the exact same code base**! Click the toggle in the examples menu to seamlessly switch between the two environments.
 
 |   |   |   |
 |---|---|---|
 |[![basic](./screenshots/basic.png)](https://andykswong.github.io/mugl/latest/examples/#basic)|[![instancing](./screenshots/instancing.png)](https://andykswong.github.io/mugl/latest/examples/#instancing)|[![postprocess](./screenshots/postprocess.png)](https://andykswong.github.io/mugl/latest/examples/#postprocess)|
 |[![mrt](./screenshots/mrt.png)](https://andykswong.github.io/mugl/latest/examples/#mrt)|[![stencil](./screenshots/stencil.png)](https://andykswong.github.io/mugl/latest/examples/#stencil)|[![pbr](./screenshots/pbr.png)](https://andykswong.github.io/mugl/latest/examples/#pbr)|
 
-## [glTF 2.0 Model Viewer](https://andykswong.github.io/mugl/latest/examples/gltf.html)
-A small (~17KB) but full-featured glTF model viewer built on `mugl` is available as an example usage of this library: https://andykswong.github.io/mugl/latest/examples/gltf.html \
-The source code can be found [here](./examples/src/gltf-viewer).
+## [glTF 2.0 Model Viewer](https://andykswong.github.io/mugl/latest/gltf-viewer)
+A small but full-featured glTF model viewer built on `mugl` is available as an example usage of this library: https://andykswong.github.io/mugl/latest/gltf-viewer \
+The source code can be found [here](./packages/gltf-viewer).
 
-Any model from [glTF-Sample-Models](https://github.com/KhronosGroup/glTF-Sample-Models) can be loaded using the `model` and `variant` URL parameter, e.g.: [?model=Buggy&variant=glTF-Binary](https://andykswong.github.io/mugl/latest/examples/gltf.html?model=Buggy&variant=glTF-Binary&camera=0&scene=0) to load the [Buggy](https://github.com/KhronosGroup/glTF-Sample-Models/tree/master/2.0/Buggy) model. You can also use the `url` URL parameter to load a model from any source ([example](https://andykswong.github.io/mugl/latest/examples/gltf.html?url=https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Avocado/glTF/Avocado.gltf)).
+Any model from [glTF-Sample-Models](https://github.com/KhronosGroup/glTF-Sample-Models) can be loaded using the `model` and `variant` URL parameter, e.g.: [?model=Buggy&variant=glTF-Binary](https://andykswong.github.io/mugl/latest/gltf-viewer/?model=Buggy&variant=glTF-Binary&camera=0&scene=0) to load the [Buggy](https://github.com/KhronosGroup/glTF-Sample-Models/tree/master/2.0/Buggy) model. You can also use the `url` URL parameter to load a model from any source ([example](https://andykswong.github.io/mugl/latest/gltf-viewer/?url=https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Avocado/glTF/Avocado.gltf)).
 
 ![glTF 2.0 Model Viewer](./screenshots/DamagedHelmet.png)
 
@@ -187,7 +187,7 @@ const CONTEXT_ID = 123; // This must be the same ID as above
 const device = WebGL.requestWebGL2Device(getCanvasById(CONTEXT_ID, 'canvasId'));
 ```
 
-See the [examples source code](./examples) on how to build an AssemblyScript mugl app.
+See the [examples source code](./packages/examples) on how to build an AssemblyScript mugl app.
 
 ## License
 This repository and the code inside it is licensed under the MIT License. Read [LICENSE](./LICENSE) for more information.

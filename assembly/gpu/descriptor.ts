@@ -455,7 +455,7 @@ export class BindGroupLayoutEntry {
   textureDimension: TextureDimension = TextureDimension.D2;
 
   /** Whether texture is multisampled. Defaults to false. */
-  textureMultisampled: bool = false;
+  textureMultisampled: boolean = false;
 }
 
 /**

@@ -3,6 +3,7 @@
   "compilerOptions": {
     "allowSyntheticDefaultImports": true,
     "isolatedModules": true,
+    "preserveConstEnums": true,
     "strict": true,
     "module": "esnext",
     "target": "es2021",

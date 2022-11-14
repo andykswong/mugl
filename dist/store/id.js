@@ -1,2 +1,0 @@
-export const MAX_SAFE_GENERATION=(1<<21)-1;export const UNIT_GENERATION=2**32;export function create(index,generation){return(generation&MAX_SAFE_GENERATION)*UNIT_GENERATION+(index>>>0)}export function indexOf(id){return id>>>0}export function generationOf(id){return id/UNIT_GENERATION&MAX_SAFE_GENERATION}
-//# sourceMappingURL=id.js.map

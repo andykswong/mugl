@@ -3,42 +3,39 @@ module.exports = api => {
   const isWebpack = api.env('webpack');
 
   const config = {
-    "assumptions": {
-      "setPublicClassFields": true
+    assumptions: {
+      setPublicClassFields: true
     },
-    "presets": [
+    presets: [
       [
-        "@babel/preset-env",
+        '@babel/preset-env',
         {
-          "modules": false,
-          "targets": {
-            "node": "12"
-          },
-          "include": [
-            "@babel/plugin-proposal-class-properties"
-          ]
+          modules: false,
+          targets: {
+            node: true
+          }
         }
       ],
-      ["@babel/preset-typescript"]
+      ['@babel/preset-typescript']
     ],
-    "plugins": [
+    plugins: [],
+    ignore: [
+      'node_modules'
     ],
-    "ignore": [
-      "node_modules"
-    ],
-    "comments": false,
-    "minified": true
+    comments: false,
+    minified: !isTest
   };
 
   if (!isTest) {
     config.plugins.push(
-      ["./babel.transform.cjs"]
+      ['./babel.transform.cjs']
     );
+    config.ignore.push('**/__tests__/**');
   }
 
   if (!(isTest || isWebpack)) {
     config.plugins.push(
-      ["babel-plugin-add-import-extension", { "extension": "js" }]
+      ['babel-plugin-add-import-extension', { extension: 'js' }]
     );
   }
 

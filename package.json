@@ -1,6 +1,6 @@
 {
   "name": "mugl",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Micro WebGL Library for JavaScript and WebAssembly",
   "type": "module",
   "sideEffects": false,
@@ -58,7 +58,7 @@
     "wasm.d.ts"
   ],
   "scripts": {
-    "prepublishOnly": "npm run build && npm test",
+    "prepublishOnly": "npm run clean && npm run build && npm test",
     "copy-gpu-types": "copyfiles -u 1 js/gpu/{gl-const,gl-util,gpu,type}.ts assembly",
     "clean": "rimraf coverage docs dist **/__tests__/**/*.spec.map **/__tests__/**/*.spec.wat",
     "prebuild": "npm run copy-gpu-types && npm run lint",
@@ -69,43 +69,47 @@
     "asbuild:debug": "asc --target debug",
     "tsbuild": "npm run babel && npm run tsc",
     "babel": "cross-env-shell babel js -d dist --source-maps --extensions '.js,.mjs,.ts' --out-file-extension .js",
-    "tsc": "tsc --emitDeclarationOnly",
+    "tsc": "tsc --project tsconfig.build.json --emitDeclarationOnly",
     "posttsc": "copyfiles -u 1 js/**/*{.d.ts,.js,.mjs} dist",
     "webpack": "webpack",
     "test": "npm run jest",
     "jest": "cross-env NODE_OPTIONS=--experimental-vm-modules npx jest",
     "jest:watch": "npm run jest -- --watch",
     "doc": "typedoc --out docs js/index.ts",
-    "postdoc": "copyfiles screenshots/* docs/",
-    "build:examples": "cd examples && npm install && npm run build",
-    "examples": "cd examples && npm start",
-    "start": "npm run examples"
+    "postdoc": "copyfiles screenshots/* docs/"
   },
-  "dependencies": {},
+  "optionalDependencies": {
+    "@muds/store": "^0.1"
+  },
   "devDependencies": {
-    "@babel/cli": "^7.18",
-    "@babel/core": "^7.18",
-    "@babel/preset-env": "^7.18",
+    "@babel/cli": "^7.19",
+    "@babel/core": "^7.20",
+    "@babel/preset-env": "^7.20",
     "@babel/preset-typescript": "^7.18",
-    "@types/jest": "^28.1",
-    "@types/node": "^18.0",
+    "@types/jest": "^29.2",
+    "@types/node": "^18.11",
     "@types/webgl-ext": "^0.0",
-    "@typescript-eslint/eslint-plugin": "^5.30",
-    "@typescript-eslint/parser": "^5.30",
-    "assemblyscript": "^0.20",
-    "babel-jest": "^28.1",
-    "babel-loader": "^8.2",
+    "@typescript-eslint/eslint-plugin": "^5.42",
+    "@typescript-eslint/parser": "^5.42",
+    "assemblyscript": "^0.23",
+    "babel-jest": "^29.2",
+    "babel-loader": "^9.1",
     "babel-plugin-add-import-extension": "^1.6",
     "copyfiles": "^2.4",
     "cross-env": "^7.0",
-    "eslint": "^8.19",
-    "jest": "^28.1",
+    "eslint": "^8.26",
+    "jest": "^29.2",
     "rimraf": "^3.0",
-    "source-map-loader": "^3.0",
+    "source-map-loader": "^4.0",
     "typedoc": "^0.23",
-    "typescript": "^4.7",
-    "webpack": "^5.73",
+    "typescript": "^4.8",
+    "webpack": "^5.74",
     "webpack-cli": "^4.10",
     "webpack-merge": "^5.7"
-  }
+  },
+  "workspaces": [
+    "./",
+    "./packages/examples",
+    "./packages/gltf-viewer"
+  ]
 }

@@ -47,7 +47,7 @@ node_modules/
 # Output folders
 coverage/
 docs/
-examples/dist/
+packages/*/dist/
 
 # Compiled test files
 dist/**/__tests__/

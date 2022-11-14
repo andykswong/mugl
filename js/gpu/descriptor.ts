@@ -244,7 +244,7 @@ export interface VertexBufferFormats {
   attributes: VertexFormat[];
 
   /** Specify if this buffer's data is instanced. Defaults to false. */
-  instanced?: bool;
+  instanced?: boolean;
 }
 
 /**
@@ -436,7 +436,7 @@ export interface BindGroupLayoutEntry {
   /** Binding location. Defaults to the position of the entry. */
   binding?: UInt;
 
-  /** The stages that this resource is visible. Defaults to {@link ShaderStage.VERTEX} | {@link ShaderStage.FRAGMENT} */
+  /** The stages that this resource is visible. Defaults to {@link ShaderStage.Vertex} | {@link ShaderStage.Fragment} */
   visibility?: ShaderStage;
 
   /** The type of binding. */
@@ -455,7 +455,7 @@ export interface BindGroupLayoutEntry {
   textureDimension?: TextureDimension;
 
   /** Whether texture is multisampled. Defaults to false. */
-  textureMultisampled?: bool;
+  textureMultisampled?: boolean;
 }
 
 /**

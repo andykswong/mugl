@@ -3,6 +3,7 @@
   "compilerOptions": {
     "allowSyntheticDefaultImports": true,
     "isolatedModules": true,
+    "preserveConstEnums": true,
     "strict": true,
     "module": "es2020",
     "target": "es2020",
