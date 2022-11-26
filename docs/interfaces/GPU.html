@@ -1,0 +1,926 @@
+<!DOCTYPE html><html class="default" lang="en"><head><meta charSet="utf-8"/><meta http-equiv="x-ua-compatible" content="IE=edge"/><title>GPU | mugl</title><meta name="description" content="Documentation for mugl"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="../assets/style.css"/><link rel="stylesheet" href="../assets/highlight.css"/><script async src="../assets/search.js" id="search-script"></script></head><body><script>document.documentElement.dataset.theme = localStorage.getItem("tsd-theme") || "os"</script><header class="tsd-page-toolbar">
+<div class="tsd-toolbar-contents container">
+<div class="table-cell" id="tsd-search" data-base="..">
+<div class="field"><label for="tsd-search-field" class="tsd-widget tsd-toolbar-icon search no-caption"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M15.7824 13.833L12.6666 10.7177C12.5259 10.5771 12.3353 10.499 12.1353 10.499H11.6259C12.4884 9.39596 13.001 8.00859 13.001 6.49937C13.001 2.90909 10.0914 0 6.50048 0C2.90959 0 0 2.90909 0 6.49937C0 10.0896 2.90959 12.9987 6.50048 12.9987C8.00996 12.9987 9.39756 12.4863 10.5008 11.6239V12.1332C10.5008 12.3332 10.5789 12.5238 10.7195 12.6644L13.8354 15.7797C14.1292 16.0734 14.6042 16.0734 14.8948 15.7797L15.7793 14.8954C16.0731 14.6017 16.0731 14.1267 15.7824 13.833ZM6.50048 10.499C4.29094 10.499 2.50018 8.71165 2.50018 6.49937C2.50018 4.29021 4.28781 2.49976 6.50048 2.49976C8.71001 2.49976 10.5008 4.28708 10.5008 6.49937C10.5008 8.70852 8.71314 10.499 6.50048 10.499Z" fill="var(--color-text)"></path></svg></label><input type="text" id="tsd-search-field" aria-label="Search"/></div>
+<div class="field">
+<div id="tsd-toolbar-links"></div></div>
+<ul class="results">
+<li class="state loading">Preparing search index...</li>
+<li class="state failure">The search index is not available</li></ul><a href="../index.html" class="title">mugl</a></div>
+<div class="table-cell" id="tsd-widgets"><a href="#" class="tsd-widget tsd-toolbar-icon menu no-caption" data-toggle="menu" aria-label="Menu"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="1" y="3" width="14" height="2" fill="var(--color-text)"></rect><rect x="1" y="7" width="14" height="2" fill="var(--color-text)"></rect><rect x="1" y="11" width="14" height="2" fill="var(--color-text)"></rect></svg></a></div></div></header>
+<div class="container container-main">
+<div class="col-8 col-content">
+<div class="tsd-page-title">
+<ul class="tsd-breadcrumb">
+<li><a href="../modules.html">mugl</a></li>
+<li><a href="GPU.html">GPU</a></li></ul>
+<h1>Interface GPU</h1></div>
+<section class="tsd-panel tsd-comment">
+<div class="tsd-comment tsd-typography"><p>Minimal WebGPU-like rendering interface.</p>
+</div></section>
+<section class="tsd-panel tsd-hierarchy">
+<h4>Hierarchy</h4>
+<ul class="tsd-hierarchy">
+<li><span class="target">GPU</span></li></ul></section><aside class="tsd-sources">
+<ul>
+<li>Defined in <a href="https://github.com/andykswong/mugl/blob/97fef82/js/gpu/gpu.ts#L14">gpu/gpu.ts:14</a></li></ul></aside>
+<section class="tsd-panel-group tsd-index-group">
+<section class="tsd-panel tsd-index-panel">
+<details class="tsd-index-content tsd-index-accordion" open><summary class="tsd-accordion-summary tsd-index-summary">
+<h5 class="tsd-index-heading uppercase" role="button" aria-expanded="false" tabIndex=0><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M1.5 5.50969L8 11.6609L14.5 5.50969L12.5466 3.66086L8 7.96494L3.45341 3.66086L1.5 5.50969Z" fill="var(--color-text)"></path></svg> Index</h5></summary>
+<div class="tsd-accordion-details">
+<section class="tsd-index-section">
+<h3 class="tsd-index-heading">Methods</h3>
+<div class="tsd-index-list"><a href="GPU.html#beginDefaultPass" class="tsd-index-link tsd-kind-method tsd-parent-kind-interface"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><rect fill="var(--color-icon-background)" stroke="#FF4DB8" stroke-width="1.5" x="1" y="1" width="22" height="22" rx="12" id="icon-2048-path"></rect><path d="M9.162 16V7.24H10.578L11.514 10.072C11.602 10.328 11.674 10.584 11.73 10.84C11.794 11.088 11.842 11.28 11.874 11.416C11.906 11.28 11.954 11.088 12.018 10.84C12.082 10.584 12.154 10.324 12.234 10.06L13.122 7.24H14.538V16H13.482V12.82C13.482 12.468 13.49 12.068 13.506 11.62C13.53 11.172 13.558 10.716 13.59 10.252C13.622 9.78 13.654 9.332 13.686 8.908C13.726 8.476 13.762 8.1 13.794 7.78L12.366 12.16H11.334L9.894 7.78C9.934 8.092 9.97 8.456 10.002 8.872C10.042 9.28 10.078 9.716 10.11 10.18C10.142 10.636 10.166 11.092 10.182 11.548C10.206 12.004 10.218 12.428 10.218 12.82V16H9.162Z" fill="var(--color-text)" id="icon-2048-text"></path></svg><span>begin<wbr/>Default<wbr/>Pass</span></a>
+<a href="GPU.html#beginRenderPass" class="tsd-index-link tsd-kind-method tsd-parent-kind-interface"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>begin<wbr/>Render<wbr/>Pass</span></a>
+<a href="GPU.html#copyBuffer" class="tsd-index-link tsd-kind-method tsd-parent-kind-interface"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>copy<wbr/>Buffer</span></a>
+<a href="GPU.html#copyExternalImageToTexture" class="tsd-index-link tsd-kind-method tsd-parent-kind-interface"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>copy<wbr/>External<wbr/>Image<wbr/>To<wbr/>Texture</span></a>
+<a href="GPU.html#copyTexture" class="tsd-index-link tsd-kind-method tsd-parent-kind-interface"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>copy<wbr/>Texture</span></a>
+<a href="GPU.html#copyTextureToBuffer" class="tsd-index-link tsd-kind-method tsd-parent-kind-interface"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>copy<wbr/>Texture<wbr/>To<wbr/>Buffer</span></a>
+<a href="GPU.html#createBindGroup" class="tsd-index-link tsd-kind-method tsd-parent-kind-interface"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>create<wbr/>Bind<wbr/>Group</span></a>
+<a href="GPU.html#createBindGroupLayout" class="tsd-index-link tsd-kind-method tsd-parent-kind-interface"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>create<wbr/>Bind<wbr/>Group<wbr/>Layout</span></a>
+<a href="GPU.html#createBuffer" class="tsd-index-link tsd-kind-method tsd-parent-kind-interface"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>create<wbr/>Buffer</span></a>
+<a href="GPU.html#createRenderPass" class="tsd-index-link tsd-kind-method tsd-parent-kind-interface"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>create<wbr/>Render<wbr/>Pass</span></a>
+<a href="GPU.html#createRenderPipeline" class="tsd-index-link tsd-kind-method tsd-parent-kind-interface"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>create<wbr/>Render<wbr/>Pipeline</span></a>
+<a href="GPU.html#createSampler" class="tsd-index-link tsd-kind-method tsd-parent-kind-interface"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>create<wbr/>Sampler</span></a>
+<a href="GPU.html#createShader" class="tsd-index-link tsd-kind-method tsd-parent-kind-interface"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>create<wbr/>Shader</span></a>
+<a href="GPU.html#createTexture" class="tsd-index-link tsd-kind-method tsd-parent-kind-interface"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>create<wbr/>Texture</span></a>
+<a href="GPU.html#draw" class="tsd-index-link tsd-kind-method tsd-parent-kind-interface"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>draw</span></a>
+<a href="GPU.html#drawIndexed" class="tsd-index-link tsd-kind-method tsd-parent-kind-interface"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>draw<wbr/>Indexed</span></a>
+<a href="GPU.html#getDeviceFeatures" class="tsd-index-link tsd-kind-method tsd-parent-kind-interface"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>get<wbr/>Device<wbr/>Features</span></a>
+<a href="GPU.html#isDeviceLost" class="tsd-index-link tsd-kind-method tsd-parent-kind-interface"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>is<wbr/>Device<wbr/>Lost</span></a>
+<a href="GPU.html#readBuffer" class="tsd-index-link tsd-kind-method tsd-parent-kind-interface"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>read<wbr/>Buffer</span></a>
+<a href="GPU.html#resetDevice" class="tsd-index-link tsd-kind-method tsd-parent-kind-interface"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>reset<wbr/>Device</span></a>
+<a href="GPU.html#setBindGroup" class="tsd-index-link tsd-kind-method tsd-parent-kind-interface"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>set<wbr/>Bind<wbr/>Group</span></a>
+<a href="GPU.html#setBlendConst" class="tsd-index-link tsd-kind-method tsd-parent-kind-interface"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>set<wbr/>Blend<wbr/>Const</span></a>
+<a href="GPU.html#setIndex" class="tsd-index-link tsd-kind-method tsd-parent-kind-interface"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>set<wbr/>Index</span></a>
+<a href="GPU.html#setRenderPipeline" class="tsd-index-link tsd-kind-method tsd-parent-kind-interface"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>set<wbr/>Render<wbr/>Pipeline</span></a>
+<a href="GPU.html#setScissorRect" class="tsd-index-link tsd-kind-method tsd-parent-kind-interface"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>set<wbr/>Scissor<wbr/>Rect</span></a>
+<a href="GPU.html#setStencilRef" class="tsd-index-link tsd-kind-method tsd-parent-kind-interface"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>set<wbr/>Stencil<wbr/>Ref</span></a>
+<a href="GPU.html#setVertex" class="tsd-index-link tsd-kind-method tsd-parent-kind-interface"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>set<wbr/>Vertex</span></a>
+<a href="GPU.html#setViewport" class="tsd-index-link tsd-kind-method tsd-parent-kind-interface"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>set<wbr/>Viewport</span></a>
+<a href="GPU.html#submitRenderPass" class="tsd-index-link tsd-kind-method tsd-parent-kind-interface"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>submit<wbr/>Render<wbr/>Pass</span></a>
+<a href="GPU.html#writeBuffer" class="tsd-index-link tsd-kind-method tsd-parent-kind-interface"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>write<wbr/>Buffer</span></a>
+<a href="GPU.html#writeTexture" class="tsd-index-link tsd-kind-method tsd-parent-kind-interface"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>write<wbr/>Texture</span></a>
+</div></section></div></details></section></section>
+<section class="tsd-panel-group tsd-member-group">
+<h2>Methods</h2>
+<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface"><a id="beginDefaultPass" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>begin<wbr/>Default<wbr/>Pass</span><a href="#beginDefaultPass" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none" id="icon-anchor-a"></path><path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-.5 .5" id="icon-anchor-b"></path><path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l.5 -.5" id="icon-anchor-c"></path></svg></a></h3>
+<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
+<li class="tsd-signature tsd-anchor-link" id="beginDefaultPass.beginDefaultPass-1">begin<wbr/>Default<wbr/>Pass<span class="tsd-signature-symbol">(</span>device<span class="tsd-signature-symbol">: </span><a href="Device.html" class="tsd-signature-type" data-tsd-kind="Interface">Device</a>, desc<span class="tsd-signature-symbol">?: </span><a href="DefaultRenderPassDescriptor.html" class="tsd-signature-type" data-tsd-kind="Interface">DefaultRenderPassDescriptor</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span><a href="#beginDefaultPass.beginDefaultPass-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Convenient method to start a default render pass.</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5>device: <a href="Device.html" class="tsd-signature-type" data-tsd-kind="Interface">Device</a></h5>
+<div class="tsd-comment tsd-typography"><p>the GPU device</p>
+</div></li>
+<li>
+<h5><code class="tsd-tag ts-flagOptional">Optional</code> desc: <a href="DefaultRenderPassDescriptor.html" class="tsd-signature-type" data-tsd-kind="Interface">DefaultRenderPassDescriptor</a></h5>
+<div class="tsd-comment tsd-typography"><p>the render pass descriptor</p>
+</div></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
+<ul>
+<li>Defined in <a href="https://github.com/andykswong/mugl/blob/97fef82/js/gpu/gpu.ts#L179">gpu/gpu.ts:179</a></li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface"><a id="beginRenderPass" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>begin<wbr/>Render<wbr/>Pass</span><a href="#beginRenderPass" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
+<li class="tsd-signature tsd-anchor-link" id="beginRenderPass.beginRenderPass-1">begin<wbr/>Render<wbr/>Pass<span class="tsd-signature-symbol">(</span>device<span class="tsd-signature-symbol">: </span><a href="Device.html" class="tsd-signature-type" data-tsd-kind="Interface">Device</a>, pass<span class="tsd-signature-symbol">: </span><a href="RenderPass.html" class="tsd-signature-type" data-tsd-kind="Interface">RenderPass</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span><a href="#beginRenderPass.beginRenderPass-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Starts a render pass.</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5>device: <a href="Device.html" class="tsd-signature-type" data-tsd-kind="Interface">Device</a></h5>
+<div class="tsd-comment tsd-typography"><p>the GPU device</p>
+</div></li>
+<li>
+<h5>pass: <a href="RenderPass.html" class="tsd-signature-type" data-tsd-kind="Interface">RenderPass</a></h5>
+<div class="tsd-comment tsd-typography"><p>the render pass</p>
+</div></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
+<ul>
+<li>Defined in <a href="https://github.com/andykswong/mugl/blob/97fef82/js/gpu/gpu.ts#L172">gpu/gpu.ts:172</a></li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface"><a id="copyBuffer" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>copy<wbr/>Buffer</span><a href="#copyBuffer" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
+<li class="tsd-signature tsd-anchor-link" id="copyBuffer.copyBuffer-1">copy<wbr/>Buffer<span class="tsd-signature-symbol">(</span>device<span class="tsd-signature-symbol">: </span><a href="Device.html" class="tsd-signature-type" data-tsd-kind="Interface">Device</a>, src<span class="tsd-signature-symbol">: </span><a href="Buffer.html" class="tsd-signature-type" data-tsd-kind="Interface">Buffer</a>, dst<span class="tsd-signature-symbol">: </span><a href="Buffer.html" class="tsd-signature-type" data-tsd-kind="Interface">Buffer</a>, size<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">number</span>, srcOffset<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">number</span>, dstOffset<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span><a href="#copyBuffer.copyBuffer-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Copies data from a buffer to another buffer.</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5>device: <a href="Device.html" class="tsd-signature-type" data-tsd-kind="Interface">Device</a></h5>
+<div class="tsd-comment tsd-typography"><p>the GPU device</p>
+</div></li>
+<li>
+<h5>src: <a href="Buffer.html" class="tsd-signature-type" data-tsd-kind="Interface">Buffer</a></h5>
+<div class="tsd-comment tsd-typography"><p>the buffer to read from</p>
+</div></li>
+<li>
+<h5>dst: <a href="Buffer.html" class="tsd-signature-type" data-tsd-kind="Interface">Buffer</a></h5>
+<div class="tsd-comment tsd-typography"><p>the buffer to write to</p>
+</div></li>
+<li>
+<h5><code class="tsd-tag ts-flagOptional">Optional</code> size: <span class="tsd-signature-type">number</span></h5>
+<div class="tsd-comment tsd-typography"><p>the byte size of the GPU buffer to read. Defaults to the whole buffer</p>
+</div></li>
+<li>
+<h5><code class="tsd-tag ts-flagOptional">Optional</code> srcOffset: <span class="tsd-signature-type">number</span></h5>
+<div class="tsd-comment tsd-typography"><p>the byte offset into src buffer to begin reading from. Defaults to 0</p>
+</div></li>
+<li>
+<h5><code class="tsd-tag ts-flagOptional">Optional</code> dstOffset: <span class="tsd-signature-type">number</span></h5>
+<div class="tsd-comment tsd-typography"><p>the byte offset into dst buffer to begin writing to. Defaults to 0</p>
+</div></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
+<ul>
+<li>Defined in <a href="https://github.com/andykswong/mugl/blob/97fef82/js/gpu/gpu.ts#L127">gpu/gpu.ts:127</a></li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface"><a id="copyExternalImageToTexture" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>copy<wbr/>External<wbr/>Image<wbr/>To<wbr/>Texture</span><a href="#copyExternalImageToTexture" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
+<li class="tsd-signature tsd-anchor-link" id="copyExternalImageToTexture.copyExternalImageToTexture-1">copy<wbr/>External<wbr/>Image<wbr/>To<wbr/>Texture<span class="tsd-signature-symbol">(</span>device<span class="tsd-signature-symbol">: </span><a href="Device.html" class="tsd-signature-type" data-tsd-kind="Interface">Device</a>, src<span class="tsd-signature-symbol">: </span><a href="ImageCopyExternalImage.html" class="tsd-signature-type" data-tsd-kind="Interface">ImageCopyExternalImage</a>, dst<span class="tsd-signature-symbol">: </span><a href="ImageCopyTexture.html" class="tsd-signature-type" data-tsd-kind="Interface">ImageCopyTexture</a>, size<span class="tsd-signature-symbol">?: </span><a href="../types/Extent2D.html" class="tsd-signature-type" data-tsd-kind="Type alias">Extent2D</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span><a href="#copyExternalImageToTexture.copyExternalImageToTexture-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Uploads an image subregion to a texture.</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5>device: <a href="Device.html" class="tsd-signature-type" data-tsd-kind="Interface">Device</a></h5>
+<div class="tsd-comment tsd-typography"><p>the GPU device</p>
+</div></li>
+<li>
+<h5>src: <a href="ImageCopyExternalImage.html" class="tsd-signature-type" data-tsd-kind="Interface">ImageCopyExternalImage</a></h5>
+<div class="tsd-comment tsd-typography"><p>the image subregion to write</p>
+</div></li>
+<li>
+<h5>dst: <a href="ImageCopyTexture.html" class="tsd-signature-type" data-tsd-kind="Interface">ImageCopyTexture</a></h5>
+<div class="tsd-comment tsd-typography"><p>the texture subregion to write to.</p>
+</div></li>
+<li>
+<h5><code class="tsd-tag ts-flagOptional">Optional</code> size: <a href="../types/Extent2D.html" class="tsd-signature-type" data-tsd-kind="Type alias">Extent2D</a></h5>
+<div class="tsd-comment tsd-typography"><p>the size of image subregion to write</p>
+</div></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
+<ul>
+<li>Defined in <a href="https://github.com/andykswong/mugl/blob/97fef82/js/gpu/gpu.ts#L146">gpu/gpu.ts:146</a></li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface"><a id="copyTexture" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>copy<wbr/>Texture</span><a href="#copyTexture" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
+<li class="tsd-signature tsd-anchor-link" id="copyTexture.copyTexture-1">copy<wbr/>Texture<span class="tsd-signature-symbol">(</span>device<span class="tsd-signature-symbol">: </span><a href="Device.html" class="tsd-signature-type" data-tsd-kind="Interface">Device</a>, src<span class="tsd-signature-symbol">: </span><a href="ImageCopyTexture.html" class="tsd-signature-type" data-tsd-kind="Interface">ImageCopyTexture</a>, dst<span class="tsd-signature-symbol">: </span><a href="ImageCopyTexture.html" class="tsd-signature-type" data-tsd-kind="Interface">ImageCopyTexture</a>, size<span class="tsd-signature-symbol">?: </span><a href="../types/Extent3D.html" class="tsd-signature-type" data-tsd-kind="Type alias">Extent3D</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span><a href="#copyTexture.copyTexture-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Copies subregion of a texture to another texture.</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5>device: <a href="Device.html" class="tsd-signature-type" data-tsd-kind="Interface">Device</a></h5>
+<div class="tsd-comment tsd-typography"><p>the GPU device</p>
+</div></li>
+<li>
+<h5>src: <a href="ImageCopyTexture.html" class="tsd-signature-type" data-tsd-kind="Interface">ImageCopyTexture</a></h5>
+<div class="tsd-comment tsd-typography"><p>the texture subregion to read from.</p>
+</div></li>
+<li>
+<h5>dst: <a href="ImageCopyTexture.html" class="tsd-signature-type" data-tsd-kind="Interface">ImageCopyTexture</a></h5>
+<div class="tsd-comment tsd-typography"><p>the texture subregion to write to.</p>
+</div></li>
+<li>
+<h5><code class="tsd-tag ts-flagOptional">Optional</code> size: <a href="../types/Extent3D.html" class="tsd-signature-type" data-tsd-kind="Type alias">Extent3D</a></h5>
+<div class="tsd-comment tsd-typography"><p>the size of the texture subregion to copy</p>
+</div></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
+<ul>
+<li>Defined in <a href="https://github.com/andykswong/mugl/blob/97fef82/js/gpu/gpu.ts#L155">gpu/gpu.ts:155</a></li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface"><a id="copyTextureToBuffer" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>copy<wbr/>Texture<wbr/>To<wbr/>Buffer</span><a href="#copyTextureToBuffer" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
+<li class="tsd-signature tsd-anchor-link" id="copyTextureToBuffer.copyTextureToBuffer-1">copy<wbr/>Texture<wbr/>To<wbr/>Buffer<span class="tsd-signature-symbol">(</span>device<span class="tsd-signature-symbol">: </span><a href="Device.html" class="tsd-signature-type" data-tsd-kind="Interface">Device</a>, src<span class="tsd-signature-symbol">: </span><a href="ImageCopyTexture.html" class="tsd-signature-type" data-tsd-kind="Interface">ImageCopyTexture</a>, dst<span class="tsd-signature-symbol">: </span><a href="Buffer.html" class="tsd-signature-type" data-tsd-kind="Interface">Buffer</a>, layout<span class="tsd-signature-symbol">: </span><a href="ImageDataLayout.html" class="tsd-signature-type" data-tsd-kind="Interface">ImageDataLayout</a>, size<span class="tsd-signature-symbol">?: </span><a href="../types/Extent3D.html" class="tsd-signature-type" data-tsd-kind="Type alias">Extent3D</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span><a href="#copyTextureToBuffer.copyTextureToBuffer-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Copies subregion of a texture to a buffer.</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5>device: <a href="Device.html" class="tsd-signature-type" data-tsd-kind="Interface">Device</a></h5>
+<div class="tsd-comment tsd-typography"><p>the GPU device</p>
+</div></li>
+<li>
+<h5>src: <a href="ImageCopyTexture.html" class="tsd-signature-type" data-tsd-kind="Interface">ImageCopyTexture</a></h5>
+<div class="tsd-comment tsd-typography"><p>the texture subregion to read from.</p>
+</div></li>
+<li>
+<h5>dst: <a href="Buffer.html" class="tsd-signature-type" data-tsd-kind="Interface">Buffer</a></h5>
+<div class="tsd-comment tsd-typography"><p>the buffer to write to</p>
+</div></li>
+<li>
+<h5>layout: <a href="ImageDataLayout.html" class="tsd-signature-type" data-tsd-kind="Interface">ImageDataLayout</a></h5>
+<div class="tsd-comment tsd-typography"><p>the buffer data layout to use for storing the texture</p>
+</div></li>
+<li>
+<h5><code class="tsd-tag ts-flagOptional">Optional</code> size: <a href="../types/Extent3D.html" class="tsd-signature-type" data-tsd-kind="Type alias">Extent3D</a></h5>
+<div class="tsd-comment tsd-typography"><p>the size of the texture subregion to copy</p>
+</div></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
+<ul>
+<li>Defined in <a href="https://github.com/andykswong/mugl/blob/97fef82/js/gpu/gpu.ts#L165">gpu/gpu.ts:165</a></li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface"><a id="createBindGroup" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>create<wbr/>Bind<wbr/>Group</span><a href="#createBindGroup" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
+<li class="tsd-signature tsd-anchor-link" id="createBindGroup.createBindGroup-1">create<wbr/>Bind<wbr/>Group<span class="tsd-signature-symbol">(</span>device<span class="tsd-signature-symbol">: </span><a href="Device.html" class="tsd-signature-type" data-tsd-kind="Interface">Device</a>, desc<span class="tsd-signature-symbol">: </span><a href="BindGroupDescriptor.html" class="tsd-signature-type" data-tsd-kind="Interface">BindGroupDescriptor</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="BindGroup.html" class="tsd-signature-type" data-tsd-kind="Interface">BindGroup</a><a href="#createBindGroup.createBindGroup-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Creates a new pipeline bind group object.</p>
+
+<h3>Returns</h3><p>new bind group object</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5>device: <a href="Device.html" class="tsd-signature-type" data-tsd-kind="Interface">Device</a></h5>
+<div class="tsd-comment tsd-typography"><p>the GPU device</p>
+</div></li>
+<li>
+<h5>desc: <a href="BindGroupDescriptor.html" class="tsd-signature-type" data-tsd-kind="Interface">BindGroupDescriptor</a></h5>
+<div class="tsd-comment tsd-typography"><p>the bind group descriptor</p>
+</div></li></ul></div>
+<h4 class="tsd-returns-title">Returns <a href="BindGroup.html" class="tsd-signature-type" data-tsd-kind="Interface">BindGroup</a></h4><aside class="tsd-sources">
+<ul>
+<li>Defined in <a href="https://github.com/andykswong/mugl/blob/97fef82/js/gpu/gpu.ts#L81">gpu/gpu.ts:81</a></li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface"><a id="createBindGroupLayout" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>create<wbr/>Bind<wbr/>Group<wbr/>Layout</span><a href="#createBindGroupLayout" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
+<li class="tsd-signature tsd-anchor-link" id="createBindGroupLayout.createBindGroupLayout-1">create<wbr/>Bind<wbr/>Group<wbr/>Layout<span class="tsd-signature-symbol">(</span>device<span class="tsd-signature-symbol">: </span><a href="Device.html" class="tsd-signature-type" data-tsd-kind="Interface">Device</a>, desc<span class="tsd-signature-symbol">: </span><a href="BindGroupLayoutDescriptor.html" class="tsd-signature-type" data-tsd-kind="Interface">BindGroupLayoutDescriptor</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="BindGroupLayout.html" class="tsd-signature-type" data-tsd-kind="Interface">BindGroupLayout</a><a href="#createBindGroupLayout.createBindGroupLayout-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Creates a new pipeline bind group layout object.</p>
+
+<h3>Returns</h3><p>new bind group layout object</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5>device: <a href="Device.html" class="tsd-signature-type" data-tsd-kind="Interface">Device</a></h5>
+<div class="tsd-comment tsd-typography"><p>the GPU device</p>
+</div></li>
+<li>
+<h5>desc: <a href="BindGroupLayoutDescriptor.html" class="tsd-signature-type" data-tsd-kind="Interface">BindGroupLayoutDescriptor</a></h5>
+<div class="tsd-comment tsd-typography"><p>the bind group layout descriptor</p>
+</div></li></ul></div>
+<h4 class="tsd-returns-title">Returns <a href="BindGroupLayout.html" class="tsd-signature-type" data-tsd-kind="Interface">BindGroupLayout</a></h4><aside class="tsd-sources">
+<ul>
+<li>Defined in <a href="https://github.com/andykswong/mugl/blob/97fef82/js/gpu/gpu.ts#L73">gpu/gpu.ts:73</a></li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface"><a id="createBuffer" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>create<wbr/>Buffer</span><a href="#createBuffer" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
+<li class="tsd-signature tsd-anchor-link" id="createBuffer.createBuffer-1">create<wbr/>Buffer<span class="tsd-signature-symbol">(</span>device<span class="tsd-signature-symbol">: </span><a href="Device.html" class="tsd-signature-type" data-tsd-kind="Interface">Device</a>, desc<span class="tsd-signature-symbol">: </span><a href="BufferDescriptor.html" class="tsd-signature-type" data-tsd-kind="Interface">BufferDescriptor</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="Buffer.html" class="tsd-signature-type" data-tsd-kind="Interface">Buffer</a><a href="#createBuffer.createBuffer-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Creates a new buffer object.</p>
+
+<h3>Returns</h3><p>new buffer object</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5>device: <a href="Device.html" class="tsd-signature-type" data-tsd-kind="Interface">Device</a></h5>
+<div class="tsd-comment tsd-typography"><p>the GPU device</p>
+</div></li>
+<li>
+<h5>desc: <a href="BufferDescriptor.html" class="tsd-signature-type" data-tsd-kind="Interface">BufferDescriptor</a></h5>
+<div class="tsd-comment tsd-typography"><p>the buffer descriptor</p>
+</div></li></ul></div>
+<h4 class="tsd-returns-title">Returns <a href="Buffer.html" class="tsd-signature-type" data-tsd-kind="Interface">Buffer</a></h4><aside class="tsd-sources">
+<ul>
+<li>Defined in <a href="https://github.com/andykswong/mugl/blob/97fef82/js/gpu/gpu.ts#L41">gpu/gpu.ts:41</a></li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface"><a id="createRenderPass" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>create<wbr/>Render<wbr/>Pass</span><a href="#createRenderPass" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
+<li class="tsd-signature tsd-anchor-link" id="createRenderPass.createRenderPass-1">create<wbr/>Render<wbr/>Pass<span class="tsd-signature-symbol">(</span>device<span class="tsd-signature-symbol">: </span><a href="Device.html" class="tsd-signature-type" data-tsd-kind="Interface">Device</a>, desc<span class="tsd-signature-symbol">: </span><a href="RenderPassDescriptor.html" class="tsd-signature-type" data-tsd-kind="Interface">RenderPassDescriptor</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="RenderPass.html" class="tsd-signature-type" data-tsd-kind="Interface">RenderPass</a><a href="#createRenderPass.createRenderPass-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Creates a new render pass object.</p>
+
+<h3>Returns</h3><p>new render pass</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5>device: <a href="Device.html" class="tsd-signature-type" data-tsd-kind="Interface">Device</a></h5>
+<div class="tsd-comment tsd-typography"><p>the GPU device</p>
+</div></li>
+<li>
+<h5>desc: <a href="RenderPassDescriptor.html" class="tsd-signature-type" data-tsd-kind="Interface">RenderPassDescriptor</a></h5>
+<div class="tsd-comment tsd-typography"><p>the render pass descriptor.</p>
+</div></li></ul></div>
+<h4 class="tsd-returns-title">Returns <a href="RenderPass.html" class="tsd-signature-type" data-tsd-kind="Interface">RenderPass</a></h4><aside class="tsd-sources">
+<ul>
+<li>Defined in <a href="https://github.com/andykswong/mugl/blob/97fef82/js/gpu/gpu.ts#L97">gpu/gpu.ts:97</a></li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface"><a id="createRenderPipeline" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>create<wbr/>Render<wbr/>Pipeline</span><a href="#createRenderPipeline" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
+<li class="tsd-signature tsd-anchor-link" id="createRenderPipeline.createRenderPipeline-1">create<wbr/>Render<wbr/>Pipeline<span class="tsd-signature-symbol">(</span>device<span class="tsd-signature-symbol">: </span><a href="Device.html" class="tsd-signature-type" data-tsd-kind="Interface">Device</a>, desc<span class="tsd-signature-symbol">: </span><a href="RenderPipelineDescriptor.html" class="tsd-signature-type" data-tsd-kind="Interface">RenderPipelineDescriptor</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="RenderPipeline.html" class="tsd-signature-type" data-tsd-kind="Interface">RenderPipeline</a><a href="#createRenderPipeline.createRenderPipeline-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Creates a new render pipeline state object.</p>
+
+<h3>Returns</h3><p>new render pipeline object</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5>device: <a href="Device.html" class="tsd-signature-type" data-tsd-kind="Interface">Device</a></h5>
+<div class="tsd-comment tsd-typography"><p>the GPU device</p>
+</div></li>
+<li>
+<h5>desc: <a href="RenderPipelineDescriptor.html" class="tsd-signature-type" data-tsd-kind="Interface">RenderPipelineDescriptor</a></h5>
+<div class="tsd-comment tsd-typography"><p>the pipeline descriptor</p>
+</div></li></ul></div>
+<h4 class="tsd-returns-title">Returns <a href="RenderPipeline.html" class="tsd-signature-type" data-tsd-kind="Interface">RenderPipeline</a></h4><aside class="tsd-sources">
+<ul>
+<li>Defined in <a href="https://github.com/andykswong/mugl/blob/97fef82/js/gpu/gpu.ts#L89">gpu/gpu.ts:89</a></li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface"><a id="createSampler" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>create<wbr/>Sampler</span><a href="#createSampler" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
+<li class="tsd-signature tsd-anchor-link" id="createSampler.createSampler-1">create<wbr/>Sampler<span class="tsd-signature-symbol">(</span>device<span class="tsd-signature-symbol">: </span><a href="Device.html" class="tsd-signature-type" data-tsd-kind="Interface">Device</a>, desc<span class="tsd-signature-symbol">: </span><a href="SamplerDescriptor.html" class="tsd-signature-type" data-tsd-kind="Interface">SamplerDescriptor</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="Sampler.html" class="tsd-signature-type" data-tsd-kind="Interface">Sampler</a><a href="#createSampler.createSampler-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Creates a new sampler object.</p>
+
+<h3>Returns</h3><p>new sampler object</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5>device: <a href="Device.html" class="tsd-signature-type" data-tsd-kind="Interface">Device</a></h5>
+<div class="tsd-comment tsd-typography"><p>the GPU device</p>
+</div></li>
+<li>
+<h5>desc: <a href="SamplerDescriptor.html" class="tsd-signature-type" data-tsd-kind="Interface">SamplerDescriptor</a></h5>
+<div class="tsd-comment tsd-typography"><p>the sampler descriptor</p>
+</div></li></ul></div>
+<h4 class="tsd-returns-title">Returns <a href="Sampler.html" class="tsd-signature-type" data-tsd-kind="Interface">Sampler</a></h4><aside class="tsd-sources">
+<ul>
+<li>Defined in <a href="https://github.com/andykswong/mugl/blob/97fef82/js/gpu/gpu.ts#L57">gpu/gpu.ts:57</a></li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface"><a id="createShader" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>create<wbr/>Shader</span><a href="#createShader" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
+<li class="tsd-signature tsd-anchor-link" id="createShader.createShader-1">create<wbr/>Shader<span class="tsd-signature-symbol">(</span>device<span class="tsd-signature-symbol">: </span><a href="Device.html" class="tsd-signature-type" data-tsd-kind="Interface">Device</a>, desc<span class="tsd-signature-symbol">: </span><a href="ShaderDescriptor.html" class="tsd-signature-type" data-tsd-kind="Interface">ShaderDescriptor</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="Shader.html" class="tsd-signature-type" data-tsd-kind="Interface">Shader</a><a href="#createShader.createShader-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Creates a new shader module object.</p>
+
+<h3>Returns</h3><p>new shader object</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5>device: <a href="Device.html" class="tsd-signature-type" data-tsd-kind="Interface">Device</a></h5>
+<div class="tsd-comment tsd-typography"><p>the GPU device</p>
+</div></li>
+<li>
+<h5>desc: <a href="ShaderDescriptor.html" class="tsd-signature-type" data-tsd-kind="Interface">ShaderDescriptor</a></h5>
+<div class="tsd-comment tsd-typography"><p>the shader descriptor</p>
+</div></li></ul></div>
+<h4 class="tsd-returns-title">Returns <a href="Shader.html" class="tsd-signature-type" data-tsd-kind="Interface">Shader</a></h4><aside class="tsd-sources">
+<ul>
+<li>Defined in <a href="https://github.com/andykswong/mugl/blob/97fef82/js/gpu/gpu.ts#L65">gpu/gpu.ts:65</a></li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface"><a id="createTexture" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>create<wbr/>Texture</span><a href="#createTexture" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
+<li class="tsd-signature tsd-anchor-link" id="createTexture.createTexture-1">create<wbr/>Texture<span class="tsd-signature-symbol">(</span>device<span class="tsd-signature-symbol">: </span><a href="Device.html" class="tsd-signature-type" data-tsd-kind="Interface">Device</a>, desc<span class="tsd-signature-symbol">: </span><a href="TextureDescriptor.html" class="tsd-signature-type" data-tsd-kind="Interface">TextureDescriptor</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="Texture.html" class="tsd-signature-type" data-tsd-kind="Interface">Texture</a><a href="#createTexture.createTexture-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Creates a new texture object.</p>
+
+<h3>Returns</h3><p>new texture object</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5>device: <a href="Device.html" class="tsd-signature-type" data-tsd-kind="Interface">Device</a></h5>
+<div class="tsd-comment tsd-typography"><p>the GPU device</p>
+</div></li>
+<li>
+<h5>desc: <a href="TextureDescriptor.html" class="tsd-signature-type" data-tsd-kind="Interface">TextureDescriptor</a></h5>
+<div class="tsd-comment tsd-typography"><p>the texture descriptor</p>
+</div></li></ul></div>
+<h4 class="tsd-returns-title">Returns <a href="Texture.html" class="tsd-signature-type" data-tsd-kind="Interface">Texture</a></h4><aside class="tsd-sources">
+<ul>
+<li>Defined in <a href="https://github.com/andykswong/mugl/blob/97fef82/js/gpu/gpu.ts#L49">gpu/gpu.ts:49</a></li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface"><a id="draw" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>draw</span><a href="#draw" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
+<li class="tsd-signature tsd-anchor-link" id="draw.draw-1">draw<span class="tsd-signature-symbol">(</span>device<span class="tsd-signature-symbol">: </span><a href="Device.html" class="tsd-signature-type" data-tsd-kind="Interface">Device</a>, vertexCount<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, instanceCount<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">number</span>, firstVertex<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">number</span>, firstInstance<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span><a href="#draw.draw-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Submits a draw call in the current render pass.</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5>device: <a href="Device.html" class="tsd-signature-type" data-tsd-kind="Interface">Device</a></h5>
+<div class="tsd-comment tsd-typography"><p>the GPU device</p>
+</div></li>
+<li>
+<h5>vertexCount: <span class="tsd-signature-type">number</span></h5>
+<div class="tsd-comment tsd-typography"><p>the number of vertices to draw</p>
+</div></li>
+<li>
+<h5><code class="tsd-tag ts-flagOptional">Optional</code> instanceCount: <span class="tsd-signature-type">number</span></h5>
+<div class="tsd-comment tsd-typography"><p>the number of instances to draw. Defaults to 1</p>
+</div></li>
+<li>
+<h5><code class="tsd-tag ts-flagOptional">Optional</code> firstVertex: <span class="tsd-signature-type">number</span></h5>
+<div class="tsd-comment tsd-typography"><p>the offset to the first vertex to draw. Defaults to 0</p>
+</div></li>
+<li>
+<h5><code class="tsd-tag ts-flagOptional">Optional</code> firstInstance: <span class="tsd-signature-type">number</span></h5>
+<div class="tsd-comment tsd-typography"><p>the offset to the first instance to draw. Defaults to 0</p>
+</div></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
+<ul>
+<li>Defined in <a href="https://github.com/andykswong/mugl/blob/97fef82/js/gpu/gpu.ts#L226">gpu/gpu.ts:226</a></li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface"><a id="drawIndexed" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>draw<wbr/>Indexed</span><a href="#drawIndexed" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
+<li class="tsd-signature tsd-anchor-link" id="drawIndexed.drawIndexed-1">draw<wbr/>Indexed<span class="tsd-signature-symbol">(</span>device<span class="tsd-signature-symbol">: </span><a href="Device.html" class="tsd-signature-type" data-tsd-kind="Interface">Device</a>, indexCount<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, instanceCount<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">number</span>, firstIndex<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">number</span>, firstInstance<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span><a href="#drawIndexed.drawIndexed-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Submits an indexed draw call in the current render pass.</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5>device: <a href="Device.html" class="tsd-signature-type" data-tsd-kind="Interface">Device</a></h5>
+<div class="tsd-comment tsd-typography"><p>the GPU device</p>
+</div></li>
+<li>
+<h5>indexCount: <span class="tsd-signature-type">number</span></h5>
+<div class="tsd-comment tsd-typography"><p>the number of vertices to draw</p>
+</div></li>
+<li>
+<h5><code class="tsd-tag ts-flagOptional">Optional</code> instanceCount: <span class="tsd-signature-type">number</span></h5>
+<div class="tsd-comment tsd-typography"><p>the number of instances to draw. Defaults to 1</p>
+</div></li>
+<li>
+<h5><code class="tsd-tag ts-flagOptional">Optional</code> firstIndex: <span class="tsd-signature-type">number</span></h5>
+<div class="tsd-comment tsd-typography"><p>the offset to the first vertex to draw. Defaults to 0</p>
+</div></li>
+<li>
+<h5><code class="tsd-tag ts-flagOptional">Optional</code> firstInstance: <span class="tsd-signature-type">number</span></h5>
+<div class="tsd-comment tsd-typography"><p>the offset to the first instance to draw. Defaults to 0</p>
+</div></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
+<ul>
+<li>Defined in <a href="https://github.com/andykswong/mugl/blob/97fef82/js/gpu/gpu.ts#L236">gpu/gpu.ts:236</a></li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface"><a id="getDeviceFeatures" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>get<wbr/>Device<wbr/>Features</span><a href="#getDeviceFeatures" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
+<li class="tsd-signature tsd-anchor-link" id="getDeviceFeatures.getDeviceFeatures-1">get<wbr/>Device<wbr/>Features<span class="tsd-signature-symbol">(</span>device<span class="tsd-signature-symbol">: </span><a href="Device.html" class="tsd-signature-type" data-tsd-kind="Interface">Device</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><a href="#getDeviceFeatures.getDeviceFeatures-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Gets the enabled features of the device.</p>
+
+<h3>Returns</h3><p>enabled features bitflag</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5>device: <a href="Device.html" class="tsd-signature-type" data-tsd-kind="Interface">Device</a></h5>
+<div class="tsd-comment tsd-typography"><p>the GPU device</p>
+</div></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4><aside class="tsd-sources">
+<ul>
+<li>Defined in <a href="https://github.com/andykswong/mugl/blob/97fef82/js/gpu/gpu.ts#L33">gpu/gpu.ts:33</a></li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface"><a id="isDeviceLost" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>is<wbr/>Device<wbr/>Lost</span><a href="#isDeviceLost" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
+<li class="tsd-signature tsd-anchor-link" id="isDeviceLost.isDeviceLost-1">is<wbr/>Device<wbr/>Lost<span class="tsd-signature-symbol">(</span>device<span class="tsd-signature-symbol">: </span><a href="Device.html" class="tsd-signature-type" data-tsd-kind="Interface">Device</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><a href="#isDeviceLost.isDeviceLost-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Returns if device context is lost.</p>
+
+<h3>Returns</h3><p>true if device context is lost</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5>device: <a href="Device.html" class="tsd-signature-type" data-tsd-kind="Interface">Device</a></h5>
+<div class="tsd-comment tsd-typography"><p>the GPU device</p>
+</div></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4><aside class="tsd-sources">
+<ul>
+<li>Defined in <a href="https://github.com/andykswong/mugl/blob/97fef82/js/gpu/gpu.ts#L26">gpu/gpu.ts:26</a></li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface"><a id="readBuffer" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>read<wbr/>Buffer</span><a href="#readBuffer" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
+<li class="tsd-signature tsd-anchor-link" id="readBuffer.readBuffer-1">read<wbr/>Buffer<span class="tsd-signature-symbol">(</span>device<span class="tsd-signature-symbol">: </span><a href="Device.html" class="tsd-signature-type" data-tsd-kind="Interface">Device</a>, buffer<span class="tsd-signature-symbol">: </span><a href="Buffer.html" class="tsd-signature-type" data-tsd-kind="Interface">Buffer</a>, out<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Uint8Array</span>, offset<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="Future.html" class="tsd-signature-type" data-tsd-kind="Interface">Future</a><a href="#readBuffer.readBuffer-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Reads data from a buffer.</p>
+
+<h3>Returns</h3><p>a future</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5>device: <a href="Device.html" class="tsd-signature-type" data-tsd-kind="Interface">Device</a></h5>
+<div class="tsd-comment tsd-typography"><p>the GPU device</p>
+</div></li>
+<li>
+<h5>buffer: <a href="Buffer.html" class="tsd-signature-type" data-tsd-kind="Interface">Buffer</a></h5>
+<div class="tsd-comment tsd-typography"><p>the GPU buffer to read from</p>
+</div></li>
+<li>
+<h5>out: <span class="tsd-signature-type">Uint8Array</span></h5>
+<div class="tsd-comment tsd-typography"><p>the output CPU buffer</p>
+</div></li>
+<li>
+<h5><code class="tsd-tag ts-flagOptional">Optional</code> offset: <span class="tsd-signature-type">number</span></h5>
+<div class="tsd-comment tsd-typography"><p>othe byte offset into GPU buffer to begin reading from. Defaults to 0</p>
+</div></li></ul></div>
+<h4 class="tsd-returns-title">Returns <a href="Future.html" class="tsd-signature-type" data-tsd-kind="Interface">Future</a></h4><aside class="tsd-sources">
+<ul>
+<li>Defined in <a href="https://github.com/andykswong/mugl/blob/97fef82/js/gpu/gpu.ts#L107">gpu/gpu.ts:107</a></li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface"><a id="resetDevice" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>reset<wbr/>Device</span><a href="#resetDevice" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
+<li class="tsd-signature tsd-anchor-link" id="resetDevice.resetDevice-1">reset<wbr/>Device<span class="tsd-signature-symbol">(</span>device<span class="tsd-signature-symbol">: </span><a href="Device.html" class="tsd-signature-type" data-tsd-kind="Interface">Device</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span><a href="#resetDevice.resetDevice-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Resets the device state.</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5>device: <a href="Device.html" class="tsd-signature-type" data-tsd-kind="Interface">Device</a></h5>
+<div class="tsd-comment tsd-typography"><p>the GPU device</p>
+</div></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
+<ul>
+<li>Defined in <a href="https://github.com/andykswong/mugl/blob/97fef82/js/gpu/gpu.ts#L19">gpu/gpu.ts:19</a></li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface"><a id="setBindGroup" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>set<wbr/>Bind<wbr/>Group</span><a href="#setBindGroup" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
+<li class="tsd-signature tsd-anchor-link" id="setBindGroup.setBindGroup-1">set<wbr/>Bind<wbr/>Group<span class="tsd-signature-symbol">(</span>device<span class="tsd-signature-symbol">: </span><a href="Device.html" class="tsd-signature-type" data-tsd-kind="Interface">Device</a>, slot<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, bindGroup<span class="tsd-signature-symbol">: </span><a href="BindGroup.html" class="tsd-signature-type" data-tsd-kind="Interface">BindGroup</a>, offsets<span class="tsd-signature-symbol">?: </span><a href="../types/UIntArray.html" class="tsd-signature-type" data-tsd-kind="Type alias">UIntArray</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span><a href="#setBindGroup.setBindGroup-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Binds a bind group to the current render pass.</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5>device: <a href="Device.html" class="tsd-signature-type" data-tsd-kind="Interface">Device</a></h5>
+<div class="tsd-comment tsd-typography"><p>the GPU device</p>
+</div></li>
+<li>
+<h5>slot: <span class="tsd-signature-type">number</span></h5>
+<div class="tsd-comment tsd-typography"><p>the bind group slot to bind to</p>
+</div></li>
+<li>
+<h5>bindGroup: <a href="BindGroup.html" class="tsd-signature-type" data-tsd-kind="Interface">BindGroup</a></h5>
+<div class="tsd-comment tsd-typography"><p>the bind group to use</p>
+</div></li>
+<li>
+<h5><code class="tsd-tag ts-flagOptional">Optional</code> offsets: <a href="../types/UIntArray.html" class="tsd-signature-type" data-tsd-kind="Type alias">UIntArray</a></h5>
+<div class="tsd-comment tsd-typography"><p>the dynamic offsets for dynamic buffers in this bind group</p>
+</div></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
+<ul>
+<li>Defined in <a href="https://github.com/andykswong/mugl/blob/97fef82/js/gpu/gpu.ts#L216">gpu/gpu.ts:216</a></li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface"><a id="setBlendConst" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>set<wbr/>Blend<wbr/>Const</span><a href="#setBlendConst" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
+<li class="tsd-signature tsd-anchor-link" id="setBlendConst.setBlendConst-1">set<wbr/>Blend<wbr/>Const<span class="tsd-signature-symbol">(</span>device<span class="tsd-signature-symbol">: </span><a href="Device.html" class="tsd-signature-type" data-tsd-kind="Interface">Device</a>, color<span class="tsd-signature-symbol">: </span><a href="../types/Color.html" class="tsd-signature-type" data-tsd-kind="Type alias">Color</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span><a href="#setBlendConst.setBlendConst-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Sets the blend-constant color for the current render pass.</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5>device: <a href="Device.html" class="tsd-signature-type" data-tsd-kind="Interface">Device</a></h5>
+<div class="tsd-comment tsd-typography"><p>the GPU device</p>
+</div></li>
+<li>
+<h5>color: <a href="../types/Color.html" class="tsd-signature-type" data-tsd-kind="Type alias">Color</a></h5>
+<div class="tsd-comment tsd-typography"><p>the blend color</p>
+</div></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
+<ul>
+<li>Defined in <a href="https://github.com/andykswong/mugl/blob/97fef82/js/gpu/gpu.ts#L265">gpu/gpu.ts:265</a></li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface"><a id="setIndex" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>set<wbr/>Index</span><a href="#setIndex" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
+<li class="tsd-signature tsd-anchor-link" id="setIndex.setIndex-1">set<wbr/>Index<span class="tsd-signature-symbol">(</span>device<span class="tsd-signature-symbol">: </span><a href="Device.html" class="tsd-signature-type" data-tsd-kind="Interface">Device</a>, buffer<span class="tsd-signature-symbol">: </span><a href="Buffer.html" class="tsd-signature-type" data-tsd-kind="Interface">Buffer</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span><a href="#setIndex.setIndex-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Binds an index buffer to the current render pass.</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5>device: <a href="Device.html" class="tsd-signature-type" data-tsd-kind="Interface">Device</a></h5>
+<div class="tsd-comment tsd-typography"><p>the GPU device</p>
+</div></li>
+<li>
+<h5>buffer: <a href="Buffer.html" class="tsd-signature-type" data-tsd-kind="Interface">Buffer</a></h5>
+<div class="tsd-comment tsd-typography"><p>the buffer to bind</p>
+</div></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
+<ul>
+<li>Defined in <a href="https://github.com/andykswong/mugl/blob/97fef82/js/gpu/gpu.ts#L199">gpu/gpu.ts:199</a></li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface"><a id="setRenderPipeline" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>set<wbr/>Render<wbr/>Pipeline</span><a href="#setRenderPipeline" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
+<li class="tsd-signature tsd-anchor-link" id="setRenderPipeline.setRenderPipeline-1">set<wbr/>Render<wbr/>Pipeline<span class="tsd-signature-symbol">(</span>device<span class="tsd-signature-symbol">: </span><a href="Device.html" class="tsd-signature-type" data-tsd-kind="Interface">Device</a>, pipeline<span class="tsd-signature-symbol">: </span><a href="RenderPipeline.html" class="tsd-signature-type" data-tsd-kind="Interface">RenderPipeline</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span><a href="#setRenderPipeline.setRenderPipeline-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Binds a RenderPipeline to the current render pass.</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5>device: <a href="Device.html" class="tsd-signature-type" data-tsd-kind="Interface">Device</a></h5>
+<div class="tsd-comment tsd-typography"><p>the GPU device</p>
+</div></li>
+<li>
+<h5>pipeline: <a href="RenderPipeline.html" class="tsd-signature-type" data-tsd-kind="Interface">RenderPipeline</a></h5>
+<div class="tsd-comment tsd-typography"><p>the pipeline to bind</p>
+</div></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
+<ul>
+<li>Defined in <a href="https://github.com/andykswong/mugl/blob/97fef82/js/gpu/gpu.ts#L192">gpu/gpu.ts:192</a></li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface"><a id="setScissorRect" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>set<wbr/>Scissor<wbr/>Rect</span><a href="#setScissorRect" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
+<li class="tsd-signature tsd-anchor-link" id="setScissorRect.setScissorRect-1">set<wbr/>Scissor<wbr/>Rect<span class="tsd-signature-symbol">(</span>device<span class="tsd-signature-symbol">: </span><a href="Device.html" class="tsd-signature-type" data-tsd-kind="Interface">Device</a>, x<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, y<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, width<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, height<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span><a href="#setScissorRect.setScissorRect-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Sets the scissor rectangle for the current render pass.</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5>device: <a href="Device.html" class="tsd-signature-type" data-tsd-kind="Interface">Device</a></h5>
+<div class="tsd-comment tsd-typography"><p>the GPU device</p>
+</div></li>
+<li>
+<h5>x: <span class="tsd-signature-type">number</span></h5>
+<div class="tsd-comment tsd-typography"><p>x offset</p>
+</div></li>
+<li>
+<h5>y: <span class="tsd-signature-type">number</span></h5>
+<div class="tsd-comment tsd-typography"><p>y offset</p>
+</div></li>
+<li>
+<h5>width: <span class="tsd-signature-type">number</span></h5>
+<div class="tsd-comment tsd-typography"><p>width</p>
+</div></li>
+<li>
+<h5>height: <span class="tsd-signature-type">number</span></h5>
+<div class="tsd-comment tsd-typography"><p>height</p>
+</div></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
+<ul>
+<li>Defined in <a href="https://github.com/andykswong/mugl/blob/97fef82/js/gpu/gpu.ts#L258">gpu/gpu.ts:258</a></li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface"><a id="setStencilRef" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>set<wbr/>Stencil<wbr/>Ref</span><a href="#setStencilRef" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
+<li class="tsd-signature tsd-anchor-link" id="setStencilRef.setStencilRef-1">set<wbr/>Stencil<wbr/>Ref<span class="tsd-signature-symbol">(</span>device<span class="tsd-signature-symbol">: </span><a href="Device.html" class="tsd-signature-type" data-tsd-kind="Interface">Device</a>, ref<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span><a href="#setStencilRef.setStencilRef-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Sets the stencil reference value for the current render pass.</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5>device: <a href="Device.html" class="tsd-signature-type" data-tsd-kind="Interface">Device</a></h5>
+<div class="tsd-comment tsd-typography"><p>the GPU device</p>
+</div></li>
+<li>
+<h5>ref: <span class="tsd-signature-type">number</span></h5>
+<div class="tsd-comment tsd-typography"><p>the stencil reference value.</p>
+</div></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
+<ul>
+<li>Defined in <a href="https://github.com/andykswong/mugl/blob/97fef82/js/gpu/gpu.ts#L272">gpu/gpu.ts:272</a></li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface"><a id="setVertex" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>set<wbr/>Vertex</span><a href="#setVertex" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
+<li class="tsd-signature tsd-anchor-link" id="setVertex.setVertex-1">set<wbr/>Vertex<span class="tsd-signature-symbol">(</span>device<span class="tsd-signature-symbol">: </span><a href="Device.html" class="tsd-signature-type" data-tsd-kind="Interface">Device</a>, slot<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, buffer<span class="tsd-signature-symbol">: </span><a href="Buffer.html" class="tsd-signature-type" data-tsd-kind="Interface">Buffer</a>, offset<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span><a href="#setVertex.setVertex-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Binds a vertex buffer to a slot in the current render pass.</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5>device: <a href="Device.html" class="tsd-signature-type" data-tsd-kind="Interface">Device</a></h5>
+<div class="tsd-comment tsd-typography"><p>the GPU device</p>
+</div></li>
+<li>
+<h5>slot: <span class="tsd-signature-type">number</span></h5>
+<div class="tsd-comment tsd-typography"><p>the vertex slot to bind to</p>
+</div></li>
+<li>
+<h5>buffer: <a href="Buffer.html" class="tsd-signature-type" data-tsd-kind="Interface">Buffer</a></h5>
+<div class="tsd-comment tsd-typography"><p>the buffer to bind</p>
+</div></li>
+<li>
+<h5><code class="tsd-tag ts-flagOptional">Optional</code> offset: <span class="tsd-signature-type">number</span></h5></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
+<ul>
+<li>Defined in <a href="https://github.com/andykswong/mugl/blob/97fef82/js/gpu/gpu.ts#L207">gpu/gpu.ts:207</a></li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface"><a id="setViewport" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>set<wbr/>Viewport</span><a href="#setViewport" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
+<li class="tsd-signature tsd-anchor-link" id="setViewport.setViewport-1">set<wbr/>Viewport<span class="tsd-signature-symbol">(</span>device<span class="tsd-signature-symbol">: </span><a href="Device.html" class="tsd-signature-type" data-tsd-kind="Interface">Device</a>, x<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, y<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, width<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, height<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, minDepth<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">number</span>, maxDepth<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span><a href="#setViewport.setViewport-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Sets the 3D viewport area for the current render pass.</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5>device: <a href="Device.html" class="tsd-signature-type" data-tsd-kind="Interface">Device</a></h5>
+<div class="tsd-comment tsd-typography"><p>the GPU device</p>
+</div></li>
+<li>
+<h5>x: <span class="tsd-signature-type">number</span></h5>
+<div class="tsd-comment tsd-typography"><p>x offset</p>
+</div></li>
+<li>
+<h5>y: <span class="tsd-signature-type">number</span></h5>
+<div class="tsd-comment tsd-typography"><p>y offset</p>
+</div></li>
+<li>
+<h5>width: <span class="tsd-signature-type">number</span></h5>
+<div class="tsd-comment tsd-typography"><p>width</p>
+</div></li>
+<li>
+<h5>height: <span class="tsd-signature-type">number</span></h5>
+<div class="tsd-comment tsd-typography"><p>height</p>
+</div></li>
+<li>
+<h5><code class="tsd-tag ts-flagOptional">Optional</code> minDepth: <span class="tsd-signature-type">number</span></h5>
+<div class="tsd-comment tsd-typography"><p>min depth. Defaults to 0</p>
+</div></li>
+<li>
+<h5><code class="tsd-tag ts-flagOptional">Optional</code> maxDepth: <span class="tsd-signature-type">number</span></h5>
+<div class="tsd-comment tsd-typography"><p>max depth. Defaults to 1</p>
+</div></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
+<ul>
+<li>Defined in <a href="https://github.com/andykswong/mugl/blob/97fef82/js/gpu/gpu.ts#L248">gpu/gpu.ts:248</a></li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface"><a id="submitRenderPass" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>submit<wbr/>Render<wbr/>Pass</span><a href="#submitRenderPass" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
+<li class="tsd-signature tsd-anchor-link" id="submitRenderPass.submitRenderPass-1">submit<wbr/>Render<wbr/>Pass<span class="tsd-signature-symbol">(</span>device<span class="tsd-signature-symbol">: </span><a href="Device.html" class="tsd-signature-type" data-tsd-kind="Interface">Device</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span><a href="#submitRenderPass.submitRenderPass-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Submits the current render pass.</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5>device: <a href="Device.html" class="tsd-signature-type" data-tsd-kind="Interface">Device</a></h5>
+<div class="tsd-comment tsd-typography"><p>the GPU device</p>
+</div></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
+<ul>
+<li>Defined in <a href="https://github.com/andykswong/mugl/blob/97fef82/js/gpu/gpu.ts#L185">gpu/gpu.ts:185</a></li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface"><a id="writeBuffer" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>write<wbr/>Buffer</span><a href="#writeBuffer" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
+<li class="tsd-signature tsd-anchor-link" id="writeBuffer.writeBuffer-1">write<wbr/>Buffer<span class="tsd-signature-symbol">(</span>device<span class="tsd-signature-symbol">: </span><a href="Device.html" class="tsd-signature-type" data-tsd-kind="Interface">Device</a>, buffer<span class="tsd-signature-symbol">: </span><a href="Buffer.html" class="tsd-signature-type" data-tsd-kind="Interface">Buffer</a>, data<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ArrayBufferView</span>, offset<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span><a href="#writeBuffer.writeBuffer-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Writes data to a buffer.</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5>device: <a href="Device.html" class="tsd-signature-type" data-tsd-kind="Interface">Device</a></h5>
+<div class="tsd-comment tsd-typography"><p>the GPU device</p>
+</div></li>
+<li>
+<h5>buffer: <a href="Buffer.html" class="tsd-signature-type" data-tsd-kind="Interface">Buffer</a></h5>
+<div class="tsd-comment tsd-typography"><p>the buffer to write to</p>
+</div></li>
+<li>
+<h5>data: <span class="tsd-signature-type">ArrayBufferView</span></h5>
+<div class="tsd-comment tsd-typography"><p>the buffer data</p>
+</div></li>
+<li>
+<h5><code class="tsd-tag ts-flagOptional">Optional</code> offset: <span class="tsd-signature-type">number</span></h5>
+<div class="tsd-comment tsd-typography"><p>the byte offset into GPU buffer to begin writing to. Defaults to 0</p>
+</div></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
+<ul>
+<li>Defined in <a href="https://github.com/andykswong/mugl/blob/97fef82/js/gpu/gpu.ts#L116">gpu/gpu.ts:116</a></li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface"><a id="writeTexture" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>write<wbr/>Texture</span><a href="#writeTexture" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
+<li class="tsd-signature tsd-anchor-link" id="writeTexture.writeTexture-1">write<wbr/>Texture<span class="tsd-signature-symbol">(</span>device<span class="tsd-signature-symbol">: </span><a href="Device.html" class="tsd-signature-type" data-tsd-kind="Interface">Device</a>, texture<span class="tsd-signature-symbol">: </span><a href="ImageCopyTexture.html" class="tsd-signature-type" data-tsd-kind="Interface">ImageCopyTexture</a>, data<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ArrayBufferView</span>, layout<span class="tsd-signature-symbol">: </span><a href="ImageDataLayout.html" class="tsd-signature-type" data-tsd-kind="Interface">ImageDataLayout</a>, size<span class="tsd-signature-symbol">?: </span><a href="../types/Extent3D.html" class="tsd-signature-type" data-tsd-kind="Type alias">Extent3D</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span><a href="#writeTexture.writeTexture-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Writes subregion of data array to a texture.</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5>device: <a href="Device.html" class="tsd-signature-type" data-tsd-kind="Interface">Device</a></h5>
+<div class="tsd-comment tsd-typography"><p>the GPU device</p>
+</div></li>
+<li>
+<h5>texture: <a href="ImageCopyTexture.html" class="tsd-signature-type" data-tsd-kind="Interface">ImageCopyTexture</a></h5>
+<div class="tsd-comment tsd-typography"><p>the texture subregion to write to.</p>
+</div></li>
+<li>
+<h5>data: <span class="tsd-signature-type">ArrayBufferView</span></h5>
+<div class="tsd-comment tsd-typography"><p>the texture data</p>
+</div></li>
+<li>
+<h5>layout: <a href="ImageDataLayout.html" class="tsd-signature-type" data-tsd-kind="Interface">ImageDataLayout</a></h5>
+<div class="tsd-comment tsd-typography"><p>the data layout</p>
+</div></li>
+<li>
+<h5><code class="tsd-tag ts-flagOptional">Optional</code> size: <a href="../types/Extent3D.html" class="tsd-signature-type" data-tsd-kind="Type alias">Extent3D</a></h5>
+<div class="tsd-comment tsd-typography"><p>the size of the data subregion to write</p>
+</div></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
+<ul>
+<li>Defined in <a href="https://github.com/andykswong/mugl/blob/97fef82/js/gpu/gpu.ts#L137">gpu/gpu.ts:137</a></li></ul></aside></li></ul></section></section></div>
+<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+<div class="tsd-navigation settings">
+<details class="tsd-index-accordion"><summary class="tsd-accordion-summary">
+<h3><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4.93896 8.531L12 15.591L19.061 8.531L16.939 6.409L12 11.349L7.06098 6.409L4.93896 8.531Z" fill="var(--color-text)"></path></svg> Settings</h3></summary>
+<div class="tsd-accordion-details">
+<div class="tsd-filter-visibility">
+<h4 class="uppercase">Member Visibility</h4><form>
+<ul id="tsd-filter-options">
+<li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-protected" name="protected"/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>Protected</span></label></li>
+<li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-private" name="private"/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>Private</span></label></li>
+<li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-inherited" name="inherited" checked/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>Inherited</span></label></li>
+<li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-external" name="external"/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>External</span></label></li></ul></form></div>
+<div class="tsd-theme-toggle">
+<h4 class="uppercase">Theme</h4><select id="theme"><option value="os">OS</option><option value="light">Light</option><option value="dark">Dark</option></select></div></div></details></div>
+<nav class="tsd-navigation primary">
+<details class="tsd-index-accordion" open><summary class="tsd-accordion-summary">
+<h3><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4.93896 8.531L12 15.591L19.061 8.531L16.939 6.409L12 11.349L7.06098 6.409L4.93896 8.531Z" fill="var(--color-text)"></path></svg> Modules</h3></summary>
+<div class="tsd-accordion-details">
+<ul>
+<li><a href="../modules.html">mugl</a>
+<ul>
+<li class="tsd-kind-namespace"><a href="../modules/WebGL.html">WebGL</a></li></ul></li></ul></div></details></nav>
+<nav class="tsd-navigation secondary menu-sticky">
+<ul>
+<li class="current tsd-kind-interface"><a href="GPU.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><rect fill="var(--color-icon-background)" stroke="var(--color-ts-interface)" stroke-width="1.5" x="1" y="1" width="22" height="22" rx="6" id="icon-256-path"></rect><path d="M9.51 16V15.016H11.298V8.224H9.51V7.24H14.19V8.224H12.402V15.016H14.19V16H9.51Z" fill="var(--color-text)" id="icon-256-text"></path></svg><span>GPU</span></a>
+<ul>
+<li class="tsd-kind-method tsd-parent-kind-interface"><a href="GPU.html#beginDefaultPass" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>begin<wbr/>Default<wbr/>Pass</a></li>
+<li class="tsd-kind-method tsd-parent-kind-interface"><a href="GPU.html#beginRenderPass" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>begin<wbr/>Render<wbr/>Pass</a></li>
+<li class="tsd-kind-method tsd-parent-kind-interface"><a href="GPU.html#copyBuffer" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>copy<wbr/>Buffer</a></li>
+<li class="tsd-kind-method tsd-parent-kind-interface"><a href="GPU.html#copyExternalImageToTexture" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>copy<wbr/>External<wbr/>Image<wbr/>To<wbr/>Texture</a></li>
+<li class="tsd-kind-method tsd-parent-kind-interface"><a href="GPU.html#copyTexture" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>copy<wbr/>Texture</a></li>
+<li class="tsd-kind-method tsd-parent-kind-interface"><a href="GPU.html#copyTextureToBuffer" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>copy<wbr/>Texture<wbr/>To<wbr/>Buffer</a></li>
+<li class="tsd-kind-method tsd-parent-kind-interface"><a href="GPU.html#createBindGroup" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>create<wbr/>Bind<wbr/>Group</a></li>
+<li class="tsd-kind-method tsd-parent-kind-interface"><a href="GPU.html#createBindGroupLayout" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>create<wbr/>Bind<wbr/>Group<wbr/>Layout</a></li>
+<li class="tsd-kind-method tsd-parent-kind-interface"><a href="GPU.html#createBuffer" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>create<wbr/>Buffer</a></li>
+<li class="tsd-kind-method tsd-parent-kind-interface"><a href="GPU.html#createRenderPass" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>create<wbr/>Render<wbr/>Pass</a></li>
+<li class="tsd-kind-method tsd-parent-kind-interface"><a href="GPU.html#createRenderPipeline" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>create<wbr/>Render<wbr/>Pipeline</a></li>
+<li class="tsd-kind-method tsd-parent-kind-interface"><a href="GPU.html#createSampler" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>create<wbr/>Sampler</a></li>
+<li class="tsd-kind-method tsd-parent-kind-interface"><a href="GPU.html#createShader" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>create<wbr/>Shader</a></li>
+<li class="tsd-kind-method tsd-parent-kind-interface"><a href="GPU.html#createTexture" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>create<wbr/>Texture</a></li>
+<li class="tsd-kind-method tsd-parent-kind-interface"><a href="GPU.html#draw" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>draw</a></li>
+<li class="tsd-kind-method tsd-parent-kind-interface"><a href="GPU.html#drawIndexed" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>draw<wbr/>Indexed</a></li>
+<li class="tsd-kind-method tsd-parent-kind-interface"><a href="GPU.html#getDeviceFeatures" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>get<wbr/>Device<wbr/>Features</a></li>
+<li class="tsd-kind-method tsd-parent-kind-interface"><a href="GPU.html#isDeviceLost" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>is<wbr/>Device<wbr/>Lost</a></li>
+<li class="tsd-kind-method tsd-parent-kind-interface"><a href="GPU.html#readBuffer" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>read<wbr/>Buffer</a></li>
+<li class="tsd-kind-method tsd-parent-kind-interface"><a href="GPU.html#resetDevice" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>reset<wbr/>Device</a></li>
+<li class="tsd-kind-method tsd-parent-kind-interface"><a href="GPU.html#setBindGroup" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>set<wbr/>Bind<wbr/>Group</a></li>
+<li class="tsd-kind-method tsd-parent-kind-interface"><a href="GPU.html#setBlendConst" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>set<wbr/>Blend<wbr/>Const</a></li>
+<li class="tsd-kind-method tsd-parent-kind-interface"><a href="GPU.html#setIndex" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>set<wbr/>Index</a></li>
+<li class="tsd-kind-method tsd-parent-kind-interface"><a href="GPU.html#setRenderPipeline" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>set<wbr/>Render<wbr/>Pipeline</a></li>
+<li class="tsd-kind-method tsd-parent-kind-interface"><a href="GPU.html#setScissorRect" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>set<wbr/>Scissor<wbr/>Rect</a></li>
+<li class="tsd-kind-method tsd-parent-kind-interface"><a href="GPU.html#setStencilRef" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>set<wbr/>Stencil<wbr/>Ref</a></li>
+<li class="tsd-kind-method tsd-parent-kind-interface"><a href="GPU.html#setVertex" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>set<wbr/>Vertex</a></li>
+<li class="tsd-kind-method tsd-parent-kind-interface"><a href="GPU.html#setViewport" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>set<wbr/>Viewport</a></li>
+<li class="tsd-kind-method tsd-parent-kind-interface"><a href="GPU.html#submitRenderPass" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>submit<wbr/>Render<wbr/>Pass</a></li>
+<li class="tsd-kind-method tsd-parent-kind-interface"><a href="GPU.html#writeBuffer" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>write<wbr/>Buffer</a></li>
+<li class="tsd-kind-method tsd-parent-kind-interface"><a href="GPU.html#writeTexture" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>write<wbr/>Texture</a></li></ul></li></ul></nav></div></div>
+<div class="container tsd-generator">
+<p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p></div>
+<div class="overlay"></div><script src="../assets/main.js"></script></body></html>
