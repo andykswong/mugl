@@ -1,8 +1,8 @@
 import {
   BindGroup, BindingType, Buffer, BufferUsage, Device, Float, RenderPipeline, ShaderStage, VertexFormat,
-  vertexBufferLayouts
-} from 'mugl/assembly';
-import { API, BaseExample, createBuffer, createFloat32Array, createUint16Array } from '../common';
+  vertexBufferLayouts, WebGL
+} from '../interop/mugl';
+import { BaseExample, createBuffer, createFloat32Array, createUint16Array } from '../common';
 
 const vert = `#version 300 es
 layout (location=0) in vec2 position;
@@ -74,8 +74,8 @@ export class InstancingExample extends BaseExample {
   }
 
   init(): void {
-    const vs = API.createShader(this.device, { code: vert, usage: ShaderStage.Vertex });
-    const fs = API.createShader(this.device, { code: frag, usage: ShaderStage.Fragment });
+    const vs = WebGL.createShader(this.device, { code: vert, usage: ShaderStage.Vertex });
+    const fs = WebGL.createShader(this.device, { code: frag, usage: ShaderStage.Fragment });
 
 
     this.indexBuffer = createBuffer(this.device, indices, BufferUsage.Index);
@@ -84,16 +84,16 @@ export class InstancingExample extends BaseExample {
     this.angle = createBuffer(this.device, angle, BufferUsage.Vertex | BufferUsage.Stream);
     this.ambient = createBuffer(this.device, this.ambientData, BufferUsage.Uniform | BufferUsage.Stream);
 
-    const bindGroupLayout = API.createBindGroupLayout(this.device, {
+    const bindGroupLayout = WebGL.createBindGroupLayout(this.device, {
       entries: [{ label: 'Data', type: BindingType.Buffer }]
     });
 
-    this.bindGroup = API.createBindGroup(this.device, {
+    this.bindGroup = WebGL.createBindGroup(this.device, {
       layout: bindGroupLayout,
       entries: [{ buffer: this.ambient }]
     });
 
-    this.pipeline = API.createRenderPipeline(this.device, {
+    this.pipeline = WebGL.createRenderPipeline(this.device, {
       vertex: vs,
       fragment: fs,
       buffers: vertexBufferLayouts([
@@ -116,21 +116,21 @@ export class InstancingExample extends BaseExample {
     }
     this.t = t;
 
-    API.writeBuffer(this.device, this.angle!, angle);
+    WebGL.writeBuffer(this.device, this.angle!, angle);
 
     const a = Math.sin(t) / 2 as Float;
     this.ambientData[0] = this.ambientData[1] = this.ambientData[2] = a;
-    API.writeBuffer(this.device, this.ambient!, this.ambientData);
+    WebGL.writeBuffer(this.device, this.ambient!, this.ambientData);
 
-    API.beginDefaultPass(this.device, { clearColor: [0, 0, 0, 1] });
-    API.setRenderPipeline(this.device, this.pipeline!);
-    API.setIndex(this.device, this.indexBuffer!);
-    API.setVertex(this.device, 0, this.position!);
-    API.setVertex(this.device, 1, this.offsetColor!);
-    API.setVertex(this.device, 2, this.angle!);
-    API.setBindGroup(this.device, 0, this.bindGroup!);
-    API.drawIndexed(this.device, 3, N * N);
-    API.submitRenderPass(this.device);
+    WebGL.beginDefaultPass(this.device, { clearColor: [0, 0, 0, 1] });
+    WebGL.setRenderPipeline(this.device, this.pipeline!);
+    WebGL.setIndex(this.device, this.indexBuffer!);
+    WebGL.setVertex(this.device, 0, this.position!);
+    WebGL.setVertex(this.device, 1, this.offsetColor!);
+    WebGL.setVertex(this.device, 2, this.angle!);
+    WebGL.setBindGroup(this.device, 0, this.bindGroup!);
+    WebGL.drawIndexed(this.device, 3, N * N);
+    WebGL.submitRenderPass(this.device);
 
     return true;
   }

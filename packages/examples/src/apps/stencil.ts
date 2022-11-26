@@ -2,9 +2,9 @@ import { lookAt, mat, mat4, perspective, scale } from 'munum/assembly';
 import {
   BindGroup, BindingType, Buffer, BufferUsage, CompareFunction, CullMode, Device,
   Float, RenderPipeline, RenderPipelineDescriptor, Sampler, ShaderStage, StencilOperation,
-  Texture, vertexBufferLayouts, VertexFormat
-} from 'mugl/assembly';
-import { API, BaseExample, createBuffer, Cube, getImageById, Model, TEX_SIZE, toIndices, toVertices } from '../common';
+  Texture, vertexBufferLayouts, VertexFormat, WebGL, getImage
+} from '../interop/mugl';
+import { BaseExample, createBuffer, Cube, Model, TEX_SIZE, toIndices, toVertices } from '../common';
 
 const cubeVertices = toVertices({
   positions: Cube.positions,
@@ -89,9 +89,9 @@ export class StencilExample extends BaseExample {
 
   init(): void {
     // Create shaders
-    const vs = API.createShader(this.device, { code: vert, usage: ShaderStage.Vertex });
-    const cubeFs = API.createShader(this.device, { code: fragCube, usage: ShaderStage.Fragment });
-    const outlineFs = API.createShader(this.device, { code: fragColor, usage: ShaderStage.Fragment });
+    const vs = WebGL.createShader(this.device, { code: vert, usage: ShaderStage.Vertex });
+    const cubeFs = WebGL.createShader(this.device, { code: fragCube, usage: ShaderStage.Fragment });
+    const outlineFs = WebGL.createShader(this.device, { code: fragColor, usage: ShaderStage.Fragment });
 
     // Create buffers
     this.vertBuffer = createBuffer(this.device, cubeVertices);
@@ -99,31 +99,31 @@ export class StencilExample extends BaseExample {
     this.dataBuffer = createBuffer(this.device, this.data, BufferUsage.Uniform | BufferUsage.Stream);
 
     // Create cube texture
-    this.texture = API.createTexture(this.device, {
+    this.texture = WebGL.createTexture(this.device, {
       size: [texSize, texSize, 1]
     });
-    const image = getImageById('airplane');
+    const image = getImage('airplane');
     if (image) {
-      API.copyExternalImageToTexture(this.device, { src: image }, { texture: this.texture! });
+      WebGL.copyExternalImageToTexture(this.device, { src: image }, { texture: this.texture! });
     }
-    this.sampler = API.createSampler(this.device, {});
+    this.sampler = WebGL.createSampler(this.device, {});
 
-    const textureLayout = API.createBindGroupLayout(this.device, {
+    const textureLayout = WebGL.createBindGroupLayout(this.device, {
       entries: [
         { binding: 0, label: 'tex', type: BindingType.Texture },
         { binding: 1, label: 'tex', type: BindingType.Sampler },
       ]
     });
-    const dataLayout = API.createBindGroupLayout(this.device, {
+    const dataLayout = WebGL.createBindGroupLayout(this.device, {
       entries: [{ label: 'Data', type: BindingType.Buffer, bufferDynamicOffset: true }]
     });
 
-    this.textureBindGroup = API.createBindGroup(this.device, {
+    this.textureBindGroup = WebGL.createBindGroup(this.device, {
       layout: textureLayout,
       entries: [{ binding: 0, texture: this.texture }, { binding: 1, sampler: this.sampler }]
     });
 
-    this.dataBindGroup = API.createBindGroup(this.device, {
+    this.dataBindGroup = WebGL.createBindGroup(this.device, {
       layout: dataLayout,
       entries: [{ buffer: this.dataBuffer, bufferSize: dataBufferByteSize }]
     });
@@ -151,9 +151,9 @@ export class StencilExample extends BaseExample {
         cullMode: CullMode.Back
       }
     };
-    this.cubePipeline = API.createRenderPipeline(this.device, cubePipelineDesc);
+    this.cubePipeline = WebGL.createRenderPipeline(this.device, cubePipelineDesc);
 
-    this.cubeOutlinePipeline = API.createRenderPipeline(this.device, {
+    this.cubeOutlinePipeline = WebGL.createRenderPipeline(this.device, {
       vertex: vs,
       fragment: outlineFs,
       buffers: cubePipelineDesc.buffers,
@@ -181,13 +181,13 @@ export class StencilExample extends BaseExample {
   render(t: Float): boolean {
     // Set uniforms
     {
-      const proj =  perspective((this.width as Float) / (this.height as Float), Math.PI / 4 as Float, 0.01, 100);
+      const proj = perspective((this.width as Float) / (this.height as Float), Math.PI / 4 as Float, 0.01, 100);
       const view = lookAt([10 * Math.cos(t) as Float, 5 * Math.sin(t) as Float, 10 * Math.sin(t) as Float], [0, 0, 0]);
       const vp = mat4.mul(proj, view);
-    
+
       let mvp = vp; // Cube at (0, 0, 0)
       mat.copy(mvp, this.data, 0, 0, 16);
-    
+
       mvp = mat4.mul(vp, scale([1.1, 1.1, 1.1])); // Scale up for outline
       mat.copy(mvp, this.data, 0, dataBufferSize, 16);
       mat.copy([0.1 as Float, 0.3, 0.2, 1.0], this.data, 0, dataBufferSize + 16, 4); // Set outline color
@@ -195,36 +195,36 @@ export class StencilExample extends BaseExample {
       mvp = mat4.mul(vp, scale([10, 10, 10])); // Scale up even more for skybox
       mat.copy(mvp, this.data, 0, dataBufferSize * 2, 16);
     }
-    API.writeBuffer(this.device, this.dataBuffer!, this.data);
+    WebGL.writeBuffer(this.device, this.dataBuffer!, this.data);
 
-    API.beginDefaultPass(this.device, {
+    WebGL.beginDefaultPass(this.device, {
       clearDepth: 1,
       clearStencil: 0
     });
 
     // Draw cube
-    API.setRenderPipeline(this.device, this.cubePipeline!);
-    API.setIndex(this.device, this.indexBuffer!);
-    API.setVertex(this.device, 0, this.vertBuffer!);
-    API.setBindGroup(this.device, 0, this.textureBindGroup!);
-    API.setBindGroup(this.device, 1, this.dataBindGroup!, [0]);
-    API.setStencilRef(this.device, 1);
-    API.drawIndexed(this.device, indexCount);
+    WebGL.setRenderPipeline(this.device, this.cubePipeline!);
+    WebGL.setIndex(this.device, this.indexBuffer!);
+    WebGL.setVertex(this.device, 0, this.vertBuffer!);
+    WebGL.setBindGroup(this.device, 0, this.textureBindGroup!);
+    WebGL.setBindGroup(this.device, 1, this.dataBindGroup!, [0]);
+    WebGL.setStencilRef(this.device, 1);
+    WebGL.drawIndexed(this.device, indexCount);
 
     // Draw skybox, reusing the same pipeline and buffers
-    API.setBindGroup(this.device, 1, this.dataBindGroup!, [dataBufferByteSize * 2]);
-    API.setStencilRef(this.device, 0); // Use a different stencil value so that the outline can be drawn on top of it
-    API.drawIndexed(this.device, indexCount, 1, indexCount); // Use the reversed indices
+    WebGL.setBindGroup(this.device, 1, this.dataBindGroup!, [dataBufferByteSize * 2]);
+    WebGL.setStencilRef(this.device, 0); // Use a different stencil value so that the outline can be drawn on top of it
+    WebGL.drawIndexed(this.device, indexCount, 1, indexCount); // Use the reversed indices
 
     // Draw outline
-    API.setRenderPipeline(this.device, this.cubeOutlinePipeline!);
-    API.setIndex(this.device, this.indexBuffer!);
-    API.setVertex(this.device, 0, this.vertBuffer!);
-    API.setBindGroup(this.device, 0, this.dataBindGroup!, [dataBufferByteSize]);
-    API.setStencilRef(this.device, 1);
-    API.drawIndexed(this.device, indexCount);
+    WebGL.setRenderPipeline(this.device, this.cubeOutlinePipeline!);
+    WebGL.setIndex(this.device, this.indexBuffer!);
+    WebGL.setVertex(this.device, 0, this.vertBuffer!);
+    WebGL.setBindGroup(this.device, 0, this.dataBindGroup!, [dataBufferByteSize]);
+    WebGL.setStencilRef(this.device, 1);
+    WebGL.drawIndexed(this.device, indexCount);
 
-    API.submitRenderPass(this.device);
+    WebGL.submitRenderPass(this.device);
 
     return true;
   }

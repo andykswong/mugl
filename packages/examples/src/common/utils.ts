@@ -1,4 +1,4 @@
-import { Buffer, BufferUsage, Device, Float, UInt, WebGL } from 'mugl/assembly';
+import { Buffer, BufferUsage, Device, Float, UInt, WebGL } from '../interop/mugl';
 
 export function createBuffer(
   device: Device, data: ArrayBufferView, usage: BufferUsage = BufferUsage.Vertex

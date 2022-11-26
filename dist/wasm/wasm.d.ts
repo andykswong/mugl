@@ -1,17 +1,17 @@
 import { AddressMode, BufferUsage, CompareFunction, CullMode, FilterMode, Float, FrontFace, FutureStatus, IndexFormat, MipmapHint, PrimitiveTopology, ShaderStage, StencilOperation, TextureDimension, TextureFormat, TextureUsage, UInt } from '../gpu';
-export declare type ContextId = number & {
+export type ContextId = number & {
     readonly __tag: unique symbol;
 };
-export declare type FutureId = number & {
+export type FutureId = number & {
     readonly __tag: unique symbol;
 };
-export declare type ImageSourceId = number & {
+export type ImageSourceId = number & {
     readonly __tag: unique symbol;
 };
-export declare type CanvasId = number & {
+export type CanvasId = number & {
     readonly __tag: unique symbol;
 };
-export declare type ResourceId = number & {
+export type ResourceId = number & {
     readonly __tag: unique symbol;
 };
 declare function deleteResource(id: ResourceId): void;

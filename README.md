@@ -9,14 +9,14 @@
 
 ## Overview
 
-`mugl` is a minimal, modern WebGL 2.0 3D graphics abstraction layer that removes the verbosity and state management aspect of WebGL. It is designed to be a simplified version of the [WebGPU](https://gpuweb.github.io/gpuweb/) API. If you want to write simple, low-level 3D graaphics code in WebGPU style today, `mugl` is for you.
+`mugl` is a minimal, modern WebGL 2.0 3D graphics abstraction layer that removes the verbosity and state management aspect of WebGL. It is designed to be a simplified version of the [WebGPU](https://gpuweb.github.io/gpuweb/) API. If you want to write simple, low-level graphics code in WebGPU style today, `mugl` is for you.
 
-`mugl` provides WebAssembly (WASM) bindings in addition to JavaScript. With its [AssemblyScript](https://www.assemblyscript.org/) binding, you can run the same JavaScript 3D app code on WASM (see [examples](#examples)).
+`mugl` runs on any modern web browser, and mobile via React Native. It provides WebAssembly (WASM) bindings in addition to JavaScript/TypeScript. With its [AssemblyScript](https://www.assemblyscript.org/) binding, you can run the same JavaScript 3D app code on WASM (see [examples](#examples)). Additional WASM language bindings (e.g. Rust) and platform supports (e.g. native Desktop) are planned.
 
-`mugl` runs on any modern web browser and mobile via React Native. Additional WASM language bindings (e.g. [Rust]((https://github.com/andykswong/muge/tree/main/crates/mugl))) and platform supports (e.g. native Desktop) are planned.
+## Showcase
 
-## [Examples](https://andykswong.github.io/mugl/latest/examples)
-Check out the live examples: https://andykswong.github.io/mugl/latest/examples
+### [Live Examples](https://andykswong.github.io/mugl/latest/examples)
+Check out the live examples [here](https://andykswong.github.io/mugl/latest/examples).
 
 The source code of all examples can be found [here](./packages/examples/src/apps/). All examples run on **both JavaScript and WebAssembly, using the exact same code base**! Click the toggle in the examples menu to seamlessly switch between the two environments.
 
@@ -25,8 +25,8 @@ The source code of all examples can be found [here](./packages/examples/src/apps
 |[![basic](./screenshots/basic.png)](https://andykswong.github.io/mugl/latest/examples/#basic)|[![instancing](./screenshots/instancing.png)](https://andykswong.github.io/mugl/latest/examples/#instancing)|[![postprocess](./screenshots/postprocess.png)](https://andykswong.github.io/mugl/latest/examples/#postprocess)|
 |[![mrt](./screenshots/mrt.png)](https://andykswong.github.io/mugl/latest/examples/#mrt)|[![stencil](./screenshots/stencil.png)](https://andykswong.github.io/mugl/latest/examples/#stencil)|[![pbr](./screenshots/pbr.png)](https://andykswong.github.io/mugl/latest/examples/#pbr)|
 
-## [glTF 2.0 Model Viewer](https://andykswong.github.io/mugl/latest/gltf-viewer)
-A small but full-featured glTF model viewer built on `mugl` is available as an example usage of this library: https://andykswong.github.io/mugl/latest/gltf-viewer \
+### [glTF 2.0 Model Viewer](https://andykswong.github.io/mugl/latest/gltf-viewer)
+A small but full-featured glTF model viewer built on `mugl` is available as an example usage of this library [here](https://andykswong.github.io/mugl/latest/gltf-viewer). \
 The source code can be found [here](./packages/gltf-viewer).
 
 Any model from [glTF-Sample-Models](https://github.com/KhronosGroup/glTF-Sample-Models) can be loaded using the `model` and `variant` URL parameter, e.g.: [?model=Buggy&variant=glTF-Binary](https://andykswong.github.io/mugl/latest/gltf-viewer/?model=Buggy&variant=glTF-Binary&camera=0&scene=0) to load the [Buggy](https://github.com/KhronosGroup/glTF-Sample-Models/tree/master/2.0/Buggy) model. You can also use the `url` URL parameter to load a model from any source ([example](https://andykswong.github.io/mugl/latest/gltf-viewer/?url=https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Avocado/glTF/Avocado.gltf)).
@@ -34,7 +34,7 @@ Any model from [glTF-Sample-Models](https://github.com/KhronosGroup/glTF-Sample-
 ![glTF 2.0 Model Viewer](./screenshots/DamagedHelmet.png)
 
 ## API Documentation
-For JavaScript / AssemblyScript interface, see TSDoc: http://andykswong.github.io/mugl/latest/docs
+For JavaScript / AssemblyScript interface, see TSDoc [here](http://andykswong.github.io/mugl/latest/docs).
 
 For raw WebAssembly interface, see the API spec: [API.wit](./API.wit) or the AssemblyScript imports: [mugl.ts](./assembly/mugl.ts)
 
@@ -116,7 +116,7 @@ device.destroy();
 ```
 
 ### 2. Running on React Native Mobile Apps via expo-gl
-`mugl` is compatible with [expo-gl](https://docs.expo.dev/versions/latest/sdk/gl-view/) for 3D rendering on Expo / React Native mobile apps. Below is the setup required to use `mugl` with `expo-gl`:
+`mugl` is compatible with [expo-gl](https://docs.expo.dev/versions/latest/sdk/gl-view/) for 3D rendering on Expo / React Native mobile apps. Below is the setup required to use `mugl` with `expo-gl` (source code of the full example can be found [here](./packages/examples-native/)):
 
 ```javascript
 import React from 'react';
@@ -130,7 +130,7 @@ export default function App() {
 
 async function onContextCreate(gl) {
   // 1. Create device by passing a canvas-like object that wraps the gl context
-  const canvas = { getContext(type) { return gl; } };
+  const canvas = { getContext() { return gl; }, width: 300, height: 300 };
   const device = WebGL.requestWebGL2Device(canvas);
 
   // 2. Use expo-asset to load an image to GPU texture
@@ -140,7 +140,7 @@ async function onContextCreate(gl) {
   WebGL.copyExternalImageToTexture(device, { src: image }, { texture }, size);
 
   // 3. Setup other resources
-  const pipeline = const pipeline = WebGL.createRenderPipeline(device, { ... });
+  const pipeline = WebGL.createRenderPipeline(device, { ... });
   const buffer = WebGL.createBuffer(device, { ... });
   WebGL.writeBuffer(device, buffer, ...);
   const bindgroup = WebGL.createBindGroup(device, { layout, entries: [{ texture }] });
@@ -158,6 +158,8 @@ async function onContextCreate(gl) {
   gl.endFrameEXP();
 }
 ```
+
+As `expo-gl` does not fully support all WebGL2 APIs, you may find some advanced features of `mugl` not working as expected. Notably missing is `pixelStorei` API support for defining texture image source offsets.
 
 ### 3. Running on WebAssembly
 Import `mugl/wasm` to your WASM module:

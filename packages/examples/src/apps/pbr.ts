@@ -2,9 +2,9 @@ import { lookAt, mat, mat4, perspective, scale, vec3 } from 'munum/assembly';
 import {
   BindGroup, BindingType, Buffer, BufferUsage, CompareFunction, CullMode, Device,
   FilterMode, Float, RenderPipeline, RenderPipelineDescriptor, Sampler, ShaderStage, Texture,
-  TextureDimension, vertexBufferLayouts, VertexFormat, WebGL
-} from 'mugl/assembly';
-import { API, BaseExample, createBuffer, createFloat32Array, Cube, getImageById, Model, TEX_SIZE, toIndices, toVertices } from '../common';
+  TextureDimension, vertexBufferLayouts, VertexFormat, WebGL, getImage
+} from '../interop/mugl';
+import { BaseExample, createBuffer, createFloat32Array, Cube, Model, TEX_SIZE, toIndices, toVertices } from '../common';
 
 const texSize = TEX_SIZE;
 
@@ -165,15 +165,15 @@ export class PbrExample extends BaseExample {
 
   init(): void {
     // Get texture images
-    const airplane = getImageById('airplane');
-    const sky0 = getImageById('sky0');
-    const sky1 = getImageById('sky1');
-    const sky2 = getImageById('sky2');
+    const airplane = getImage('airplane');
+    const sky0 = getImage('sky0');
+    const sky1 = getImage('sky1');
+    const sky2 = getImage('sky2');
 
     // Create shaders
-    const vs = API.createShader(this.device, { code: vert, usage: ShaderStage.Vertex });
-    const cubeFs = API.createShader(this.device, { code: fragCube, usage: ShaderStage.Fragment });
-    const skyFs = API.createShader(this.device, { code: fragSky, usage: ShaderStage.Fragment });
+    const vs = WebGL.createShader(this.device, { code: vert, usage: ShaderStage.Vertex });
+    const cubeFs = WebGL.createShader(this.device, { code: fragCube, usage: ShaderStage.Fragment });
+    const skyFs = WebGL.createShader(this.device, { code: fragSky, usage: ShaderStage.Fragment });
 
     // Create buffers
     this.matBuffer = createBuffer(this.device, createFloat32Array([
@@ -193,45 +193,45 @@ export class PbrExample extends BaseExample {
     this.skyDataBuffer = createBuffer(this.device, this.skyData, BufferUsage.Uniform | BufferUsage.Stream);
 
     // Create bind groups
-    const textureLayout = API.createBindGroupLayout(this.device, {
+    const textureLayout = WebGL.createBindGroupLayout(this.device, {
       entries: [
         { binding: 0, label: 'tex', type: BindingType.Texture },
         { binding: 1, label: 'tex', type: BindingType.Sampler },
       ]
     });
-    const envLayout = API.createBindGroupLayout(this.device, {
+    const envLayout = WebGL.createBindGroupLayout(this.device, {
       entries: [
         { binding: 0, label: 'Material', type: BindingType.Buffer },
         { binding: 1, label: 'Env', type: BindingType.Buffer },
       ]
     });
-    const dataLayout = API.createBindGroupLayout(this.device, {
+    const dataLayout = WebGL.createBindGroupLayout(this.device, {
       entries: [{ label: 'Data', type: BindingType.Buffer }]
     });
 
     // Setup the cube
-    this.cubeTex = API.createTexture(this.device, { size: [texSize, texSize, 1] });
+    this.cubeTex = WebGL.createTexture(this.device, { size: [texSize, texSize, 1] });
     if (airplane) {
-      API.copyExternalImageToTexture(this.device, { src: airplane }, { texture: this.cubeTex! });
+      WebGL.copyExternalImageToTexture(this.device, { src: airplane }, { texture: this.cubeTex! });
       WebGL.generateMipmap(this.device, this.cubeTex!);
     }
 
-    this.sampler = API.createSampler(this.device, {
+    this.sampler = WebGL.createSampler(this.device, {
       magFilter: FilterMode.Linear,
       minFilter: FilterMode.Linear,
       mipmapFilter: FilterMode.Linear,
       maxAnisotropy: 16
     });
 
-    this.cubeTexBindGroup = API.createBindGroup(this.device, {
+    this.cubeTexBindGroup = WebGL.createBindGroup(this.device, {
       layout: textureLayout,
       entries: [{ binding: 0, texture: this.cubeTex }, { binding: 1, sampler: this.sampler }]
     });
-    this.envBindGroup = API.createBindGroup(this.device, {
+    this.envBindGroup = WebGL.createBindGroup(this.device, {
       layout: envLayout,
       entries: [{ binding: 0, buffer: this.matBuffer }, { binding: 1, buffer: this.envBuffer }]
     });
-    this.cubeDataBindGroup = API.createBindGroup(this.device, {
+    this.cubeDataBindGroup = WebGL.createBindGroup(this.device, {
       layout: dataLayout,
       entries: [{ buffer: this.cubeDataBuffer }]
     });
@@ -251,32 +251,32 @@ export class PbrExample extends BaseExample {
         cullMode: CullMode.Back
       }
     };
-    this.cubePipeline = API.createRenderPipeline(this.device, cubePipelineDesc);
+    this.cubePipeline = WebGL.createRenderPipeline(this.device, cubePipelineDesc);
 
     // Setup the sky box
     {
-      this.skyTex = API.createTexture(this.device, {
+      this.skyTex = WebGL.createTexture(this.device, {
         dimension: TextureDimension.CubeMap,
         size: [texSize, texSize, 1]
       });
       if (sky0 && sky1 && sky2) {
         const cubeImages = [sky0, sky0, sky1, sky2, sky0, sky0];
         for (let z = 0; z < 6; ++z) {
-          API.copyExternalImageToTexture(this.device, { src: cubeImages[z] }, { texture: this.skyTex!, origin: [0, 0, z] });
+          WebGL.copyExternalImageToTexture(this.device, { src: cubeImages[z] }, { texture: this.skyTex!, origin: [0, 0, z] });
         }
         WebGL.generateMipmap(this.device, this.skyTex!);
       }
 
-      this.skyTexBindGroup = API.createBindGroup(this.device, {
+      this.skyTexBindGroup = WebGL.createBindGroup(this.device, {
         layout: textureLayout,
         entries: [{ binding: 0, texture: this.skyTex }, { binding: 1, sampler: this.sampler }]
       });
-      this.skyDataBindGroup = API.createBindGroup(this.device, {
+      this.skyDataBindGroup = WebGL.createBindGroup(this.device, {
         layout: dataLayout,
         entries: [{ buffer: this.skyDataBuffer }]
       });
-  
-      this.skyPipeline = API.createRenderPipeline(this.device, {
+
+      this.skyPipeline = WebGL.createRenderPipeline(this.device, {
         vertex: vs,
         fragment: skyFs,
         buffers: cubePipelineDesc.buffers,
@@ -308,34 +308,34 @@ export class PbrExample extends BaseExample {
       mat.copy(model, this.cubeData, 0, 0, 16);
       mat.copy(vp, this.cubeData, 0, 16, 16);
       mat.copy(camPos, this.cubeData, 0, 32, 3);
-      API.writeBuffer(this.device, this.cubeDataBuffer!, this.cubeData);
+      WebGL.writeBuffer(this.device, this.cubeDataBuffer!, this.cubeData);
 
       mat.copy(scale([10, 10, 10]), this.skyData, 0, 0, 16);
       mat.copy(vp, this.skyData, 0, 16, 16);
       mat.copy(camPos, this.skyData, 0, 32, 3);
-      API.writeBuffer(this.device, this.skyDataBuffer!, this.skyData);
+      WebGL.writeBuffer(this.device, this.skyDataBuffer!, this.skyData);
     }
 
-    API.beginDefaultPass(this.device, { clearColor: [0, 0, 0, 1], clearDepth: 1 });
+    WebGL.beginDefaultPass(this.device, { clearColor: [0, 0, 0, 1], clearDepth: 1 });
 
     // Draw cube
-    API.setRenderPipeline(this.device, this.cubePipeline!);
-    API.setIndex(this.device, this.indexBuffer!);
-    API.setVertex(this.device, 0, this.vertBuffer!);
-    API.setBindGroup(this.device, 0, this.cubeTexBindGroup!);
-    API.setBindGroup(this.device, 1, this.envBindGroup!);
-    API.setBindGroup(this.device, 2, this.cubeDataBindGroup!);
-    API.drawIndexed(this.device, cubeIndices.length);
+    WebGL.setRenderPipeline(this.device, this.cubePipeline!);
+    WebGL.setIndex(this.device, this.indexBuffer!);
+    WebGL.setVertex(this.device, 0, this.vertBuffer!);
+    WebGL.setBindGroup(this.device, 0, this.cubeTexBindGroup!);
+    WebGL.setBindGroup(this.device, 1, this.envBindGroup!);
+    WebGL.setBindGroup(this.device, 2, this.cubeDataBindGroup!);
+    WebGL.drawIndexed(this.device, cubeIndices.length);
 
     // Draw skybox
-    API.setRenderPipeline(this.device, this.skyPipeline!);
-    API.setIndex(this.device, this.indexBuffer!);
-    API.setVertex(this.device, 0, this.vertBuffer!);
-    API.setBindGroup(this.device, 0, this.skyTexBindGroup!);
-    API.setBindGroup(this.device, 1, this.skyDataBindGroup!);
-    API.drawIndexed(this.device, cubeIndices.length);
+    WebGL.setRenderPipeline(this.device, this.skyPipeline!);
+    WebGL.setIndex(this.device, this.indexBuffer!);
+    WebGL.setVertex(this.device, 0, this.vertBuffer!);
+    WebGL.setBindGroup(this.device, 0, this.skyTexBindGroup!);
+    WebGL.setBindGroup(this.device, 1, this.skyDataBindGroup!);
+    WebGL.drawIndexed(this.device, cubeIndices.length);
 
-    API.submitRenderPass(this.device);
+    WebGL.submitRenderPass(this.device);
 
     return true;
   }

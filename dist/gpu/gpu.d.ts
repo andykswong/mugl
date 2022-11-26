@@ -179,7 +179,7 @@ export interface GPU {
      * Binds a bind group to the current render pass.
      * @param device the GPU device
      * @param slot the bind group slot to bind to
-     * @param bindGorup the bind group to use
+     * @param bindGroup the bind group to use
      * @param offsets the dynamic offsets for dynamic buffers in this bind group
      */
     setBindGroup(device: Device, slot: UInt, bindGroup: BindGroup, offsets?: UIntArray): void;
@@ -197,7 +197,7 @@ export interface GPU {
      * @param device the GPU device
      * @param indexCount the number of vertices to draw
      * @param instanceCount the number of instances to draw. Defaults to 1
-     * @param firstVertex the offset to the first vertex to draw. Defaults to 0
+     * @param firstIndex the offset to the first vertex to draw. Defaults to 0
      * @param firstInstance the offset to the first instance to draw. Defaults to 0
      */
     drawIndexed(device: Device, indexCount: UInt, instanceCount?: UInt, firstIndex?: UInt, firstInstance?: UInt): void;

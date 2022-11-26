@@ -2,9 +2,9 @@ import { lookAt, mat, mat4, perspective, ReadonlyMat4 } from 'munum/assembly';
 import {
   BindGroup, BindingType, Buffer, BufferUsage, CompareFunction, CullMode, Device,
   FilterMode, Float, Int, RenderPipeline, RenderPass, Sampler, ShaderStage, Texture,
-  TextureFormat, TextureUsage, vertexBufferLayouts, VertexFormat
-} from 'mugl/assembly';
-import { API, BaseExample, createBuffer, Cube, Model, Quad, toIndices, toVertices } from '../common';
+  TextureFormat, TextureUsage, vertexBufferLayouts, VertexFormat, WebGL
+} from '../interop/mugl';
+import { BaseExample, createBuffer, Cube, Model, Quad, toIndices, toVertices } from '../common';
 
 const sampleCount = 1;
 const texSize = 512;
@@ -129,12 +129,12 @@ export class PostprocessExample extends BaseExample {
 
   init(): void {
     // Create shaders
-    const cubeVs = API.createShader(this.device, { code: vertCube, usage: ShaderStage.Vertex });
-    const cubeFs = API.createShader(this.device, { code: fragCube, usage: ShaderStage.Fragment });
-    const quadVs = API.createShader(this.device, { code: vertQuad, usage: ShaderStage.Vertex });
-    const quadFs = API.createShader(this.device, { code: fragQuad, usage: ShaderStage.Fragment });
+    const cubeVs = WebGL.createShader(this.device, { code: vertCube, usage: ShaderStage.Vertex });
+    const cubeFs = WebGL.createShader(this.device, { code: fragCube, usage: ShaderStage.Fragment });
+    const quadVs = WebGL.createShader(this.device, { code: vertQuad, usage: ShaderStage.Vertex });
+    const quadFs = WebGL.createShader(this.device, { code: fragQuad, usage: ShaderStage.Fragment });
 
-    const dataLayout = API.createBindGroupLayout(this.device, {
+    const dataLayout = WebGL.createBindGroupLayout(this.device, {
       entries: [{ label: 'Data', type: BindingType.Buffer }]
     });
 
@@ -144,12 +144,12 @@ export class PostprocessExample extends BaseExample {
       this.indexBuffer = createBuffer(this.device, cubeIndices, BufferUsage.Index);
       this.cubeDataBuffer = createBuffer(this.device, this.cubeData, BufferUsage.Uniform | BufferUsage.Stream);
 
-      this.cubeBindGroup = API.createBindGroup(this.device, {
+      this.cubeBindGroup = WebGL.createBindGroup(this.device, {
         layout: dataLayout,
         entries: [{ buffer: this.cubeDataBuffer }]
       });
 
-      this.cubePipeline = API.createRenderPipeline(this.device, {
+      this.cubePipeline = WebGL.createRenderPipeline(this.device, {
         vertex: cubeVs,
         fragment: cubeFs,
         buffers: vertexBufferLayouts([
@@ -167,7 +167,7 @@ export class PostprocessExample extends BaseExample {
     }
 
     // Setup the fullscreen quad
-    const offscreenTexLayout = API.createBindGroupLayout(this.device, {
+    const offscreenTexLayout = WebGL.createBindGroupLayout(this.device, {
       entries: [
         { binding: 0, label: 'tex', type: BindingType.Texture },
         { binding: 1, label: 'tex', type: BindingType.Sampler },
@@ -177,13 +177,13 @@ export class PostprocessExample extends BaseExample {
       this.quadVertBuffer = createBuffer(this.device, quadVertices);
       this.kernelDataBuffer = createBuffer(this.device, this.kernelData, BufferUsage.Uniform | BufferUsage.Stream);
 
-      this.offscreenTex = API.createTexture(this.device, { size: [texSize, texSize, 1], sampleCount });
-      this.offscreenTexSampler = API.createSampler(this.device, {
+      this.offscreenTex = WebGL.createTexture(this.device, { size: [texSize, texSize, 1], sampleCount });
+      this.offscreenTexSampler = WebGL.createSampler(this.device, {
         magFilter: FilterMode.Linear,
         minFilter: FilterMode.Linear,
       });
 
-      this.offscreenTexBindGroup = API.createBindGroup(this.device, {
+      this.offscreenTexBindGroup = WebGL.createBindGroup(this.device, {
         layout: offscreenTexLayout,
         entries: [
           { binding: 0, texture: this.offscreenTex },
@@ -191,12 +191,12 @@ export class PostprocessExample extends BaseExample {
         ]
       });
 
-      this.kernelBindGroup = API.createBindGroup(this.device, {
+      this.kernelBindGroup = WebGL.createBindGroup(this.device, {
         layout: dataLayout,
         entries: [{ buffer: this.kernelDataBuffer }]
       });
 
-      this.quadPipeline = API.createRenderPipeline(this.device, {
+      this.quadPipeline = WebGL.createRenderPipeline(this.device, {
         vertex: quadVs,
         fragment: quadFs,
         bindGroups: [offscreenTexLayout, dataLayout],
@@ -208,14 +208,14 @@ export class PostprocessExample extends BaseExample {
 
     // Setup the offscreen pass
     {
-      this.depthTex = API.createTexture(this.device, {
+      this.depthTex = WebGL.createTexture(this.device, {
         format: TextureFormat.Depth16,
         size: [texSize, texSize, 1],
         usage: TextureUsage.RenderAttachment,
         sampleCount
       });
 
-      this.offscreenPass = API.createRenderPass(this.device, {
+      this.offscreenPass = WebGL.createRenderPass(this.device, {
         colors: [{
           view: { texture: this.offscreenTex! },
           clear: [0.25, 0.25, 0.25, 1],
@@ -240,7 +240,7 @@ export class PostprocessExample extends BaseExample {
       const view = lookAt([10 * Math.cos(t) as Float, 5 * Math.sin(t) as Float, 10 * Math.sin(t) as Float], [0, 0, 0]);
       const mvp = mat4.mul(proj, view);
       mat.copy(mvp, this.cubeData, 0, 0, 16);
-      API.writeBuffer(this.device, this.cubeDataBuffer!, this.cubeData);
+      WebGL.writeBuffer(this.device, this.cubeDataBuffer!, this.cubeData);
     }
 
     // Update kernel
@@ -256,33 +256,33 @@ export class PostprocessExample extends BaseExample {
       this.kernelData[16] = texSize as Float;
       this.kernelData[17] = texSize as Float;
       this.kernelData[18] = kernelWeight;
-      API.writeBuffer(this.device, this.kernelDataBuffer!, this.kernelData);
+      WebGL.writeBuffer(this.device, this.kernelDataBuffer!, this.kernelData);
     }
 
     // Draw cube to texture
-    API.beginRenderPass(this.device, this.offscreenPass!);
+    WebGL.beginRenderPass(this.device, this.offscreenPass!);
     {
-      API.setRenderPipeline(this.device, this.cubePipeline!);
-      API.setIndex(this.device, this.indexBuffer!);
-      API.setVertex(this.device, 0, this.vertBuffer!);
-      API.setBindGroup(this.device, 0, this.cubeBindGroup!);
-      API.drawIndexed(this.device, cubeIndices.length);
+      WebGL.setRenderPipeline(this.device, this.cubePipeline!);
+      WebGL.setIndex(this.device, this.indexBuffer!);
+      WebGL.setVertex(this.device, 0, this.vertBuffer!);
+      WebGL.setBindGroup(this.device, 0, this.cubeBindGroup!);
+      WebGL.drawIndexed(this.device, cubeIndices.length);
     }
-    API.submitRenderPass(this.device);
+    WebGL.submitRenderPass(this.device);
 
     // Draw to screen
-    API.beginDefaultPass(this.device, {
+    WebGL.beginDefaultPass(this.device, {
       clearColor: [0, 0, 0, 1],
       clearDepth: 1
     });
     {
-      API.setRenderPipeline(this.device, this.quadPipeline!);
-      API.setVertex(this.device, 0, this.quadVertBuffer!);
-      API.setBindGroup(this.device, 0, this.offscreenTexBindGroup!);
-      API.setBindGroup(this.device, 1, this.kernelBindGroup!);
-      API.draw(this.device, 6);
+      WebGL.setRenderPipeline(this.device, this.quadPipeline!);
+      WebGL.setVertex(this.device, 0, this.quadVertBuffer!);
+      WebGL.setBindGroup(this.device, 0, this.offscreenTexBindGroup!);
+      WebGL.setBindGroup(this.device, 1, this.kernelBindGroup!);
+      WebGL.draw(this.device, 6);
     }
-    API.submitRenderPass(this.device);
+    WebGL.submitRenderPass(this.device);
 
     return true;
   }

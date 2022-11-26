@@ -32,15 +32,26 @@ const EXT_texture_filter_anisotropic = 0x1;
 const OES_texture_half_float_linear = 0x2;
 const OES_texture_float_linear = 0x4;
 const EXT_color_buffer_float = 0x8;
+const OES_draw_buffers_indexed = 0x10;
 
 /**
  * Supported WebGL2 features.
  */
 export enum WebGL2Feature {
+  /** EXT_texture_filter_anisotropic */
   TextureAnisotropic = EXT_texture_filter_anisotropic,
+
+  /** OES_texture_half_float_linear */
   TextureHalfFloatLinear = OES_texture_half_float_linear,
+
+  /** OES_texture_float_linear */
   TextureFloatLinear = OES_texture_float_linear,
+
+  /** EXT_color_buffer_float */
   ColorBufferFloat = EXT_color_buffer_float,
+
+  /** OES_draw_buffers_indexed */
+  DrawBuffersIndexed = OES_draw_buffers_indexed,
 }
 
 export const WebGL2FeatureNames: Record<WebGL2Feature, string> = {
@@ -48,4 +59,5 @@ export const WebGL2FeatureNames: Record<WebGL2Feature, string> = {
   [OES_texture_half_float_linear]: 'OES_texture_half_float_linear',
   [OES_texture_float_linear]: 'OES_texture_float_linear',
   [EXT_color_buffer_float]: 'EXT_color_buffer_float',
+  [OES_draw_buffers_indexed]: 'OES_draw_buffers_indexed',
 };

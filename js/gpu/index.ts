@@ -11,6 +11,4 @@ export * from './type';
 export { vertexBufferLayouts } from './gl-util';
 
 // WebGL implementation
-export * as WebGL from './gl2';
-export { WebGL2Feature } from './gl2-type';
-export type { Canvas, WebGL2RenderingContextProvider } from './gl2-type';
+export * from './gl2';

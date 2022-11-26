@@ -12,6 +12,6 @@
 export const MUGL_DEBUG = false;
 
 /**
- * True to enable finalization registry for GPU resources. Defaults to true.
+ * True to enable finalization registry for GPU resources. Defaults to false.
  */
-export const MUGL_FINALIZER = true;
+export const MUGL_FINALIZER = false;

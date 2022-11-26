@@ -1,10 +1,9 @@
 {
   "name": "mugl",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Micro WebGL Library for JavaScript and WebAssembly",
   "type": "module",
   "sideEffects": false,
-  "ascMain": "assembly/index.ts",
   "main": "index.js",
   "types": "index.d.ts",
   "exports": {
@@ -102,7 +101,7 @@
     "rimraf": "^3.0",
     "source-map-loader": "^4.0",
     "typedoc": "^0.23",
-    "typescript": "^4.8",
+    "typescript": "^4.9",
     "webpack": "^5.74",
     "webpack-cli": "^4.10",
     "webpack-merge": "^5.7"
@@ -110,6 +109,7 @@
   "workspaces": [
     "./",
     "./packages/examples",
+    "./packages/examples-native",
     "./packages/gltf-viewer"
   ]
 }

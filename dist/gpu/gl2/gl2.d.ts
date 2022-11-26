@@ -1,8 +1,9 @@
-import { Color, Extent2D, Extent3D, Future, UInt, UIntArray } from './primitive';
-import { MipmapHint } from './type';
-import { BindGroupDescriptor, BindGroupLayoutDescriptor, BufferDescriptor, DefaultRenderPassDescriptor, ImageCopyExternalImage, ImageCopyTexture, ImageDataLayout, RenderPassDescriptor, RenderPipelineDescriptor, SamplerDescriptor, ShaderDescriptor, TextureDescriptor } from './descriptor';
-import { BindGroup, BindGroupLayout, Buffer, Device, RenderPass, RenderPipeline, Sampler, Shader, Texture } from './resource';
-import { Canvas, WebGL2Feature } from './gl2-type';
+import { Color, Extent2D, Extent3D, Future, UInt, UIntArray } from '../primitive';
+import { MipmapHint } from '../type';
+import { BindGroupDescriptor, BindGroupLayoutDescriptor, BufferDescriptor, DefaultRenderPassDescriptor, ImageCopyExternalImage, ImageCopyTexture, ImageDataLayout, RenderPassDescriptor, RenderPipelineDescriptor, SamplerDescriptor, ShaderDescriptor, TextureDescriptor } from '../descriptor';
+import { BindGroup, BindGroupLayout, Buffer, Device, RenderPass, RenderPipeline, Sampler, Shader, Texture } from '../resource';
+import { Canvas, WebGL2Feature } from './type';
+export { isDeviceLost } from './helper';
 /**
  * Requests a WebGL2 {@link Device}.
  * @param canvas the canvas to be used
@@ -16,12 +17,6 @@ export declare function requestWebGL2Device(canvas: Canvas, options?: WebGLConte
  * @param device the GPU device
  */
 export declare function resetDevice(device: Device): void;
-/**
- * Returns if device context is lost.
- * @param device the GPU device
- * @returns true if device context is lost
- */
-export declare function isDeviceLost(device: Device): boolean;
 /**
  * Gets the enabled features of the device.
  * @param device the GPU device
@@ -192,7 +187,7 @@ export declare function setVertex(device: Device, slot: number, buffer: Buffer, 
  * Binds a bind group to the current render pass.
  * @param device the GPU device
  * @param slot the bind group slot to bind to
- * @param bindGorup the bind group to use
+ * @param bindGroup the bind group to use
  * @param offsets the dynamic offsets for dynamic buffers in this bind group
  */
 export declare function setBindGroup(device: Device, slot: UInt, bindGroup: BindGroup, offsets?: UIntArray): void;
@@ -210,7 +205,7 @@ export declare function draw(device: Device, vertexCount: number, instanceCount?
  * @param device the GPU device
  * @param indexCount the number of vertices to draw
  * @param instanceCount the number of instances to draw. Defaults to 1
- * @param firstVertex the offset to the first vertex to draw. Defaults to 0
+ * @param firstIndex the offset to the first vertex to draw. Defaults to 0
  * @param firstInstance the offset to the first instance to draw. Defaults to 0
  */
 export declare function drawIndexed(device: Device, indexCount: number, instanceCount?: number, firstIndex?: number, firstInstance?: UInt): void;

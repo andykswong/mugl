@@ -1,5 +1,5 @@
-import { Buffer, Device, Float, RenderPipeline, ShaderStage, VertexFormat, vertexBufferLayouts } from 'mugl/assembly';
-import { API, BaseExample, createBuffer, toVertices, Triangle } from '../common';
+import { Buffer, Device, Float, RenderPipeline, ShaderStage, VertexFormat, vertexBufferLayouts, WebGL } from '../interop/mugl';
+import { BaseExample, createBuffer, toVertices, Triangle } from '../common';
 
 const vert = `#version 300 es
 layout (location=0) in vec3 position;
@@ -31,12 +31,12 @@ export class BasicExample extends BaseExample {
   }
 
   init(): void {
-    const vs = API.createShader(this.device, { code: vert, usage: ShaderStage.Vertex });
-    const fs = API.createShader(this.device, { code: frag, usage: ShaderStage.Fragment });
+    const vs = WebGL.createShader(this.device, { code: vert, usage: ShaderStage.Vertex });
+    const fs = WebGL.createShader(this.device, { code: frag, usage: ShaderStage.Fragment });
 
     this.buffer = createBuffer(this.device, position);
 
-    this.pipeline = API.createRenderPipeline(this.device, {
+    this.pipeline = WebGL.createRenderPipeline(this.device, {
       vertex: vs,
       fragment: fs,
       buffers: vertexBufferLayouts([
@@ -48,11 +48,11 @@ export class BasicExample extends BaseExample {
   }
 
   render(delta: Float): boolean {
-    API.beginDefaultPass(this.device, { clearColor: [0.1, 0.2, 0.3, 1.0] });
-    API.setRenderPipeline(this.device, this.pipeline!);
-    API.setVertex(this.device, 0, this.buffer!);
-    API.draw(this.device, 3);
-    API.submitRenderPass(this.device);
+    WebGL.beginDefaultPass(this.device, { clearColor: [0.1, 0.2, 0.3, 1.0] });
+    WebGL.setRenderPipeline(this.device, this.pipeline!);
+    WebGL.setVertex(this.device, 0, this.buffer!);
+    WebGL.draw(this.device, 3);
+    WebGL.submitRenderPass(this.device);
 
     return false;
   }

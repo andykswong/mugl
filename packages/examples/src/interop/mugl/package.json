@@ -1,4 +1,4 @@
 {
   "main": "api.ts",
-  "types": "api.ts"
+  "types": "index.d.ts"
 }

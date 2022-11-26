@@ -1,101 +1,37 @@
-import { MUGL_DEBUG, MUGL_FINALIZER } from '../config';
-import * as GLenum from './gl-const';
-import { Color, Extent2D, Extent3D, Float, Future, FutureStatus, UInt, UIntArray } from './primitive';
+import { MUGL_DEBUG, MUGL_FINALIZER } from '../../config';
+import * as GLenum from '../gl-const';
+import { Color, Extent2D, Extent3D, Future, FutureStatus, UInt, UIntArray } from '../primitive';
 import {
   BindingType, BufferUsage, ColorWrite, MipmapHint, ShaderStage, TextureUsage
-} from './type';
+} from '../type';
 import {
-  BindGroupDescriptor, BindGroupEntry, BindGroupLayoutDescriptor, BindGroupLayoutEntry, BufferDescriptor,
-  DefaultRenderPassDescriptor, ImageCopyExternalImage, ImageCopyTexture, ImageDataLayout, RenderPassDescriptor,
-  RenderPipelineDescriptor, RenderPipelineState, SamplerDescriptor, ShaderDescriptor, TextureDescriptor, TextureView,
-  VertexBufferLayout
-} from './descriptor';
+  BindGroupDescriptor, BindGroupLayoutDescriptor, BufferDescriptor, DefaultRenderPassDescriptor,
+  ImageCopyExternalImage, ImageCopyTexture, ImageDataLayout, RenderPassDescriptor, RenderPipelineDescriptor,
+  SamplerDescriptor, ShaderDescriptor, TextureDescriptor
+} from '../descriptor';
 import {
   BindGroup, BindGroupLayout, Buffer, Device, RenderPass, RenderPipeline, Sampler, Shader, Texture
-} from './resource';
-import { Canvas, WebGL2Feature, WebGL2FeatureNames } from './gl2-type';
+} from '../resource';
 import {
   glClearType, glTexelFormat, glTexelSize, glTexelType, hasStencil, indexByteSize, is3DTexture, isDepthStencil,
   vertexSize, vertexType, vertexNormalized,
-} from './gl-util';
+} from '../gl-util';
+import {
+  WebGL2Device, WebGL2Buffer, WebGL2Texture, WebGL2Sampler, WebGL2Shader, WebGL2RenderPass, WebGL2BindGroupLayout,
+  WebGL2BindGroup, WebGL2RenderPipeline, UniformCache, WebGL2Attribute
+} from './model';
+import { Canvas, WebGL2Feature, WebGL2FeatureNames } from './type';
+import {
+  initWebGL2State, framebufferTexture, createResolveFrameBuffer, compileShaderProgram, createPipelineState,
+  getBufferSubData, blitFramebuffer, applyPipelineState, vertexAttribs, glToggle, isDeviceLost, applyColorMask,
+  applyDepthMask, applyStencilMask
+} from './helper';
 
 //#region Constants
 
 const BYTE_MASK = 0xFF;
-const STENCIL_MASK = 0xFFFFFFFF;
-const MAX_VERTEX_ATTRIBS = 16;  // TODO: query the actual limit
 
 //#endregion Constants
-
-//#region Types
-
-interface WebGL2Device extends Device {
-  readonly canvas: Canvas;
-  readonly gl: WebGL2RenderingContext;
-  readonly features: WebGL2Feature;
-
-  pass: WebGL2RenderPass | null;
-  state: WebGL2State;
-}
-
-interface WebGL2Buffer extends Buffer {
-  readonly gl: WebGL2RenderingContext;
-  readonly glb: WebGLBuffer | null;
-  readonly type: UInt;
-  readonly size: UInt;
-}
-
-interface WebGL2Texture extends Texture {
-  readonly gl: WebGL2RenderingContext;
-  readonly glt: WebGLTexture | null;
-  readonly glrb: WebGLRenderbuffer | null;
-  readonly type: UInt;
-  readonly width: UInt;
-  readonly height: UInt;
-  readonly depth: UInt;
-  readonly format: UInt;
-  readonly samples: UInt;
-}
-
-interface WebGL2Sampler extends Sampler {
-  readonly gl: WebGL2RenderingContext;
-  readonly gls: WebGLSampler | null;
-}
-
-interface WebGL2Shader extends Shader {
-  readonly gl: WebGL2RenderingContext;
-  readonly gls: WebGLShader | null;
-}
-
-interface WebGL2RenderPass extends RenderPass {
-  readonly gl: WebGL2RenderingContext;
-  readonly glfb: WebGLFramebuffer | null;
-  readonly glrfb: (WebGLFramebuffer | null)[];
-  readonly color: WebGL2Texture[];
-  readonly clearColors: (Color | null | undefined)[];
-  readonly clearColor?: Color | null;
-  readonly clearDepth?: Float;
-  readonly clearStencil?: Float;
-  readonly depth: WebGL2Texture | null;
-}
-
-interface WebGL2BindGroupLayout extends BindGroupLayout {
-  readonly entries: (BindGroupLayoutEntry & { binding: UInt })[];
-}
-
-interface WebGL2BindGroup extends BindGroup {
-  readonly entries: (BindGroupEntry & { binding: UInt })[];
-}
-
-interface WebGL2RenderPipeline extends RenderPipeline {
-  readonly gl: WebGL2RenderingContext;
-  readonly glp: WebGLProgram | null;
-  readonly cache: UniformCache[][];
-  readonly buffers: VertexBufferLayout[];
-  readonly state: WebGL2PipelineState;
-}
-
-//#endregion Types
 
 //#region Device
 
@@ -111,6 +47,8 @@ if (MUGL_FINALIZER) {
     finalizer(gl);
   });
 }
+
+export { isDeviceLost } from './helper';
 
 /**
  * Requests a WebGL2 {@link Device}.
@@ -130,14 +68,21 @@ export function requestWebGL2Device(
         enabledFeatures = enabledFeatures | +feature;
       }
     }
+
+    const extDrawBuffersi: OES_draw_buffers_indexed | null = (enabledFeatures & WebGL2Feature.DrawBuffersIndexed) ?
+      gl.getExtension(WebGL2FeatureNames[WebGL2Feature.DrawBuffersIndexed]) : null;
     const state = initWebGL2State(gl);
     const finalizer = (gl: WebGL2RenderingContext) => {
       gl.deleteFramebuffer(state.copyFrameBuffer);
     };
 
     const device = {
-      canvas, gl, state, features: enabledFeatures,
+      canvas,
+      gl,
+      features: enabledFeatures,
+      extDrawBuffersi,
       pass: null,
+      state,
       destroy() {
         finalizer(this.gl);
       }
@@ -159,15 +104,6 @@ export function requestWebGL2Device(
 export function resetDevice(device: Device): void {
   (device as WebGL2Device).destroy();
   Object.assign((device as WebGL2Device).state, initWebGL2State((device as WebGL2Device).gl));
-}
-
-/**
- * Returns if device context is lost.
- * @param device the GPU device
- * @returns true if device context is lost
- */
-export function isDeviceLost(device: Device): boolean {
-  return (device as WebGL2Device).gl.isContextLost();
 }
 
 /**
@@ -909,6 +845,8 @@ export function beginRenderPass(device: Device, pass: RenderPass): void {
     applyStencilMask((device as WebGL2Device).gl, (device as WebGL2Device).state.state.stencilWriteMask, BYTE_MASK);
     (device as WebGL2Device).state.state.stencilWriteMask = BYTE_MASK;
   }
+
+  // This resets the color mask for all draw buffers
   applyColorMask((device as WebGL2Device).gl, (device as WebGL2Device).state.state.blendWriteMask, ColorWrite.All);
   (device as WebGL2Device).state.state.blendWriteMask = ColorWrite.All;
 
@@ -1028,7 +966,11 @@ export function setRenderPipeline(device: Device, pipeline: RenderPipeline): voi
   }
 
   // Update pipeline state cache
-  applyPipelineState((device as WebGL2Device).gl, (device as WebGL2Device).state.state, (pipeline as WebGL2RenderPipeline).state, (device as WebGL2Device).state.stencilRef);
+  applyPipelineState(
+    (device as WebGL2Device).gl, (device as WebGL2Device).extDrawBuffersi,
+    (device as WebGL2Device).state.state, (pipeline as WebGL2RenderPipeline).state,
+    (device as WebGL2Device).state.stencilRef
+  );
   Object.assign((device as WebGL2Device).state.state, (pipeline as WebGL2RenderPipeline).state);
 
   // Update buffer attributes cache
@@ -1107,7 +1049,7 @@ export function setVertex(device: Device, slot: number, buffer: Buffer, offset: 
  * Binds a bind group to the current render pass.
  * @param device the GPU device
  * @param slot the bind group slot to bind to
- * @param bindGorup the bind group to use
+ * @param bindGroup the bind group to use
  * @param offsets the dynamic offsets for dynamic buffers in this bind group
  */
 export function setBindGroup(device: Device, slot: UInt, bindGroup: BindGroup, offsets: UIntArray = []): void {
@@ -1201,7 +1143,7 @@ export function draw(device: Device, vertexCount: number, instanceCount = 1, fir
  * @param device the GPU device
  * @param indexCount the number of vertices to draw
  * @param instanceCount the number of instances to draw. Defaults to 1
- * @param firstVertex the offset to the first vertex to draw. Defaults to 0
+ * @param firstIndex the offset to the first vertex to draw. Defaults to 0
  * @param firstInstance the offset to the first instance to draw. Defaults to 0
  */
 export function drawIndexed(device: Device, indexCount: number, instanceCount = 1, firstIndex = 0, firstInstance: UInt = 0): void {
@@ -1272,426 +1214,3 @@ export function setStencilRef(device: Device, ref: UInt): void {
 }
 
 //#endregion Render
-
-//#region Internal Types
-
-interface WebGL2State {
-  copyFrameBuffer: WebGLFramebuffer | null,
-  buffers: WebGL2BufferAttributes[],
-  state: WebGL2PipelineState;
-  pipeline: WebGL2RenderPipeline | null;
-  index: WebGLBuffer | null;
-  stencilRef: UInt;
-  scissor: boolean;
-}
-
-interface WebGL2Attribute {
-  buffer: UInt;
-  ptr: [
-    loc: UInt,
-    size: UInt,
-    type: UInt,
-    normalized: boolean,
-    stride: UInt,
-    offset: UInt
-  ];
-  step: UInt;
-}
-
-interface WebGL2BufferAttributes {
-  glb: WebGLBuffer | null;
-  attributes: WebGL2Attribute[];
-  stride: UInt;
-  step: UInt;
-  offset: UInt;
-  instanceOffset: UInt;
-}
-
-interface WebGL2PipelineState {
-  topology: UInt;
-  indexFormat: UInt;
-  frontFace: UInt;
-  cullMode: UInt;
-
-  sampleCount: UInt;
-  alphaToCoverage: boolean;
-
-  depth: boolean;
-  depthWrite: boolean;
-  depthFormat: UInt;
-  depthCompare: UInt;
-  depthBias: Float;
-  depthBiasSlopeScale: Float;
-
-  stencil: boolean;
-  stencilFrontCompare: UInt;
-  stencilFrontFailOp: UInt;
-  stencilFrontDepthFailOp: UInt;
-  stencilFrontPassOp: UInt;
-  stencilBackCompare: UInt;
-  stencilBackFailOp: UInt;
-  stencilBackDepthFailOp: UInt;
-  stencilBackPassOp: UInt;
-  stencilReadMask: UInt;
-  stencilWriteMask: UInt;
-
-  blend: boolean;
-  blendWriteMask: UInt;
-  blendColorOp: UInt;
-  blendColorSrcFactor: UInt;
-  blendColorDstFactor: UInt;
-  blendAlphaOp: UInt;
-  blendAlphaSrcFactor: UInt;
-  blendAlphaDstFactor: UInt;
-}
-
-/** An entry of uniform info cache */
-interface UniformCache {
-  /** Bind group entry name. */
-  label: string;
-  /** Binding location. */
-  binding: UInt;
-  /** The type of binding. */
-  type: BindingType;
-  /** Uniform location. */
-  loc: WebGLUniformLocation | null
-  /** Uniform block index. */
-  index: GLuint;
-  /** Uniform buffer / Texture bind slot ID. */
-  slot: number;
-  /** Dynamic offset uniform buffer. */
-  bufferDynamicOffset?: boolean;
-}
-
-//#endregion Internal Types
-
-//#region Helpers
-
-function initWebGL2State(gl: WebGL2RenderingContext): WebGL2State {
-  const state = createPipelineState();
-
-  // Apply the default states
-  gl.blendColor(1, 1, 1, 1);
-  applyPipelineState(gl, state, state, 0, true);
-  for (let i = 0; i < MAX_VERTEX_ATTRIBS; ++i) {
-    gl.disableVertexAttribArray(i);
-  }
-
-  // Default alignment is 4. Use 1 to make byte data texture work.
-  gl.pixelStorei(GLenum.PACK_ALIGNMENT, 1);
-  gl.pixelStorei(GLenum.UNPACK_ALIGNMENT, 1);
-
-  return {
-    copyFrameBuffer: gl.createFramebuffer(),
-    buffers: [],
-    state,
-    pipeline: null,
-    index: null,
-    stencilRef: 0,
-    scissor: false
-  };
-}
-
-function compileShaderProgram(device: Device, vertex: WebGLShader, fragment: WebGLShader): WebGLProgram {
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  const glp = (device as WebGL2Device).gl.createProgram()!;
-  (device as WebGL2Device).gl.attachShader(glp, vertex);
-  (device as WebGL2Device).gl.attachShader(glp, fragment);
-  (device as WebGL2Device).gl.linkProgram(glp);
-
-  if (MUGL_DEBUG) {
-    console.assert(
-      (device as WebGL2Device).gl.getProgramParameter(glp, GLenum.LINK_STATUS) || isDeviceLost(device),
-      `Failed to link program: ${(device as WebGL2Device).gl.getProgramInfoLog(glp)}`
-    );
-  }
-
-  return glp;
-}
-
-function framebufferTexture(
-  gl: WebGL2RenderingContext, attachment: GLenum, { texture, slice = 0, mipLevel = 0 }: TextureView
-): void {
-  if (is3DTexture((texture as WebGL2Texture).type)) {
-    gl.framebufferTextureLayer(GLenum.FRAMEBUFFER, attachment, (texture as WebGL2Texture).glt, mipLevel, slice);
-  } else {
-    const texTarget = ((texture as WebGL2Texture).type === GLenum.TEXTURE_CUBE_MAP) ?
-      GLenum.TEXTURE_CUBE_MAP_POSITIVE_X + slice : (texture as WebGL2Texture).type;
-    gl.framebufferTexture2D(GLenum.FRAMEBUFFER, attachment, texTarget, (texture as WebGL2Texture).glt, mipLevel);
-  }
-}
-
-function createResolveFrameBuffer(
-  gl: WebGL2RenderingContext, attachment: GLenum, view: TextureView
-): WebGLFramebuffer | null {
-  const fb = gl.createFramebuffer();
-  gl.bindFramebuffer(GLenum.FRAMEBUFFER, fb);
-  framebufferTexture(gl, attachment, view);
-  if (MUGL_DEBUG) {
-    console.assert(
-      gl.checkFramebufferStatus(GLenum.FRAMEBUFFER) === GLenum.FRAMEBUFFER_COMPLETE || gl.isContextLost(),
-      'Framebuffer completeness check failed for MSAA resolve buffer'
-    );
-  }
-  return fb;
-}
-
-function blitFramebuffer(
-  gl: WebGL2RenderingContext, from: WebGLFramebuffer | null, to: WebGLFramebuffer | null,
-  tex: WebGL2Texture, mask: number, attachment: UInt = GLenum.COLOR_ATTACHMENT0
-): void {
-  gl.bindFramebuffer(GLenum.READ_FRAMEBUFFER, from);
-  gl.bindFramebuffer(GLenum.DRAW_FRAMEBUFFER, to);
-  gl.readBuffer(attachment);
-  gl.blitFramebuffer(
-    0, 0, tex.width, tex.height,
-    0, 0, tex.width, tex.height,
-    mask, GLenum.NEAREST
-  );
-}
-
-function createPipelineState(desc: RenderPipelineState = {}): WebGL2PipelineState {
-  const primitive = desc.primitive || {};
-  const depthStencil = desc.depthStencil || {};
-  const { stencilFront = {}, stencilBack = {} } = depthStencil;
-  const { sampleCount = 1, alphaToCoverage = false } = desc.multisample || {};
-  const targets = desc.targets || {};
-  let blendWriteMask = targets.writeMask || ColorWrite.All;
-  let blendColor = targets.blendColor || {};
-  let blendAlpha = targets.blendColor || {};
-  if (targets.targets && targets.targets[0]) {
-    blendWriteMask = targets.targets[0].writeMask || blendWriteMask;
-    blendColor = targets.targets[0].blendColor || blendColor;
-    blendAlpha = targets.targets[0].blendAlpha || blendAlpha;
-  }
-
-  return {
-    sampleCount,
-    alphaToCoverage,
-
-    topology: primitive.topology || GLenum.TRIANGLES,
-    indexFormat: primitive.indexFormat || GLenum.UNSIGNED_SHORT,
-    frontFace: primitive.frontFace || GLenum.CCW,
-    cullMode: primitive.cullMode || GLenum.NONE,
-
-    depth: !!desc.depthStencil,
-    depthWrite: depthStencil.depthWrite || false,
-    depthFormat: depthStencil.format || GLenum.DEPTH_COMPONENT16,
-    depthCompare: depthStencil.depthCompare || GLenum.ALWAYS,
-    depthBias: depthStencil.depthBias || 0,
-    depthBiasSlopeScale: depthStencil.depthBiasSlopeScale || 0,
-
-    stencil: !!(depthStencil.stencilFront || depthStencil.stencilBack),
-    stencilFrontCompare: stencilFront.compare || GLenum.ALWAYS,
-    stencilFrontFailOp: stencilFront.failOp || GLenum.KEEP,
-    stencilFrontDepthFailOp: stencilFront.depthFailOp || GLenum.KEEP,
-    stencilFrontPassOp: stencilFront.passOp || GLenum.KEEP,
-    stencilBackCompare: stencilBack.compare || GLenum.ALWAYS,
-    stencilBackFailOp: stencilBack.failOp || GLenum.KEEP,
-    stencilBackDepthFailOp: stencilBack.depthFailOp || GLenum.KEEP,
-    stencilBackPassOp: stencilBack.passOp || GLenum.KEEP,
-    stencilReadMask: depthStencil.stencilReadMask || STENCIL_MASK,
-    stencilWriteMask: depthStencil.stencilWriteMask || STENCIL_MASK,
-
-    blend: !!desc.targets,
-    blendWriteMask,
-    blendColorOp: blendColor.operation || GLenum.FUNC_ADD,
-    blendColorSrcFactor: blendColor.srcFactor || GLenum.ONE,
-    blendColorDstFactor: blendColor.dstFactor || GLenum.ZERO,
-    blendAlphaOp: blendAlpha.operation || GLenum.FUNC_ADD,
-    blendAlphaSrcFactor: blendAlpha.srcFactor || GLenum.ONE,
-    blendAlphaDstFactor: blendAlpha.dstFactor || GLenum.ZERO,
-  };
-}
-
-function applyPipelineState(
-  gl: WebGL2RenderingContext, prevState: WebGL2PipelineState, state: WebGL2PipelineState, stencilRef = 0,
-  force = false
-): void {
-  // Temporary variables to reuse for performance
-  let b = false, n = 0, n2 = 0, n3 = 0, n4 = 0;
-
-  // 1. Apply primitive state
-  n = state.frontFace;
-  if (force || (prevState.frontFace !== n)) {
-    gl.frontFace(n);
-  }
-  n = state.cullMode;
-  if (force || (prevState.cullMode !== n)) {
-    if ((b = (n !== GLenum.NONE))) {
-      gl.cullFace(n);
-    }
-    glToggle(gl, GLenum.CULL_FACE, b);
-  }
-
-  // 2. Apply multisample state
-  b = state.alphaToCoverage;
-  if (force || (prevState.alphaToCoverage !== b)) {
-    glToggle(gl, GLenum.SAMPLE_ALPHA_TO_COVERAGE, b);
-  }
-
-  // 3. Apply depth state changes
-  b = !!state.depth;
-  if (force || (prevState.depth !== b)) {
-    glToggle(gl, GLenum.DEPTH_TEST, b);
-  }
-
-  if (force || b) {
-    applyDepthMask(gl, prevState.depthWrite, state.depthWrite, force);
-
-    n = state.depthCompare;
-    if (force || (prevState.depthCompare !== n)) {
-      gl.depthFunc(n);
-    }
-  }
-
-  n = state.depthBiasSlopeScale;
-  n2 = state.depthBias;
-  if (force || (prevState.depthBiasSlopeScale !== n) || (prevState.depthBias !== n2)) {
-    glToggle(gl, GLenum.POLYGON_OFFSET_FILL, !(!n && !n2)); // Enable if any of the 2 values is non-zero
-    gl.polygonOffset(n, n2);
-  }
-
-  // 4. Apply stencil state changes
-  b = !!state.stencil;
-  if (force || (prevState.stencil !== b)) {
-    glToggle(gl, GLenum.STENCIL_TEST, b);
-  }
-
-  if (force || b) {
-    n = state.stencilReadMask;
-    b = force || (prevState.stencilReadMask !== n);
-
-    n2 = state.stencilFrontCompare;
-    if (b || (prevState.stencilFrontCompare !== n2)) {
-      gl.stencilFuncSeparate(GLenum.FRONT, n2, stencilRef, n);
-    }
-    n2 = state.stencilBackCompare;
-    if (b || (prevState.stencilBackCompare !== n2)) {
-      gl.stencilFuncSeparate(GLenum.BACK, n2, stencilRef, n);
-    }
-
-    n = state.stencilFrontFailOp;
-    n2 = state.stencilFrontDepthFailOp;
-    n3 = state.stencilFrontPassOp;
-    if (force ||
-      (prevState.stencilFrontFailOp !== n) ||
-      (prevState.stencilFrontDepthFailOp !== n2) ||
-      (prevState.stencilFrontPassOp !== n3)
-    ) {
-      gl.stencilOpSeparate(GLenum.FRONT, n, n2, n3);
-    }
-    n = state.stencilBackFailOp;
-    n2 = state.stencilBackDepthFailOp;
-    n3 = state.stencilBackPassOp;
-    if (force ||
-      (prevState.stencilBackFailOp !== n) ||
-      (prevState.stencilBackDepthFailOp !== n2) ||
-      (prevState.stencilBackPassOp !== n3)
-    ) {
-      gl.stencilOpSeparate(GLenum.BACK, n, n2, n3);
-    }
-
-    applyStencilMask(gl, prevState.stencilWriteMask, state.stencilWriteMask, force);
-  }
-
-  // 5. Apply blend state changes
-  b = state.blend;
-  if (force || (prevState.blend !== b)) {
-    glToggle(gl, GLenum.BLEND, b);
-  }
-
-  if (force || b) {
-    n = state.blendColorSrcFactor;
-    n2 = state.blendColorDstFactor;
-    n3 = state.blendAlphaSrcFactor;
-    n4 = state.blendAlphaDstFactor;
-    if (force ||
-      (prevState.blendColorSrcFactor !== n) ||
-      (prevState.blendColorDstFactor !== n2) ||
-      (prevState.blendAlphaSrcFactor !== n3) ||
-      (prevState.blendAlphaDstFactor !== n4)
-    ) {
-      gl.blendFuncSeparate(n, n2, n3, n4);
-    }
-
-    n = state.blendColorOp;
-    n2 = state.blendAlphaOp;
-    if (force || (prevState.blendColorOp !== n) || (prevState.blendAlphaOp !== n2)) {
-      gl.blendEquationSeparate(n, n2);
-    }
-
-    applyColorMask(gl, prevState.blendWriteMask, state.blendWriteMask, force);
-  }
-}
-
-function applyColorMask(gl: WebGL2RenderingContext, prevMask: ColorWrite, mask: ColorWrite, force = false): void {
-  if (force || prevMask !== mask) {
-    gl.colorMask(
-      !!(mask & ColorWrite.Red),
-      !!(mask & ColorWrite.Green),
-      !!(mask & ColorWrite.Blue),
-      !!(mask & ColorWrite.Alpha)
-    );
-  }
-}
-
-function applyDepthMask(gl: WebGL2RenderingContext, prevMask: boolean, mask: boolean, force = false): void {
-  if (force || prevMask !== mask) {
-    gl.depthMask(mask);
-  }
-}
-
-function applyStencilMask(gl: WebGL2RenderingContext, prevMask: UInt, mask: UInt, force = false): void {
-  if (force || prevMask !== mask) {
-    gl.stencilMask(mask);
-  }
-}
-
-function glToggle(gl: WebGL2RenderingContext, flag: GLenum, enable: boolean): void {
-  enable ? gl.enable(flag) : gl.disable(flag);
-}
-
-function vertexAttribs(gl: WebGL2RenderingContext, buffer: WebGL2BufferAttributes, offset: UInt): void {
-  gl.bindBuffer(GLenum.ARRAY_BUFFER, buffer.glb);
-  for (let i = 0; i < buffer.attributes.length; ++i) {
-    const { ptr, step } = buffer.attributes[i];
-    const params: [number, number, number, boolean, number, number] = [...ptr];
-    params[5] += offset;
-    gl.vertexAttribPointer(...params);
-    gl.vertexAttribDivisor(ptr[0], step);
-  }
-}
-
-function clientWaitAsync(gl: WebGL2RenderingContext, sync: WebGLSync, flags: UInt, interval: UInt): Promise<void> {
-  return new Promise((resolve, reject) => {
-    function test() {
-      const res = gl.clientWaitSync(sync, flags, 0);
-      if (res == GLenum.WAIT_FAILED) {
-        reject();
-      } else if (res == GLenum.TIMEOUT_EXPIRED) {
-        setTimeout(test, interval);
-      } else {
-        resolve();
-      }
-    }
-    test();
-  });
-}
-
-function getBufferSubData(gl: WebGL2RenderingContext, target: UInt, buffer: WebGLBuffer, srcOffset: UInt, length: UInt): Promise<Uint8Array> {
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  const sync = gl.fenceSync(gl.SYNC_GPU_COMMANDS_COMPLETE, 0)!;
-  gl.flush();
-
-  return clientWaitAsync(gl, sync, 0, 10)
-    .finally(() => gl.deleteSync(sync))
-    .then(() => {
-      const data = new Uint8Array(length);
-      gl.bindBuffer(target, buffer);
-      gl.getBufferSubData(target, srcOffset, data, 0, length);
-      return data;
-    });
-}
-
-//#endregion Helpers

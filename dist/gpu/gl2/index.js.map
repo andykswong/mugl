@@ -1,0 +1,1 @@
+{"version":3,"file":"index.js","names":["WebGL","WebGL2Feature"],"sources":["../../../js/gpu/gl2/index.ts"],"sourcesContent":["/**\n * WebGL2 implementation.\n * @packageDocumentation\n */\n\nexport * as WebGL from './gl2';\nexport { WebGL2Feature } from './type';\nexport type { Canvas, WebGL2RenderingContextProvider } from './type';\n"],"mappings":"MAKO,GAAKA,MAAK,uBACRC,aAAa"}

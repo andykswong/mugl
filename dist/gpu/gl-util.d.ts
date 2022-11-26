@@ -4,7 +4,7 @@ import { IndexFormat, TextureDimension, TextureFormat, VertexFormat } from './ty
 /**
  * Checks if given texture type is a 3D or 2D array texture.
  * @internal
- * @param type texture type
+ * @param dimension texture dimension
  * @return whether the texture type is 3D
  */
 export declare function is3DTexture(dimension: TextureDimension): boolean;

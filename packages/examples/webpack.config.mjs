@@ -48,7 +48,6 @@ export default {
     alias: {
       env: path.resolve('./src/wasm/env'),
       'examples.wasm': path.resolve(OUTPUT_DIR, 'examples.wasm'),
-      'mugl/assembly': path.resolve('./src/interop/mugl'),
       'munum/assembly': path.resolve('./src/interop/munum'),
     },
   },

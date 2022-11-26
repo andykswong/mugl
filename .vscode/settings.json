@@ -3,6 +3,8 @@
   "eslint.workingDirectories": [
     "./",
     "./packages/examples",
+    "./packages/examples-native",
     "./packages/gltf-viewer"
-  ]
+  ],
+  "typescript.tsdk": "node_modules/typescript/lib"
 }

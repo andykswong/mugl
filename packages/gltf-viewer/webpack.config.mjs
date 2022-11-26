@@ -67,6 +67,7 @@ export default {
   plugins: [
     new webpack.DefinePlugin({
       'MUGL_DEBUG': debug,
+      'MUGL_FINALIZER': true,
     }),
     new CopyPlugin({
       patterns: [

@@ -1,15 +1,17 @@
-import { Device, Float, Resource, UInt } from 'mugl/assembly';
+import { Device, Float, Resource, UInt } from '../interop/mugl';
 
 export abstract class ExampleApplication {
-  public init(): void {}
+  public init(): void { /* empty */ }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public render(delta: Float): boolean {
     return false;
   }
 
-  public resize(width: UInt, height: UInt): void {}
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  public resize(width: UInt, height: UInt): void { /* empty */ }
 
-  public destroy(): void {}
+  public destroy(): void { /* empty */ }
 }
 
 export type ExampleFactory = (device: Device) => ExampleApplication;

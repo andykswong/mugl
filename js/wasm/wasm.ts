@@ -6,7 +6,7 @@ import {
   RenderPipeline, Resource, Sampler, SamplerBindingType, Shader, ShaderStage, StencilOperation, Texture,
   TextureDimension, TextureFormat, TextureSampleType, TextureUsage, UInt, VertexAttribute, VertexBufferLayout
 } from '../gpu';
-import * as WebGL from '../gpu/gl2';
+import { WebGL } from '../gpu';
 import { dataView, decodeStr, toWebGLContextAttributes } from './deserialize';
 
 export type ContextId = number & { readonly __tag: unique symbol };

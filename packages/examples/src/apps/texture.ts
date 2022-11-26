@@ -2,9 +2,9 @@ import { lookAt, mat, mat4, Mat4, perspective, scale } from 'munum/assembly';
 import {
   AddressMode, BindGroup, BindingType, Buffer, BufferUsage, CompareFunction, CullMode, Device,
   FilterMode, Float, RenderPipeline, RenderPipelineDescriptor, Sampler, ShaderStage, Texture,
-  TextureDimension, UInt, vertexBufferLayouts, VertexFormat, WebGL
-} from 'mugl/assembly';
-import { API, BaseExample, createBuffer, Cube, getImageById, Model, TEX_SIZE, toIndices, toVertices } from '../common';
+  TextureDimension, UInt, vertexBufferLayouts, VertexFormat, WebGL, getImage
+} from '../interop/mugl';
+import { BaseExample, createBuffer, Cube, Model, TEX_SIZE, toIndices, toVertices } from '../common';
 
 const texSize = TEX_SIZE;
 
@@ -72,24 +72,24 @@ class TextureRenderBundle {
     public indexBuffer: Buffer,
     public indexCount: UInt
   ) {
-    const textureLayout = API.createBindGroupLayout(device, {
+    const textureLayout = WebGL.createBindGroupLayout(device, {
       entries: [
         { label: 'tex', type: BindingType.Texture, binding: 0 },
         { label: 'tex', type: BindingType.Sampler, binding: 1 },
       ]
     });
-    const cameraLayout = API.createBindGroupLayout(device, {
+    const cameraLayout = WebGL.createBindGroupLayout(device, {
       entries: [{ label: 'Camera', type: BindingType.Buffer }]
     });
 
     pipelineDesc.bindGroups = [textureLayout, cameraLayout];
-    this.pipeline = API.createRenderPipeline(device, pipelineDesc);
+    this.pipeline = WebGL.createRenderPipeline(device, pipelineDesc);
 
-    this.texture = API.createTexture(device, {
+    this.texture = WebGL.createTexture(device, {
       dimension: textureType,
       size: [texSize, texSize, 1]
     });
-    this.sampler = API.createSampler(device, {
+    this.sampler = WebGL.createSampler(device, {
       magFilter: FilterMode.Linear,
       minFilter: FilterMode.Linear,
       mipmapFilter: FilterMode.Linear,
@@ -99,11 +99,11 @@ class TextureRenderBundle {
     });
     this.cameraBuffer = createBuffer(device, this.cameraData, BufferUsage.Uniform | BufferUsage.Stream);
 
-    this.textureBindGroup = API.createBindGroup(device, {
+    this.textureBindGroup = WebGL.createBindGroup(device, {
       layout: textureLayout,
       entries: [{ binding: 0, texture: this.texture }, { binding: 1, sampler: this.sampler }]
     });
-    this.cameraBindGroup = API.createBindGroup(device, {
+    this.cameraBindGroup = WebGL.createBindGroup(device, {
       layout: cameraLayout,
       entries: [{ buffer: this.cameraBuffer }]
     });
@@ -114,16 +114,16 @@ class TextureRenderBundle {
 
   public updateCamera(mvp: Mat4): void {
     mat.copy(mvp, this.cameraData, 0, 0, 16);
-    API.writeBuffer(this.device, this.cameraBuffer, this.cameraData);
+    WebGL.writeBuffer(this.device, this.cameraBuffer, this.cameraData);
   }
 
   public render(device: Device): void {
-    API.setRenderPipeline(device, this.pipeline);
-    API.setIndex(device, this.indexBuffer);
-    API.setVertex(device, 0, this.vertexBuffer);
-    API.setBindGroup(device, 0, this.textureBindGroup);
-    API.setBindGroup(device, 1, this.cameraBindGroup);
-    API.drawIndexed(device, this.indexCount);
+    WebGL.setRenderPipeline(device, this.pipeline);
+    WebGL.setIndex(device, this.indexBuffer);
+    WebGL.setVertex(device, 0, this.vertexBuffer);
+    WebGL.setBindGroup(device, 0, this.textureBindGroup);
+    WebGL.setBindGroup(device, 1, this.cameraBindGroup);
+    WebGL.drawIndexed(device, this.indexCount);
   }
 
   public destroy(): void {
@@ -149,15 +149,15 @@ export class TextureExample extends BaseExample {
 
   init(): void {
     // Get texture images
-    const airplane = getImageById('airplane');
-    const sky0 = getImageById('sky0');
-    const sky1 = getImageById('sky1');
-    const sky2 = getImageById('sky2');
+    const airplane = getImage('airplane');
+    const sky0 = getImage('sky0');
+    const sky1 = getImage('sky1');
+    const sky2 = getImage('sky2');
 
     // Create shaders
-    const vs = API.createShader(this.device, { code: vert, usage: ShaderStage.Vertex });
-    const cubeFs = API.createShader(this.device, { code: fragCube, usage: ShaderStage.Fragment });
-    const skyFs = API.createShader(this.device, { code: fragSky, usage: ShaderStage.Fragment });
+    const vs = WebGL.createShader(this.device, { code: vert, usage: ShaderStage.Vertex });
+    const cubeFs = WebGL.createShader(this.device, { code: fragCube, usage: ShaderStage.Fragment });
+    const skyFs = WebGL.createShader(this.device, { code: fragSky, usage: ShaderStage.Fragment });
 
     // Create buffers
     this.vertBuffer = createBuffer(this.device, cubeVertices);
@@ -182,7 +182,7 @@ export class TextureExample extends BaseExample {
       this.device, cubePipelineDesc, TextureDimension.D2, this.vertBuffer!, this.indexBuffer!, cubeIndices.length
     );
     if (airplane) {
-      API.copyExternalImageToTexture(this.device, { src: airplane }, { texture: this.cube!.texture });
+      WebGL.copyExternalImageToTexture(this.device, { src: airplane }, { texture: this.cube!.texture });
       WebGL.generateMipmap(this.device, this.cube!.texture);
     }
 
@@ -202,7 +202,7 @@ export class TextureExample extends BaseExample {
     if (sky0 && sky1 && sky2) {
       const cubeImages = [sky0, sky0, sky1, sky2, sky0, sky0];
       for (let z = 0; z < 6; ++z) {
-        API.copyExternalImageToTexture(this.device, { src: cubeImages[z] }, { texture: this.skybox!.texture, origin: [0, 0, z] });
+        WebGL.copyExternalImageToTexture(this.device, { src: cubeImages[z] }, { texture: this.skybox!.texture, origin: [0, 0, z] });
       }
       WebGL.generateMipmap(this.device, this.skybox!.texture);
     }
@@ -223,10 +223,10 @@ export class TextureExample extends BaseExample {
     mvp = mat4.mul(vp, scale([10, 10, 10]), vp);  // Make the skybox bigger
     this.skybox!.updateCamera(mvp);
 
-    API.beginDefaultPass(this.device, { clearColor: [0.1, 0.2, 0.3, 1], clearDepth: 1 });
+    WebGL.beginDefaultPass(this.device, { clearColor: [0.1, 0.2, 0.3, 1], clearDepth: 1 });
     this.cube!.render(this.device);
     this.skybox!.render(this.device);
-    API.submitRenderPass(this.device);
+    WebGL.submitRenderPass(this.device);
 
     return true;
   }
