@@ -1,5 +1,5 @@
 import { GPU } from '..';
-import * as WebGL from '../gl2';
+import { WebGL } from '../gl2';
 
 describe('WebGL', () => {
   test('WebGL fits the GPU interface', () => {
