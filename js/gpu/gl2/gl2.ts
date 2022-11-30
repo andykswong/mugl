@@ -244,7 +244,7 @@ export function createSampler(device: Device, desc: SamplerDescriptor = {}): Sam
   (device as WebGL2Device).gl.samplerParameteri(gls, GLenum.TEXTURE_WRAP_S, desc.addressModeU || GLenum.CLAMP_TO_EDGE);
   (device as WebGL2Device).gl.samplerParameteri(gls, GLenum.TEXTURE_WRAP_T, desc.addressModeV || GLenum.CLAMP_TO_EDGE);
   (device as WebGL2Device).gl.samplerParameteri(gls, GLenum.TEXTURE_WRAP_R, desc.addressModeW || GLenum.CLAMP_TO_EDGE);
-  (device as WebGL2Device).gl.samplerParameterf(gls, GLenum.TEXTURE_MAX_LOD, desc.lodMaxClamp || 32);
+  (device as WebGL2Device).gl.samplerParameterf(gls, GLenum.TEXTURE_MAX_LOD, desc.lodMaxClamp !== void 0 ? desc.lodMaxClamp : 32);
   (device as WebGL2Device).gl.samplerParameterf(gls, GLenum.TEXTURE_MIN_LOD, desc.lodMinClamp || 0);
   if (desc.compare) {
     (device as WebGL2Device).gl.samplerParameterf(gls, GLenum.TEXTURE_COMPARE_MODE, GLenum.COMPARE_REF_TO_TEXTURE);
