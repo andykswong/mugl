@@ -1,10 +1,5 @@
 {
   "editor.tabSize": 2,
-  "eslint.workingDirectories": [
-    "./",
-    "./packages/examples",
-    "./packages/examples-native",
-    "./packages/gltf-viewer"
-  ],
-  "typescript.tsdk": "node_modules/typescript/lib"
+  "javascript.preferences.quoteStyle": "single",
+  "typescript.preferences.quoteStyle": "single"
 }

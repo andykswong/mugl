@@ -48,9 +48,9 @@ node_modules/
 coverage/
 docs/
 packages/*/dist/
+dist/
 
 # Compiled test files
-dist/**/__tests__/
 **/__tests__/**/*.spec.map
 **/__tests__/**/*.spec.wat
 

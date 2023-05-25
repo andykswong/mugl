@@ -1,1 +1,0 @@
-{"version":3,"file":"index.js","names":[],"sources":["../../js/wasm/index.ts"],"sourcesContent":["export * from './wasm';\n"],"mappings":""}

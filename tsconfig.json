@@ -2,11 +2,12 @@
   "extends": "assemblyscript/std/portable.json",
   "compilerOptions": {
     "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true,
     "isolatedModules": true,
     "preserveConstEnums": true,
     "strict": true,
     "module": "esnext",
-    "target": "es2021",
+    "target": "es2022",
     "moduleResolution": "node",
     "esModuleInterop": true,
     "skipLibCheck": true,
@@ -21,17 +22,19 @@
     ],
     "types": [
       "portable",
-      "jest"
+      "jest",
+      "node",
+      "webgl-ext"
     ],
     "lib": [
-      "es2021",
+      "es2022",
       "dom",
       "webworker"
     ],
-    "rootDir": "js",
-    "outDir": "dist"
+    "rootDir": "./src",
+    "outDir": "./dist"
   },
   "include": [
-    "js/**/*.ts"
+    "./src/**/*.ts"
   ]
 }

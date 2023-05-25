@@ -13,6 +13,7 @@ const ASSET_DIR = path.resolve('./assets');
 const OUTPUT_DIR = path.resolve('./dist');
 const WASM_FILES = '*.{wasm,wasm.map}';
 
+/** @type {import('webpack').Configuration} */
 export default {
   mode,
   entry: {
@@ -36,7 +37,8 @@ export default {
         use: {
           loader: 'babel-loader',
           options: {
-            envName: 'webpack'
+            envName: 'webpack',
+            rootMode: 'upward'
           }
         },
         exclude: /node_modules/,
@@ -46,7 +48,7 @@ export default {
   resolve: {
     extensions: [ '.js', '.mjs', '.ts' ],
     alias: {
-      env: path.resolve('./src/wasm/env'),
+      'env': path.resolve('./src/wasm/env'),
       'examples.wasm': path.resolve(OUTPUT_DIR, 'examples.wasm'),
       'munum/assembly': path.resolve('./src/interop/munum'),
     },

@@ -1,11 +1,15 @@
-<h1 align="center">█▓▒­░⡷⠂μ ＧＬ⠐⢾░▒▓█</h1>
-<h2 align="center">Micro WebGL 2.0 3D Graphics Library for JavaScript and WebAssembly</h2>
-<br />
-<p align="center">
-  <a href="./LICENSE"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT" /></a> 
-  <a href="https://www.npmjs.com/package/mugl"><img src="https://img.shields.io/npm/v/mugl" alt="NPM" /></a> 
-  <a href="https://github.com/andykswong/mugl/actions/workflows/build.yaml"><img src="https://github.com/andykswong/mugl/actions/workflows/build.yaml/badge.svg" alt="build" /></a>
-</p>
+<h1 align="center">█▓▒­░⡷⠂μＧＬ⠐⢾░▒▓█</h1>
+<h2 align="center">mugl - Micro 3D Graphics Library for JavaScript and WebAssembly</h2>
+<br/>
+
+[![mugl](https://img.shields.io/badge/project-mugl-blueviolet.svg?style=flat-square&logo=github)](https://github.com/andykswong/mugl)
+[![npm](https://img.shields.io/npm/v/mugl?style=flat-square&logo=npm)](https://www.npmjs.com/package/mugl)
+[![docs](https://img.shields.io/badge/docs-typedoc-blue?style=flat-square&logo=typescript&logoColor=white)](http://andykswong.github.io/mugl)
+[![license: MIT](https://img.shields.io/badge/License-MIT-red.svg?style=flat-square)](./LICENSE)
+[![build](https://img.shields.io/github/actions/workflow/status/andykswong/mugl/build.yaml?style=flat-square)](https://github.com/andykswong/mugl/actions/workflows/build.yaml)
+
+<br/>
+
 
 ## Overview
 

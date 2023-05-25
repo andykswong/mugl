@@ -1,7 +1,5 @@
-import { DeviceId, BufferId, TextureId, SamplerId, ShaderId, BindGroupLayoutId, BindGroupId, RenderPipelineId, RenderPassId, createBuffer, requestWebGL2Device, deleteDevice, deleteBuffer, deleteTexture, createTexture, deleteShader, createShader, createSampler, deleteSampler, deleteBindGroupLayout, createBindGroupLayout, deleteBindGroup, createBindGroup, createRenderPass, deleteRenderPass, createRenderPipeline, deleteRenderPipeline } from '../mugl';
+import { DeviceId, BufferId, TextureId, SamplerId, ShaderId, BindGroupLayoutId, BindGroupId, RenderPipelineId, RenderPassId, createBuffer, deleteDevice, deleteBuffer, deleteTexture, createTexture, deleteShader, createShader, createSampler, deleteSampler, deleteBindGroupLayout, createBindGroupLayout, deleteBindGroup, createBindGroup, createRenderPass, deleteRenderPass, createRenderPipeline, deleteRenderPipeline } from '../mugl';
 import { BindGroupDescriptor, BindGroupLayoutDescriptor, BufferDescriptor, ColorTargetStates, DepthStencilState, RenderPassDescriptor, RenderPipelineDescriptor, SamplerDescriptor, ShaderDescriptor, TextureDescriptor } from './descriptor';
-import { Canvas, WebGL2Feature, WebGLContextAttributes } from './gl2-type';
-import { toWebGLContextAttributeFlag } from './serialize';
 import { BindingType } from './type';
 
 const BIND_GROUP_LAYOUT_ENTRY_SIZE = 32;
@@ -26,20 +24,6 @@ export abstract class Resource {
  */
 export abstract class Device extends Resource {
   public id: DeviceId = 0;
-
-  public destroy(): void {
-    deleteDevice(this.id);
-  }
-}
-
-/**
- * A GPU device resource.
- */
-export class WebGL2Device extends Device {
-  public constructor(canvas: Canvas, desc: WebGLContextAttributes, features: WebGL2Feature = 0) {
-    super();
-    this.id = requestWebGL2Device(canvas.id, toWebGLContextAttributeFlag(desc), features);
-  }
 
   public destroy(): void {
     deleteDevice(this.id);

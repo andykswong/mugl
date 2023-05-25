@@ -1,4 +1,6 @@
 name: release
+permissions:
+  contents: write
 on:
   release:
     types: [created]
@@ -6,18 +8,19 @@ jobs:
   npm_publish:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - uses: actions/setup-node@v2
+    - uses: actions/checkout@v3
+    - uses: actions/setup-node@v3
       with:
-        node-version: '16'
-        registry-url: 'https://registry.npmjs.org'
+        node-version: '18'
     - run: npm ci
-    - run: npm run build --workspaces
-      name: Build
+    - run: npm run build --ws
+    - run: npm test --ws
+      env:
+        CI: true
     - run: npm publish
       env:
         NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-    - run: npm run doc --workspace=mugl -- --excludeInternal
+    - run: npm run doc
     - name: Deploy docs
       uses: peaceiris/actions-gh-pages@v3
       with:

@@ -1,5 +1,5 @@
 import { FutureId, getFutureStatus } from '../mugl';
-import { ImageSource } from './dom-resource';
+import { ImageSource } from '../dom';
 
 export { ImageSource };
 

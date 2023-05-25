@@ -5,7 +5,8 @@
   "options": {
     "sourceMap": true,
     "exportRuntime": true,
-    "runtime": "incremental"
+    "runtime": "incremental",
+    "disableWarning": [ 235 ]
   },
   "targets": {
     "debug": {

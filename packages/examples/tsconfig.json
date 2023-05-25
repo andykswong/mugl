@@ -1,24 +1,10 @@
 {
-  "extends": "assemblyscript/std/portable.json",
+  "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "allowSyntheticDefaultImports": true,
-    "isolatedModules": true,
-    "preserveConstEnums": true,
-    "strict": true,
-    "module": "esnext",
-    "target": "es2020",
-    "moduleResolution": "node",
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "allowJs": true, 
-    "declaration": true,
-    "declarationMap": true,
-    "sourceMap": true,
-    "lib": [
-      "es2020",
-      "dom",
-      "webworker"
-    ],
-    "outDir": "dist"
-  }
+    "rootDir": "./src",
+    "outDir": "./dist"
+  },
+  "include": [
+    "./src/**/*.ts"
+  ]
 }

@@ -7,6 +7,7 @@ const mode = process.env.NODE_ENV || PRODUCTION;
 const isProd = mode === PRODUCTION;
 export const debug = process.env.DEBUG || !isProd;
 
+/** @type {import('webpack').Configuration} */
 export default {
   mode,
   output: {

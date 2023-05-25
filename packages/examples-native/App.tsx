@@ -17,9 +17,17 @@ async function onContextCreate(gl: ExpoWebGLRenderingContext) {
   const canvas = { getContext() { return gl; }, ...CANVAS_SIZE };
   const device = WebGL.requestWebGL2Device(canvas);
 
+  const layout = WebGL.createBindGroupLayout(device, {
+    entries: [
+      { label: 'tex', type: BindingType.Texture, binding: 0 },
+      { label: 'tex', type: BindingType.Sampler, binding: 1 },
+    ]
+  });
+
   const pipeline = WebGL.createRenderPipeline(device, {
     vertex: WebGL.createShader(device, { code: vert, usage: ShaderStage.Vertex }),
     fragment: WebGL.createShader(device, { code: frag, usage: ShaderStage.Fragment }),
+    bindGroups: [layout],
     buffers: vertexBufferLayouts([
       { attributes: [/* position */ VertexFormat.F32x3, /* uv */ VertexFormat.F32x2] }
     ]),
@@ -31,12 +39,6 @@ async function onContextCreate(gl: ExpoWebGLRenderingContext) {
   const texture = WebGL.createTexture(device, { size: [...size, 1] });
   WebGL.copyExternalImageToTexture(device, { src: image }, { texture }, size);
   const sampler = WebGL.createSampler(device, { magFilter: FilterMode.Linear, minFilter: FilterMode.Linear });
-  const layout = WebGL.createBindGroupLayout(device, {
-    entries: [
-      { label: 'tex', type: BindingType.Texture, binding: 0 },
-      { label: 'tex', type: BindingType.Sampler, binding: 1 },
-    ]
-  });
   const bindgroup = WebGL.createBindGroup(device, { layout, entries: [{ texture }, { sampler }] });
 
   const buffer = WebGL.createBuffer(device, { usage: BufferUsage.Vertex, size: vertices.byteLength });

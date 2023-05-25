@@ -4,21 +4,22 @@
   "description": "mugl examples",
   "private": "true",
   "dependencies": {
-    "mugl": "^0.2",
+    "mugl": "^0.3",
     "munum": "^0.1"
   },
   "scripts": {
-    "build": "npm run asbuild && npm run webpack",
-    "asbuild": "asc --target release",
-    "asbuild:debug": "asc --target debug",
+    "build": "npm run build:as && npm run webpack",
+    "build:as": "asc --target release",
+    "build:as-debug": "asc --target debug",
     "webpack": "webpack",
     "examples": "cross-env NODE_ENV=development webpack serve",
-    "start": "npm run examples"
+    "start": "npm run examples",
+    "test" : "echo"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.20",
-    "@babel/preset-typescript": "^7.18",
-    "assemblyscript": "^0.23",
+    "@babel/preset-typescript": "^7.20",
+    "assemblyscript": "^0.27",
     "babel-loader": "^9.1",
     "copy-webpack-plugin": "^11.0",
     "copyfiles": "^2.4",
@@ -26,12 +27,12 @@
     "glslify": "^7.1",
     "glslify-import": "^3.1",
     "json-schema-ref-parser": "^9.0",
-    "json-schema-to-typescript": "^11.0",
-    "rimraf": "^3.0",
+    "json-schema-to-typescript": "^13.0",
+    "rimraf": "^5.0",
     "source-map-loader": "^4.0",
-    "webpack": "^5.74",
-    "webpack-cli": "^4.10",
-    "webpack-dev-server": "^4.9",
+    "webpack": "^5.80",
+    "webpack-cli": "^5.0",
+    "webpack-dev-server": "^4.15",
     "webpack-glsl-minify": "^1.5"
   },
   "glslify": {

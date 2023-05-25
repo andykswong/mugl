@@ -1,2 +1,0 @@
-export*from"./descriptor.js";export*from"./gpu.js";export*from"./primitive.js";export*from"./resource.js";export*from"./type.js";export{vertexBufferLayouts}from"./gl-util.js";export*from"./gl2/index.js";
-//# sourceMappingURL=index.js.map

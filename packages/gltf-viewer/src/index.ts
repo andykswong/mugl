@@ -1,4 +1,3 @@
-
 import { loadGlTF, GlTFAsset } from '@muds/gltf';
 import { vec3 } from 'munum';
 import { WebGL } from 'mugl';

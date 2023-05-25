@@ -2,7 +2,11 @@
   "root": true,
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
-    "project": "tsconfig.eslint.json",
+    "project": [
+      "./tsconfig.eslint.json",
+      "./packages/**/tsconfig.json",
+      "./packages/**/tsconfig.eslint.json"
+    ],
     "sourceType": "module"
   },
   "plugins": [
@@ -14,14 +18,25 @@
     "plugin:@typescript-eslint/recommended"
   ],
   "env": {
-    "es2020": true,
+    "es2022": true,
     "browser": true,
     "node": true,
     "jest": true
   },
   "ignorePatterns": [
+    "/dist/",
+    "/packages/**/dist/"
   ],
   "rules": {
+    "no-unused-vars": "off",
+    "@typescript-eslint/no-unused-vars": [
+      "warn",
+      { 
+        "argsIgnorePattern": "^_",
+        "varsIgnorePattern": "^_",
+        "caughtErrorsIgnorePattern": "^_"
+      }
+    ],
     "@typescript-eslint/ban-ts-comment": [
       "error",
       {

@@ -1,0 +1,12 @@
+{
+  "extends": [
+    "./typedoc.base.json"
+  ],
+  "name": "mugl",
+  "entryPoints": [
+    "src/index.ts",
+    "src/wasm/index.ts"
+  ],
+  "includeVersion": true,
+  "readme": "./README.md"
+}

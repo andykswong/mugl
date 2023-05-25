@@ -4,9 +4,11 @@ import { AppDefinition, Apps } from './apps';
 import { loadImages } from './images';
 import { initExamplesWASM } from './wasm';
 
-declare const window: Window & {
-  loadExample: (url?: string) => void;
-};
+declare global {
+  interface Window {
+    loadExample: (url?: string) => void;
+  }
+}
 
 class Redirect extends ExampleApplication {
   constructor(private readonly uri: string) {

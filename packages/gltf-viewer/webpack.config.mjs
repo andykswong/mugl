@@ -12,6 +12,7 @@ export const debug = process.env.DEBUG || !isProd;
 const ASSET_DIR = path.resolve('./assets');
 const OUTPUT_DIR = path.resolve('./dist');
 
+/** @type {import('webpack').Configuration} */
 export default {
   mode,
   entry: {
@@ -35,7 +36,8 @@ export default {
         use: {
           loader: 'babel-loader',
           options: {
-            envName: 'webpack'
+            envName: 'webpack',
+            rootMode: 'upward'
           }
         },
         exclude: /node_modules/,

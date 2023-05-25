@@ -137,7 +137,7 @@ export class SamplerDescriptor {
   lodMaxClamp: Float = 32;
 
   /** Specifies the behavior of a comparison sampler. Defaults to null. */
-  compare: CompareFunction = 0;
+  compare: CompareFunction = 0 as CompareFunction;
 
   /** Max anisotropy level. Defaults to 1. Requires EXT_texture_filter_anisotropic extension. */
   maxAnisotropy: UInt = 1;
