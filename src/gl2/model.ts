@@ -2,12 +2,12 @@ import {
   BindGroup, BindGroupEntry, BindGroupLayout, BindGroupLayoutEntry, BindingType, Buffer, Color, Device, Float,
   RenderPass, RenderPipeline, Sampler, Shader, Texture, UInt, VertexBufferLayout
 } from '../gpu';
-import { Canvas, WebGL2Feature } from './type';
+import { WebGL2Feature, WebGL2RenderingContextProvider } from './type';
 
 //#region Model Types
 
 export interface WebGL2Device extends Device {
-  readonly canvas: Canvas;
+  readonly canvas: WebGL2RenderingContextProvider;
   readonly gl: WebGL2RenderingContext;
   readonly features: WebGL2Feature;
   readonly extDrawBuffersi: OES_draw_buffers_indexed | null;

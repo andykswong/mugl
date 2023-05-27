@@ -67,15 +67,20 @@ export default {
     ],
   },
   plugins: [
-    new webpack.DefinePlugin({
-      'MUGL_DEBUG': debug,
-      'MUGL_FINALIZER': true,
-    }),
     new CopyPlugin({
       patterns: [
         { from: ASSET_DIR, to: OUTPUT_DIR }
       ],
-    })
+    }),
+    new webpack.EnvironmentPlugin({
+      'NODE_ENV': mode,
+      'MUGL_DEBUG': false,
+      'MUGL_FINALIZER': false,
+    }),
+    new webpack.DefinePlugin({
+      'MUGL_DEBUG': debug,
+      'MUGL_FINALIZER': true,
+    }),
   ],
   devtool: isProd ? false : 'source-map',
   devServer: {

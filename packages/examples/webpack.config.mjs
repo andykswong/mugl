@@ -73,15 +73,21 @@ export default {
     ],
   },
   plugins: [
-    new webpack.DefinePlugin({
-      'MUGL_DEBUG': debug,
-    }),
     new CopyPlugin({
       patterns: [
         { from: WASM_FILES, context: OUTPUT_DIR },
         { from: ASSET_DIR, to: OUTPUT_DIR }
       ],
-    })
+    }),
+    new webpack.EnvironmentPlugin({
+      'NODE_ENV': mode,
+      'MUGL_DEBUG': false,
+      'MUGL_FINALIZER': false,
+    }),
+    new webpack.DefinePlugin({
+      'MUGL_DEBUG': debug,
+      'MUGL_FINALIZER': false,
+    }),
   ],
   experiments: {
     asyncWebAssembly: true,

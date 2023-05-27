@@ -1,4 +1,4 @@
-import { GenerationalArena } from './arena';
+import { Canvas } from '../dom';
 import {
   AddressMode, BindGroup, BindGroupLayout, BindGroupLayoutEntry, BindingType, Buffer, BufferUsage, Color,
   ColorAttachment, ColorTargetState, CompareFunction, CullMode, Device, FilterMode, Float, FrontFace, Future,
@@ -6,7 +6,8 @@ import {
   RenderPipeline, Resource, Sampler, SamplerBindingType, Shader, ShaderStage, StencilOperation, Texture,
   TextureDimension, TextureFormat, TextureSampleType, TextureUsage, UInt, VertexAttribute, VertexBufferLayout
 } from '../gpu';
-import { Canvas, WebGL } from '../gl2';
+import { WebGL } from '../gl2';
+import { GenerationalArena } from './arena';
 import { dataView, decodeStr, toWebGLContextAttributes } from './deserialize';
 
 export type ContextId = number & { readonly __tag: unique symbol };
