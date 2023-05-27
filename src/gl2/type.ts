@@ -1,10 +1,5 @@
 /**
-* A canvas element from which a WebGL2RenderingContext can be retrieved.
-*/
-export type Canvas = HTMLCanvasElement | WebGL2RenderingContextProvider;
-
-/**
- * Interface for a provider of WebGL2RenderingContext provider.
+ * Interface for a provider of WebGL2RenderingContext.
  * Useful for non-Web environments where HTML Canvas element does not exist.
  */
 export interface WebGL2RenderingContextProvider {

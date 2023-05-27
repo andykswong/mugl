@@ -381,7 +381,9 @@ export function clientWaitAsync(gl: WebGL2RenderingContext, sync: WebGLSync, fla
   });
 }
 
-export function getBufferSubData(gl: WebGL2RenderingContext, target: UInt, buffer: WebGLBuffer, srcOffset: UInt, length: UInt): Promise<Uint8Array> {
+export function getBufferSubData(
+  gl: WebGL2RenderingContext, target: UInt, buffer: WebGLBuffer | null, srcOffset: UInt, length: UInt
+): Promise<Uint8Array> {
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const sync = gl.fenceSync(gl.SYNC_GPU_COMMANDS_COMPLETE, 0)!;
   gl.flush();

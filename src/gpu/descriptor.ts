@@ -445,10 +445,10 @@ export interface BindGroupLayoutEntry {
   /** Whether buffer has dynamic offset. Defaults to false. */
   bufferDynamicOffset?: boolean;
 
-  /** Type of sampler. Not used currently */
+  /** Type of sampler binding. */
   samplerType?: SamplerBindingType;
 
-  /** Type of texture sample. Not used currently */
+  /** Type of texture sample. */
   textureSampleType?: TextureSampleType;
 
   /** Dimension of texture. Defaults to {@link TextureDimension.D2}. */

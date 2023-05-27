@@ -15,7 +15,11 @@
 
 `mugl` is a minimal, modern WebGL 2.0 3D graphics abstraction layer that removes the verbosity and state management aspect of WebGL. It is designed to be a simplified version of the [WebGPU](https://gpuweb.github.io/gpuweb/) API. If you want to write simple, low-level graphics code in WebGPU style today, `mugl` is for you.
 
-`mugl` runs on any modern web browser, and mobile via React Native. It provides WebAssembly (WASM) bindings in addition to JavaScript/TypeScript. With its [AssemblyScript](https://www.assemblyscript.org/) binding, you can run the same JavaScript 3D app code on WASM (see [examples](#examples)). Additional WASM language bindings (e.g. Rust) and platform supports (e.g. native Desktop) are planned.
+`mugl` runs on any modern web browser, and mobile via React Native. It provides WebAssembly (WASM) bindings in addition to JavaScript. With its [AssemblyScript](https://www.assemblyscript.org/) binding, you can run the same JavaScript 3D app code on WASM (see [examples](#examples)). Additional WASM language bindings (e.g. Rust) and platform supports (e.g. native Desktop) are planned.
+
+## Documentation
+- Latest JavaScript / AssemblyScript interface: [(link)](http://andykswong.github.io/mugl/latest/docs)
+- Raw WebAssembly API spec: [API.wit](./API.wit), [AssemblyScript imports](./assembly/mugl.ts)
 
 ## Showcase
 
@@ -36,11 +40,6 @@ The source code can be found [here](./packages/gltf-viewer).
 Any model from [glTF-Sample-Models](https://github.com/KhronosGroup/glTF-Sample-Models) can be loaded using the `model` and `variant` URL parameter, e.g.: [?model=Buggy&variant=glTF-Binary](https://andykswong.github.io/mugl/latest/gltf-viewer/?model=Buggy&variant=glTF-Binary&camera=0&scene=0) to load the [Buggy](https://github.com/KhronosGroup/glTF-Sample-Models/tree/master/2.0/Buggy) model. You can also use the `url` URL parameter to load a model from any source ([example](https://andykswong.github.io/mugl/latest/gltf-viewer/?url=https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Avocado/glTF/Avocado.gltf)).
 
 ![glTF 2.0 Model Viewer](./screenshots/DamagedHelmet.png)
-
-## API Documentation
-For JavaScript / AssemblyScript interface, see TSDoc [here](http://andykswong.github.io/mugl/latest/docs).
-
-For raw WebAssembly interface, see the API spec: [API.wit](./API.wit) or the AssemblyScript imports: [mugl.ts](./assembly/mugl.ts)
 
 ## Usage
 
@@ -116,7 +115,6 @@ fragment.destroy();
 pipeline.destroy();
 buffer.destroy();
 device.destroy();
-
 ```
 
 ### 2. Running on React Native Mobile Apps via expo-gl

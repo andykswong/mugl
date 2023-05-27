@@ -5,4 +5,4 @@
 
 export * as WebGL from './gl2';
 export { WebGL2Feature } from './type';
-export type { Canvas, WebGL2RenderingContextProvider } from './type';
+export type { WebGL2RenderingContextProvider } from './type';

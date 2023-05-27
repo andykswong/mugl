@@ -61,6 +61,12 @@ export type Origin3D = [x: number, y: number, z: number];
 export interface Future {
     /** Returns current status of the future. */
     get status(): FutureStatus;
+
+    /** Converts this future into a Promise. */
+    then<TResult1 = void, TResult2 = never>(
+        onfulfilled?: () => TResult1 | PromiseLike<TResult1>,
+        onrejected?: () => TResult2 | PromiseLike<TResult2>
+    ): Promise<TResult1 | TResult2>;
 }
 
 /**

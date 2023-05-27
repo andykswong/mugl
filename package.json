@@ -81,6 +81,7 @@
     "@types/webgl-ext": "^0.0",
     "@typescript-eslint/eslint-plugin": "^5.50",
     "@typescript-eslint/parser": "^5.50",
+    "@webgpu/types": "^0.1",
     "assemblyscript": "^0.27",
     "babel-jest": "^29.5",
     "babel-loader": "^9.1",

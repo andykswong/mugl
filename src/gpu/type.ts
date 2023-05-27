@@ -447,6 +447,8 @@ export enum TextureSampleType {
   Int = 0x2,
 
   UInt = 0x3,
+
+  UnfilterableFloat = 0x4,
 }
 
 /**

@@ -18,13 +18,15 @@
     "typeRoots": [
       "node_modules/@types",
       "node_modules/assemblyscript/std/types",
-      "assembly"
+      "assembly",
+      "node_modules/@webgpu/types"
     ],
     "types": [
       "portable",
       "jest",
       "node",
-      "webgl-ext"
+      "webgl-ext",
+      "@webgpu/types"
     ],
     "lib": [
       "es2022",

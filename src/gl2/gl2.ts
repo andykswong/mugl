@@ -1,4 +1,5 @@
 import { MUGL_DEBUG, MUGL_FINALIZER } from '../config';
+import { Canvas } from '../dom';
 import * as GLenum from '../gpu/gl-const';
 import {
   BindGroup, BindGroupLayout, BindingType, BufferUsage, Buffer, Color, ColorWrite, Device, Extent2D, Extent3D, Future,
@@ -15,7 +16,7 @@ import {
   WebGL2Device, WebGL2Buffer, WebGL2Texture, WebGL2Sampler, WebGL2Shader, WebGL2RenderPass, WebGL2BindGroupLayout,
   WebGL2BindGroup, WebGL2RenderPipeline, UniformCache, WebGL2Attribute
 } from './model';
-import { Canvas, WebGL2Feature, WebGL2FeatureNames } from './type';
+import { WebGL2Feature, WebGL2FeatureNames, WebGL2RenderingContextProvider } from './type';
 import {
   initWebGL2State, framebufferTexture, createResolveFrameBuffer, compileShaderProgram, createPipelineState,
   getBufferSubData, blitFramebuffer, applyPipelineState, vertexAttribs, glToggle, isDeviceLost, applyColorMask,
@@ -26,22 +27,17 @@ import {
 
 const BYTE_MASK = 0xFF;
 
-//#endregion Constants
-
-//#region Device
-
 type GPUFinalizer = FinalizationRegistry<{
   finalizer: (gl: WebGL2RenderingContext) => void,
   gl: WebGL2RenderingContext,
 }>;
 
-let gpuFinalizer: GPUFinalizer | null = null;
+const gpuFinalizer: GPUFinalizer | null = MUGL_FINALIZER ?
+  new FinalizationRegistry(({ finalizer, gl }) => finalizer(gl)) : null;
 
-if (MUGL_FINALIZER) {
-  gpuFinalizer = new FinalizationRegistry(({ finalizer, gl }) => {
-    finalizer(gl);
-  });
-}
+//#endregion Constants
+
+//#region Device
 
 export { isDeviceLost } from './helper';
 
@@ -53,7 +49,7 @@ export { isDeviceLost } from './helper';
  * @returns WebGL2 GPU device instance, or null if WebGL2 is not supported
  */
 export function requestWebGL2Device(
-  canvas: Canvas, options: WebGLContextAttributes = {}, features = 0 as WebGL2Feature
+  canvas: Canvas | WebGL2RenderingContextProvider, options: WebGLContextAttributes = {}, features = 0 as WebGL2Feature
 ): Device | null {
   const gl: WebGL2RenderingContext | null = canvas.getContext('webgl2', options);
   if (gl) {
@@ -315,7 +311,7 @@ export function createShader(device: Device, desc: ShaderDescriptor): Shader {
   return shader;
 }
 
-//#endregion Buffer
+//#endregion Shader
 
 //#region RenderPass
 
@@ -538,19 +534,32 @@ export function createRenderPipeline(device: Device, desc: RenderPipelineDescrip
  * @param buffer the GPU buffer to read from
  * @param out the output CPU buffer
  * @param offset othe byte offset into GPU buffer to begin reading from. Defaults to 0
- * @returns a future
+ * @returns a thenable {@link Future}.
  */
 export function readBuffer(device: Device, buffer: Buffer, out: Uint8Array, offset: UInt = 0): Future {
-  const future = { status: FutureStatus.Pending };
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  getBufferSubData((device as WebGL2Device).gl, (buffer as WebGL2Buffer).type, (buffer as WebGL2Buffer).glb!, offset, out.byteLength)
-    .then(
-      data => {
-        out.set(data);
-        future.status = FutureStatus.Done;
-      },
-      () => (future.status = FutureStatus.Error)
-    );
+  let resolveFuture: () => void, rejectFuture: () => void;
+  const future = {
+    status: FutureStatus.Pending,
+    then<TResult1, TResult2>(
+      onFullfilled?: () => TResult1 | PromiseLike<TResult1>,
+      onRejected?: () => TResult2 | PromiseLike<TResult2>
+    ) {
+      return new Promise<TResult1 | TResult2>((resolve, reject) => {
+        resolveFuture = () => {
+          this.status = FutureStatus.Done;
+          resolve(onFullfilled?.() as TResult1 | PromiseLike<TResult1>);
+        };
+        rejectFuture = () => {
+          this.status = FutureStatus.Error
+          reject(onRejected?.() as TResult2 | PromiseLike<TResult2>);
+        };
+      });
+    }
+  };
+
+  getBufferSubData((device as WebGL2Device).gl, (buffer as WebGL2Buffer).type, (buffer as WebGL2Buffer).glb, offset, out.byteLength)
+    .then(data => { out.set(data); resolveFuture(); }, () => rejectFuture());
+
   return future;
 }
 
