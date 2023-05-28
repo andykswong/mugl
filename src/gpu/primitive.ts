@@ -58,25 +58,30 @@ export type Origin3D = [x: number, y: number, z: number];
  * This is used as an alternative to Promise for compatibility with non-event-driven environments,
  * i.e. AssemblyScript / WebAssembly.
  */
-export interface Future {
-    /** Returns current status of the future. */
-    get status(): FutureStatus;
+export interface Future<T = unknown> {
+  /** Returns current status of the future. */
+  get status(): FutureStatus;
 
-    /** Converts this future into a Promise. */
-    then<TResult1 = void, TResult2 = never>(
-        onfulfilled?: () => TResult1 | PromiseLike<TResult1>,
-        onrejected?: () => TResult2 | PromiseLike<TResult2>
-    ): Promise<TResult1 | TResult2>;
+  /** Returns the resolved value. May throw if the future is not in Done status. */
+  get value(): T;
+
+  /** Converts this future into a Promise. */
+  then<TResult1 = void, TResult2 = never>(
+    onFulfilled?: (value: T) => TResult1 | PromiseLike<TResult1>,
+    onRejected?: (reason?: unknown) => TResult2 | PromiseLike<TResult2>
+  ): Promise<TResult1 | TResult2>;
 }
 
 /**
  * Status of a future.
  */
 export enum FutureStatus {
-    /** The future is still pending. */
-    Pending = 0,
-    /** The future is resolved. */
-    Done = 1,
-    /** An error occurred while resolving the future. */
-    Error = 2,
+  /** The future is still pending. */
+  Pending = 0,
+
+  /** The future is resolved. */
+  Done = 1,
+
+  /** An error occurred while resolving the future. */
+  Error = 2,
 }
