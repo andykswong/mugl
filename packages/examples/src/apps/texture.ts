@@ -2,7 +2,7 @@ import { lookAt, mat, mat4, Mat4, perspective, scale } from 'munum/assembly';
 import {
   AddressMode, BindGroup, BindingType, Buffer, BufferUsage, CompareFunction, CullMode, Device,
   FilterMode, Float, RenderPipeline, RenderPipelineDescriptor, Sampler, ShaderStage, Texture,
-  TextureDimension, UInt, vertexBufferLayouts, VertexFormat, WebGL, getImage
+  TextureDimension, UInt, vertexBufferLayouts, VertexFormat, WebGL, getImage, RenderPass
 } from '../interop/mugl';
 import { BaseExample, createBuffer, Cube, Model, TEX_SIZE, toIndices, toVertices } from '../common';
 
@@ -137,6 +137,8 @@ class TextureRenderBundle {
 }
 
 export class TextureExample extends BaseExample {
+  pass: RenderPass | null = null;
+
   vertBuffer: Buffer | null = null;
   indexBuffer: Buffer | null = null;
 
@@ -207,8 +209,10 @@ export class TextureExample extends BaseExample {
       WebGL.generateMipmap(this.device, this.skybox!.texture);
     }
 
+    this.pass = WebGL.createRenderPass(this.device, { clearColor: [0.1, 0.2, 0.3, 1], clearDepth: 1 });
+
     this.register([
-      this.vertBuffer!, this.indexBuffer!, vs, cubeFs, skyFs,
+      this.vertBuffer!, this.indexBuffer!, this.pass!, vs, cubeFs, skyFs,
     ]);
   }
 
@@ -223,7 +227,7 @@ export class TextureExample extends BaseExample {
     mvp = mat4.mul(vp, scale([10, 10, 10]), vp);  // Make the skybox bigger
     this.skybox!.updateCamera(mvp);
 
-    WebGL.beginDefaultPass(this.device, { clearColor: [0.1, 0.2, 0.3, 1], clearDepth: 1 });
+    WebGL.beginRenderPass(this.device, this.pass!);
     this.cube!.render(this.device);
     this.skybox!.render(this.device);
     WebGL.submitRenderPass(this.device);

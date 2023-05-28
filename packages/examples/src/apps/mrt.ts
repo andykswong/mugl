@@ -77,6 +77,7 @@ const cubeIndices = toIndices(Cube);
 const quadVertices = toVertices(Quad);
 
 export class MRTExample extends BaseExample {
+  pass: RenderPass | null = null;
   offscreenPass: RenderPass | null = null;
   vertBuffer: Buffer | null = null;
   indexBuffer: Buffer | null = null;
@@ -194,8 +195,13 @@ export class MRTExample extends BaseExample {
       });
     }
 
+    this.pass = WebGL.createRenderPass(this.device, {
+      clearColor: [0, 0, 0, 1],
+      clearDepth: 1
+    });
+
     this.register([
-      this.offscreenPass!,
+      this.pass!, this.offscreenPass!,
       this.cubePipeline!, this.vertBuffer!, this.indexBuffer!, this.cubeDataBuffer!, this.cubeBindGroup!,
       this.quadPipeline!, this.quadVertBuffer!, this.offscreenTexBindGroup!,
       this.colorTex!, this.uvTex!, this.positionTex!, this.depthTex!, this.offscreenTexSampler!,
@@ -232,10 +238,7 @@ export class MRTExample extends BaseExample {
     WebGL.submitRenderPass(this.device);
 
     // Draw to screen
-    WebGL.beginDefaultPass(this.device, {
-      clearColor: [0, 0, 0, 1],
-      clearDepth: 1
-    });
+    WebGL.beginRenderPass(this.device, this.pass!);
     {
       WebGL.setRenderPipeline(this.device, this.quadPipeline!);
       WebGL.setVertex(this.device, 0, this.quadVertBuffer!);

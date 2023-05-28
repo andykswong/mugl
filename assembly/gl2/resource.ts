@@ -5,7 +5,7 @@ import { WebGL2Feature, WebGLContextAttributes } from './type';
 import { toWebGLContextAttributeFlag } from './serialize';
 
 /**
- * A GPU device resource.
+ * A WebGL2 GPU device resource.
  */
 export class WebGL2Device extends Device {
   public constructor(canvas: Canvas, desc: WebGLContextAttributes, features: WebGL2Feature = 0 as WebGL2Feature) {

@@ -1,6 +1,6 @@
 import {
   BindGroup, BindingType, Buffer, BufferUsage, Device, Float, RenderPipeline, ShaderStage, VertexFormat,
-  vertexBufferLayouts, WebGL
+  vertexBufferLayouts, WebGL, RenderPass
 } from '../interop/mugl';
 import { BaseExample, createBuffer, createFloat32Array, createUint16Array } from '../common';
 
@@ -59,6 +59,7 @@ for (let i = 0; i < N * N; i++) {
 }
 
 export class InstancingExample extends BaseExample {
+  pass: RenderPass | null = null;
   pipeline: RenderPipeline | null = null;
   indexBuffer: Buffer | null = null;
   position: Buffer | null = null;
@@ -104,8 +105,10 @@ export class InstancingExample extends BaseExample {
       bindGroups: [bindGroupLayout],
     });
 
+    this.pass = WebGL.createRenderPass(this.device, { clearColor: [0, 0, 0, 1] });
+
     this.register([
-      this.bindGroup!, this.indexBuffer!, this.position!, this.offsetColor!, this.angle!, this.pipeline!,
+      this.bindGroup!, this.indexBuffer!, this.position!, this.offsetColor!, this.angle!, this.pipeline!, this.pass!,
       vs, fs, bindGroupLayout
     ]);
   }
@@ -122,7 +125,7 @@ export class InstancingExample extends BaseExample {
     this.ambientData[0] = this.ambientData[1] = this.ambientData[2] = a;
     WebGL.writeBuffer(this.device, this.ambient!, this.ambientData);
 
-    WebGL.beginDefaultPass(this.device, { clearColor: [0, 0, 0, 1] });
+    WebGL.beginRenderPass(this.device, this.pass!);
     WebGL.setRenderPipeline(this.device, this.pipeline!);
     WebGL.setIndex(this.device, this.indexBuffer!);
     WebGL.setVertex(this.device, 0, this.position!);

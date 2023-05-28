@@ -184,6 +184,12 @@ export class RenderPipelineDescriptor extends RenderPipelineState {
   /** The fragment shader. */
   fragment!: Shader;
 
+  /** The entry point function name of vertex shader. Defaults to "vs_main". */
+  vertexEntryPoint: string = 'vs_main';
+
+  /** The entry point function name of fragment shader. Defaults to "fs_main". */
+  fragmentEntryPoint: string = 'fs_main';
+
   /** The vertex buffer layouts. */
   buffers: VertexBufferLayout[] = [];
 

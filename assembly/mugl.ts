@@ -145,6 +145,14 @@ export declare function generateMipmap(device: DeviceId, texture: TextureId, hin
 //#region GPU
 
 /**
+ * Flushes the command buffer
+ * @param device the device
+ */
+//@ts-expect-error: host binding
+@external("mugl/wasm", "flush")
+export declare function flush(device: DeviceId): void;
+
+/**
  * Resets the state of a GPU device.
  * @param device the device
  */
@@ -367,7 +375,11 @@ export declare function deleteBindGroup(bindGroup: BindGroupId): void;
  * @param blendColorDstFactor 
  * @param blendAlphaOperation 
  * @param blendAlphaSrcFactor 
- * @param blendAlphaDstFactor 
+ * @param blendAlphaDstFactor
+ * @param vertexEntryPointPtr pointer to vertexEntryPoint string
+ * @param vertexEntryPointLen length of vertexEntryPoint string
+ * @param fragmentEntryPointPtr pointer to fragmentEntryPoint string
+ * @param fragmentEntryPointLen length of fragmentEntryPoint string
  */
 //@ts-expect-error: host binding
 @external("mugl/wasm", "create_render_pipeline")
@@ -387,7 +399,8 @@ export declare function createRenderPipeline(
   colorsPtr: usize, colorsLen: UInt,
   colorWriteMask: UInt,
   blendColorOperation: UInt, blendColorSrcFactor: UInt, blendColorDstFactor: UInt,
-  blendAlphaOperation: UInt, blendAlphaSrcFactor: UInt, blendAlphaDstFactor: UInt
+  blendAlphaOperation: UInt, blendAlphaSrcFactor: UInt, blendAlphaDstFactor: UInt,
+  vertexEntryPointPtr: usize, vertexEntryPointLen: UInt, fragmentEntryPointPtr: usize, fragmentEntryPointLen: UInt,
 ): RenderPipelineId;
 
 /**
@@ -588,24 +601,6 @@ export declare function copyTextureToBuffer(
 //@ts-expect-error: host binding
 @external("mugl/wasm", "begin_render_pass")
 export declare function beginRenderPass(device: DeviceId, pass: RenderPassId): void;
-
-/**
- * Convenient method to begin a default render pass.
- * @param device 
- * @param clearDepth 
- * @param clearStencil 
- * @param clearColorRed 
- * @param clearColorGreen 
- * @param clearColorBlue 
- * @param clearColorAlpha 
- */
-//@ts-expect-error: host binding
-@external("mugl/wasm", "begin_default_pass")
-export declare function beginDefaultPass(
-  device: DeviceId,
-  clearDepth: Float, clearStencil: Float,
-  clearColorRed: Float, clearColorGreen: Float, clearColorBlue: Float, clearColorAlpha: Float
-): void;
 
 /**
  * Submits the current render pass.

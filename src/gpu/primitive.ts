@@ -1,7 +1,7 @@
 /**
  * Texture image source type.
  */
-export type ImageSource = TexImageSource;
+export type ImageSource = ImageBitmap | HTMLCanvasElement | HTMLVideoElement | OffscreenCanvas;
 
 /**
  * JS number type.

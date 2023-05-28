@@ -2,9 +2,9 @@ import { Canvas } from '../dom';
 import {
   AddressMode, BindGroup, BindGroupLayout, BindGroupLayoutEntry, BindingType, Buffer, BufferUsage, Color,
   ColorAttachment, ColorTargetState, CompareFunction, CullMode, Device, FilterMode, Float, FrontFace, Future,
-  FutureStatus, ImageSource, IndexFormat, MipmapHint, PrimitiveTopology, RenderPass, RenderPassDescriptor,
-  RenderPipeline, Resource, Sampler, SamplerBindingType, Shader, ShaderStage, StencilOperation, Texture,
-  TextureDimension, TextureFormat, TextureSampleType, TextureUsage, UInt, VertexAttribute, VertexBufferLayout
+  FutureStatus, IndexFormat, MipmapHint, PrimitiveTopology, RenderPass, RenderPassDescriptor, RenderPipeline,
+  Resource, Sampler, SamplerBindingType, Shader, ShaderStage, StencilOperation, Texture, TextureDimension,
+  TextureFormat, TextureSampleType, TextureUsage, UInt, VertexAttribute, VertexBufferLayout
 } from '../gpu';
 import { WebGL } from '../gl2';
 import { GenerationalArena } from './arena';
@@ -18,7 +18,7 @@ export type ResourceId = number & { readonly __tag: unique symbol };
 
 const contexts: Record<ContextId, { memory: WebAssembly.Memory | null }> = {};
 const futures = new GenerationalArena<Future, FutureId>();
-const images = new GenerationalArena<ImageSource, ImageSourceId>();
+const images = new GenerationalArena<TexImageSource, ImageSourceId>();
 const imageMap: Record<string, ImageSourceId> = {};
 const canvases = new GenerationalArena<Canvas, CanvasId>();
 const canvasMap: Record<string, CanvasId> = {};
@@ -74,7 +74,7 @@ export function get_image_by_id(context: ContextId, ptr: UInt, len: UInt): Image
   if (imageMap[id]) {
     return imageMap[id];
   }
-  const image = document.getElementById(id) as ImageSource;
+  const image = document.getElementById(id) as HTMLImageElement;
   if (!image) {
     return 0 as ImageSourceId;
   }
@@ -130,6 +130,10 @@ export function webgl_request_device(canvasId: CanvasId, attrs: UInt, features: 
 
 export function webgl_generate_mipmap(device: ResourceId, tex: ResourceId, hint: MipmapHint): void {
   WebGL.generateMipmap(resources.get(device) as Device, resources.get(tex) as Texture, hint);
+}
+
+export function flush(device: ResourceId): void {
+  WebGL.flush(resources.get(device) as Device);
 }
 
 export function reset_device(device: ResourceId): void {
@@ -321,7 +325,8 @@ export function create_render_pipeline(
   stencilBackCompare: CompareFunction, stencilBackFailOp: StencilOperation, stencilBackDepthFailOp: StencilOperation, stencilBackPassOp: StencilOperation,
   stencilReadMask: UInt, stencilWriteMask: UInt, depthBias: Float, depthBiasSlopeScale: Float, depthBiasClamp: Float,
   colorsPtr: UInt, colorsLen: UInt,
-  colorWriteMask: UInt, blendColorOperation: UInt, blendColorSrcFactor: UInt, blendColorDstFactor: UInt, blendAlphaOperation: UInt, blendAlphaSrcFactor: UInt, blendAlphaDstFactor: UInt
+  colorWriteMask: UInt, blendColorOperation: UInt, blendColorSrcFactor: UInt, blendColorDstFactor: UInt, blendAlphaOperation: UInt, blendAlphaSrcFactor: UInt, blendAlphaDstFactor: UInt,
+  vertexEntryPointPtr: UInt, vertexEntryPointLen: UInt, fragmentEntryPointPtr: UInt, fragmentEntryPointLen: UInt,
 ): ResourceId {
   const memory = getDeviceMemory(device);
   const attributes: VertexAttribute[] = [];
@@ -372,9 +377,14 @@ export function create_render_pipeline(
     });
   }
 
+  const vertexEntryPoint = decodeStr(getDeviceMemory(device), vertexEntryPointPtr, vertexEntryPointLen);
+  const fragmentEntryPoint = decodeStr(getDeviceMemory(device), fragmentEntryPointPtr, fragmentEntryPointLen);
+
   const ret = WebGL.createRenderPipeline(resources.get(device) as Device, {
     vertex: resources.get(vertex) as Shader,
     fragment: resources.get(fragment) as Shader,
+    vertexEntryPoint,
+    fragmentEntryPoint,
     buffers,
     bindGroups,
     primitive: {
@@ -423,7 +433,6 @@ export function create_render_pipeline(
       },
       targets,
     }
-
   });
 
   return resources.add(ret);
@@ -590,20 +599,8 @@ export function copy_texture_to_buffer(
 }
 
 
-export function begin_render_pass(device: ResourceId, pass: ResourceId): void {
-  WebGL.beginRenderPass(resources.get(device) as Device, resources.get(pass) as RenderPass);
-}
-
-export function begin_default_pass(
-  device: ResourceId,
-  clearDepth: Float, clearStencil: Float,
-  clearColorRed: Float, clearColorGreen: Float, clearColorBlue: Float, clearColorAlpha: Float,
-): void {
-  WebGL.beginDefaultPass(resources.get(device) as Device, {
-    clearColor: isNaN(clearColorRed) ? null : [clearColorRed, clearColorGreen, clearColorBlue, clearColorAlpha],
-    clearDepth,
-    clearStencil,
-  });
+export function begin_render_pass(device: ResourceId, pass?: ResourceId): void {
+  WebGL.beginRenderPass(resources.get(device) as Device, pass && resources.get(pass) as RenderPass);
 }
 
 export function submit_render_pass(device: ResourceId): void {

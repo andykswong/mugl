@@ -95,7 +95,7 @@ export function renderGlTF(canvas: Canvas, device: Device, asset: GlTFAsset, opt
   mat.copy(cameraPosition, model, 0, 48, 3);
 
   // Render all active nodes
-  WebGL.beginDefaultPass(device, { clearDepth: 1 });
+  WebGL.beginRenderPass(device, WebGL.createRenderPass(device, { clearDepth: 1 }));
 
   const transparentDrawables: { node: glTF2.Node, mesh: glTF2.Mesh, primitive: glTF2.MeshPrimitive }[] = [];
 

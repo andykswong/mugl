@@ -260,6 +260,9 @@ export class RenderPipeline extends Resource {
       store<u32>(base, target.blendAlpha.dstFactor, 28);
     }
 
+    const vertexEntryPoint = String.UTF8.encode(desc.vertexEntryPoint);
+    const fragmentEntryPoint = String.UTF8.encode(desc.fragmentEntryPoint);
+
     this.id = createRenderPipeline(
       device.id,
       desc.vertex.id, desc.fragment.id,
@@ -275,7 +278,8 @@ export class RenderPipeline extends Resource {
       changetype<usize>(colors), colorsLen,
       targets.writeMask,
       targets.blendColor.operation, targets.blendColor.srcFactor, targets.blendColor.dstFactor,
-      targets.blendAlpha.operation, targets.blendAlpha.srcFactor, targets.blendAlpha.dstFactor
+      targets.blendAlpha.operation, targets.blendAlpha.srcFactor, targets.blendAlpha.dstFactor,
+      changetype<usize>(vertexEntryPoint), vertexEntryPoint.byteLength, changetype<usize>(fragmentEntryPoint), fragmentEntryPoint.byteLength,
     );
   }
 

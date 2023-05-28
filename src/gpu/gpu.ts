@@ -1,7 +1,7 @@
 import {
-  BindGroupDescriptor, BindGroupLayoutDescriptor, BufferDescriptor, DefaultRenderPassDescriptor,
-  ImageCopyExternalImage, ImageCopyTexture, ImageDataLayout, RenderPassDescriptor, RenderPipelineDescriptor,
-  SamplerDescriptor, ShaderDescriptor, TextureDescriptor
+  BindGroupDescriptor, BindGroupLayoutDescriptor, BufferDescriptor, ImageCopyExternalImage, ImageCopyTexture,
+  ImageDataLayout, RenderPassDescriptor, RenderPipelineDescriptor, SamplerDescriptor, ShaderDescriptor,
+  TextureDescriptor
 } from './descriptor';
 import {
   BindGroup, BindGroupLayout, Device, Buffer, RenderPass, RenderPipeline, Sampler, Shader, Texture
@@ -12,6 +12,12 @@ import { Color, Extent2D, Extent3D, Float, Future, UInt, UIntArray } from './pri
  * Minimal WebGPU-like rendering interface.
  */
 export interface GPU {
+  /**
+   * Flushes the command buffer.
+   * @param device the GPU device
+   */
+  flush(device: Device): void;
+
   /**
    * Resets the device state.
    * @param device the GPU device
@@ -104,7 +110,7 @@ export interface GPU {
    * @param offset the byte offset into GPU buffer to begin reading from. Defaults to 0
    * @returns a future
    */
-  readBuffer(device: Device, buffer: Buffer, out?: Uint8Array, offset?: UInt): Future;
+  readBuffer(device: Device, buffer: Buffer, out: Uint8Array, offset?: UInt): Future;
 
   /**
    * Writes data to a buffer.
@@ -169,14 +175,7 @@ export interface GPU {
    * @param device the GPU device
    * @param pass the render pass
    */
-  beginRenderPass(device: Device, pass: RenderPass): void;
-
-  /**
-   * Convenient method to start a default render pass.
-   * @param device the GPU device
-   * @param desc the render pass descriptor
-   */
-  beginDefaultPass(device: Device, desc?: DefaultRenderPassDescriptor): void;
+  beginRenderPass(device: Device, pass?: RenderPass): void;
 
   /**
    * Submits the current render pass.

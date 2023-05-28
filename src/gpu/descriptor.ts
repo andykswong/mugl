@@ -80,9 +80,9 @@ export interface ImageCopyTexture {
 * Defines the source image with origin offset to be copied into a texture.
 * @see https://www.w3.org/TR/webgpu/#dictdef-gpuimagecopyexternalimage
 */
-export interface ImageCopyExternalImage {
+export interface ImageCopyExternalImage<Src = ImageSource> {
   /** The source image. */
-  src: ImageSource;
+  src: Src;
 
   /** The origin offset of the image. Defaults to [0, 0].  */
   origin?: Origin2D;
@@ -183,6 +183,12 @@ export interface RenderPipelineDescriptor extends RenderPipelineState {
 
   /** The fragment shader. */
   fragment: Shader;
+
+  /** The entry point function name of vertex shader. Defaults to "vs_main". */
+  vertexEntryPoint?: string;
+
+  /** The entry point function name of fragment shader. Defaults to "fs_main". */
+  fragmentEntryPoint?: string;
 
   /** The vertex buffer layouts. */
   buffers: VertexBufferLayout[];

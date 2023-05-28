@@ -3,6 +3,7 @@
  * @packageDocumentation
  */
 
+export * from './base-gpu';
 export * from './descriptor';
 export * from './gpu';
 export * from './primitive';

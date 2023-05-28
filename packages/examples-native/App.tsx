@@ -44,7 +44,9 @@ async function onContextCreate(gl: ExpoWebGLRenderingContext) {
   const buffer = WebGL.createBuffer(device, { usage: BufferUsage.Vertex, size: vertices.byteLength });
   WebGL.writeBuffer(device, buffer, vertices);
 
-  WebGL.beginDefaultPass(device, { clearColor: [0.1, 0.2, 0.3, 1.0] });
+  const pass = WebGL.createRenderPass(device, { clearColor: [0.1, 0.2, 0.3, 1.0] });
+
+  WebGL.beginRenderPass(device, pass);
   {
     WebGL.setRenderPipeline(device, pipeline);
     WebGL.setVertex(device, 0, buffer);

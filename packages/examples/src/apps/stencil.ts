@@ -2,7 +2,7 @@ import { lookAt, mat, mat4, perspective, scale } from 'munum/assembly';
 import {
   BindGroup, BindingType, Buffer, BufferUsage, CompareFunction, CullMode, Device,
   Float, RenderPipeline, RenderPipelineDescriptor, Sampler, ShaderStage, StencilOperation,
-  Texture, vertexBufferLayouts, VertexFormat, WebGL, getImage
+  Texture, vertexBufferLayouts, VertexFormat, WebGL, getImage, RenderPass
 } from '../interop/mugl';
 import { BaseExample, createBuffer, Cube, Model, TEX_SIZE, toIndices, toVertices } from '../common';
 
@@ -68,6 +68,8 @@ void main () {
 `;
 
 export class StencilExample extends BaseExample {
+  pass: RenderPass | null = null;
+
   vertBuffer: Buffer | null = null;
   indexBuffer: Buffer | null = null;
   // Store data for all 3 data bind groups in the same buffer and use dynamic offset to reference them
@@ -171,10 +173,15 @@ export class StencilExample extends BaseExample {
       primitive: cubePipelineDesc.primitive,
     });
 
+    this.pass = WebGL.createRenderPass(this.device, {
+      clearDepth: 1,
+      clearStencil: 0
+    });
+
     this.register([
       this.vertBuffer!, this.indexBuffer!, this.dataBuffer!, this.texture!, this.sampler!,
       this.textureBindGroup!, this.dataBindGroup!, this.cubePipeline!, this.cubeOutlinePipeline!,
-      vs, cubeFs, outlineFs, textureLayout, dataLayout
+      this.pass!, vs, cubeFs, outlineFs, textureLayout, dataLayout
     ]);
   }
 
@@ -197,10 +204,7 @@ export class StencilExample extends BaseExample {
     }
     WebGL.writeBuffer(this.device, this.dataBuffer!, this.data);
 
-    WebGL.beginDefaultPass(this.device, {
-      clearDepth: 1,
-      clearStencil: 0
-    });
+    WebGL.beginRenderPass(this.device, this.pass!);
 
     // Draw cube
     WebGL.setRenderPipeline(this.device, this.cubePipeline!);

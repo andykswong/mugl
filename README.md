@@ -13,9 +13,9 @@
 
 ## Overview
 
-`mugl` is a minimal, modern WebGL 2.0 3D graphics abstraction layer that removes the verbosity and state management aspect of WebGL. It is designed to be a simplified version of the [WebGPU](https://gpuweb.github.io/gpuweb/) API. If you want to write simple, low-level graphics code in WebGPU style today, `mugl` is for you.
+`mugl` is a minimal, modern 3D graphics abstraction layer that provides simplified [WebGPU](https://gpuweb.github.io/gpuweb/)-style  low-level graphics API. It supports WebGL 2.0 backend, removing the verbosity and state management aspect of WebGL, with WebGPU backend under development.
 
-`mugl` runs on any modern web browser, and mobile via React Native. It provides WebAssembly (WASM) bindings in addition to JavaScript. With its [AssemblyScript](https://www.assemblyscript.org/) binding, you can run the same JavaScript 3D app code on WASM (see [examples](#examples)). Additional WASM language bindings (e.g. Rust) and platform supports (e.g. native Desktop) are planned.
+`mugl` runs on any modern web browser, and mobile via React Native. It provides WebAssembly (WASM) bindings in addition to JavaScript. With its [AssemblyScript](https://www.assemblyscript.org/) binding, you can run the same code on WASM (see [examples](#examples)). Additional WASM language bindings (e.g. Rust) and platform supports (e.g. native Desktop) are planned.
 
 ## Documentation
 - Latest JavaScript / AssemblyScript interface: [(link)](http://andykswong.github.io/mugl/latest/docs)
@@ -103,7 +103,7 @@ const pipeline = WebGL.createRenderPipeline(device, {
 });
 
 // 5. Submit draw call in a render pass
-WebGL.beginDefaultPass(device, { clearColor: [0.1, 0.2, 0.3, 1.0] }); // clear background to dark blue
+WebGL.beginRenderPass(device);
   WebGL.setRenderPipeline(device, pipeline);
   WebGL.setVertex(device, 0, buffer);
   WebGL.draw(device, 3); // 3 vertices to draw
@@ -148,7 +148,7 @@ async function onContextCreate(gl) {
   const bindgroup = WebGL.createBindGroup(device, { layout, entries: [{ texture }] });
 
   // 4. Render as usual
-  WebGL.beginDefaultPass(device);
+  WebGL.beginRenderPass(device);
     WebGL.setRenderPipeline(device, pipeline);
     WebGL.setVertex(device, 0, buffer);
     WebGL.setBindGroup(device, 0, bindgroup);

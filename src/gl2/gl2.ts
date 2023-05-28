@@ -7,9 +7,9 @@ import {
   UIntArray, hasStencil, indexByteSize, is3DTexture, isDepthStencil, vertexSize, vertexType, vertexNormalized,
 } from '../gpu';
 import {
-  BindGroupDescriptor, BindGroupLayoutDescriptor, BufferDescriptor, DefaultRenderPassDescriptor,
-  ImageCopyExternalImage, ImageCopyTexture, ImageDataLayout, RenderPassDescriptor, RenderPipelineDescriptor,
-  SamplerDescriptor, ShaderDescriptor, TextureDescriptor
+  BindGroupDescriptor, BindGroupLayoutDescriptor, BufferDescriptor, ImageCopyExternalImage, ImageCopyTexture,
+  ImageDataLayout, RenderPassDescriptor, RenderPipelineDescriptor, SamplerDescriptor, ShaderDescriptor,
+  TextureDescriptor
 } from '../gpu';
 import { glClearType, glTexelFormat, glTexelSize, glTexelType } from './utils';
 import {
@@ -104,6 +104,14 @@ export function resetDevice(device: Device): void {
  */
 export function getDeviceFeatures(device: Device): WebGL2Feature {
   return (device as WebGL2Device).features;
+}
+
+/**
+ * Flushes the command buffer.
+ * @param device the GPU device
+ */
+export function flush(device: Device): void {
+  (device as WebGL2Device).gl.flush();
 }
 
 //#endregion Device
@@ -417,7 +425,7 @@ export function createRenderPass(device: Device, desc: RenderPassDescriptor = {}
  * @param desc the bind group layout descriptor
  * @returns new bind group layout object
  */
-export function createBindGroupLayout(device: Device, desc: BindGroupLayoutDescriptor): BindGroupLayout {
+export function createBindGroupLayout(_: Device, desc: BindGroupLayoutDescriptor): BindGroupLayout {
   return {
     entries: desc.entries.map((entry, binding) => ({ binding, ...entry })),
     destroy(): void {
@@ -536,29 +544,41 @@ export function createRenderPipeline(device: Device, desc: RenderPipelineDescrip
  * @param offset othe byte offset into GPU buffer to begin reading from. Defaults to 0
  * @returns a thenable {@link Future}.
  */
-export function readBuffer(device: Device, buffer: Buffer, out: Uint8Array, offset: UInt = 0): Future {
-  let resolveFuture: () => void, rejectFuture: () => void;
-  const future = {
+export function readBuffer(device: Device, buffer: Buffer, out?: Uint8Array, offset: UInt = 0): Future<Uint8Array> {
+  const size = Math.max(out?.byteLength || 0, (buffer as WebGL2Buffer).size - offset, 0);
+  if (size <= 0) {
+    return {
+      status: FutureStatus.Error,
+      value: out || new Uint8Array(),
+      then: (onFullfilled, onRejected) => Promise.reject().then(onFullfilled, onRejected),
+    };
+  }
+
+  let value = out;
+  const future: Future<Uint8Array> & { status: FutureStatus } = {
     status: FutureStatus.Pending,
-    then<TResult1, TResult2>(
-      onFullfilled?: () => TResult1 | PromiseLike<TResult1>,
-      onRejected?: () => TResult2 | PromiseLike<TResult2>
-    ) {
-      return new Promise<TResult1 | TResult2>((resolve, reject) => {
-        resolveFuture = () => {
-          this.status = FutureStatus.Done;
-          resolve(onFullfilled?.() as TResult1 | PromiseLike<TResult1>);
-        };
-        rejectFuture = () => {
-          this.status = FutureStatus.Error
-          reject(onRejected?.() as TResult2 | PromiseLike<TResult2>);
-        };
-      });
+    get value() {
+      return value as Uint8Array;
+    },
+    then(onFullfilled, onRejected) {
+      return promise.then(onFullfilled, onRejected);
     }
   };
 
-  getBufferSubData((device as WebGL2Device).gl, (buffer as WebGL2Buffer).type, (buffer as WebGL2Buffer).glb, offset, out.byteLength)
-    .then(data => { out.set(data); resolveFuture(); }, () => rejectFuture());
+  const promise = getBufferSubData(
+    (device as WebGL2Device).gl,
+    (buffer as WebGL2Buffer).type,
+    (buffer as WebGL2Buffer).glb,
+    offset,
+    size
+  ).then(data => {
+    out?.set(data);
+    future.status = FutureStatus.Done;
+    return (value = out || data);
+  }, (error) => {
+    future.status = FutureStatus.Error;
+    throw error;
+  });
 
   return future;
 }
@@ -585,11 +605,13 @@ export function writeBuffer(device: Device, buffer: Buffer, data: ArrayBufferVie
  * @param dstOffset the byte offset into dst buffer to begin writing to. Defaults to 0
  */
 export function copyBuffer(
-  device: Device, src: Buffer, dst: Buffer, size: UInt = (src as WebGL2Buffer).size, srcOffset: UInt = 0, dstOffset: UInt = 0
+  device: Device, src: Buffer, dst: Buffer, size: UInt = (src as WebGL2Buffer).size, srcOffset: UInt = 0,
+  dstOffset: UInt = 0
 ): void {
   (device as WebGL2Device).gl.bindBuffer(GLenum.COPY_READ_BUFFER, (src as WebGL2Buffer).glb);
   (device as WebGL2Device).gl.bindBuffer(GLenum.COPY_WRITE_BUFFER, (dst as WebGL2Buffer).glb);
-  (device as WebGL2Device).gl.copyBufferSubData(GLenum.COPY_READ_BUFFER, GLenum.COPY_WRITE_BUFFER, srcOffset, dstOffset, size);
+  (device as WebGL2Device).gl
+    .copyBufferSubData(GLenum.COPY_READ_BUFFER, GLenum.COPY_WRITE_BUFFER, srcOffset, dstOffset, size);
 }
 
 /**
@@ -614,11 +636,15 @@ export function generateMipmap(device: Device, texture: Texture, hint = GLenum.D
  * @param size the size of the data subregion to write
  */
 export function writeTexture(
+  device: Device, texture: ImageCopyTexture, data: ArrayBufferView, layout: ImageDataLayout, size?: Extent3D
+): void;
+export function writeTexture(
   device: Device,
   { texture, mipLevel = 0, origin: [x, y, z] = [0, 0, 0] }: ImageCopyTexture,
   data: ArrayBufferView,
   { offset = 0, bytesPerRow, rowsPerImage = 0 }: ImageDataLayout,
-  [width, height, depth]: Extent3D = [(texture as WebGL2Texture).width - x, (texture as WebGL2Texture).height - y, (texture as WebGL2Texture).depth - z]
+  [width, height, depth]: Extent3D =
+    [(texture as WebGL2Texture).width - x, (texture as WebGL2Texture).height - y, (texture as WebGL2Texture).depth - z]
 ): void {
   const glFormat = glTexelFormat((texture as WebGL2Texture).format);
   const glType = glTexelType((texture as WebGL2Texture).format);
@@ -639,14 +665,19 @@ export function writeTexture(
   (device as WebGL2Device).gl.pixelStorei(GLenum.UNPACK_SKIP_IMAGES, 0);
 
   if (is3DTexture((texture as WebGL2Texture).type)) {
-    (device as WebGL2Device).gl.texSubImage3D(target, mipLevel, x, y, z, width, height, depth, (texture as WebGL2Texture).format, glType, data, offsetAligned);
+    (device as WebGL2Device).gl.texSubImage3D(
+      target, mipLevel, x, y, z, width, height, depth,
+      (texture as WebGL2Texture).format, glType, data, offsetAligned
+    );
   } else if (isCube) {
     for (let slice = z; slice < z + depth; ++slice) {
       (device as WebGL2Device).gl.pixelStorei(GLenum.UNPACK_SKIP_ROWS, slice * pixelsPerRow * imageHeight);
-      (device as WebGL2Device).gl.texSubImage2D(target + slice, mipLevel, x, y, width, height, glFormat, glType, data, offsetAligned);
+      (device as WebGL2Device).gl
+        .texSubImage2D(target + slice, mipLevel, x, y, width, height, glFormat, glType, data, offsetAligned);
     }
   } else { // 2D texture
-    (device as WebGL2Device).gl.texSubImage2D(target, mipLevel, x, y, width, height, glFormat, glType, data, offsetAligned);
+    (device as WebGL2Device).gl
+      .texSubImage2D(target, mipLevel, x, y, width, height, glFormat, glType, data, offsetAligned);
   }
 }
 
@@ -658,8 +689,11 @@ export function writeTexture(
  * @param size the size of image subregion to write
  */
 export function copyExternalImageToTexture(
+  device: Device, src: ImageCopyExternalImage<TexImageSource>, dst: ImageCopyTexture, size?: Extent2D
+): void;
+export function copyExternalImageToTexture(
   device: Device,
-  { src, origin: [srcX, srcY] = [0, 0] }: ImageCopyExternalImage,
+  { src, origin: [srcX, srcY] = [0, 0] }: ImageCopyExternalImage<TexImageSource>,
   { texture, mipLevel = 0, origin: [x, y, z] = [0, 0, 0] }: ImageCopyTexture,
   [width, height]: Extent2D = [src.width - srcX, src.height - srcY]
 ): void {
@@ -676,9 +710,12 @@ export function copyExternalImageToTexture(
   (device as WebGL2Device).gl.pixelStorei(GLenum.UNPACK_IMAGE_HEIGHT, 0);
 
   if (is3DTexture((texture as WebGL2Texture).type)) {
-    (device as WebGL2Device).gl.texSubImage3D(target, mipLevel, x, y, z, width, height, 1, (texture as WebGL2Texture).format, glType, src);
+    (device as WebGL2Device).gl
+      .texSubImage3D(target, mipLevel, x, y, z, width, height, 1, (texture as WebGL2Texture).format, glType, src);
   } else {
-    (device as WebGL2Device).gl.texSubImage2D(target, mipLevel, x, y, width, height, glTexelFormat((texture as WebGL2Texture).format), glType, src);
+    (device as WebGL2Device).gl.texSubImage2D(
+      target, mipLevel, x, y, width, height, glTexelFormat((texture as WebGL2Texture).format), glType, src
+    );
   }
 }
 
@@ -689,11 +726,13 @@ export function copyExternalImageToTexture(
  * @param dst the texture subregion to write to.
  * @param size the size of the texture subregion to copy
  */
+export function copyTexture(device: Device, src: ImageCopyTexture, dst: ImageCopyTexture, size?: Extent3D): void;
 export function copyTexture(
   device: Device,
   { texture, mipLevel = 0, origin: [x, y, z] = [0, 0, 0] }: ImageCopyTexture,
   { texture: dstTexture, mipLevel: dstMipLevel = 0, origin: [dstX, dstY, dstZ] = [0, 0, 0] }: ImageCopyTexture,
-  [width, height, depth]: Extent3D = [(texture as WebGL2Texture).width - x, (texture as WebGL2Texture).height - y, (texture as WebGL2Texture).depth - z]
+  [width, height, depth]: Extent3D =
+    [(texture as WebGL2Texture).width - x, (texture as WebGL2Texture).height - y, (texture as WebGL2Texture).depth - z]
 ): void {
   // Bind dst
   const isCube = (dstTexture as WebGL2Texture).type === GLenum.TEXTURE_CUBE_MAP;
@@ -715,9 +754,11 @@ export function copyTexture(
         );
       }
       if (is3DTexture((dstTexture as WebGL2Texture).type)) {
-        (device as WebGL2Device).gl.copyTexSubImage3D(target + (isCube ? slice : 0), dstMipLevel, dstX, dstY, dstZ, x, y, width, height);
+        (device as WebGL2Device).gl
+          .copyTexSubImage3D(target + (isCube ? slice : 0), dstMipLevel, dstX, dstY, dstZ, x, y, width, height);
       } else {
-        (device as WebGL2Device).gl.copyTexSubImage2D(target + (isCube ? slice : 0), dstMipLevel, dstX, dstY, x, y, width, height);
+        (device as WebGL2Device).gl
+          .copyTexSubImage2D(target + (isCube ? slice : 0), dstMipLevel, dstX, dstY, x, y, width, height);
       }
     }
   } else { // src is 2D texture
@@ -730,9 +771,11 @@ export function copyTexture(
       );
     }
     if (is3DTexture((dstTexture as WebGL2Texture).type)) {
-      (device as WebGL2Device).gl.copyTexSubImage3D(target + (isCube ? slice : 0), dstMipLevel, dstX, dstY, dstZ, x, y, width, height);
+      (device as WebGL2Device).gl
+        .copyTexSubImage3D(target + (isCube ? slice : 0), dstMipLevel, dstX, dstY, dstZ, x, y, width, height);
     } else {
-      (device as WebGL2Device).gl.copyTexSubImage2D(target + (isCube ? slice : 0), dstMipLevel, dstX, dstY, x, y, width, height);
+      (device as WebGL2Device).gl
+        .copyTexSubImage2D(target + (isCube ? slice : 0), dstMipLevel, dstX, dstY, x, y, width, height);
     }
   }
 
@@ -753,11 +796,15 @@ export function copyTexture(
  * @param size the size of the texture subregion to copy
  */
 export function copyTextureToBuffer(
+  device: Device, src: ImageCopyTexture, dst: Buffer, layout: ImageDataLayout, size?: Extent3D
+): void;
+export function copyTextureToBuffer(
   device: Device,
   { texture, mipLevel = 0, origin: [x, y, z] = [0, 0, 0] }: ImageCopyTexture,
   dst: Buffer,
   { offset = 0, bytesPerRow, rowsPerImage = 0 }: ImageDataLayout,
-  [width, height, depth]: Extent3D = [(texture as WebGL2Texture).width - x, (texture as WebGL2Texture).height - y, (texture as WebGL2Texture).depth - z]
+  [width, height, depth]: Extent3D =
+    [(texture as WebGL2Texture).width - x, (texture as WebGL2Texture).height - y, (texture as WebGL2Texture).depth - z]
 ): void {
   (device as WebGL2Device).gl.bindBuffer(GLenum.PIXEL_PACK_BUFFER, (dst as WebGL2Buffer).glb);
   (device as WebGL2Device).gl.readBuffer(GLenum.COLOR_ATTACHMENT0);
@@ -784,7 +831,8 @@ export function copyTextureToBuffer(
           'Framebuffer completeness check failed for copyTexture'
         );
       }
-      (device as WebGL2Device).gl.readPixels(x, y, width, height, format, type, offsetAligned + (slice - z) * bytesPerRow * imageHeight);
+      (device as WebGL2Device).gl
+        .readPixels(x, y, width, height, format, type, offsetAligned + (slice - z) * bytesPerRow * imageHeight);
     }
   } else { // src is 2D texture
     const slice = 0;
@@ -815,7 +863,7 @@ export function copyTextureToBuffer(
  * @param device the GPU device
  * @param pass the render pass
  */
-export function beginRenderPass(device: Device, pass: RenderPass): void {
+export function beginRenderPass(device: Device, pass: RenderPass = createRenderPass(device)): void {
   let width = (device as WebGL2Device).gl.drawingBufferWidth;
   let height = (device as WebGL2Device).gl.drawingBufferHeight;
   if ((pass as WebGL2RenderPass).color.length) { // Offscreen pass
@@ -878,53 +926,6 @@ export function beginRenderPass(device: Device, pass: RenderPass): void {
   }
 
   (device as WebGL2Device).pass = pass as WebGL2RenderPass;
-}
-
-/**
- * Convenient method to start a default render pass.
- * @param device the GPU device
- * @param desc the render pass descriptor
- */
-export function beginDefaultPass(device: Device, desc: DefaultRenderPassDescriptor = {}): void {
-  // Unbind any framebuffer
-  (device as WebGL2Device).gl.bindFramebuffer(GLenum.FRAMEBUFFER, null);
-
-  // Reset viewport and scissor. Necessary for buffer clearing
-  (device as WebGL2Device).gl.viewport(0, 0, (device as WebGL2Device).gl.drawingBufferWidth, (device as WebGL2Device).gl.drawingBufferHeight);
-  (device as WebGL2Device).gl.depthRange(0, 1);
-  if ((device as WebGL2Device).state.scissor) {
-    (device as WebGL2Device).state.scissor = false;
-    glToggle((device as WebGL2Device).gl, GLenum.SCISSOR_TEST, false);
-  }
-
-  // Clear color/depth/stencil, override masks as necessary to allow clearing
-  /* eslint-disable @typescript-eslint/no-non-null-assertion */
-  let clearMask = 0;
-  if (!isNaN(desc.clearDepth!)) {
-    clearMask |= GLenum.DEPTH_BUFFER_BIT;
-    (device as WebGL2Device).gl.clearDepth(desc.clearDepth!);
-    applyDepthMask((device as WebGL2Device).gl, (device as WebGL2Device).state.state.depthWrite, true);
-    (device as WebGL2Device).state.state.depthWrite = true;
-  }
-  if (!isNaN(desc.clearStencil!)) {
-    clearMask |= GLenum.STENCIL_BUFFER_BIT;
-    (device as WebGL2Device).gl.clearStencil(desc.clearStencil!);
-    applyStencilMask((device as WebGL2Device).gl, (device as WebGL2Device).state.state.stencilWriteMask, BYTE_MASK);
-    (device as WebGL2Device).state.state.stencilWriteMask = BYTE_MASK;
-  }
-  if (desc.clearColor) {
-    clearMask |= GLenum.COLOR_BUFFER_BIT;
-    (device as WebGL2Device).gl.clearColor(...desc.clearColor!);
-    applyColorMask((device as WebGL2Device).gl, (device as WebGL2Device).state.state.blendWriteMask, ColorWrite.All);
-    (device as WebGL2Device).state.state.blendWriteMask = ColorWrite.All;
-  }
-  /* eslint-enable @typescript-eslint/no-non-null-assertion */
-
-  if (clearMask) {
-    (device as WebGL2Device).gl.clear(clearMask);
-  }
-
-  (device as WebGL2Device).pass = null;
 }
 
 /**

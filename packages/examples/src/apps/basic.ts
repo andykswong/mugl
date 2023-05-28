@@ -1,4 +1,4 @@
-import { Buffer, Device, Float, RenderPipeline, ShaderStage, VertexFormat, vertexBufferLayouts, WebGL } from '../interop/mugl';
+import { Buffer, Device, Float, RenderPass, RenderPipeline, ShaderStage, VertexFormat, vertexBufferLayouts, WebGL } from '../interop/mugl';
 import { BaseExample, createBuffer, toVertices, Triangle } from '../common';
 
 const vert = `#version 300 es
@@ -25,6 +25,7 @@ const position = toVertices(Triangle);
 export class BasicExample extends BaseExample {
   buffer: Buffer | null = null;
   pipeline: RenderPipeline | null = null;
+  pass: RenderPass | null = null;
 
   constructor(private readonly device: Device) {
     super();
@@ -44,11 +45,13 @@ export class BasicExample extends BaseExample {
       ]),
     });
 
-    this.register([this.buffer!, this.pipeline!, vs, fs]);
+    this.pass = WebGL.createRenderPass(this.device, { clearColor: [0.1, 0.2, 0.3, 1.0] });
+
+    this.register([this.buffer!, this.pipeline!, this.pass!, vs, fs]);
   }
 
-  render(delta: Float): boolean {
-    WebGL.beginDefaultPass(this.device, { clearColor: [0.1, 0.2, 0.3, 1.0] });
+  render(_: Float): boolean {
+    WebGL.beginRenderPass(this.device, this.pass!);
     WebGL.setRenderPipeline(this.device, this.pipeline!);
     WebGL.setVertex(this.device, 0, this.buffer!);
     WebGL.draw(this.device, 3);

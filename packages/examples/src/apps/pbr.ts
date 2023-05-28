@@ -2,7 +2,7 @@ import { lookAt, mat, mat4, perspective, scale, vec3 } from 'munum/assembly';
 import {
   BindGroup, BindingType, Buffer, BufferUsage, CompareFunction, CullMode, Device,
   FilterMode, Float, RenderPipeline, RenderPipelineDescriptor, Sampler, ShaderStage, Texture,
-  TextureDimension, vertexBufferLayouts, VertexFormat, WebGL, getImage
+  TextureDimension, vertexBufferLayouts, VertexFormat, WebGL, getImage, RenderPass
 } from '../interop/mugl';
 import { BaseExample, createBuffer, createFloat32Array, Cube, Model, TEX_SIZE, toIndices, toVertices } from '../common';
 
@@ -139,6 +139,7 @@ void main () {
 }`;
 
 export class PbrExample extends BaseExample {
+  pass: RenderPass | null = null;
   vertBuffer: Buffer | null = null;
   indexBuffer: Buffer | null = null;
   matBuffer: Buffer | null = null;
@@ -288,11 +289,13 @@ export class PbrExample extends BaseExample {
       });
     }
 
+    this.pass = WebGL.createRenderPass(this.device, { clearColor: [0, 0, 0, 1], clearDepth: 1 });
+
     this.register([
       this.vertBuffer!, this.indexBuffer!, this.matBuffer!, this.envBuffer!, this.cubeDataBuffer!, this.skyDataBuffer!,
       this.cubePipeline!, this.cubeTex!, this.skyPipeline!, this.skyTex!, this.sampler!,
       this.envBindGroup!, this.cubeDataBindGroup!, this.cubeTexBindGroup!, this.skyDataBindGroup!, this.skyTexBindGroup!,
-      vs, cubeFs, skyFs, textureLayout, envLayout, dataLayout
+      this.pass!, vs, cubeFs, skyFs, textureLayout, envLayout, dataLayout
     ]);
   }
 
@@ -316,7 +319,7 @@ export class PbrExample extends BaseExample {
       WebGL.writeBuffer(this.device, this.skyDataBuffer!, this.skyData);
     }
 
-    WebGL.beginDefaultPass(this.device, { clearColor: [0, 0, 0, 1], clearDepth: 1 });
+    WebGL.beginRenderPass(this.device, this.pass!);
 
     // Draw cube
     WebGL.setRenderPipeline(this.device, this.cubePipeline!);

@@ -1,255 +1,257 @@
 // mugl WebAssembly API spec
 // This can be used to generate a binding, by e.g. https://bytecodealliance.github.io/wit-bindgen/
 
+interface mugl {
+
 /**
  * Frees context memory.
  */
-free-context: function(c: context)
+free-context: func(c: context)
 
 /**
  * Gets the status of a future.
  */
-get-future-status: function(f: future) -> future-status
+get-future-status: func(f: future-handle) -> future-status
 
 /**
  * Loads an image from URI.
  */
-create-image: function(c: context, uri: string) -> image
+create-image: func(c: context, uri: string) -> image
 
 /**
  * Gets an image handle by ID.
  */
-get-image-by-id: function(c: context, id: string) -> image
+get-image-by-id: func(c: context, id: string) -> image
 
 /**
  * Deletes an image handle.
  */
-delete-image: function(img: image)
+delete-image: func(img: image)
 
 /**
  * Gets a canvas handle by ID.
  */
-get-canvas-by-id: function(c: context, id: string) -> canvas
+get-canvas-by-id: func(c: context, id: string) -> canvas
 
 /**
  * Gets the width of the given canvas.
  */
-get-canvas-width: function(c: canvas) -> u32
+get-canvas-width: func(c: canvas) -> u32
 
 /**
  * Gets the height of the given canvas.
  */
-get-canvas-height: function(c: canvas) -> u32
+get-canvas-height: func(c: canvas) -> u32
 
 /**
  * Requests a WebGL2 GPU device.
  */
-webgl-request-device: function(c: canvas, options: webgl-context-attributes, features: u32) -> device
+webgl-request-device: func(c: canvas, options: webgl-context-attributes, features: u32) -> device
 
 /**
  * Generates mipmap for a WebGL texture.
  */
-webgl-generate-mipmap: function(d: device, t: texture, hint: u32)
+webgl-generate-mipmap: func(d: device, t: texture, hint: u32)
+
+/**
+ * Flushes the command buffer.
+ */
+flush: func(d: device)
 
 /**
  * Resets the state of a GPU device.
  */
-reset-device: function(d: device)
+reset-device: func(d: device)
 
 /**
  * Deletes a GPU device.
  */
-delete-device: function(d: device)
+delete-device: func(d: device)
 
 /**
  * Gets if device context is lost.
  */
-is-device-lost: function(d: device) -> bool
+is-device-lost: func(d: device) -> bool
 
 /**
  * Gets the enabled features of the device.
  */
-get-device-features: function(d: device) -> u32
+get-device-features: func(d: device) -> u32
 
 /**
  * Creates a GPU buffer.
  */
-create-buffer: function(d: device, desc: buffer-descriptor) -> buffer
+create-buffer: func(d: device, desc: buffer-descriptor) -> buffer
 
 /**
  * Deletes a GPU buffer.
  */
-delete-buffer: function(b: buffer)
+delete-buffer: func(b: buffer)
 
 /**
  * Creates a GPU texture.
  */
-create-texture: function(d: device, desc: texture-descriptor) -> texture
+create-texture: func(d: device, desc: texture-descriptor) -> texture
 
 /**
  * Deletes a GPU texture.
  */
-delete-texture: function(o: texture)
+delete-texture: func(o: texture)
 
 /**
  * Creates a GPU texture sampler.
  */
-create-sampler: function(t: device, desc: sampler-descriptor) -> sampler
+create-sampler: func(t: device, desc: sampler-descriptor) -> sampler
 
 /**
  * Deletes a GPU texture sampler.
  */
-delete-sampler: function(s: sampler)
+delete-sampler: func(s: sampler)
 
 /**
  * Creates a GPU shader module.
  */
-create-shader: function(d: device, desc: shader-descriptor) -> shader
+create-shader: func(d: device, desc: shader-descriptor) -> shader
 
 /**
  * Deletes a GPU shader module.
  */
-delete-shader: function(s: shader)
+delete-shader: func(s: shader)
 
 /**
  * Creates a GPU bind group layout object.
  */
-create-bind-group-layout: function(d: device, desc: bind-group-layout-descriptor) -> bind-group-layout
+create-bind-group-layout: func(d: device, desc: bind-group-layout-descriptor) -> bind-group-layout
 
 /**
  * Deletes a GPU bind group layout.
  */
-delete-bind-group-layout: function(b: bind-group-layout)
+delete-bind-group-layout: func(b: bind-group-layout)
 
 /**
  * Creates a GPU bind group.
  */
-create-bind-group: function(d: device, desc: bind-group-descriptor) -> bind-group
+create-bind-group: func(d: device, desc: bind-group-descriptor) -> bind-group
 
 /**
  * Deletes a GPU bind group.
  */
-delete-bind-group: function(b: bind-group)
+delete-bind-group: func(b: bind-group)
 
 /**
  * Creates a GPU render pipeline.
  */
-create-render-pipeline: function(d: device, desc: render-pipeline-descriptor) -> render-pipeline
+create-render-pipeline: func(d: device, desc: render-pipeline-descriptor) -> render-pipeline
 
 /**
  * Deletes a GPU render pipeline.
  */
-delete-render-pipeline: function(p: render-pipeline)
+delete-render-pipeline: func(p: render-pipeline)
 
 /**
  * Creates a GPU render pass.
  */
-create-render-pass: function(d: device, desc: render-pass-descriptor) -> render-pass
+create-render-pass: func(d: device, desc: render-pass-descriptor) -> render-pass
 
 /**
  * Deletes a GPU render pass.
  */
-delete-render-pass: function(p: render-pass)
+delete-render-pass: func(p: render-pass)
 
 /**
  * Reads data from a GPU buffer.
  */
-read-buffer: function(d: device, buf: buffer, offset: u32, out: list<u8>) -> future
+read-buffer: func(d: device, buf: buffer, offset: u32, out: list<u8>) -> future-handle
 
 /**
  * Writes data to a GPU buffer.
  */
-write-buffer: function(d: device, buf: buffer, data: list<u8>, offset: u32)
+write-buffer: func(d: device, buf: buffer, data: list<u8>, offset: u32)
 
 /**
  * Copies data from a GPU buffer to another buffer.
  */
-copy-buffer: function(d: device, src: buffer, dst: buffer, size: u32, src-offset: u32, dst-offset: u32)
+copy-buffer: func(d: device, src: buffer, dst: buffer, size: u32, src-offset: u32, dst-offset: u32)
 
 /**
  * Writes subregion of data array to a GPU texture.
  */
-write-texture: function(d: device, texture: image-copy-texture, data: list<u8>, layout: image-data-layout, size: extent3d)
+write-texture: func(d: device, texture: image-copy-texture, data: list<u8>, layout: image-data-layout, size: extent3d)
 
 /**
  * Uploads an image subregion to a GPU texture.
  */
-copy-external-image-to-texture: function(d: device, src: image-copy-external-image, dst: image-copy-texture, size: extent2d)
+copy-external-image-to-texture: func(d: device, src: image-copy-external-image, dst: image-copy-texture, size: extent2d)
 
 /**
  * Copies subregion of a GPU texture to another texture.
  */
-copy-texture: function(d: device, src: image-copy-texture, dst: image-copy-texture, size: extent3d)
+copy-texture: func(d: device, src: image-copy-texture, dst: image-copy-texture, size: extent3d)
 
 /**
  * Copies subregion of a GPU texture to a GPU buffer.
  */
-copy-texture-to-buffer: function(d: device, src: image-copy-texture, dst: buffer, layout: image-data-layout, size: extent3d)
+copy-texture-to-buffer: func(d: device, src: image-copy-texture, dst: buffer, layout: image-data-layout, size: extent3d)
 
 /**
  * Begins a render pass.
  */
-begin-render-pass: function(d: device, pass: render-pass)
-
-/**
- * Convenient method to begin a default render pass.
- */
-begin-default-pass: function(d: device, desc: render-pass-operation)
+begin-render-pass: func(d: device, pass: render-pass)
 
 /**
  * Submits the current render pass.
  */
-submit-render-pass: function(d: device)
+submit-render-pass: func(d: device)
 
 /**
  * Binds a render pipeline to the current render pass.
  */
-set-render-pipeline: function(d: device, pipeline: render-pipeline)
+set-render-pipeline: func(d: device, pipeline: render-pipeline)
 
 /**
  * Binds an index buffer to the current render pass.
  */
-set-index: function(d: device, buf: buffer)
+set-index: func(d: device, buf: buffer)
 
 /**
  * Binds a vertex buffer to a slot in the current render pass.
  */
-set-vertex: function(d: device, slot: u32, buf: buffer, offset: u32)
+set-vertex: func(d: device, slot: u32, buf: buffer, offset: u32)
 
 /**
  * Binds a bind group to the current render pass.
  */
-set-bind-group: function(d: device, slot: u32, bindings: bind-group, offsets: list<u32>)
+set-bind-group: func(d: device, slot: u32, bindings: bind-group, offsets: list<u32>)
 
 /**
  * Submits a draw call in the current render pass.
  */
-draw: function(d: device, vertex-count: u32, instance-count: u32, first-vertex: u32, first-instance: u32)
+draw: func(d: device, vertex-count: u32, instance-count: u32, first-vertex: u32, first-instance: u32)
 
 /**
  * Submits an indexed draw call in the current render pass.
  */
-draw-indexed: function(d: device, index-count: u32, instance-count: u32, first-index: u32, first-instance: u32)
+draw-indexed: func(d: device, index-count: u32, instance-count: u32, first-index: u32, first-instance: u32)
 
 /**
  * Sets the 3D viewport area for the current render pass.
  */
-set-viewport: function(d: device, x: u32, y: u32, width: u32, height: u32, min-depth: f32, max-depth: f32)
+set-viewport: func(d: device, x: u32, y: u32, width: u32, height: u32, min-depth: float32, max-depth: float32)
 
 /**
  * Sets the scissor rectangle for the current render pass.
  */
-set-scissor-rect: function(d: device, x: u32, y: u32, width: u32, height: u32)
+set-scissor-rect: func(d: device, x: u32, y: u32, width: u32, height: u32)
 
 /**
  * Sets the blend-constant color for the current render pass.
  */
-set-blend-const: function(d: device, c: color)
+set-blend-const: func(d: device, c: color)
 
 /**
  * Sets the stencil reference value for the current render pass.
  */
-set-stencil-ref: function(d: device, ref: u32)
+set-stencil-ref: func(d: device, ref: u32)
 
 /**
  * A 2D extent.
@@ -274,7 +276,7 @@ type origin3d = tuple<u32, u32, u32>
 /**
  * A RGBA color.
  */
-type color = tuple<f32, f32, f32, f32>
+type color = tuple<float32, float32, float32, float32>
 
 /**
  * WebGL context attribute flags.
@@ -292,6 +294,19 @@ flags webgl-context-attributes {
 }
 
 /**
+ * WebGPU context attribute flags.
+ */
+flags webgpu-context-attributes {
+    depth,
+    depth32f,
+    force-fallback-adapter,
+    high-performance,
+    multisampled,
+    premultiplied-alpha,
+    stencil,
+}
+
+/**
  * Status of a future.
  */
 enum future-status {
@@ -303,67 +318,67 @@ enum future-status {
 /**
  * A context ID.
  */
-type context = f64
+type context = float64
 
 /**
  * A resolvable future object.
  */
-resource future
+type future-handle = float64
 
 /**
  * Handle to an external image.
  */
-resource image
+type image = float64
 
 /**
  * Handle to a canvas.
  */
-resource canvas
+type canvas = float64
 
 /**
  * Handle to a GPU device.
  */
-resource device
+type device = float64
 
 /**
  * Handle to a GPU buffer.
  */
-resource buffer
+type buffer = float64
 
 /**
  * Handle to a GPU texture.
  */
-resource texture
+type texture = float64
 
 /**
  * Handle to a GPU sampler.
  */
-resource sampler
+type sampler = float64
 
 /**
  * Handle to a GPU shader.
  */
-resource shader
+type shader = float64
 
 /**
  * Handle to a GPU bind group layout.
  */
-resource bind-group-layout
+type bind-group-layout = float64
 
 /**
  * Handle to a GPU bind group.
  */
-resource bind-group
+type bind-group = float64
 
 /**
  * Handle to a GPU render pipeline.
  */
-resource render-pipeline
+type render-pipeline = float64
 
 /**
  * Handle to a GPU render pass.
  */
-resource render-pass
+type render-pass = float64
 
 /**
  * Descriptor of a buffer.
@@ -430,8 +445,8 @@ record sampler-descriptor {
     mag-filter: u32,
     min-filter: u32,
     mipmap-filter: u32,
-    lod-min-clamp: f32,
-    lod-max-clamp: f32,
+    lod-min-clamp: float32,
+    lod-max-clamp: float32,
     compare: u32,
     max-anisotropy: u32
 }
@@ -518,8 +533,8 @@ record render-pass-descriptor {
  * Descriptor of the clear operations of a default render pass.
  */
 record render-pass-operation {
-    clear-depth: f32,
-    clear-stencil: f32,
+    clear-depth: float32,
+    clear-stencil: float32,
     clear-color: color,
 }
 
@@ -544,6 +559,8 @@ record render-pipeline-descriptor {
     multisample: multisample-state,
     depth-stencil: option<depth-stencil-state>,
     targets: color-target-states,
+    vertex-entry-point: string,
+    fragment-entry-point: string,
 }
 
 /**
@@ -621,9 +638,9 @@ record depth-stencil-state {
     stencil-back: stencl-face-state,
     stencil-read-mask: u32,
     stencil-write-mask: u32,
-    depth-bias: f32,
-    depth-bias-slope-scale: f32,
-    depth-bias-clamp: f32,
+    depth-bias: float32,
+    depth-bias-slope-scale: float32,
+    depth-bias-clamp: float32,
 }
 
 /**
@@ -642,4 +659,6 @@ record stencl-face-state {
 record multisample-state {
     sample-count: u32,
     alpha-to-coverage: bool,
+}
+
 }

@@ -13,6 +13,7 @@
     "build:as-debug": "asc --target debug",
     "webpack": "webpack",
     "examples": "cross-env NODE_ENV=development webpack serve",
+    "prestart": "npm run build:as",
     "start": "npm run examples",
     "test" : "echo"
   },
