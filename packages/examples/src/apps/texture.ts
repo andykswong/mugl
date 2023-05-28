@@ -1,7 +1,7 @@
 import { lookAt, mat, mat4, Mat4, perspective, scale } from 'munum/assembly';
 import {
-  AddressMode, BindGroup, BindingType, Buffer, BufferUsage, CompareFunction, CullMode, Device,
-  FilterMode, Float, GPU, RenderPipeline, RenderPipelineDescriptor, Sampler, ShaderStage, Texture,
+  AddressMode, BaseGPU, BindGroup, BindingType, Buffer, BufferUsage, CompareFunction, CullMode, Device,
+  FilterMode, Float, RenderPipeline, RenderPipelineDescriptor, Sampler, ShaderStage, Texture,
   TextureDimension, UInt, vertexBufferLayouts, VertexFormat, getImage, RenderPass, TextureFormat, TextureUsage
 } from '../interop/mugl';
 import { BaseExample, createBuffer, Cube, Model, TEX_SIZE, toIndices, toVertices } from '../common';
@@ -123,7 +123,7 @@ class TextureRenderBundle {
   public cameraBindGroup!: BindGroup;
 
   public constructor(
-    private readonly gpu: GPU,
+    private readonly gpu: BaseGPU,
     public device: Device,
     pipelineDesc: RenderPipelineDescriptor,
     textureType: TextureDimension,

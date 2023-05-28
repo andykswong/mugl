@@ -51,9 +51,27 @@ function getGPU(device: ResourceId): GPU {
   return deviceGPUMap[device] || WebGL;
 }
 
+function getCanvasById(context: ContextId, id: string): CanvasId {
+  if (canvases.get(canvasMap[id] || 0 as CanvasId)) {
+    return canvasMap[id];
+  }
+  const canvas = document.getElementById(id) as Canvas;
+  if (!canvas) {
+    return 0 as CanvasId;
+  }
+  let canvasId = canvasMap[id];
+  if (canvasId) {
+    canvases.set(canvasId, canvas);
+  } else {
+    canvasId = canvases.add(canvas);
+  }
+  canvasContextMap[canvasId] = context;
+  return canvasId;
+}
+
 //#endregion utils
 
-//#region context
+//#region host functions
 
 /**
  * Sets the WebAssembly memory for the given context.
@@ -63,6 +81,40 @@ function getGPU(device: ResourceId): GPU {
 export function set_context_memory(context: ContextId, memory: WebAssembly.Memory): void {
   (contexts[context] = contexts[context] || { memory: null }).memory = memory;
 }
+
+/**
+ * Binds an image source to given ID string for WebAssembly context.
+ * @param id ID string
+ * @param image image source
+ * @returns image source ID
+ */
+export function set_image_by_id(id: string, image: TexImageSource): ImageSourceId {
+  if (imageMap[id]) {
+    images.set(imageMap[id], image);
+    return imageMap[id];
+  }
+  return (imageMap[id] = images.add(image));
+}
+
+/**
+ * Provides a device object to WebAssembly context.
+ * @param context context ID
+ * @param device the device
+ * @param canvasId canvas ID string
+ * @param gpu GPU API type
+ * @returns device ID
+ */
+export function set_device(context: ContextId, device: Device, canvasId: string = 'canvas', gpu: GPU = WebGL): ResourceId {
+  const deviceId = resources.add(device);
+  const canvas = getCanvasById(context, canvasId);
+  deviceContextMap[deviceId] = canvasContextMap[canvas];
+  deviceGPUMap[deviceId] = gpu;
+  return deviceId;
+}
+
+//#endregion host functions
+
+//#region context
 
 export function free_context(context: ContextId): void {
   delete contexts[context];
@@ -86,14 +138,6 @@ export function get_future_value(future: FutureId): ResourceId {
 //#endregion context
 
 //#region DOM
-
-export function set_image_by_id(id: string, image: TexImageSource): ImageSourceId {
-  if (imageMap[id]) {
-    images.set(imageMap[id], image);
-    return imageMap[id];
-  }
-  return (imageMap[id] = images.add(image));
-}
 
 export function get_image_by_id(context: ContextId, ptr: UInt, len: UInt): ImageSourceId {
   const id = decodeStr(getMemory(context), ptr, len);
@@ -121,21 +165,7 @@ export function get_image_height(img: ImageSourceId): UInt {
 
 export function get_canvas_by_id(context: ContextId, ptr: UInt, len: UInt): CanvasId {
   const id = decodeStr(getMemory(context), ptr, len);
-  if (canvases.get(canvasMap[id] || 0 as CanvasId)) {
-    return canvasMap[id];
-  }
-  const canvas = document.getElementById(id) as Canvas;
-  if (!canvas) {
-    return 0 as CanvasId;
-  }
-  let canvasId = canvasMap[id];
-  if (canvasId) {
-    canvases.set(canvasId, canvas);
-  } else {
-    canvasId = canvases.add(canvas);
-  }
-  canvasContextMap[canvasId] = context;
-  return canvasId;
+  return getCanvasById(context, id);
 }
 
 export function get_canvas_width(canvas: CanvasId): UInt {

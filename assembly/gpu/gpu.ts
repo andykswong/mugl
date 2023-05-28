@@ -8,9 +8,7 @@ import {
 } from './resource';
 import { Color, Extent2D, Extent3D, Float, Future, UInt, UIntArray } from './primitive';
 
-/**
- * Minimal WebGPU-like rendering interface.
- */
+/** Minimal WebGPU-like rendering interface. */
 export interface GPU {
   /**
    * Flushes the command buffer.
@@ -175,7 +173,7 @@ export interface GPU {
    * @param device the GPU device
    * @param pass the render pass
    */
-  beginRenderPass(device: Device, pass?: RenderPass): void;
+  beginRenderPass(device: Device, pass?: RenderPass | null): void;
 
   /**
    * Submits the current render pass.
@@ -270,3 +268,6 @@ export interface GPU {
    */
   setStencilRef(device: Device, ref: UInt): void;
 }
+
+/** Minimal WebGPU-like rendering interface. Use this type instead of {@link GPU} for AssemblyScript compatibility. */
+export type BaseGPU = GPU;

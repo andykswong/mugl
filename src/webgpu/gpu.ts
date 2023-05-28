@@ -518,8 +518,8 @@ export function createRenderPass(device: Device, desc: RenderPassDescriptor = {}
     ),
     colorOps: colors.map(color => toWebGPURenderPassOperations(color.clear)),
     depth: depthStencil,
-    depthOps: toWebGPURenderPassOperations(desc.clearDepth),
-    stencilOps: toWebGPURenderPassOperations(desc.clearStencil),
+    depthOps: toWebGPURenderPassOperations(isNaN(desc.clearDepth as number) ? void 0 : desc.clearDepth),
+    stencilOps: toWebGPURenderPassOperations(isNaN(desc.clearStencil as number) ? void 0 : desc.clearStencil),
     destroy(): void {
       // noop
     }

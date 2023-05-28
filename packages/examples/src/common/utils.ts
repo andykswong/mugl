@@ -1,7 +1,7 @@
-import { Buffer, BufferUsage, Device, Float, GPU, UInt } from '../interop/mugl';
+import { BaseGPU, Buffer, BufferUsage, Device, Float, UInt } from '../interop/mugl';
 
 export function createBuffer(
-  gpu: GPU, device: Device, data: ArrayBufferView, usage: BufferUsage = BufferUsage.Vertex
+  gpu: BaseGPU, device: Device, data: ArrayBufferView, usage: BufferUsage = BufferUsage.Vertex
 ): Buffer {
   const buffer = gpu.createBuffer(device, { usage, size: data.byteLength });
   gpu.writeBuffer(device, buffer, data);

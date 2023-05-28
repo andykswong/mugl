@@ -1,5 +1,6 @@
 import { TextureFormat, WebGL, WebGL2Feature, WebGPU } from 'mugl';
-import { ExampleApplication, ExampleFactory } from './common';
+import { ContextId, set_device } from 'mugl/wasm';
+import { APP_CONTEXT_ID, ExampleApplication, ExampleFactory } from './common';
 import { AppDefinition, Apps } from './apps';
 import { loadImages } from './images';
 import { initExamplesWASM } from './wasm';
@@ -10,51 +11,30 @@ declare global {
   }
 }
 
+//#region states
+
 // Options flags
 let useWebGPU = false;
 let useWASM = false;
 
-class Redirect extends ExampleApplication {
-  constructor(private readonly uri: string) {
-    super();
-  }
+// App states
+let example: ExampleApplication;
+let raf = 0;
 
-  render(): boolean {
-    window.location.replace(this.uri);
-    return false;
-  }
-}
+// Device IDs
+let gpuDeviceId = 0;
+let glDeviceId = 0;
 
-// Load WASM module
+//#region states
+
+// WASM module
 const wasmModule = await initExamplesWASM();
-
-class WASMExample extends ExampleApplication {
-  constructor(private readonly id: number) {
-    super();
-  }
-
-  init(): void {
-    (wasmModule.init as CallableFunction)(this.id);
-  }
-
-  render(delta: number): boolean {
-    return (wasmModule.render as CallableFunction)(delta);
-  }
-
-  resize(width: number, height: number): void {
-    (wasmModule.resize as CallableFunction)(width, height);
-  }
-
-  destroy(): void {
-    (wasmModule.destroy as CallableFunction)();
-  }
-}
 
 function wasmAwareFactory(id: number, name: string, factory: ExampleFactory): ExampleFactory {
   return (device, useWebGPU) => {
     if (useWASM) {
       console.log(`Rendering ${name} example in WASM using ${useWebGPU ? 'WebGPU' : 'WebGL'}...`);
-      return new WASMExample(id);
+      return new WASMExample(id, useWebGPU ? gpuDeviceId : glDeviceId);
     }
     console.log(`Rendering ${name} example in JS using ${useWebGPU ? 'WebGPU' : 'WebGL'}...`);
     return factory(device, useWebGPU);
@@ -85,8 +65,6 @@ for (const id in appMap) {
 // Setup Canvas
 const canvas = document.getElementById('canvas') as HTMLCanvasElement;
 const canvas2 = document.getElementById('canvas2') as HTMLCanvasElement;
-setCanvasSize(canvas);
-setCanvasSize(canvas2);
 function setCanvasSize(canvas: HTMLCanvasElement) {
   const dpr = window.devicePixelRatio || 1;
   if (dpr > 1) {
@@ -97,6 +75,8 @@ function setCanvasSize(canvas: HTMLCanvasElement) {
     canvas.style.height = `${height}px`;
   }
 }
+setCanvasSize(canvas);
+setCanvasSize(canvas2);
 
 const glDevice = WebGL.requestWebGL2Device(
   canvas,
@@ -106,14 +86,17 @@ const glDevice = WebGL.requestWebGL2Device(
   WebGL2Feature.TextureFloatLinear |
   WebGL2Feature.ColorBufferFloat
 )!;
+glDeviceId = set_device(APP_CONTEXT_ID as ContextId, glDevice, 'canvas', WebGL);
 
 const gpuDeviceFuture = WebGPU.requestWebGPUDevice(
   canvas2,
   { powerPreference: 'low-power', depthStencilFormat: TextureFormat.Depth24Stencil8 }
 );
-
-let example: ExampleApplication;
-let raf = 0;
+gpuDeviceFuture.then((gpuDevice) => {
+  if (gpuDevice) {
+    gpuDeviceId = set_device(APP_CONTEXT_ID as ContextId, gpuDevice, 'canvas2', WebGPU);
+  }
+});
 
 window.loadExample = async function (hash: string = location.hash): Promise<void> {
   const nextExample = appMap[hash.replace('#', '')];
@@ -144,8 +127,8 @@ function render(now = 0) {
   }
 }
 
-// Load images
-const promise = loadImages();
+// Wait for images to load before initializing the examples
+loadImages().then(() => { window.loadExample(); });
 
 location.hash = location.hash || '#basic';
 document.getElementById('envMode')?.addEventListener('click', (event) => {
@@ -159,5 +142,38 @@ document.getElementById('gpuMode')?.addEventListener('click', (event) => {
   window.loadExample();
 });
 
-// Wait for images to load before initializing the examples
-promise.then(() => { window.loadExample(); });
+class Redirect extends ExampleApplication {
+  constructor(private readonly uri: string) {
+    super();
+  }
+
+  render(): boolean {
+    window.location.replace(this.uri);
+    return false;
+  }
+}
+
+class WASMExample extends ExampleApplication {
+  constructor(
+    private readonly id: number,
+    private readonly deviceId: number,
+  ) {
+    super();
+  }
+
+  init(): void {
+    (wasmModule.init as CallableFunction)(this.id, this.deviceId, useWebGPU);
+  }
+
+  render(delta: number): boolean {
+    return (wasmModule.render as CallableFunction)(delta);
+  }
+
+  resize(width: number, height: number): void {
+    (wasmModule.resize as CallableFunction)(width, height);
+  }
+
+  destroy(): void {
+    (wasmModule.destroy as CallableFunction)();
+  }
+}

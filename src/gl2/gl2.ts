@@ -883,17 +883,16 @@ export function beginRenderPass(device: Device, pass: RenderPass = createRenderP
   }
 
   // Clear color/depth/stencil, override masks as necessary to allow clearing
-  /* eslint-disable @typescript-eslint/no-non-null-assertion */
   let clearMask = 0;
-  if (!isNaN((pass as WebGL2RenderPass).clearDepth!)) {
+  if (!isNaN((pass as WebGL2RenderPass).clearDepth as number)) {
     clearMask |= GLenum.DEPTH_BUFFER_BIT;
-    (device as WebGL2Device).gl.clearDepth((pass as WebGL2RenderPass).clearDepth!);
+    (device as WebGL2Device).gl.clearDepth((pass as WebGL2RenderPass).clearDepth as number);
     applyDepthMask((device as WebGL2Device).gl, (device as WebGL2Device).state.state.depthWrite, true);
     (device as WebGL2Device).state.state.depthWrite = true;
   }
-  if (!isNaN((pass as WebGL2RenderPass).clearStencil!)) {
+  if (!isNaN((pass as WebGL2RenderPass).clearStencil as number)) {
     clearMask |= GLenum.STENCIL_BUFFER_BIT;
-    (device as WebGL2Device).gl.clearStencil((pass as WebGL2RenderPass).clearStencil!);
+    (device as WebGL2Device).gl.clearStencil((pass as WebGL2RenderPass).clearStencil as number);
     applyStencilMask((device as WebGL2Device).gl, (device as WebGL2Device).state.state.stencilWriteMask, BYTE_MASK);
     (device as WebGL2Device).state.state.stencilWriteMask = BYTE_MASK;
   }
@@ -907,19 +906,21 @@ export function beginRenderPass(device: Device, pass: RenderPass = createRenderP
       if ((pass as WebGL2RenderPass).clearColors[i]) {
         const type = glClearType((pass as WebGL2RenderPass).color[i].format);
         if (type === GLenum.INT) {
-          (device as WebGL2Device).gl.clearBufferiv(GLenum.COLOR, i, (pass as WebGL2RenderPass).clearColors[i]!);
+          (device as WebGL2Device).gl
+            .clearBufferiv(GLenum.COLOR, i, (pass as WebGL2RenderPass).clearColors[i] as Color);
         } else if (type === GLenum.UNSIGNED_INT) {
-          (device as WebGL2Device).gl.clearBufferuiv(GLenum.COLOR, i, (pass as WebGL2RenderPass).clearColors[i]!);
+          (device as WebGL2Device).gl
+            .clearBufferuiv(GLenum.COLOR, i, (pass as WebGL2RenderPass).clearColors[i] as Color);
         } else { // type === GLenum.FLOAT
-          (device as WebGL2Device).gl.clearBufferfv(GLenum.COLOR, i, (pass as WebGL2RenderPass).clearColors[i]!);
+          (device as WebGL2Device).gl
+            .clearBufferfv(GLenum.COLOR, i, (pass as WebGL2RenderPass).clearColors[i] as Color);
         }
       }
     }
   } else if ((pass as WebGL2RenderPass).clearColor) { // for default pass
     clearMask |= GLenum.COLOR_BUFFER_BIT;
-    (device as WebGL2Device).gl.clearColor(...(pass as WebGL2RenderPass).clearColor!);
+    (device as WebGL2Device).gl.clearColor(...(pass as WebGL2RenderPass).clearColor as Color);
   }
-  /* eslint-enable @typescript-eslint/no-non-null-assertion */
 
   if (clearMask) {
     (device as WebGL2Device).gl.clear(clearMask);

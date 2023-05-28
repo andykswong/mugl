@@ -15,7 +15,7 @@
       "import": "./assembly"
     },
     "./wasm": {
-      "import": "./dist/wasm/index.js",
+      "import": "./wasm.js",
       "require": "./dist/wasm.min.js"
     }
   },

@@ -1,4 +1,4 @@
-import { BindGroup, BindingType, Buffer, BufferUsage, Device, Float, RenderPass, RenderPipeline, Shader, ShaderStage, TextureFormat, VertexFormat, vertexBufferLayouts } from '../interop/mugl';
+import { BindGroup, BindingType, Buffer, BufferUsage, Device, Float, RenderPass, RenderPipeline, Shader, ShaderStage, TextureFormat, UInt, VertexFormat, vertexBufferLayouts } from '../interop/mugl';
 import { BaseExample, createBuffer, createFloat32Array, createUint16Array } from '../common';
 
 const code = `
@@ -74,8 +74,8 @@ const position = createFloat32Array([
   -0.05, 0.0,
   0.05, 0.05
 ]);
-const offsetAndColor = new Float32Array(Math.ceil(N * N * 5 / 4) * 4);
-const angle = new Float32Array(Math.ceil(N * N / 4) * 4);
+const offsetAndColor = new Float32Array(Math.ceil(N * N * 5 / 4) as UInt * 4);
+const angle = new Float32Array(Math.ceil(N * N / 4) as UInt * 4);
 
 const fN = N as Float;
 for (let i = 0; i < N * N; i++) {

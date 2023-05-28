@@ -1,4 +1,4 @@
-import { Device, Float, GPU, Resource, UInt, WebGL, WebGPU } from '../interop/mugl';
+import { BaseGPU, Device, Float, Resource, UInt, WebGL, WebGPU } from '../interop/mugl';
 
 export type ExampleFactory = (device: Device, useWebGPU: boolean) => ExampleApplication;
 
@@ -25,7 +25,7 @@ export abstract class BaseExample extends ExampleApplication {
     super();
   }
 
-  public get gpu(): GPU {
+  public get gpu(): BaseGPU {
     return this.useWebGPU ? WebGPU : WebGL;
   }
 
