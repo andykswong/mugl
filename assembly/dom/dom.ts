@@ -1,20 +1,8 @@
-import { createImage as _createImage, getImageById as _getImageById, getCanvasById as _getCanvasById, ContextId } from '../mugl';
+import { getImageById as _getImageById, getCanvasById as _getCanvasById, ContextId } from '../mugl';
 import { Canvas, ImageSource } from './resource';
 
 /**
- * Creates an image from URL.
- * @param context unique context ID for the app
- * @param uri image URI
- * @returns image
- */
-export function createImage(context: ContextId, uri: string): ImageSource {
-  const sBuf = String.UTF8.encode(uri);
-  return new ImageSource(_createImage(context, changetype<usize>(sBuf), sBuf.byteLength));
-
-}
-
-/**
- * Gets an image handle by ID.
+ * Gets an image handle by string ID.
  * @param context unique context ID for the app
  * @param id the image ID
  * @returns image

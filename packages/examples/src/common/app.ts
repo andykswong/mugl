@@ -1,4 +1,6 @@
-import { Device, Float, Resource, UInt } from '../interop/mugl';
+import { Device, Float, GPU, Resource, UInt, WebGL, WebGPU } from '../interop/mugl';
+
+export type ExampleFactory = (device: Device, useWebGPU: boolean) => ExampleApplication;
 
 export abstract class ExampleApplication {
   public init(): void { /* empty */ }
@@ -14,12 +16,18 @@ export abstract class ExampleApplication {
   public destroy(): void { /* empty */ }
 }
 
-export type ExampleFactory = (device: Device) => ExampleApplication;
-
 export abstract class BaseExample extends ExampleApplication {
   protected resources: Resource[] = [];
   protected width: UInt = 1;
   protected height: UInt = 1;
+
+  public constructor(protected readonly useWebGPU: boolean = false) {
+    super();
+  }
+
+  public get gpu(): GPU {
+    return this.useWebGPU ? WebGPU : WebGL;
+  }
 
   public resize(width: UInt, height: UInt): void {
     this.width = width;

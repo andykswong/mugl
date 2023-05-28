@@ -124,7 +124,9 @@ export class PostprocessExample extends BaseExample {
   cubeData: Float32Array = new Float32Array(16);
   kernelData: Float32Array = new Float32Array(20);
 
-  constructor(private readonly device: Device) {
+  constructor(
+    private readonly device: Device
+  ) {
     super();
   }
 
@@ -141,9 +143,9 @@ export class PostprocessExample extends BaseExample {
 
     // Setup the cube
     {
-      this.vertBuffer = createBuffer(this.device, cubeVertices);
-      this.indexBuffer = createBuffer(this.device, cubeIndices, BufferUsage.Index);
-      this.cubeDataBuffer = createBuffer(this.device, this.cubeData, BufferUsage.Uniform | BufferUsage.Stream);
+      this.vertBuffer = createBuffer(this.gpu, this.device, cubeVertices);
+      this.indexBuffer = createBuffer(this.gpu, this.device, cubeIndices, BufferUsage.Index);
+      this.cubeDataBuffer = createBuffer(this.gpu, this.device, this.cubeData, BufferUsage.Uniform | BufferUsage.Stream);
 
       this.cubeBindGroup = WebGL.createBindGroup(this.device, {
         layout: dataLayout,
@@ -175,8 +177,8 @@ export class PostprocessExample extends BaseExample {
       ]
     });
     {
-      this.quadVertBuffer = createBuffer(this.device, quadVertices);
-      this.kernelDataBuffer = createBuffer(this.device, this.kernelData, BufferUsage.Uniform | BufferUsage.Stream);
+      this.quadVertBuffer = createBuffer(this.gpu, this.device, quadVertices);
+      this.kernelDataBuffer = createBuffer(this.gpu, this.device, this.kernelData, BufferUsage.Uniform | BufferUsage.Stream);
 
       this.offscreenTex = WebGL.createTexture(this.device, { size: [texSize, texSize, 1], sampleCount });
       this.offscreenTexSampler = WebGL.createSampler(this.device, {

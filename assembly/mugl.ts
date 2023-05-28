@@ -8,10 +8,12 @@ import {
   PrimitiveTopology, ShaderStage, StencilOperation, TextureDimension, TextureFormat, TextureUsage, UInt
 } from './gpu';
 import { WebGLContextAttributeFlag } from './gl2';
+import { WebGPUContextAttributeFlag } from './webgpu';
 
 //#region Pointers
 export type ContextId = f64;
 export type FutureId = f64;
+export type FutureValueId = f64;
 export type CanvasId = f64;
 export type ImageSourceId = f64;
 export type DeviceId = f64;
@@ -37,18 +39,16 @@ export type RenderPassId = f64;
 export declare function getFutureStatus(id: FutureId): FutureStatus;
 
 /**
- * Creates image from URI.
- * @param context unique context ID for the app
- * @param uriPtr the image URI string pointer
- * @param uriLen the image URI string length
- * @returns image pointer
+ * Returns resolved value of the future.
+ * @param id future pointer
+ * @returns future value pointer
  */
 //@ts-expect-error: host binding
-@external("mugl/wasm", "create_image")
-export declare function createImage(context: ContextId, uriPtr: usize, uriLen: usize): ImageSourceId;
+@external("mugl/wasm", "get_future_value")
+export declare function getFutureValue(id: FutureId): FutureValueId;
 
 /**
- * Gets an image handle by ID.
+ * Gets an image handle by string ID.
  * @param context unique context ID for the app
  * @param idPtr the image ID string pointer
  * @param idLen the image ID string length
@@ -59,7 +59,7 @@ export declare function createImage(context: ContextId, uriPtr: usize, uriLen: u
 export declare function getImageById(context: ContextId, idPtr: usize, idLen: usize): ImageSourceId;
 
 /**
- * Deletes an image.
+ * Deletes an image handle.
  * @param image image pointer
  */
 //@ts-expect-error: host binding
@@ -113,7 +113,60 @@ export declare function getCanvasWidth(canvas: CanvasId): UInt;
 @external("mugl/wasm", "get_canvas_height")
 export declare function getCanvasHeight(canvas: CanvasId): UInt;
 
+/**
+ * Deletes a canvas handle.
+ * @param canvas canvas pointer
+ */
+//@ts-expect-error: host binding
+@external("mugl/wasm", "delete_canvas")
+export declare function deleteCanvas(canvas: CanvasId): void;
+
 //#endregion DOM
+
+//#region WebGPU
+
+/**
+ * Requests a WebGPU GPU device.
+ * @param canvas canvas pointer
+ * @param desc WebGPUContextAttributeFlag
+ * @param features WebGPUFeature flags
+ * @returns future to the device pointer, or 0 if WebGPU is unsupported
+ */
+//@ts-expect-error: host binding
+@external("mugl/wasm", "webgpu_request_device")
+export declare function requestWebGPUDevice(
+  canvas: CanvasId, desc: WebGPUContextAttributeFlag, features: UInt
+): FutureId;
+
+/**
+ * Creates a WebGPU surface texture.
+ * @param device device pointer
+ * @param canvas canvas pointer
+ * @param desc WebGPUContextAttributeFlag
+ */
+//@ts-expect-error: host binding
+@external("mugl/wasm", "webgpu_create_surface_texture")
+export declare function createWebGPUSurfaceTexture(
+  device: DeviceId,
+  canvas: CanvasId,
+  desc: WebGPUContextAttributeFlag
+): TextureId;
+
+/**
+ * Creates a WebGPU surface depth-stencil texture.
+ * @param device device pointer
+ * @param canvas canvas pointer
+ * @param desc WebGPUContextAttributeFlag
+ */
+//@ts-expect-error: host binding
+@external("mugl/wasm", "webgpu_create_surface_depth_texture")
+export declare function createWebGPUSurfaceDepthTexture(
+  device: DeviceId,
+  canvas: CanvasId,
+  desc: WebGPUContextAttributeFlag
+): TextureId;
+
+//#endregion WebGPU
 
 //#region WebGL2
 

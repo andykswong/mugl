@@ -160,7 +160,9 @@ export class PbrExample extends BaseExample {
   cubeData: Float32Array = new Float32Array(36);
   skyData: Float32Array = new Float32Array(36);
 
-  constructor(private readonly device: Device) {
+  constructor(
+    private readonly device: Device
+  ) {
     super();
   }
 
@@ -177,21 +179,21 @@ export class PbrExample extends BaseExample {
     const skyFs = WebGL.createShader(this.device, { code: fragSky, usage: ShaderStage.Fragment });
 
     // Create buffers
-    this.matBuffer = createBuffer(this.device, createFloat32Array([
+    this.matBuffer = createBuffer(this.gpu, this.device, createFloat32Array([
       1.0, 1.0, 1.0, 1.0, // albedo
       0.5, // metallic
       0.5, // roughness
       0, 0 // padding
     ]), BufferUsage.Uniform);
-    this.envBuffer = createBuffer(this.device, createFloat32Array([
+    this.envBuffer = createBuffer(this.gpu, this.device, createFloat32Array([
       0xdf / 0xff * .75, 0xf6 / 0xff * .75, 0xf5 / 0xff * .75, 1.0, // ambient
       1.0, -2.0, 1.0, 0.0, // lightDir
       0xfc / 0xff, 0xcb / 0xff, 0xcb / 0xff, 5.0, // lightColor / intensity
     ]), BufferUsage.Uniform);
-    this.vertBuffer = createBuffer(this.device, cubeVertices);
-    this.indexBuffer = createBuffer(this.device, cubeIndices, BufferUsage.Index);
-    this.cubeDataBuffer = createBuffer(this.device, this.cubeData, BufferUsage.Uniform | BufferUsage.Stream);
-    this.skyDataBuffer = createBuffer(this.device, this.skyData, BufferUsage.Uniform | BufferUsage.Stream);
+    this.vertBuffer = createBuffer(this.gpu, this.device, cubeVertices);
+    this.indexBuffer = createBuffer(this.gpu, this.device, cubeIndices, BufferUsage.Index);
+    this.cubeDataBuffer = createBuffer(this.gpu, this.device, this.cubeData, BufferUsage.Uniform | BufferUsage.Stream);
+    this.skyDataBuffer = createBuffer(this.gpu, this.device, this.skyData, BufferUsage.Uniform | BufferUsage.Stream);
 
     // Create bind groups
     const textureLayout = WebGL.createBindGroupLayout(this.device, {
@@ -214,7 +216,8 @@ export class PbrExample extends BaseExample {
     this.cubeTex = WebGL.createTexture(this.device, { size: [texSize, texSize, 1] });
     if (airplane) {
       WebGL.copyExternalImageToTexture(this.device, { src: airplane }, { texture: this.cubeTex! });
-      WebGL.generateMipmap(this.device, this.cubeTex!);
+      // TODO: no auto mipmap for WebGPU
+      // WebGL.generateMipmap(this.device, this.cubeTex!);
     }
 
     this.sampler = WebGL.createSampler(this.device, {
@@ -265,7 +268,8 @@ export class PbrExample extends BaseExample {
         for (let z = 0; z < 6; ++z) {
           WebGL.copyExternalImageToTexture(this.device, { src: cubeImages[z] }, { texture: this.skyTex!, origin: [0, 0, z] });
         }
-        WebGL.generateMipmap(this.device, this.skyTex!);
+        // TODO: no auto mipmap for WebGPU
+        // WebGL.generateMipmap(this.device, this.skyTex!);
       }
 
       this.skyTexBindGroup = WebGL.createBindGroup(this.device, {

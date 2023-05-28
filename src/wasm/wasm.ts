@@ -2,13 +2,14 @@ import { Canvas } from '../dom';
 import {
   AddressMode, BindGroup, BindGroupLayout, BindGroupLayoutEntry, BindingType, Buffer, BufferUsage, Color,
   ColorAttachment, ColorTargetState, CompareFunction, CullMode, Device, FilterMode, Float, FrontFace, Future,
-  FutureStatus, IndexFormat, MipmapHint, PrimitiveTopology, RenderPass, RenderPassDescriptor, RenderPipeline,
+  FutureStatus, GPU, ImageSource, IndexFormat, MipmapHint, PrimitiveTopology, RenderPass, RenderPassDescriptor, RenderPipeline,
   Resource, Sampler, SamplerBindingType, Shader, ShaderStage, StencilOperation, Texture, TextureDimension,
   TextureFormat, TextureSampleType, TextureUsage, UInt, VertexAttribute, VertexBufferLayout
 } from '../gpu';
 import { WebGL } from '../gl2';
 import { GenerationalArena } from './arena';
-import { dataView, decodeStr, toWebGLContextAttributes } from './deserialize';
+import { dataView, decodeStr, toWebGLContextAttributes, toWebGPUContextAttributes } from './deserialize';
+import { WebGPU } from '../webgpu';
 
 export type ContextId = number & { readonly __tag: unique symbol };
 export type FutureId = number & { readonly __tag: unique symbol };
@@ -25,6 +26,9 @@ const canvasMap: Record<string, CanvasId> = {};
 const canvasContextMap: Record<CanvasId, ContextId> = {};
 const resources = new GenerationalArena<Resource, ResourceId>();
 const deviceContextMap: Record<ResourceId, ContextId> = {};
+const deviceGPUMap: Record<ResourceId, GPU> = {};
+
+//#region utils
 
 function getMemory(context: ContextId): WebAssembly.Memory {
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -43,6 +47,19 @@ function deleteResource(id: ResourceId): void {
   }
 }
 
+function getGPU(device: ResourceId): GPU {
+  return deviceGPUMap[device] || WebGL;
+}
+
+//#endregion utils
+
+//#region context
+
+/**
+ * Sets the WebAssembly memory for the given context.
+ * @param context context ID
+ * @param memory WebAssembly memory
+ */
 export function set_context_memory(context: ContextId, memory: WebAssembly.Memory): void {
   (contexts[context] = contexts[context] || { memory: null }).memory = memory;
 }
@@ -62,11 +79,20 @@ export function get_future_status(future: FutureId): FutureStatus {
   return FutureStatus.Done;
 }
 
-export function create_image(context: ContextId, ptr: UInt, len: UInt): ImageSourceId {
-  const img = new Image();
-  img.crossOrigin = 'anonymous';
-  img.src = decodeStr(getMemory(context), ptr, len);
-  return images.add(img);
+export function get_future_value(future: FutureId): ResourceId {
+  return futures.get(future)?.value as ResourceId || 0 as ResourceId;
+}
+
+//#endregion context
+
+//#region DOM
+
+export function set_image_by_id(id: string, image: TexImageSource): ImageSourceId {
+  if (imageMap[id]) {
+    images.set(imageMap[id], image);
+    return imageMap[id];
+  }
+  return (imageMap[id] = images.add(image));
 }
 
 export function get_image_by_id(context: ContextId, ptr: UInt, len: UInt): ImageSourceId {
@@ -74,7 +100,7 @@ export function get_image_by_id(context: ContextId, ptr: UInt, len: UInt): Image
   if (imageMap[id]) {
     return imageMap[id];
   }
-  const image = document.getElementById(id) as HTMLImageElement;
+  const image = document.getElementById(id) as TexImageSource;
   if (!image) {
     return 0 as ImageSourceId;
   }
@@ -95,14 +121,19 @@ export function get_image_height(img: ImageSourceId): UInt {
 
 export function get_canvas_by_id(context: ContextId, ptr: UInt, len: UInt): CanvasId {
   const id = decodeStr(getMemory(context), ptr, len);
-  if (canvasMap[id]) {
+  if (canvases.get(canvasMap[id] || 0 as CanvasId)) {
     return canvasMap[id];
   }
   const canvas = document.getElementById(id) as Canvas;
   if (!canvas) {
     return 0 as CanvasId;
   }
-  const canvasId = canvasMap[id] = canvases.add(canvas);
+  let canvasId = canvasMap[id];
+  if (canvasId) {
+    canvases.set(canvasId, canvas);
+  } else {
+    canvasId = canvases.add(canvas);
+  }
   canvasContextMap[canvasId] = context;
   return canvasId;
 }
@@ -115,6 +146,66 @@ export function get_canvas_height(canvas: CanvasId): UInt {
   return canvases.get(canvas)?.height || 0;
 }
 
+export function delete_canvas(canvas: CanvasId): void {
+  canvases.delete(canvas);
+  delete canvasContextMap[canvas];
+  // TODO: good to keep canvasMap entry?
+}
+
+//#endregion DOM
+
+//#region WebGPU
+
+export function webgpu_request_device(canvasId: CanvasId, attrs: UInt, features: UInt): FutureId {
+  const canvas = canvases.get(canvasId);
+  if (!canvas) {
+    return 0 as FutureId;
+  }
+
+  const future = WebGPU.requestWebGPUDevice(canvas, toWebGPUContextAttributes(attrs), features)
+    .then((device) => {
+      let deviceId = 0 as ResourceId;
+      if (device) {
+        deviceId = resources.add(device);
+        deviceContextMap[deviceId] = canvasContextMap[canvasId];
+        deviceGPUMap[deviceId] = WebGPU;
+      }
+      return deviceId;
+    });
+
+  const ret = {
+    status: FutureStatus.Pending,
+    value: 0,
+    then(onFullfilled, onRejected) {
+      return future.then(onFullfilled, onRejected);
+    }
+  } as Future<ResourceId> & { status: FutureStatus, value: ResourceId };
+
+  return futures.add(ret);
+}
+
+export function webgpu_create_surface_texture(deviceId: ResourceId, canvasId: CanvasId, attrs: UInt = 0): ResourceId {
+  const ret = WebGPU.createSurfaceTexture(
+    resources.get(deviceId) as Device,
+    canvases.get(canvasId),
+    toWebGPUContextAttributes(attrs)
+  );
+  return resources.add(ret);
+}
+
+export function webgpu_create_surface_depth_texture(deviceId: ResourceId, canvasId: CanvasId, attrs: UInt = 0): ResourceId {
+  const ret = WebGPU.createSurfaceDepthTexture(
+    resources.get(deviceId) as Device,
+    canvases.get(canvasId),
+    toWebGPUContextAttributes(attrs)
+  );
+  return resources.add(ret);
+}
+
+//#endregion WebGPU
+
+//#region WebGL2
+
 export function webgl_request_device(canvasId: CanvasId, attrs: UInt, features: UInt): ResourceId {
   const canvas = canvases.get(canvasId);
   if (canvas) {
@@ -122,6 +213,7 @@ export function webgl_request_device(canvasId: CanvasId, attrs: UInt, features: 
     if (device) {
       const deviceId = resources.add(device);
       deviceContextMap[deviceId] = canvasContextMap[canvasId];
+      deviceGPUMap[deviceId] = WebGL;
       return deviceId;
     }
   }
@@ -132,29 +224,32 @@ export function webgl_generate_mipmap(device: ResourceId, tex: ResourceId, hint:
   WebGL.generateMipmap(resources.get(device) as Device, resources.get(tex) as Texture, hint);
 }
 
+//#endregion WebGL2
+
 export function flush(device: ResourceId): void {
-  WebGL.flush(resources.get(device) as Device);
+  getGPU(device).flush(resources.get(device) as Device);
 }
 
 export function reset_device(device: ResourceId): void {
-  WebGL.resetDevice(resources.get(device) as Device);
+  getGPU(device).resetDevice(resources.get(device) as Device);
 }
 
 export function delete_device(device: ResourceId): void {
   deleteResource(device);
   delete deviceContextMap[device];
+  delete deviceGPUMap[device];
 }
 
 export function is_device_lost(device: ResourceId): boolean {
-  return WebGL.isDeviceLost(resources.get(device) as Device);
+  return getGPU(device).isDeviceLost(resources.get(device) as Device);
 }
 
 export function get_device_features(device: ResourceId): UInt {
-  return WebGL.getDeviceFeatures(resources.get(device) as Device);
+  return getGPU(device).getDeviceFeatures(resources.get(device) as Device);
 }
 
 export function create_buffer(device: ResourceId, size: UInt, usage: BufferUsage): ResourceId {
-  const ret = WebGL.createBuffer(resources.get(device) as Device, {
+  const ret = getGPU(device).createBuffer(resources.get(device) as Device, {
     size: size >>> 0,
     usage: usage >>> 0,
   });
@@ -172,7 +267,7 @@ export function create_texture(
   format: TextureFormat,
   usage: TextureUsage
 ): ResourceId {
-  const ret = WebGL.createTexture(resources.get(device) as Device, {
+  const ret = getGPU(device).createTexture(resources.get(device) as Device, {
     size: [width >>> 0, height >>> 0, depth >>> 0],
     mipLevelCount: mipLevelCount >>> 0,
     sampleCount: sampleCount >>> 0,
@@ -193,7 +288,7 @@ export function create_sampler(
   compare: CompareFunction,
   maxAnisotropy: UInt
 ): ResourceId {
-  const ret = WebGL.createSampler(resources.get(device) as Device, {
+  const ret = getGPU(device).createSampler(resources.get(device) as Device, {
     addressModeU: addressModeU >>> 0,
     addressModeV: addressModeV >>> 0,
     addressModeW: addressModeW >>> 0,
@@ -211,7 +306,7 @@ export function create_sampler(
 export { deleteResource as delete_sampler };
 
 export function create_shader(device: ResourceId, codePtr: UInt, codeLen: UInt, usage: ShaderStage): ResourceId {
-  const ret = WebGL.createShader(resources.get(device) as Device, {
+  const ret = getGPU(device).createShader(resources.get(device) as Device, {
     code: decodeStr(getDeviceMemory(device), codePtr, codeLen),
     usage: usage >>> 0,
   });
@@ -261,7 +356,7 @@ export function create_bind_group_layout(device: ResourceId, entriesPtr: UInt, e
       textureMultisampled,
     });
   }
-  const ret = WebGL.createBindGroupLayout(resources.get(device) as Device, { entries });
+  const ret = getGPU(device).createBindGroupLayout(resources.get(device) as Device, { entries });
   return resources.add(ret);
 }
 
@@ -303,7 +398,7 @@ export function create_bind_group(device: ResourceId, layout: ResourceId, entrie
       texture
     });
   }
-  const ret = WebGL.createBindGroup(resources.get(device) as Device, {
+  const ret = getGPU(device).createBindGroup(resources.get(device) as Device, {
     layout: resources.get(layout) as BindGroupLayout,
     entries,
   });
@@ -380,7 +475,7 @@ export function create_render_pipeline(
   const vertexEntryPoint = decodeStr(getDeviceMemory(device), vertexEntryPointPtr, vertexEntryPointLen);
   const fragmentEntryPoint = decodeStr(getDeviceMemory(device), fragmentEntryPointPtr, fragmentEntryPointLen);
 
-  const ret = WebGL.createRenderPipeline(resources.get(device) as Device, {
+  const ret = getGPU(device).createRenderPipeline(resources.get(device) as Device, {
     vertex: resources.get(vertex) as Shader,
     fragment: resources.get(fragment) as Shader,
     vertexEntryPoint,
@@ -493,14 +588,14 @@ export function create_render_pass(
     default:
       throw new RangeError('invalid variant discriminant for RenderPassDescriptor');
   }
-  const ret = WebGL.createRenderPass(resources.get(device) as Device, desc);
+  const ret = getGPU(device).createRenderPass(resources.get(device) as Device, desc);
   return resources.add(ret);
 }
 
 export { deleteResource as delete_render_pass };
 
 export function read_buffer(device: ResourceId, buffer: ResourceId, offset: UInt, outPtr: UInt, size: UInt): FutureId {
-  const ret = WebGL.readBuffer(
+  const ret = getGPU(device).readBuffer(
     resources.get(device) as Device,
     resources.get(buffer) as Buffer,
     new Uint8Array(getDeviceMemory(device).buffer.slice(outPtr, outPtr + size * 1),
@@ -510,11 +605,11 @@ export function read_buffer(device: ResourceId, buffer: ResourceId, offset: UInt
 }
 
 export function write_buffer(device: ResourceId, buffer: ResourceId, dataPtr: UInt, size: UInt, offset: UInt): void {
-  WebGL.writeBuffer(resources.get(device) as Device, resources.get(buffer) as Buffer, new Uint8Array(getDeviceMemory(device).buffer.slice(dataPtr, dataPtr + size * 1)), offset >>> 0);
+  getGPU(device).writeBuffer(resources.get(device) as Device, resources.get(buffer) as Buffer, new Uint8Array(getDeviceMemory(device).buffer.slice(dataPtr, dataPtr + size * 1)), offset >>> 0);
 }
 
 export function copy_buffer(device: ResourceId, src: ResourceId, dst: ResourceId, size: UInt, srcOffset: UInt, dstOffset: UInt): void {
-  WebGL.copyBuffer(resources.get(device) as Device, resources.get(src) as Buffer, resources.get(dst) as Buffer, size >>> 0, srcOffset >>> 0, dstOffset >>> 0);
+  getGPU(device).copyBuffer(resources.get(device) as Device, resources.get(src) as Buffer, resources.get(dst) as Buffer, size >>> 0, srcOffset >>> 0, dstOffset >>> 0);
 }
 
 export function write_texture(
@@ -524,7 +619,7 @@ export function write_texture(
   offset: UInt, bytesPerRow: UInt, rowsPerImage: UInt,
   width: UInt, height: UInt, depth: UInt
 ) {
-  WebGL.writeTexture(resources.get(device) as Device, {
+  getGPU(device).writeTexture(resources.get(device) as Device, {
     texture: resources.get(texture) as Texture,
     mipLevel: mipLevel >>> 0,
     origin: [x >>> 0, y >>> 0, z >>> 0],
@@ -543,9 +638,9 @@ export function copy_external_image_to_texture(
   dst: ResourceId, mipLevel: UInt, dstX: UInt, dstY: UInt, dstZ: UInt,
   width: UInt, height: UInt
 ): void {
-  WebGL.copyExternalImageToTexture(resources.get(device) as Device,
+  getGPU(device).copyExternalImageToTexture(resources.get(device) as Device,
     {
-      src: images.get(src) as TexImageSource,
+      src: images.get(src) as ImageSource,
       origin: [srcX >>> 0, srcY >>> 0],
     },
     {
@@ -562,7 +657,7 @@ export function copy_texture(
   dst: ResourceId, dstMipLevel: UInt, dstX: UInt, dstY: UInt, dstZ: UInt,
   width: UInt, height: UInt, depth: UInt
 ) {
-  WebGL.copyTexture(resources.get(device) as Device,
+  getGPU(device).copyTexture(resources.get(device) as Device,
     {
       texture: resources.get(src) as Texture,
       mipLevel: srcMipLevel >>> 0,
@@ -583,7 +678,7 @@ export function copy_texture_to_buffer(
   offset: UInt, bytesPerRow: UInt, rowsPerImage: UInt,
   width: UInt, height: UInt, depth: UInt
 ): void {
-  WebGL.copyTextureToBuffer(resources.get(device) as Device,
+  getGPU(device).copyTextureToBuffer(resources.get(device) as Device,
     {
       texture: resources.get(src) as Texture,
       mipLevel: srcMipLevel >>> 0,
@@ -600,27 +695,27 @@ export function copy_texture_to_buffer(
 
 
 export function begin_render_pass(device: ResourceId, pass?: ResourceId): void {
-  WebGL.beginRenderPass(resources.get(device) as Device, pass && resources.get(pass) as RenderPass);
+  getGPU(device).beginRenderPass(resources.get(device) as Device, pass && resources.get(pass) as RenderPass);
 }
 
 export function submit_render_pass(device: ResourceId): void {
-  WebGL.submitRenderPass(resources.get(device) as Device);
+  getGPU(device).submitRenderPass(resources.get(device) as Device);
 }
 
 export function set_render_pipeline(device: ResourceId, pipeline: ResourceId): void {
-  WebGL.setRenderPipeline(resources.get(device) as Device, resources.get(pipeline) as RenderPipeline);
+  getGPU(device).setRenderPipeline(resources.get(device) as Device, resources.get(pipeline) as RenderPipeline);
 }
 
 export function set_index(device: ResourceId, index: ResourceId): void {
-  WebGL.setIndex(resources.get(device) as Device, resources.get(index) as Buffer);
+  getGPU(device).setIndex(resources.get(device) as Device, resources.get(index) as Buffer);
 }
 
 export function set_vertex(device: ResourceId, slot: UInt, vertex: ResourceId, offset: UInt): void {
-  WebGL.setVertex(resources.get(device) as Device, slot >>> 0, resources.get(vertex) as Buffer, offset >>> 0);
+  getGPU(device).setVertex(resources.get(device) as Device, slot >>> 0, resources.get(vertex) as Buffer, offset >>> 0);
 }
 
 export function set_bind_group(device: ResourceId, slot: UInt, bindGroup: ResourceId, offsetsPtr: UInt, offsetsLen: UInt): void {
-  WebGL.setBindGroup(
+  getGPU(device).setBindGroup(
     resources.get(device) as Device, slot >>> 0,
     resources.get(bindGroup) as BindGroup,
     new Uint32Array(getDeviceMemory(device).buffer.slice(offsetsPtr, offsetsPtr + offsetsLen * 4)) as unknown as UInt[]
@@ -628,25 +723,25 @@ export function set_bind_group(device: ResourceId, slot: UInt, bindGroup: Resour
 }
 
 export function draw(device: ResourceId, vertexCount: UInt, instanceCount: UInt, firstVertex: UInt, firstInstance: UInt): void {
-  WebGL.draw(resources.get(device) as Device, vertexCount >>> 0, instanceCount >>> 0, firstVertex >>> 0, firstInstance >>> 0);
+  getGPU(device).draw(resources.get(device) as Device, vertexCount >>> 0, instanceCount >>> 0, firstVertex >>> 0, firstInstance >>> 0);
 }
 
 export function draw_indexed(device: ResourceId, indexCount: UInt, instanceCount: UInt, firstIndex: UInt, firstInstance: UInt): void {
-  WebGL.drawIndexed(resources.get(device) as Device, indexCount >>> 0, instanceCount >>> 0, firstIndex >>> 0, firstInstance >>> 0);
+  getGPU(device).drawIndexed(resources.get(device) as Device, indexCount >>> 0, instanceCount >>> 0, firstIndex >>> 0, firstInstance >>> 0);
 }
 
 export function set_viewport(device: ResourceId, x: UInt, y: UInt, width: UInt, height: UInt, minDepth: UInt, maxDepth: UInt): void {
-  WebGL.setViewport(resources.get(device) as Device, x >>> 0, y >>> 0, width >>> 0, height >>> 0, minDepth >>> 0, maxDepth >>> 0);
+  getGPU(device).setViewport(resources.get(device) as Device, x >>> 0, y >>> 0, width >>> 0, height >>> 0, minDepth >>> 0, maxDepth >>> 0);
 }
 
 export function set_scissor_rect(device: ResourceId, x: UInt, y: UInt, width: UInt, height: UInt): void {
-  WebGL.setScissorRect(resources.get(device) as Device, x >>> 0, y >>> 0, width >>> 0, height >>> 0);
+  getGPU(device).setScissorRect(resources.get(device) as Device, x >>> 0, y >>> 0, width >>> 0, height >>> 0);
 }
 
 export function set_blend_const(device: ResourceId, red: Float, green: Float, blue: Float, alpha: Float): void {
-  WebGL.setBlendConst(resources.get(device) as Device, [red, green, blue, alpha]);
+  getGPU(device).setBlendConst(resources.get(device) as Device, [red, green, blue, alpha]);
 }
 
 export function set_stencil_ref(device: ResourceId, ref: UInt): void {
-  WebGL.setStencilRef(resources.get(device) as Device, ref >>> 0);
+  getGPU(device).setStencilRef(resources.get(device) as Device, ref >>> 0);
 }

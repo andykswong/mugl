@@ -13,9 +13,12 @@
 
 ## Overview
 
-`mugl` is a minimal, modern 3D graphics abstraction layer that provides simplified [WebGPU](https://gpuweb.github.io/gpuweb/)-style  low-level graphics API. It supports WebGL 2.0 backend, removing the verbosity and state management aspect of WebGL, with WebGPU backend under development.
+`mugl` is a minimal, modern 3D graphics abstraction layer that provides a simplified [WebGPU](https://gpuweb.github.io/gpuweb/)-style low-level graphics API for JavaScript. It:
+- supports both WebGPU and WebGL 2.0
+- runs on any modern web browser (WebGL/WebGPU) and React Native mobile app (WebGL)
+- runs on WebAssembly (WASM) with [AssemblyScript](https://www.assemblyscript.org/) binding (WebGL/WebGPU)
 
-`mugl` runs on any modern web browser, and mobile via React Native. It provides WebAssembly (WASM) bindings in addition to JavaScript. With its [AssemblyScript](https://www.assemblyscript.org/) binding, you can run the same code on WASM (see [examples](#examples)). Additional WASM language bindings (e.g. Rust) and platform supports (e.g. native Desktop) are planned.
+If you want to use WebGPU from JS or WASM code with fallback to WebGL, `mugl` is for you; If you just want to use WebGL, but would like to avoid the verbosity and state management aspect of WebGL, `mugl` is for you as well.
 
 ## Documentation
 - Latest JavaScript / AssemblyScript interface: [(link)](http://andykswong.github.io/mugl/latest/docs)
@@ -34,7 +37,7 @@ The source code of all examples can be found [here](./packages/examples/src/apps
 |[![mrt](./screenshots/mrt.png)](https://andykswong.github.io/mugl/latest/examples/#mrt)|[![stencil](./screenshots/stencil.png)](https://andykswong.github.io/mugl/latest/examples/#stencil)|[![pbr](./screenshots/pbr.png)](https://andykswong.github.io/mugl/latest/examples/#pbr)|
 
 ### [glTF 2.0 Model Viewer](https://andykswong.github.io/mugl/latest/gltf-viewer)
-[<img src="./screenshots/DamagedHelmet.png" width="128" align="left" style="margin: 0 2rem" />](https://andykswong.github.io/mugl/latest/gltf-viewer/?model=DamagedHelmet)
+[<img src="./screenshots/DamagedHelmet.png" width="192" align="left" style="margin: 0 2rem" />](https://andykswong.github.io/mugl/latest/gltf-viewer/?model=DamagedHelmet)
 
 A small but full-featured glTF model viewer built on `mugl` is available as an example usage of this library [here](https://andykswong.github.io/mugl/latest/gltf-viewer). \
 The source code can be found [here](./packages/gltf-viewer).

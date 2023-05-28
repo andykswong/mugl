@@ -17,11 +17,11 @@ export class AppDefinition {
 }
 
 export const Apps = [
-  new AppDefinition('basic', 'Hello World', (device) => new BasicExample(device)),
-  new AppDefinition('instancing', 'Buffers & Instancing', (device) => new InstancingExample(device)),
-  new AppDefinition('texture', 'Texture & Sampler', (device) => new TextureExample(device)),
-  new AppDefinition('stencil', 'Depth Stencil', (device) => new StencilExample(device)),
-  new AppDefinition('postprocess', 'Post-processing', (device) => new PostprocessExample(device)),
-  new AppDefinition('mrt', 'Multi Render Targets', (device) => new MRTExample(device)),
-  new AppDefinition('pbr', 'Physically Based Rendering', (device) => new PbrExample(device)),
+  new AppDefinition('basic', 'Hello World', (device, useWebGPU) => new BasicExample(device, useWebGPU)),
+  new AppDefinition('instancing', 'Buffers & Instancing', (device, useWebGPU) => new InstancingExample(device, useWebGPU)),
+  new AppDefinition('texture', 'Texture & Sampler', (device, useWebGPU) => new TextureExample(device, useWebGPU)),
+  new AppDefinition('stencil', 'Depth Stencil', (device, useWebGPU) => new StencilExample(device, useWebGPU)),
+  new AppDefinition('postprocess', 'Post-processing', (device, useWebGPU) => new PostprocessExample(device)),
+  new AppDefinition('mrt', 'Multi Render Targets', (device, useWebGPU) => new MRTExample(device)),
+  new AppDefinition('pbr', 'Physically Based Rendering', (device, useWebGPU) => new PbrExample(device)),
 ];

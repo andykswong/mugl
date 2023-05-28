@@ -1,8 +1,8 @@
 import { lookAt, mat, mat4, Mat4, perspective, scale } from 'munum/assembly';
 import {
   AddressMode, BindGroup, BindingType, Buffer, BufferUsage, CompareFunction, CullMode, Device,
-  FilterMode, Float, RenderPipeline, RenderPipelineDescriptor, Sampler, ShaderStage, Texture,
-  TextureDimension, UInt, vertexBufferLayouts, VertexFormat, WebGL, getImage, RenderPass
+  FilterMode, Float, GPU, RenderPipeline, RenderPipelineDescriptor, Sampler, ShaderStage, Texture,
+  TextureDimension, UInt, vertexBufferLayouts, VertexFormat, getImage, RenderPass, TextureFormat, TextureUsage
 } from '../interop/mugl';
 import { BaseExample, createBuffer, Cube, Model, TEX_SIZE, toIndices, toVertices } from '../common';
 
@@ -55,6 +55,64 @@ void main () {
 }
 `;
 
+const dataUniformWGPU = `
+struct Data {
+  mvp: mat4x4<f32>,
+};
+@group(1) @binding(0) var<uniform> data: Data;
+`;
+
+const vertOutWGPU = `
+struct VertexOutput {
+  @builtin(position) clip_position: vec4<f32>,
+  @location(0) uv: vec2<f32>,
+  @location(1) normal: vec3<f32>,
+};
+`;
+
+const vertWGPU = `
+${dataUniformWGPU}
+${vertOutWGPU}
+
+struct VertexInput {
+  @location(0) position: vec3<f32>,
+  @location(1) uv: vec2<f32>,
+};
+
+@vertex
+fn vs_main(model: VertexInput) -> VertexOutput {
+  var out: VertexOutput;
+  out.clip_position = data.mvp * vec4<f32>(model.position, 1.0);
+  out.uv = model.uv;
+  out.normal = normalize(model.position);
+  return out;
+}
+`;
+
+const fragCubeWGPU = `
+${vertOutWGPU}
+
+@group(0) @binding(0) var tex: texture_2d<f32>;
+@group(0) @binding(1) var tex_sampler: sampler;
+
+@fragment
+fn fs_main(in: VertexOutput) -> @location(0) vec4<f32> {
+    return textureSample(tex, tex_sampler, in.uv);
+}
+`;
+
+const fragSkyWGPU = `
+${vertOutWGPU}
+
+@group(0) @binding(0) var tex: texture_cube<f32>;
+@group(0) @binding(1) var tex_sampler: sampler;
+
+@fragment
+fn fs_main(in: VertexOutput) -> @location(0) vec4<f32> {
+  return textureSample(tex, tex_sampler, normalize(in.normal));
+}
+`;
+
 class TextureRenderBundle {
   public pipeline: RenderPipeline;
   public texture: Texture;
@@ -65,6 +123,7 @@ class TextureRenderBundle {
   public cameraBindGroup!: BindGroup;
 
   public constructor(
+    private readonly gpu: GPU,
     public device: Device,
     pipelineDesc: RenderPipelineDescriptor,
     textureType: TextureDimension,
@@ -72,24 +131,25 @@ class TextureRenderBundle {
     public indexBuffer: Buffer,
     public indexCount: UInt
   ) {
-    const textureLayout = WebGL.createBindGroupLayout(device, {
+    const textureLayout = gpu.createBindGroupLayout(device, {
       entries: [
-        { label: 'tex', type: BindingType.Texture, binding: 0 },
+        { label: 'tex', type: BindingType.Texture, textureDimension: textureType, binding: 0 },
         { label: 'tex', type: BindingType.Sampler, binding: 1 },
       ]
     });
-    const cameraLayout = WebGL.createBindGroupLayout(device, {
+    const cameraLayout = gpu.createBindGroupLayout(device, {
       entries: [{ label: 'Camera', type: BindingType.Buffer }]
     });
 
     pipelineDesc.bindGroups = [textureLayout, cameraLayout];
-    this.pipeline = WebGL.createRenderPipeline(device, pipelineDesc);
+    this.pipeline = gpu.createRenderPipeline(device, pipelineDesc);
 
-    this.texture = WebGL.createTexture(device, {
+    this.texture = gpu.createTexture(device, {
       dimension: textureType,
-      size: [texSize, texSize, 1]
+      size: [texSize, texSize, 1],
+      usage: TextureUsage.TextureBinding | TextureUsage.RenderAttachment,
     });
-    this.sampler = WebGL.createSampler(device, {
+    this.sampler = gpu.createSampler(device, {
       magFilter: FilterMode.Linear,
       minFilter: FilterMode.Linear,
       mipmapFilter: FilterMode.Linear,
@@ -97,13 +157,13 @@ class TextureRenderBundle {
       addressModeV: AddressMode.Repeat,
       maxAnisotropy: 16
     });
-    this.cameraBuffer = createBuffer(device, this.cameraData, BufferUsage.Uniform | BufferUsage.Stream);
+    this.cameraBuffer = createBuffer(gpu, device, this.cameraData, BufferUsage.Uniform | BufferUsage.Stream);
 
-    this.textureBindGroup = WebGL.createBindGroup(device, {
+    this.textureBindGroup = gpu.createBindGroup(device, {
       layout: textureLayout,
       entries: [{ binding: 0, texture: this.texture }, { binding: 1, sampler: this.sampler }]
     });
-    this.cameraBindGroup = WebGL.createBindGroup(device, {
+    this.cameraBindGroup = gpu.createBindGroup(device, {
       layout: cameraLayout,
       entries: [{ buffer: this.cameraBuffer }]
     });
@@ -114,16 +174,16 @@ class TextureRenderBundle {
 
   public updateCamera(mvp: Mat4): void {
     mat.copy(mvp, this.cameraData, 0, 0, 16);
-    WebGL.writeBuffer(this.device, this.cameraBuffer, this.cameraData);
+    this.gpu.writeBuffer(this.device, this.cameraBuffer, this.cameraData);
   }
 
   public render(device: Device): void {
-    WebGL.setRenderPipeline(device, this.pipeline);
-    WebGL.setIndex(device, this.indexBuffer);
-    WebGL.setVertex(device, 0, this.vertexBuffer);
-    WebGL.setBindGroup(device, 0, this.textureBindGroup);
-    WebGL.setBindGroup(device, 1, this.cameraBindGroup);
-    WebGL.drawIndexed(device, this.indexCount);
+    this.gpu.setRenderPipeline(device, this.pipeline);
+    this.gpu.setIndex(device, this.indexBuffer);
+    this.gpu.setVertex(device, 0, this.vertexBuffer);
+    this.gpu.setBindGroup(device, 0, this.textureBindGroup);
+    this.gpu.setBindGroup(device, 1, this.cameraBindGroup);
+    this.gpu.drawIndexed(device, this.indexCount);
   }
 
   public destroy(): void {
@@ -145,8 +205,11 @@ export class TextureExample extends BaseExample {
   cube: TextureRenderBundle | null = null;
   skybox: TextureRenderBundle | null = null;
 
-  constructor(private readonly device: Device) {
-    super();
+  constructor(
+    private readonly device: Device,
+    useWebGPU: boolean
+  ) {
+    super(useWebGPU);
   }
 
   init(): void {
@@ -157,13 +220,13 @@ export class TextureExample extends BaseExample {
     const sky2 = getImage('sky2');
 
     // Create shaders
-    const vs = WebGL.createShader(this.device, { code: vert, usage: ShaderStage.Vertex });
-    const cubeFs = WebGL.createShader(this.device, { code: fragCube, usage: ShaderStage.Fragment });
-    const skyFs = WebGL.createShader(this.device, { code: fragSky, usage: ShaderStage.Fragment });
+    const vs = this.gpu.createShader(this.device, { code: this.useWebGPU ? vertWGPU : vert, usage: ShaderStage.Vertex });
+    const cubeFs = this.gpu.createShader(this.device, { code: this.useWebGPU ? fragCubeWGPU : fragCube, usage: ShaderStage.Fragment });
+    const skyFs = this.gpu.createShader(this.device, { code: this.useWebGPU ? fragSkyWGPU : fragSky, usage: ShaderStage.Fragment });
 
     // Create buffers
-    this.vertBuffer = createBuffer(this.device, cubeVertices);
-    this.indexBuffer = createBuffer(this.device, cubeIndices, BufferUsage.Index);
+    this.vertBuffer = createBuffer(this.gpu, this.device, cubeVertices);
+    this.indexBuffer = createBuffer(this.gpu, this.device, cubeIndices, BufferUsage.Index);
 
     // Create the cube
     const cubePipelineDesc: RenderPipelineDescriptor = {
@@ -173,6 +236,7 @@ export class TextureExample extends BaseExample {
         { attributes: [/* position */ VertexFormat.F32x3, /* uv */ VertexFormat.F32x2] }
       ]),
       depthStencil: {
+        format: TextureFormat.Depth24Stencil8,
         depthWrite: true,
         depthCompare: CompareFunction.LessEqual
       },
@@ -181,11 +245,13 @@ export class TextureExample extends BaseExample {
       }
     };
     this.cube = new TextureRenderBundle(
-      this.device, cubePipelineDesc, TextureDimension.D2, this.vertBuffer!, this.indexBuffer!, cubeIndices.length
+      this.gpu, this.device,
+      cubePipelineDesc, TextureDimension.D2, this.vertBuffer!, this.indexBuffer!, cubeIndices.length
     );
     if (airplane) {
-      WebGL.copyExternalImageToTexture(this.device, { src: airplane }, { texture: this.cube!.texture });
-      WebGL.generateMipmap(this.device, this.cube!.texture);
+      this.gpu.copyExternalImageToTexture(this.device, { src: airplane }, { texture: this.cube!.texture });
+      // TODO: no auto mipmap for WebGPU
+      // this.gpu.generateMipmap(this.device, this.cube!.texture);
     }
 
     // Create the skybox
@@ -199,17 +265,19 @@ export class TextureExample extends BaseExample {
       }
     };
     this.skybox = new TextureRenderBundle(
-      this.device, skyboxPipelineDesc, TextureDimension.CubeMap, this.vertBuffer!, this.indexBuffer!, cubeIndices.length
+      this.gpu, this.device,
+      skyboxPipelineDesc, TextureDimension.CubeMap, this.vertBuffer!, this.indexBuffer!, cubeIndices.length
     );
     if (sky0 && sky1 && sky2) {
       const cubeImages = [sky0, sky0, sky1, sky2, sky0, sky0];
       for (let z = 0; z < 6; ++z) {
-        WebGL.copyExternalImageToTexture(this.device, { src: cubeImages[z] }, { texture: this.skybox!.texture, origin: [0, 0, z] });
+        this.gpu.copyExternalImageToTexture(this.device, { src: cubeImages[z] }, { texture: this.skybox!.texture, origin: [0, 0, z] });
       }
-      WebGL.generateMipmap(this.device, this.skybox!.texture);
+      // TODO: no auto mipmap for WebGPU
+      // this.gpu.generateMipmap(this.device, this.skybox!.texture);
     }
 
-    this.pass = WebGL.createRenderPass(this.device, { clearColor: [0.1, 0.2, 0.3, 1], clearDepth: 1 });
+    this.pass = this.gpu.createRenderPass(this.device, { clearColor: [0.1, 0.2, 0.3, 1], clearDepth: 1 });
 
     this.register([
       this.vertBuffer!, this.indexBuffer!, this.pass!, vs, cubeFs, skyFs,
@@ -227,10 +295,10 @@ export class TextureExample extends BaseExample {
     mvp = mat4.mul(vp, scale([10, 10, 10]), vp);  // Make the skybox bigger
     this.skybox!.updateCamera(mvp);
 
-    WebGL.beginRenderPass(this.device, this.pass!);
+    this.gpu.beginRenderPass(this.device, this.pass!);
     this.cube!.render(this.device);
     this.skybox!.render(this.device);
-    WebGL.submitRenderPass(this.device);
+    this.gpu.submitRenderPass(this.device);
 
     return true;
   }

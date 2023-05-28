@@ -14,9 +14,9 @@ free-context: func(c: context)
 get-future-status: func(f: future-handle) -> future-status
 
 /**
- * Loads an image from URI.
+ * Gets the resolved value of a future.
  */
-create-image: func(c: context, uri: string) -> image
+get-future-value: func(f: future-handle) -> future-value
 
 /**
  * Gets an image handle by ID.
@@ -42,6 +42,26 @@ get-canvas-width: func(c: canvas) -> u32
  * Gets the height of the given canvas.
  */
 get-canvas-height: func(c: canvas) -> u32
+
+/**
+ * Deletes a canvas handle.
+ */
+delete-canvas: func(c: canvas)
+
+/**
+ * Requests a WebGPU GPU device.
+ */
+webgpu-request-device: func(c: canvas, options: webgpu-context-attributes, features: u32) -> device
+
+/**
+ * Creates a WebGPU surface texture.
+ */
+webgpu-create-surface-texture: func(d: device, c: canvas, options: webgpu-context-attributes) -> texture
+
+/**
+ * Creates a WebGPU surface depth-stencil texture.
+ */
+webgpu-create-surface-depth-texture: func(d: device, c: canvas, options: webgpu-context-attributes) -> texture
 
 /**
  * Requests a WebGL2 GPU device.
@@ -324,6 +344,11 @@ type context = float64
  * A resolvable future object.
  */
 type future-handle = float64
+
+/**
+ * Handle to future value.
+ */
+type future-value = float64
 
 /**
  * Handle to an external image.

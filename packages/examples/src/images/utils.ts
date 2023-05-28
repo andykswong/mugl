@@ -1,5 +1,5 @@
 
-export function getImage(uri: string): HTMLImageElement {
+export function loadImage(uri: string): HTMLImageElement {
   const img = new Image();
   img.crossOrigin = 'anonymous';
   img.src = uri;

@@ -1,8 +1,8 @@
 
 import {
-  beginRenderPass, copyBuffer, copyExternalImageToTexture, copyTexture, copyTextureToBuffer, draw, drawIndexed, flush,
-  getFeatures, isDeviceLost, readBuffer, resetDevice, setBindGroup, setBlendConst, setIndex, setRenderPipeline,
-  setScissorRect, setStencilRef, setVertex, setViewport, submitRenderPass, writeBuffer, writeTexture
+  beginRenderPass, copyBuffer, copyExternalImageToTexture, copyTexture, copyTextureToBuffer, createTexture, draw,
+  drawIndexed, flush, getFeatures, isDeviceLost, readBuffer, resetDevice, setBindGroup, setBlendConst, setIndex,
+  setRenderPipeline, setScissorRect, setStencilRef, setVertex, setViewport, submitRenderPass, writeBuffer, writeTexture
 } from '../mugl';
 import {
   BufferDescriptor, TextureDescriptor, SamplerDescriptor, ShaderDescriptor, BindGroupLayoutDescriptor,
@@ -40,7 +40,15 @@ export class BaseGPU implements GPU {
   }
 
   public createTexture(device: Device, desc: TextureDescriptor): Texture {
-    return new Texture(device, desc);
+    return new Texture(createTexture(
+      device.id,
+      desc.size[0], desc.size[1], desc.size[2],
+      desc.mipLevelCount,
+      desc.sampleCount,
+      desc.dimension,
+      desc.format,
+      desc.usage
+    ));
   }
 
   public createSampler(device: Device, desc: SamplerDescriptor): Sampler {

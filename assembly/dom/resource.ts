@@ -1,13 +1,15 @@
-import { CanvasId, deleteImage, getCanvasWidth, getCanvasHeight, getImageWidth, getImageHeight, ImageSourceId } from '../mugl';
+import { CanvasId, deleteImage, getCanvasWidth, getCanvasHeight, getImageWidth, getImageHeight, ImageSourceId, deleteCanvas } from '../mugl';
 import { Resource, UInt } from '../gpu';
 
 /**
 * A canvas element from which a WebGL2RenderingContext can be retrieved.
 */
-export class Canvas {
+export class Canvas extends Resource {
   public constructor(
     public readonly id: CanvasId
-  ) { }
+  ) {
+    super();
+  }
 
   /**
    * @returns the canvas width.
@@ -21,6 +23,10 @@ export class Canvas {
    */
   get height(): UInt {
     return getCanvasHeight(this.id);
+  }
+
+  public destroy(): void {
+    deleteCanvas(this.id);
   }
 }
 
@@ -37,7 +43,7 @@ export class ImageSource extends Resource {
   /**
    * @returns the image width.
    */
-   get width(): UInt {
+  get width(): UInt {
     return getImageWidth(this.id);
   }
 

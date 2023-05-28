@@ -1,4 +1,4 @@
-import { getImage, toImage } from './utils';
+import { loadImage, toImage } from './utils';
 
 export function skyBox(texSize: number): HTMLImageElement[] {
   const canvas = document.createElement('canvas');
@@ -28,5 +28,5 @@ export function skyBox(texSize: number): HTMLImageElement[] {
 }
 
 export function airplane(): HTMLImageElement {
-  return getImage('./airplane.png');
+  return loadImage('./airplane.png');
 }

@@ -1,4 +1,4 @@
-import { WebGL, WebGL2Feature } from 'mugl';
+import { TextureFormat, WebGL, WebGL2Feature, WebGPU } from 'mugl';
 import { ExampleApplication, ExampleFactory } from './common';
 import { AppDefinition, Apps } from './apps';
 import { loadImages } from './images';
@@ -9,6 +9,10 @@ declare global {
     loadExample: (url?: string) => void;
   }
 }
+
+// Options flags
+let useWebGPU = false;
+let useWASM = false;
 
 class Redirect extends ExampleApplication {
   constructor(private readonly uri: string) {
@@ -22,12 +26,9 @@ class Redirect extends ExampleApplication {
 }
 
 // Load WASM module
-let useWASM = false;
 const wasmModule = await initExamplesWASM();
 
 class WASMExample extends ExampleApplication {
-  private wasmModule: any | null = null;
-
   constructor(private readonly id: number) {
     super();
   }
@@ -50,13 +51,13 @@ class WASMExample extends ExampleApplication {
 }
 
 function wasmAwareFactory(id: number, name: string, factory: ExampleFactory): ExampleFactory {
-  return (device) => {
+  return (device, useWebGPU) => {
     if (useWASM) {
-      console.log(`Rendering ${name} example in WASM...`);
+      console.log(`Rendering ${name} example in WASM using ${useWebGPU ? 'WebGPU' : 'WebGL'}...`);
       return new WASMExample(id);
     }
-    console.log(`Rendering ${name} example in JS...`);
-    return factory(device);
+    console.log(`Rendering ${name} example in JS using ${useWebGPU ? 'WebGPU' : 'WebGL'}...`);
+    return factory(device, useWebGPU);
   };
 }
 
@@ -82,18 +83,22 @@ for (const id in appMap) {
 }
 
 // Setup Canvas
-const canvas: HTMLCanvasElement = document.querySelector('canvas')!;
-
-const dpr = window.devicePixelRatio || 1;
-if (dpr > 1) {
-  const { width, height } = canvas;
-  canvas.width = width * dpr;
-  canvas.height = height * dpr;
-  canvas.style.width = `${width}px`;
-  canvas.style.height = `${height}px`;
+const canvas = document.getElementById('canvas') as HTMLCanvasElement;
+const canvas2 = document.getElementById('canvas2') as HTMLCanvasElement;
+setCanvasSize(canvas);
+setCanvasSize(canvas2);
+function setCanvasSize(canvas: HTMLCanvasElement) {
+  const dpr = window.devicePixelRatio || 1;
+  if (dpr > 1) {
+    const { width, height } = canvas;
+    canvas.width = width * dpr;
+    canvas.height = height * dpr;
+    canvas.style.width = `${width}px`;
+    canvas.style.height = `${height}px`;
+  }
 }
 
-const device = WebGL.requestWebGL2Device(
+const glDevice = WebGL.requestWebGL2Device(
   canvas,
   { stencil: true, powerPreference: 'low-power' },
   WebGL2Feature.TextureAnisotropic |
@@ -102,10 +107,15 @@ const device = WebGL.requestWebGL2Device(
   WebGL2Feature.ColorBufferFloat
 )!;
 
+const gpuDeviceFuture = WebGPU.requestWebGPUDevice(
+  canvas2,
+  { powerPreference: 'low-power', depthStencilFormat: TextureFormat.Depth24Stencil8 }
+);
+
 let example: ExampleApplication;
 let raf = 0;
 
-window.loadExample = function (hash: string = location.hash): void {
+window.loadExample = async function (hash: string = location.hash): Promise<void> {
   const nextExample = appMap[hash.replace('#', '')];
   if (nextExample) {
     document.getElementById('title')!.innerText = nextExample.title;
@@ -113,12 +123,16 @@ window.loadExample = function (hash: string = location.hash): void {
     cancelAnimationFrame(raf);
     if (example) {
       example.destroy();
-      WebGL.resetDevice(device);
+      useWebGPU ? WebGPU.resetDevice((await gpuDeviceFuture)!) : WebGL.resetDevice(glDevice);
     }
 
-    example = nextExample.factory(device);
+    example = nextExample.factory(
+      useWebGPU ? (await gpuDeviceFuture)! : glDevice,
+      useWebGPU
+    );
     example.init();
-    example.resize(canvas.width, canvas.height);
+    const targetCanvas = useWebGPU ? canvas2 : canvas;
+    example.resize(targetCanvas.width, targetCanvas.height);
     render();
   }
 }
@@ -134,8 +148,14 @@ function render(now = 0) {
 const promise = loadImages();
 
 location.hash = location.hash || '#basic';
-document.getElementById('mode')?.addEventListener('click', (event) => {
+document.getElementById('envMode')?.addEventListener('click', (event) => {
   useWASM = (event.target as HTMLInputElement).checked;
+  window.loadExample();
+});
+document.getElementById('gpuMode')?.addEventListener('click', (event) => {
+  useWebGPU = (event.target as HTMLInputElement).checked;
+  canvas.style.display = useWebGPU ? 'none' : 'block';
+  canvas2.style.display = !useWebGPU ? 'none' : 'block';
   window.loadExample();
 });
 

@@ -9,8 +9,7 @@ import { toWebGLContextAttributeFlag } from './serialize';
  */
 export class WebGL2Device extends Device {
   public constructor(canvas: Canvas, desc: WebGLContextAttributes, features: WebGL2Feature = 0 as WebGL2Feature) {
-    super();
-    this.id = requestWebGL2Device(canvas.id, toWebGLContextAttributeFlag(desc), features);
+    super(requestWebGL2Device(canvas.id, toWebGLContextAttributeFlag(desc), features));
   }
 
   public destroy(): void {

@@ -1,4 +1,5 @@
-import { Num, UInt } from '../gpu';
+import { Num, TextureFormat, UInt } from '../gpu';
+import { WebGPUCanvasOptions } from '../webgpu';
 
 export const UTF8_DECODER = new TextDecoder('utf-8');
 
@@ -26,5 +27,20 @@ export function toWebGLContextAttributes(flags: Num): WebGLContextAttributes {
     premultipliedAlpha: !!((flags as UInt) & (1 << 6)),
     preserveDrawingBuffer: !!((flags as UInt) & (1 << 7)),
     stencil: !!((flags as UInt) & (1 << 8)),
+  };
+}
+
+export function toWebGPUContextAttributes(flags: Num): GPURequestAdapterOptions & WebGPUCanvasOptions {
+  const depth = !!((flags as UInt) & 1);
+  const depth32f = !!((flags as UInt) & (1 << 1));
+  const stencil = !!((flags as UInt) & (1 << 6));
+
+  return {
+    forceFallbackAdapter: !!((flags as UInt) & (1 << 2)),
+    powerPreference: ((flags as UInt) & (1 << 3)) ? 'high-performance' : 'low-power',
+    sampleCount: ((flags as UInt) & (1 << 4)) ? 4 : 1,
+    premultipliedAlpha: !!((flags as UInt) & (1 << 5)),
+    depthStencilFormat: depth32f ? stencil ? TextureFormat.Depth32FStencil8 : TextureFormat.Depth32F :
+      depth ? stencil ? TextureFormat.Depth24Stencil8 : TextureFormat.Depth24 : void 0,
   };
 }

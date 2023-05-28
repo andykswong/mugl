@@ -1,5 +1,5 @@
-import { DeviceId, BufferId, TextureId, SamplerId, ShaderId, BindGroupLayoutId, BindGroupId, RenderPipelineId, RenderPassId, createBuffer, deleteDevice, deleteBuffer, deleteTexture, createTexture, deleteShader, createShader, createSampler, deleteSampler, deleteBindGroupLayout, createBindGroupLayout, deleteBindGroup, createBindGroup, createRenderPass, deleteRenderPass, createRenderPipeline, deleteRenderPipeline } from '../mugl';
-import { BindGroupDescriptor, BindGroupLayoutDescriptor, BufferDescriptor, ColorTargetStates, DepthStencilState, RenderPassDescriptor, RenderPipelineDescriptor, SamplerDescriptor, ShaderDescriptor, TextureDescriptor } from './descriptor';
+import { DeviceId, BufferId, TextureId, SamplerId, ShaderId, BindGroupLayoutId, BindGroupId, RenderPipelineId, RenderPassId, createBuffer, deleteDevice, deleteBuffer, deleteTexture, deleteShader, createShader, createSampler, deleteSampler, deleteBindGroupLayout, createBindGroupLayout, deleteBindGroup, createBindGroup, createRenderPass, deleteRenderPass, createRenderPipeline, deleteRenderPipeline } from '../mugl';
+import { BindGroupDescriptor, BindGroupLayoutDescriptor, BufferDescriptor, ColorTargetStates, DepthStencilState, RenderPassDescriptor, RenderPipelineDescriptor, SamplerDescriptor, ShaderDescriptor } from './descriptor';
 import { BindingType } from './type';
 
 const BIND_GROUP_LAYOUT_ENTRY_SIZE = 32;
@@ -22,8 +22,13 @@ export abstract class Resource {
 /**
  * A GPU device resource.
  */
-export abstract class Device extends Resource {
-  public id: DeviceId = 0;
+export class Device extends Resource {
+  public id: DeviceId;
+
+  public constructor(id: DeviceId) {
+    super();
+    this.id = id;
+  }
 
   public destroy(): void {
     deleteDevice(this.id);
@@ -52,17 +57,9 @@ export class Buffer extends Resource {
 export class Texture extends Resource {
   public readonly id: TextureId;
 
-  public constructor(device: Device, desc: TextureDescriptor) {
+  public constructor(id: TextureId) {
     super();
-    this.id = createTexture(
-      device.id,
-      desc.size[0], desc.size[1], desc.size[2],
-      desc.mipLevelCount,
-      desc.sampleCount,
-      desc.dimension,
-      desc.format,
-      desc.usage
-    );
+    this.id = id;
   }
 
   public destroy(): void {

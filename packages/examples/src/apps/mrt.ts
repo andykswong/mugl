@@ -95,7 +95,9 @@ export class MRTExample extends BaseExample {
 
   cubeData: Float32Array = new Float32Array(40);
 
-  constructor(private readonly device: Device) {
+  constructor(
+    private readonly device: Device
+  ) {
     super();
   }
 
@@ -112,9 +114,9 @@ export class MRTExample extends BaseExample {
 
     // Setup the cube
     {
-      this.vertBuffer = createBuffer(this.device, cubeVertices);
-      this.indexBuffer = createBuffer(this.device, cubeIndices, BufferUsage.Index);
-      this.cubeDataBuffer = createBuffer(this.device, this.cubeData, BufferUsage.Uniform | BufferUsage.Stream);
+      this.vertBuffer = createBuffer(this.gpu, this.device, cubeVertices);
+      this.indexBuffer = createBuffer(this.gpu, this.device, cubeIndices, BufferUsage.Index);
+      this.cubeDataBuffer = createBuffer(this.gpu, this.device, this.cubeData, BufferUsage.Uniform | BufferUsage.Stream);
 
       this.cubeBindGroup = WebGL.createBindGroup(this.device, {
         layout: dataLayout,
@@ -147,7 +149,7 @@ export class MRTExample extends BaseExample {
       ]
     });
     {
-      this.quadVertBuffer = createBuffer(this.device, quadVertices);
+      this.quadVertBuffer = createBuffer(this.gpu, this.device, quadVertices);
       this.colorTex = WebGL.createTexture(this.device, { size: [texSize, texSize, 1], sampleCount });
       this.uvTex = WebGL.createTexture(this.device, { size: [texSize, texSize, 1], sampleCount });
       this.positionTex = WebGL.createTexture(this.device, { size: [texSize, texSize, 1], sampleCount });
