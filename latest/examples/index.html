@@ -16,13 +16,22 @@
       <div class="menu">
         <a href="https://github.com/andykswong/mugl"><h3>mugl examples</h3></a>
         <label class="switch">
-          <input id="mode" type="checkbox" />
+          <input id="envMode" type="checkbox" />
           <span class="slider round"></span>
           <span class="label">
-            <span class="unchecked">JS</span> / <span class="checked">WASM</span>
+            <span class="unchecked">JS</span> | <span class="checked">WASM</span>
           </span>
         </label>
-        <br/> <br/>
+        <br/>
+        <br/>
+        <label class="switch">
+          <input id="gpuMode" type="checkbox" />
+          <span class="slider round"></span>
+          <span class="label">
+            <span class="unchecked">WebGL</span> | <span class="checked">WebGPU</span>
+          </span>
+        </label>
+        <br/>
         <ul id="menu"></ul>
       </div>
     </div>
@@ -34,6 +43,7 @@
     </div>
     <div class="content">
       <canvas id="canvas" width="512" height="512"></canvas>
+      <canvas id="canvas2" width="512" height="512" style="display: none"></canvas>
     </div>
     <div class="footer"></div>
   </div>
