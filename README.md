@@ -1,5 +1,5 @@
 <h1 align="center">█▓▒­░⡷⠂μＧＬ⠐⢾░▒▓█</h1>
-<h2 align="center">mugl - Micro 3D Graphics Library for JavaScript and WebAssembly</h2>
+<h2 align="center">mugl - WebGPU and WebGL Micro 3D Graphics Library for JavaScript and WebAssembly</h2>
 <br/>
 
 [![mugl](https://img.shields.io/badge/project-mugl-blueviolet.svg?style=flat-square&logo=github)](https://github.com/andykswong/mugl)
@@ -12,16 +12,16 @@
 
 
 ## Overview
+`mugl` is a minimal, modern 3D graphics abstraction layer that provides a simplified [WebGPU](https://gpuweb.github.io/gpuweb/)-style low-level graphics API for JavaScript. It supports both WebGPU and WebGL 2.0, runs on any modern web browser (WebGL/WebGPU), React Native mobile app (WebGL), and on WebAssembly (WASM) with [AssemblyScript](https://www.assemblyscript.org/) binding (WebGL/WebGPU).
 
-`mugl` is a minimal, modern 3D graphics abstraction layer that provides a simplified [WebGPU](https://gpuweb.github.io/gpuweb/)-style low-level graphics API for JavaScript. It:
-- supports both WebGPU and WebGL 2.0
-- runs on any modern web browser (WebGL/WebGPU) and React Native mobile app (WebGL)
-- runs on WebAssembly (WASM) with [AssemblyScript](https://www.assemblyscript.org/) binding (WebGL/WebGPU)
-
-If you want to use WebGPU from JS or WASM code with fallback to WebGL, `mugl` is for you; If you just want to use WebGL, but would like to avoid the verbosity and state management aspect of WebGL, `mugl` is for you as well.
+## Why `mugl`?
+`mugl` is for you if you want to:
+- render graphics from AssemblyScript / WASM using WebGPU or WebGL
+- use WebGL2 through a minimal modern graphics API that removes the verbosity and state management aspect of WebGL
+- use WebGPU today with fallback to WebGL2
 
 ## Documentation
-- Latest JavaScript / AssemblyScript interface: [(link)](http://andykswong.github.io/mugl/latest/docs)
+- Latest JavaScript / AssemblyScript API: [Typedoc](http://andykswong.github.io/mugl/latest/docs)
 - Raw WebAssembly API spec: [API.wit](./API.wit), [AssemblyScript imports](./assembly/mugl.ts)
 
 ## Showcase
@@ -72,11 +72,14 @@ const triangle = new Float32Array([
 const device = WebGL.requestWebGL2Device(canvas);
 if (!device) throw new Error('WebGL 2.0 is unsupported');
 
+// Import `WebGPU` instead of `WebGL` to use WebGPU backend instead:
+// const device = await WebGPU.requestWebGPUDevice(canvas);
+
 // 2. Create GPU buffer and upload the triangle data
 const buffer = WebGL.createBuffer(device, { usage, size: triangle.byteLength });
 WebGL.writeBuffer(device, buffer, triangle);
 
-// 3. Compile the vertex and fragment shaders
+// 3. Compile the vertex and fragment shaders. (for WebGPU, WGSL shader code should be used)
 const vertex = WebGL.createShader(device, {
   usage: ShaderStage.Vertex,
   code: `#version 300 es
@@ -116,7 +119,7 @@ WebGL.beginRenderPass(device);
   WebGL.draw(device, 3); // 3 vertices to draw
 WebGL.submitRenderPass(device);
 
-// 6. GPU resources are freed automatically when unused, but you can also explicitly destroy them to free up GPU memory
+// 6. Free up GPU resources
 vertex.destroy();
 fragment.destroy();
 pipeline.destroy();

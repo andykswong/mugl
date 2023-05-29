@@ -1,7 +1,7 @@
 {
   "name": "mugl",
   "version": "0.3.0",
-  "description": "Micro WebGL Library for JavaScript and WebAssembly",
+  "description": "WebGPU and WebGL Micro 3D Graphics Library for JavaScript and WebAssembly",
   "type": "module",
   "sideEffects": false,
   "main": "./dist/index.js",
@@ -31,24 +31,24 @@
   },
   "keywords": [
     "3d",
-    "canvas",
+    "assemblyscript",
+    "expo",
+    "gl",
+    "graphics",
+    "opengl",
+    "react-native",
+    "typescript",
     "webgl",
     "webgl2",
     "webgpu",
-    "typescript",
     "wasm",
-    "assemblyscript",
-    "webassembly",
-    "graphics",
-    "gl",
-    "opengl",
-    "html5",
-    "expo",
-    "react-native"
+    "webassembly"
   ],
   "files": [
-    "/assembly",
-    "/dist"
+    "./assembly",
+    "./dist",
+    "./wasm.js",
+    "./wasm.d.ts"
   ],
   "scripts": {
     "prepublishOnly": "npm run clean && npm run build && npm test",
