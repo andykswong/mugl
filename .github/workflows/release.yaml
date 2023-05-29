@@ -12,15 +12,16 @@ jobs:
     - uses: actions/setup-node@v3
       with:
         node-version: '18'
+        registry-url: 'https://registry.npmjs.org'
     - run: npm ci
     - run: npm run build --ws
     - run: npm test --ws
       env:
         CI: true
+    - run: npm run doc
     - run: npm publish
       env:
         NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-    - run: npm run doc
     - name: Deploy docs
       uses: peaceiris/actions-gh-pages@v3
       with:
