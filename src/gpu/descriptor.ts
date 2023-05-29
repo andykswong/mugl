@@ -184,10 +184,10 @@ export interface RenderPipelineDescriptor extends RenderPipelineState {
   /** The fragment shader. */
   fragment: Shader;
 
-  /** The entry point function name of vertex shader. Defaults to "vs_main". */
+  /** The entry point function name of a WebGPU vertex shader. Defaults to "vs_main". */
   vertexEntryPoint?: string;
 
-  /** The entry point function name of fragment shader. Defaults to "fs_main". */
+  /** The entry point function name of a WebGPU fragment shader. Defaults to "fs_main". */
   fragmentEntryPoint?: string;
 
   /** The vertex buffer layouts. */
@@ -436,6 +436,8 @@ export interface BindGroupLayoutDescriptor {
  * Descriptor of a bind group layout entry.
  */
 export interface BindGroupLayoutEntry {
+  // TODO: make label optional (for WebGPU) and find a way for WebGL to reuse sampler binding
+
   /** Bind group entry name. */
   label: string;
 

@@ -17,7 +17,7 @@ export type ImageSourceId = number & { readonly __tag: unique symbol };
 export type CanvasId = number & { readonly __tag: unique symbol };
 export type ResourceId = number & { readonly __tag: unique symbol };
 
-const contexts: Record<ContextId, { memory: WebAssembly.Memory | null }> = {};
+const contexts: Record<ContextId, { memory: WebAssembly.Memory | undefined }> = {};
 const futures = new GenerationalArena<Future, FutureId>();
 const images = new GenerationalArena<TexImageSource, ImageSourceId>();
 const imageMap: Record<string, ImageSourceId> = {};
@@ -31,8 +31,7 @@ const deviceGPUMap: Record<ResourceId, GPU> = {};
 //#region utils
 
 function getMemory(context: ContextId): WebAssembly.Memory {
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  return contexts[context].memory!;
+  return contexts[context].memory as WebAssembly.Memory;
 }
 
 function getDeviceMemory(resource: ResourceId): WebAssembly.Memory {
@@ -79,7 +78,7 @@ function getCanvasById(context: ContextId, id: string): CanvasId {
  * @param memory WebAssembly memory
  */
 export function set_context_memory(context: ContextId, memory: WebAssembly.Memory): void {
-  (contexts[context] = contexts[context] || { memory: null }).memory = memory;
+  (contexts[context] = contexts[context] || {}).memory = memory;
 }
 
 /**
@@ -398,11 +397,11 @@ export function create_bind_group(device: ResourceId, layout: ResourceId, entrie
   for (let i = 0; i < entriesLen; i++) {
     const base = entriesPtr + i * 24;
     const type = dataView(memory).getUint8(base + 4);
-    let buffer: Buffer | null = null;
+    let buffer: Buffer | undefined;
     let bufferOffset = 0;
     let bufferSize = 0;
-    let sampler: Sampler | null = null;
-    let texture: Texture | null = null;
+    let sampler: Sampler | undefined;
+    let texture: Texture | undefined;
 
     switch (type) {
       case BindingType.Buffer:
@@ -423,7 +422,7 @@ export function create_bind_group(device: ResourceId, layout: ResourceId, entrie
       binding: dataView(memory).getUint32(base + 0, true),
       buffer,
       bufferOffset,
-      bufferSize,
+      bufferSize: bufferSize || void 0,
       sampler,
       texture
     });
@@ -543,7 +542,7 @@ export function create_render_pipeline(
       depthBias,
       depthBiasSlopeScale,
       depthBiasClamp,
-    } : null,
+    } : void 0,
     targets: {
       writeMask: colorWriteMask >>> 0,
       blendColor: {
@@ -580,7 +579,7 @@ export function create_render_pass(
       desc = {
         clearDepth,
         clearStencil,
-        clearColor: isNaN(clearColorRed) ? null : [clearColorRed, clearColorGreen, clearColorBlue, clearColorAlpha],
+        clearColor: isNaN(clearColorRed) ? void 0 : [clearColorRed, clearColorGreen, clearColorBlue, clearColorAlpha],
       };
       break;
     case 1: { // Offscreen pass
@@ -599,7 +598,7 @@ export function create_render_pass(
             mipLevel: dataView(memory).getUint32(base + 8, true),
             slice: dataView(memory).getUint32(base + 12, true),
           },
-          clear: isNaN(clear[0]) ? null : clear,
+          clear: isNaN(clear[0]) ? void 0 : clear,
         });
       }
       desc = {

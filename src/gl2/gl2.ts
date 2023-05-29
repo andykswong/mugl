@@ -32,8 +32,8 @@ type GPUFinalizer = FinalizationRegistry<{
   gl: WebGL2RenderingContext,
 }>;
 
-const gpuFinalizer: GPUFinalizer | null = MUGL_FINALIZER ?
-  new FinalizationRegistry(({ finalizer, gl }) => finalizer(gl)) : null;
+const gpuFinalizer: GPUFinalizer | undefined = MUGL_FINALIZER ?
+  new FinalizationRegistry(({ finalizer, gl }) => finalizer(gl)) : void 0;
 
 //#endregion Constants
 

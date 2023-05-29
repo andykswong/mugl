@@ -102,7 +102,7 @@ window.loadExample = async function (hash: string = location.hash): Promise<void
   const nextExample = appMap[hash.replace('#', '')];
   if (nextExample) {
     document.getElementById('title')!.innerText = nextExample.title;
-    (document.getElementById('code') as HTMLAnchorElement).href = `https://github.com/andykswong/mugl/tree/main/examples/src/apps/${nextExample.id}.ts`;
+    (document.getElementById('code') as HTMLAnchorElement).href = `https://github.com/andykswong/mugl/tree/main/packages/examples/src/apps/${nextExample.id}.ts`;
     cancelAnimationFrame(raf);
     if (example) {
       example.destroy();
@@ -122,6 +122,9 @@ window.loadExample = async function (hash: string = location.hash): Promise<void
 
 function render(now = 0) {
   raf = requestAnimationFrame(render);
+  if (!now) {
+    return;
+  }
   if (!example.render(now / 1000)) {
     cancelAnimationFrame(raf);
   }

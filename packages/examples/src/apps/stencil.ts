@@ -1,24 +1,18 @@
 import { lookAt, mat, mat4, perspective, scale } from 'munum/assembly';
-import {
-  BindGroup, BindingType, Buffer, BufferUsage, CompareFunction, CullMode, Device,
-  Float, RenderPipeline, RenderPipelineDescriptor, Sampler, ShaderStage, StencilOperation,
-  Texture, vertexBufferLayouts, VertexFormat, getImage, RenderPass, TextureFormat, TextureUsage
-} from '../interop/mugl';
+import { BindGroup, BindingType, Buffer, BufferUsage, CompareFunction, CullMode, Device, Float, RenderPipeline, Sampler, ShaderStage, StencilOperation, Texture, vertexBufferLayouts, VertexFormat, getImage, RenderPass, TextureFormat, TextureUsage, BindGroupLayout } from '../interop/mugl';
 import { BaseExample, createBuffer, Cube, Model, TEX_SIZE, toIndices, toVertices } from '../common';
+import { frag, fragOutline, vert } from './shaders/stencil';
 
-const cubeVertices = toVertices({
-  positions: Cube.positions,
-  uvs: Cube.uvs
-} as Model);
+const cubeVertices = toVertices({ positions: Cube.positions, uvs: Cube.uvs } as Model);
 const cubeIndices = toIndices(Cube);
 const indexCount = cubeIndices.length;
 
-// Reverse face winding for skybox so that we can reuse the same pipeline
 // Store both index lists in the same buffer
 const indices = new Uint16Array(indexCount * 2);
 for (let i = 0; i < indexCount; ++i) {
   indices[i] = cubeIndices[i];
 }
+// Reverse face winding for skybox so that we can reuse the same pipeline
 for (let i = 0; i < indexCount; i += 3) {
   indices[indexCount + i] = cubeIndices[i + 2];
   indices[indexCount + i + 1] = cubeIndices[i + 1];
@@ -26,103 +20,8 @@ for (let i = 0; i < indexCount; i += 3) {
 }
 
 const texSize = TEX_SIZE;
-
 const dataBufferSize = 64; // 20 floats, padding for 256 bytes alignment
 const dataBufferByteSize = dataBufferSize * 4; // 4 bytes per float
-
-const vert = `#version 300 es
-precision mediump float;
-layout(std140) uniform Data {
-  mat4 mvp;
-  vec4 outline;
-};
-layout (location=0) in vec3 position;
-layout (location=1) in vec2 uv;
-out vec2 vUv;
-void main(void) {
-  vUv = uv;
-  gl_Position = mvp * vec4(position, 1.0);
-}
-`;
-
-const fragCube = `#version 300 es
-precision mediump float;
-in vec2 vUv;
-out vec4 outColor;
-uniform sampler2D tex;
-void main () {
-  outColor = texture(tex, vUv);
-}
-`;
-
-const fragColor = `#version 300 es
-precision mediump float;
-layout(std140) uniform Data {
-  mat4 mvp;
-  vec4 outline;
-};
-out vec4 outColor;
-void main () {
-  outColor = outline;
-}
-`;
-
-const dataUniformWGPU = `
-struct Data {
-  mvp: mat4x4<f32>,
-  outline: vec4<f32>,
-};
-@group(0) @binding(0) var<uniform> data: Data;
-`;
-
-const vertOutWGPU = `
-struct VertexOutput {
-  @builtin(position) clip_position: vec4<f32>,
-  @location(0) uv: vec2<f32>,
-  @location(1) normal: vec3<f32>,
-};
-`;
-
-const vertWGPU = `
-${dataUniformWGPU}
-${vertOutWGPU}
-
-struct VertexInput {
-  @location(0) position: vec3<f32>,
-  @location(1) uv: vec2<f32>,
-};
-
-@vertex
-fn vs_main(model: VertexInput) -> VertexOutput {
-  var out: VertexOutput;
-  out.clip_position = data.mvp * vec4<f32>(model.position, 1.0);
-  out.uv = model.uv;
-  out.normal = normalize(model.position);
-  return out;
-}
-`;
-
-const fragCubeWGPU = `
-${vertOutWGPU}
-
-@group(1) @binding(0) var tex: texture_2d<f32>;
-@group(1) @binding(1) var tex_sampler: sampler;
-
-@fragment
-fn fs_main(in: VertexOutput) -> @location(0) vec4<f32> {
-    return textureSample(tex, tex_sampler, in.uv);
-}
-`;
-
-const fragColorWGPU = `
-${dataUniformWGPU}
-${vertOutWGPU}
-
-@fragment
-fn fs_main(in: VertexOutput) -> @location(0) vec4<f32> {
-  return data.outline;
-}
-`;
 
 export class StencilExample extends BaseExample {
   pass: RenderPass | null = null;
@@ -150,17 +49,15 @@ export class StencilExample extends BaseExample {
   }
 
   init(): void {
-    // Create shaders
-    const vs = this.gpu.createShader(this.device, { code: this.useWebGPU ? vertWGPU : vert, usage: ShaderStage.Vertex });
-    const cubeFs = this.gpu.createShader(this.device, { code: this.useWebGPU ? fragCubeWGPU : fragCube, usage: ShaderStage.Fragment });
-    const outlineFs = this.gpu.createShader(this.device, { code: this.useWebGPU ? fragColorWGPU : fragColor, usage: ShaderStage.Fragment });
+    this.pass = this.gpu.createRenderPass(this.device, { clearDepth: 1, clearStencil: 0 });
+    const bindGroupLayouts = this.initPipelines();
 
     // Create buffers
     this.vertBuffer = createBuffer(this.gpu, this.device, cubeVertices);
     this.indexBuffer = createBuffer(this.gpu, this.device, indices, BufferUsage.Index);
     this.dataBuffer = createBuffer(this.gpu, this.device, this.data, BufferUsage.Uniform | BufferUsage.Stream);
 
-    // Create cube texture
+    // Create texture
     this.texture = this.gpu.createTexture(this.device, {
       size: [texSize, texSize, 1],
       usage: TextureUsage.TextureBinding | TextureUsage.RenderAttachment,
@@ -171,81 +68,71 @@ export class StencilExample extends BaseExample {
     }
     this.sampler = this.gpu.createSampler(this.device, {});
 
+    // Bind buffer and texture
+    this.dataBindGroup = this.gpu.createBindGroup(this.device, {
+      layout: bindGroupLayouts[0],
+      entries: [{ buffer: this.dataBuffer, bufferSize: dataBufferByteSize }]
+    });
+    this.textureBindGroup = this.gpu.createBindGroup(this.device, {
+      layout: bindGroupLayouts[1],
+      entries: [{ binding: 0, texture: this.texture }, { binding: 1, sampler: this.sampler }]
+    });
+
+    this.register([
+      this.pass!,
+      this.vertBuffer!, this.indexBuffer!, this.dataBuffer!, this.texture!, this.sampler!,
+      this.textureBindGroup!, this.dataBindGroup!,
+    ]);
+  }
+
+  initPipelines(): BindGroupLayout[] {
+    const vs = this.gpu.createShader(this.device, { code: vert(this.useWebGPU), usage: ShaderStage.Vertex });
+    const cubeFs = this.gpu.createShader(this.device, { code: frag(this.useWebGPU), usage: ShaderStage.Fragment });
+    const outlineFs = this.gpu.createShader(this.device, { code: fragOutline(this.useWebGPU), usage: ShaderStage.Fragment });
+
+    const dataLayout = this.gpu.createBindGroupLayout(this.device, {
+      entries: [{ label: 'Data', type: BindingType.Buffer, bufferDynamicOffset: true }]
+    });
     const textureLayout = this.gpu.createBindGroupLayout(this.device, {
       entries: [
         { binding: 0, label: 'tex', type: BindingType.Texture },
         { binding: 1, label: 'tex', type: BindingType.Sampler },
       ]
     });
-    const dataLayout = this.gpu.createBindGroupLayout(this.device, {
-      entries: [{ label: 'Data', type: BindingType.Buffer, bufferDynamicOffset: true }]
-    });
 
-    this.textureBindGroup = this.gpu.createBindGroup(this.device, {
-      layout: textureLayout,
-      entries: [{ binding: 0, texture: this.texture }, { binding: 1, sampler: this.sampler }]
-    });
-
-    this.dataBindGroup = this.gpu.createBindGroup(this.device, {
-      layout: dataLayout,
-      entries: [{ buffer: this.dataBuffer, bufferSize: dataBufferByteSize }]
-    });
-
-    const cubePipelineDesc: RenderPipelineDescriptor = {
+    this.cubePipeline = this.gpu.createRenderPipeline(this.device, {
       vertex: vs,
       fragment: cubeFs,
-      buffers: vertexBufferLayouts([
-        { attributes: [/* position */ VertexFormat.F32x3, /* uv */ VertexFormat.F32x2] }
-      ]),
+      buffers: vertexBufferLayouts([{ attributes: [/* position */ VertexFormat.F32x3, /* uv */ VertexFormat.F32x2] }]),
       bindGroups: [dataLayout, textureLayout],
       depthStencil: {
         format: TextureFormat.Depth24Stencil8,
         depthWrite: true,
         depthCompare: CompareFunction.LessEqual,
-        stencilBack: {
-          compare: CompareFunction.Always,
-          passOp: StencilOperation.Replace,
-        },
-        stencilFront: {
-          compare: CompareFunction.Always,
-          passOp: StencilOperation.Replace
-        }
+        stencilBack: { compare: CompareFunction.Always, passOp: StencilOperation.Replace },
+        stencilFront: { compare: CompareFunction.Always, passOp: StencilOperation.Replace }
       },
-      primitive: {
-        cullMode: CullMode.Back
-      }
-    };
-    this.cubePipeline = this.gpu.createRenderPipeline(this.device, cubePipelineDesc);
+      primitive: { cullMode: CullMode.Back }
+    });
 
     this.cubeOutlinePipeline = this.gpu.createRenderPipeline(this.device, {
       vertex: vs,
       fragment: outlineFs,
-      buffers: cubePipelineDesc.buffers,
+      buffers: vertexBufferLayouts([{ attributes: [/* position */ VertexFormat.F32x3, /* uv */ VertexFormat.F32x2] }]),
       bindGroups: [dataLayout],
       depthStencil: {
         format: TextureFormat.Depth24Stencil8,
         depthWrite: true,
-        stencilBack: {
-          compare: CompareFunction.NotEqual,
-        },
-        stencilFront: {
-          compare: CompareFunction.NotEqual,
-        },
+        stencilBack: { compare: CompareFunction.NotEqual },
+        stencilFront: { compare: CompareFunction.NotEqual },
         stencilWriteMask: 0,
       },
-      primitive: cubePipelineDesc.primitive,
+      primitive: { cullMode: CullMode.Back }
     });
 
-    this.pass = this.gpu.createRenderPass(this.device, {
-      clearDepth: 1,
-      clearStencil: 0
-    });
+    this.register([this.cubePipeline!, this.cubeOutlinePipeline!, vs, cubeFs, outlineFs, textureLayout, dataLayout]);
 
-    this.register([
-      this.vertBuffer!, this.indexBuffer!, this.dataBuffer!, this.texture!, this.sampler!,
-      this.textureBindGroup!, this.dataBindGroup!, this.cubePipeline!, this.cubeOutlinePipeline!,
-      this.pass!, vs, cubeFs, outlineFs, textureLayout, dataLayout
-    ]);
+    return [dataLayout, textureLayout];
   }
 
   render(t: Float): boolean {

@@ -23,8 +23,8 @@ import {
 
 type GPUFinalizer = FinalizationRegistry<() => void>;
 
-const gpuFinalizer: GPUFinalizer | null = MUGL_FINALIZER ?
-  new FinalizationRegistry(finalizer => finalizer()) : null;
+const gpuFinalizer: GPUFinalizer | undefined = MUGL_FINALIZER ?
+  new FinalizationRegistry(finalizer => finalizer()) : void 0;
 
 //#endregion Constants
 
@@ -862,6 +862,8 @@ export function beginRenderPass(device: Device, pass: RenderPass = createRenderP
   const encoder = (device as WebGPUDevice).encoder;
 
   const depth = toRenderableGPUTextureView((pass as WebGPURenderPass).depth);
+  const format = ((pass as WebGPURenderPass).depth?.texture as WebGPUTexture | undefined)?.tex?.format;
+  const useStencil = format === 'depth24plus-stencil8' || format === 'depth32float-stencil8';
   const colors = (pass as WebGPURenderPass).colors;
   const resolveTargets = (pass as WebGPURenderPass).colorTargets;
 
@@ -881,9 +883,9 @@ export function beginRenderPass(device: Device, pass: RenderPass = createRenderP
       depthClearValue: (pass as WebGPURenderPass).depthOps.clearValue,
       depthLoadOp: (pass as WebGPURenderPass).depthOps.loadOp,
       depthStoreOp: (pass as WebGPURenderPass).depthOps.storeOp,
-      stencilClearValue: (pass as WebGPURenderPass).stencilOps.clearValue,
-      stencilLoadOp: (pass as WebGPURenderPass).stencilOps.loadOp,
-      stencilStoreOp: (pass as WebGPURenderPass).stencilOps.storeOp,
+      stencilClearValue: useStencil ? (pass as WebGPURenderPass).stencilOps.clearValue : void 0,
+      stencilLoadOp: useStencil ? (pass as WebGPURenderPass).stencilOps.loadOp : void 0,
+      stencilStoreOp: useStencil ? (pass as WebGPURenderPass).stencilOps.storeOp : void 0,
     }
   });
 }

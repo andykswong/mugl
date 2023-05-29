@@ -29,7 +29,7 @@ If you want to use WebGPU from JS or WASM code with fallback to WebGL, `mugl` is
 ### [Live Examples](https://andykswong.github.io/mugl/latest/examples)
 Check out the live examples [here](https://andykswong.github.io/mugl/latest/examples).
 
-The source code of all examples can be found [here](./packages/examples/src/apps/). All examples run on **both JavaScript and WebAssembly, using the exact same code base**! Click the toggle in the examples menu to seamlessly switch between the two environments.
+The source code of all examples can be found [here](./packages/examples/src/apps/). All examples run on **both WebGL and WebGPU, for both JavaScript and WebAssembly, using the same code base**! Click the toggles in the examples menu to seamlessly switch between JS/WASM and WebGL/WebGPU.
 
 |   |   |   |
 |---|---|---|

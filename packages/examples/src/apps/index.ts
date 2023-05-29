@@ -21,7 +21,7 @@ export const Apps = [
   new AppDefinition('instancing', 'Buffers & Instancing', (device, useWebGPU) => new InstancingExample(device, useWebGPU)),
   new AppDefinition('texture', 'Texture & Sampler', (device, useWebGPU) => new TextureExample(device, useWebGPU)),
   new AppDefinition('stencil', 'Depth Stencil', (device, useWebGPU) => new StencilExample(device, useWebGPU)),
-  new AppDefinition('postprocess', 'Post-processing', (device, useWebGPU) => new PostprocessExample(device)),
-  new AppDefinition('mrt', 'Multi Render Targets', (device, useWebGPU) => new MRTExample(device)),
-  new AppDefinition('pbr', 'Physically Based Rendering', (device, useWebGPU) => new PbrExample(device)),
+  new AppDefinition('postprocess', 'Post-processing', (device, useWebGPU) => new PostprocessExample(device, useWebGPU)),
+  new AppDefinition('mrt', 'Multi Render Targets', (device, useWebGPU) => new MRTExample(device, useWebGPU)),
+  new AppDefinition('pbr', 'Physically Based Rendering', (device, useWebGPU) => new PbrExample(device, useWebGPU)),
 ];
